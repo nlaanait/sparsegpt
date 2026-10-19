@@ -1,0 +1,113 @@
+{
+  "eval": "raw-WikiText2",
+  "calibration": "c4",
+  "params_b": {
+    "Qwen/Qwen3.5-0.8B": 0.873438784,
+    "Qwen/Qwen3.5-2B": 2.274069824,
+    "Qwen/Qwen3.5-4B": 4.659865088,
+    "Qwen/Qwen3.5-9B": 9.653104368,
+    "Qwen/Qwen3.5-27B": 27.781427952
+  },
+  "points": [
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "Dense",
+      "perplexity": 12.106592
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "50% Unstructured",
+      "perplexity": 18.144793
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "Dense",
+      "perplexity": 17.181921
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "50% Unstructured",
+      "perplexity": 35.679241
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "4:8",
+      "perplexity": 34.027031
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "2:4",
+      "perplexity": 43.004925
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "4:8",
+      "perplexity": 20.556313
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "2:4",
+      "perplexity": 25.352219
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "Dense",
+      "perplexity": 9.587426
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "50% Unstructured",
+      "perplexity": 11.518006
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "4:8",
+      "perplexity": 13.835102
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "2:4",
+      "perplexity": 17.36433
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "Dense",
+      "perplexity": 8.646133
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "50% Unstructured",
+      "perplexity": 9.434211
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "4:8",
+      "perplexity": 11.103648
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "2:4",
+      "perplexity": 13.969933
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "Dense",
+      "perplexity": 6.895155
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "50% Unstructured",
+      "perplexity": 7.502586
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "4:8",
+      "perplexity": 8.181143
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "2:4",
+      "perplexity": 9.154304
+    }
+  ]
+}

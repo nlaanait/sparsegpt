@@ -5,8 +5,9 @@ import torch
 import torch.nn as nn
 import transformers
 
-from sparsegpt import * 
-from modelutils import *
+from .geometry import GeometrySparseGPT, add_geometry_arguments, apply_geometry
+from .modelutils import *
+from .sparsegpt import *
 
 try:
     import wandb
@@ -82,7 +83,7 @@ def bloom_sequential(model, dataloader, dev, means=None, stds=None):
         for name in subset:
             if (not (args.minlayer <= i < args.maxlayer and args.prune_only in name)) == (not args.invert):
                 continue
-            gpts[name] = SparseGPT(subset[name])
+            gpts[name] = (GeometrySparseGPT if args.geometry_alpha > 0 else SparseGPT)(subset[name])
 
         def add_batch(name):
             def tmp(_, inp, out):
@@ -99,6 +100,7 @@ def bloom_sequential(model, dataloader, dev, means=None, stds=None):
         for name in gpts:
             print(i, name)
             print('pruning ...')
+            apply_geometry(gpts[name], args, i, name)
             gpts[name].fasterprune(
                 args.sparsity, prunen=args.prunen, prunem=args.prunem, percdamp=args.percdamp
             )
@@ -207,7 +209,7 @@ def bloom_eval(model, testenc, dev, dataset: str, log_wandb: bool = False):
 
 if __name__ == '__main__':
     import argparse
-    from datautils import *
+    from .datautils import *
 
     parser = argparse.ArgumentParser()
 
@@ -272,7 +274,14 @@ if __name__ == '__main__':
        help='Whether to log to wandb.'
     )
 
+    add_geometry_arguments(parser)
     args = parser.parse_args()
+    if not math.isfinite(args.geometry_alpha) or args.geometry_alpha < 0:
+        parser.error("--geometry-alpha must be finite and nonnegative")
+    if args.geometry_alpha > 0 and args.geometry_probes is None:
+        parser.error("--geometry-probes is required with positive --geometry-alpha")
+    if args.geometry_alpha > 0 and args.gmp:
+        parser.error("geometry calibration requires SparseGPT, not --gmp")
 
     # init W&B logging
     if args.log_wandb:

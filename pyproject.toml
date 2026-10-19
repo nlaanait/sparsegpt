@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=61,<82"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sparsegpt"
+version = "0.1.0"
+description = "SparseGPT pruning (unstructured and N:M block sparsity) with optional geometry calibration"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "nlaanait" }]
+
+[tool.setuptools.packages.find]
+include = ["sparsegpt*"]

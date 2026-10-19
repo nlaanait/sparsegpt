@@ -1,1 +1,11 @@
 __pycache__
+geometry_results/
+geometry_results_cuda/
+sparse_opt/
+*.pyc
+.pixi/
+*.egg-info/
+.pytest_cache/
+figures/logs/
+wandb/
+*.log

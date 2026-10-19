@@ -26,8 +26,8 @@ def get_tokenizer(model):
 
 def get_wikitext2(nsamples, seed, seqlen, model, tokenizer):
     
-    traindata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='train')
-    testdata = load_dataset('wikitext', 'wikitext-2-raw-v1', split='test')
+    traindata = load_dataset('Salesforce/wikitext', 'wikitext-2-raw-v1', split='train')
+    testdata = load_dataset('Salesforce/wikitext', 'wikitext-2-raw-v1', split='test')
 
     trainenc = tokenizer(" ".join(traindata['text']), return_tensors='pt')
     testenc = tokenizer("\n\n".join(testdata['text']), return_tensors='pt')
@@ -44,8 +44,14 @@ def get_wikitext2(nsamples, seed, seqlen, model, tokenizer):
     return trainloader, testenc
 
 def get_ptb(nsamples, seed, seqlen, model, tokenizer):
-    traindata = load_dataset('ptb_text_only', 'penn_treebank', split='train')
-    testdata = load_dataset('ptb_text_only', 'penn_treebank', split='test')
+    # Hub loading scripts were removed; the canonical repo's parquet mirror
+    # keeps the same sentence field and train/test splits.
+    traindata = load_dataset(
+        'ptb-text-only/ptb_text_only', split='train', revision='refs/convert/parquet'
+    )
+    testdata = load_dataset(
+        'ptb-text-only/ptb_text_only', split='test', revision='refs/convert/parquet'
+    )
 
     trainenc = tokenizer(" ".join(traindata['sentence']), return_tensors='pt')
     testenc = tokenizer(" ".join(testdata['sentence']), return_tensors='pt')

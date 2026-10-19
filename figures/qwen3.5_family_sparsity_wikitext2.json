@@ -1,0 +1,576 @@
+{
+  "eval": "raw-WikiText2",
+  "calibration": "c4",
+  "points": [
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 12.106592
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "magnitude",
+      "sparsity": 0.1,
+      "perplexity": 12.295918
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "magnitude",
+      "sparsity": 0.2,
+      "perplexity": 13.041772
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "magnitude",
+      "sparsity": 0.3,
+      "perplexity": 16.664061
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "magnitude",
+      "sparsity": 0.4,
+      "perplexity": 44.050858
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "magnitude",
+      "sparsity": 0.5,
+      "perplexity": 226.864655
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "magnitude",
+      "sparsity": 0.6,
+      "perplexity": 3121.661621
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "magnitude",
+      "sparsity": 0.7,
+      "perplexity": 1970829.75
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "magnitude",
+      "sparsity": 0.8,
+      "perplexity": 769794.4375
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 18.144793
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 12.10594
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 12.400369
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 12.632349
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 14.011392
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 32.0966
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 126.521118
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 547.986145
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 17.181921
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 35.679241
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 9.587426
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 11.518006
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 8.646133
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 9.434211
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 6.895155
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 7.502586
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "magnitude",
+      "sparsity": 0.1,
+      "perplexity": 17.561916
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "magnitude",
+      "sparsity": 0.2,
+      "perplexity": 20.972483
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "magnitude",
+      "sparsity": 0.3,
+      "perplexity": 37.865932
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "magnitude",
+      "sparsity": 0.4,
+      "perplexity": 221.406448
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 17.343761
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 17.859634
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 19.217453
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 23.409105
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 89.282928
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 380.377258
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "magnitude",
+      "sparsity": 0.1,
+      "perplexity": 9.691299
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "magnitude",
+      "sparsity": 0.2,
+      "perplexity": 10.36648
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "magnitude",
+      "sparsity": 0.3,
+      "perplexity": 12.261515
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "magnitude",
+      "sparsity": 0.4,
+      "perplexity": 14.70519
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "magnitude",
+      "sparsity": 0.5,
+      "perplexity": 33.709515
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "magnitude",
+      "sparsity": 0.6,
+      "perplexity": 420.563324
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 9.594662
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 9.687123
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 9.933423
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 10.316336
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 16.152233
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 38.267925
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 328.241577
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "magnitude",
+      "sparsity": 0.1,
+      "perplexity": 9.105603
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "magnitude",
+      "sparsity": 0.2,
+      "perplexity": 10.698429
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "magnitude",
+      "sparsity": 0.3,
+      "perplexity": 20.107193
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "magnitude",
+      "sparsity": 0.4,
+      "perplexity": 80.699532
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "magnitude",
+      "sparsity": 0.5,
+      "perplexity": 1230.389526
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 8.630773
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 8.507044
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 8.467715
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 8.600136
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 12.77196
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 26.255823
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 106.541466
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "magnitude",
+      "sparsity": 0.1,
+      "perplexity": 7.008646
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "magnitude",
+      "sparsity": 0.2,
+      "perplexity": 7.261577
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "magnitude",
+      "sparsity": 0.3,
+      "perplexity": 7.475955
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "magnitude",
+      "sparsity": 0.4,
+      "perplexity": 8.540109
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "magnitude",
+      "sparsity": 0.5,
+      "perplexity": 13.208661
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "magnitude",
+      "sparsity": 0.6,
+      "perplexity": 62.747345
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "magnitude",
+      "sparsity": 0.7,
+      "perplexity": 3153.44165
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 6.922701
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 6.871049
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "sparsegpt",
+      "sparsity": 0.45,
+      "perplexity": 27.256176
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "sparsegpt",
+      "sparsity": 0.55,
+      "perplexity": 47.517544
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "sparsegpt",
+      "sparsity": 0.65,
+      "perplexity": 183.710709
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.15,
+      "perplexity": 12.224575
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.25,
+      "perplexity": 12.309836
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.35,
+      "perplexity": 13.210797
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.45,
+      "perplexity": 15.300869
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.55,
+      "perplexity": 22.877926
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.65,
+      "perplexity": 58.307632
+    },
+    {
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "sparsegpt",
+      "sparsity": 0.75,
+      "perplexity": 251.15686
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.15,
+      "perplexity": 9.664184
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.25,
+      "perplexity": 9.749957
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.35,
+      "perplexity": 10.147643
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.45,
+      "perplexity": 10.670222
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.55,
+      "perplexity": 13.031235
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.65,
+      "perplexity": 22.32509
+    },
+    {
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "sparsegpt",
+      "sparsity": 0.75,
+      "perplexity": 94.144188
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "sparsegpt",
+      "sparsity": 0.45,
+      "perplexity": 8.842113
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "sparsegpt",
+      "sparsity": 0.55,
+      "perplexity": 10.596889
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "sparsegpt",
+      "sparsity": 0.65,
+      "perplexity": 17.448738
+    },
+    {
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "sparsegpt",
+      "sparsity": 0.75,
+      "perplexity": 48.841358
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 6.938011
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 7.110582
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 8.894672
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 14.943203
+    },
+    {
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 42.020035
+    }
+  ]
+}

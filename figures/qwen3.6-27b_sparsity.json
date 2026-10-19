@@ -1,0 +1,132 @@
+{
+  "calibration": "c4",
+  "attention": "pytorch",
+  "points": [
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "ptb",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 12.104124
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "wikitext2",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 7.40101
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 12.091797
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 7.400213
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 11.920517
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 7.461467
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 12.00585
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 7.536214
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 12.207347
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 7.882154
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 12.876024
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 8.106549
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 14.880743
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 9.438279
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 22.232662
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 14.667995
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 75.930885
+    },
+    {
+      "model": "Qwen/Qwen3.6-27B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 44.744556
+    }
+  ]
+}

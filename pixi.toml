@@ -1,0 +1,82 @@
+[workspace]
+name = "sparsegpt"
+version = "0.1.0"
+description = "SparseGPT pruning (unstructured and N:M block sparsity) with optional geometry calibration"
+authors = ["nlaanait"]
+channels = ["conda-forge"]
+platforms = [{ platform = "linux-aarch64", cuda = "13.0" }]
+
+[dependencies]
+python = "3.12.*"
+pip = "*"
+setuptools = "<82"
+ninja = "*"
+packaging = "*"
+
+[pypi-dependencies]
+torch = { version = "==2.12.0+cu130", index = "https://download.pytorch.org/whl/cu130" }
+transformers = ">=4.56"
+datasets = ">=3.6"
+accelerate = ">=1.8"
+safetensors = ">=0.5"
+numpy = ">=2"
+scipy = ">=1.14"
+tqdm = ">=4.67"
+pytest = ">=8.3"
+plotly = ">=6"
+ipykernel = ">=6.29"
+jupyter = ">=1.1"
+# Qwen3.5 linear-attention kernels (avoids slow PyTorch fallbacks)
+# Prebuilt for torch==2.12.0+cu130 on linux-aarch64. See ~/.pixi/wheels/cu130.
+causal-conv1d = { path = "/home/nlaanait/.pixi/wheels/cu130/causal_conv1d-1.7.0-cp312-cp312-linux_aarch64.whl" }
+flash-linear-attention = { version = ">=0.5.0", extras = ["cuda", "conv1d"] }
+
+[tasks]
+cuda-check = "python -c \"import torch; print(torch.__version__); print(torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'no-cuda')\""
+test = "python -m pytest -v tests/"
+test-sparsegpt = "python -m pytest -v tests/test_sparsegpt.py"
+test-geometry = "python -m pytest -v tests/test_geometry.py"
+
+# Layer-level geometry demo (no model download)
+# sparsity: one or more targets, e.g. `pixi run geometry-demo 0.5` or `pixi run geometry-demo "0.5 0.9"`
+geometry-demo = { cmd = "python -m sparsegpt.geometry_demo --output geometry_results --device cpu --requested-sparsity {{ sparsity }}", args = [{ arg = "sparsity", default = "0.5 0.75 0.9 0.95" }] }
+geometry-demo-cpu = { cmd = "python -m sparsegpt.geometry_demo --output geometry_results --device cpu --requested-sparsity {{ sparsity }}", args = [{ arg = "sparsity", default = "0.5 0.75 0.9 0.95" }] }
+geometry-demo-cuda = { cmd = "python -m sparsegpt.geometry_demo --output geometry_results_cuda --device cuda --requested-sparsity {{ sparsity }}", args = [{ arg = "sparsity", default = "0.5 0.75 0.9 0.95" }] }
+
+# Colab-style OPT demo (demo.ipynb) and its prune commands
+demo = "jupyter notebook demo.ipynb"
+demo-lab = "jupyter lab demo.ipynb"
+demo-opt = { cmd = "python -m sparsegpt.opt facebook/opt-125m c4 --sparsity {{ sparsity }} --save sparse_opt/opt-125m", args = [{ arg = "sparsity", default = "0.5" }] }
+demo-opt-nm = "python -m sparsegpt.opt facebook/opt-125m c4 --prunen 2 --prunem 4 --save sparse_opt/opt-125m-2-4"
+
+# BLOOM prune demos (small 560m checkpoint)
+demo-bloom = { cmd = "python -m sparsegpt.bloom bigscience/bloom-560m c4 --sparsity {{ sparsity }} --save sparse_opt/bloom-560m", args = [{ arg = "sparsity", default = "0.5" }] }
+demo-bloom-nm = "python -m sparsegpt.bloom bigscience/bloom-560m c4 --prunen 2 --prunem 4 --save sparse_opt/bloom-560m-2-4"
+
+# Qwen3.5-2B text-tower SparseGPT
+demo-qwen = { cmd = "python -m sparsegpt.qwen Qwen/Qwen3.5-2B c4 --sparsity {{ sparsity }} --save sparse_opt/qwen3.5-2b", args = [{ arg = "sparsity", default = "0.5" }] }
+demo-qwen-nm = "python -m sparsegpt.qwen Qwen/Qwen3.5-2B c4 --prunen 2 --prunem 4 --save sparse_opt/qwen3.5-2b-2-4"
+demo-qwen-smoke = { cmd = "python -m sparsegpt.qwen Qwen/Qwen3.5-2B c4 --sparsity {{ sparsity }} --nsamples 4 --maxlayer 1 --skip-eval --save sparse_opt/qwen3.5-2b-smoke", args = [{ arg = "sparsity", default = "0.5" }] }
+
+# Figure 1: sparsity vs raw-WikiText2 perplexity (dense, magnitude, SparseGPT).
+# Resumes from figures/qwen3.5-2b_wikitext2.json and skips finished points.
+# Writes figures/qwen3.5-2b_sparsity_perplexity.html.
+qwen-figure1 = "python qwen_figure1.py"
+qwen-figure1-plot = "python qwen_figure1.py --plot-only"
+
+# Figure 1 for each Qwen3.5 model. Magnitude stops above perplexity 100,
+# unstructured SparseGPT stops above 200. Resumes from
+# figures/qwen3.5_family_sparsity_wikitext2.json.
+qwen-figure1-family = "python qwen_figure1_family.py"
+qwen-figure1-family-plot = "python qwen_figure1_family.py --plot-only"
+
+# PTB perplexity vs sparsity, reusing C4 SparseGPT checkpoints in sparse_opt.
+# Resumes from figures/qwen3.5_family_sparsity_ptb.json.
+qwen-ptb = "python -u qwen_ptb.py"
+qwen-ptb-plot = "python qwen_ptb.py --plot-only"
+
+# Figure 2: raw-WikiText2 perplexity vs Qwen3.5 model size
+# (dense, 50% unstructured, 4:8, 2:4). Resumes from
+# figures/qwen3.5_family_wikitext2.json.
+qwen-figure2 = "python qwen_figure2.py"
+qwen-figure2-plot = "python qwen_figure2.py --plot-only"

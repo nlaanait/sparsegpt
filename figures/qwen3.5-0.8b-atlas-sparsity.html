@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qwen3.5-0.8B Atlas vs saved SparseGPT</title>
+<style>
+  :root {
+    --ink: #0f172a; --muted: #475569; --faint: #64748b; --line: #e2e8f0;
+    --info: #1d4ed8; --ptb: #c2410c; --card: #f8fafc; --warn: #fff7ed;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; color: var(--ink); background: #f1f5f9;
+    font-family: "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.5; }
+  main { max-width: 880px; margin: 32px auto 64px; padding: 32px 36px 40px;
+    background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+  h1 { margin: 0 0 12px; font-size: 28px; line-height: 1.25; letter-spacing: -0.02em; }
+  h2 { margin: 28px 0 8px; font-size: 18px; }
+  p { margin: 0 0 10px; }
+  .lead { font-size: 16px; color: var(--muted); }
+  .stats { display: flex; gap: 28px; margin: 18px 0 4px; }
+  .stat b { display: block; font-size: 28px; letter-spacing: -0.03em; line-height: 1.1; }
+  .stat span { color: var(--muted); font-size: 13px; }
+  .stat.warn b { color: #9a3412; }
+  .legend { display: flex; gap: 16px; margin: 8px 0 0; font-size: 13px; color: var(--muted); }
+  .swatch { display: inline-block; width: 18px; height: 3px; margin-right: 6px; vertical-align: middle; }
+  .chart-wrap { margin-top: 8px; border: 1px solid var(--line); border-radius: 10px; padding: 8px 8px 0; }
+  svg { width: 100%; height: auto; display: block; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 6px; font-variant-numeric: tabular-nums; }
+  th, td { padding: 8px 10px; border-bottom: 1px solid var(--line); }
+  th { font-size: 13px; color: var(--muted); font-weight: 650; }
+  td.num, th.num { text-align: right; }
+  tr.warn td { background: var(--warn); }
+  .caption { margin-top: 8px; color: var(--faint); font-size: 13px; }
+  @media (max-width: 720px) {
+    main { margin: 0; padding: 20px 16px 32px; border-radius: 0; }
+    h1 { font-size: 24px; }
+    .stats { flex-direction: column; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <h1>Qwen3.5-0.8B Atlas vs saved SparseGPT</h1>
+  <p class="lead">Same C4 calibration, 128 windows, seed 0. Atlas re-prunes the model. The saved curve is the earlier run without the SM121 Gated DeltaNet kernel. Delta is (Atlas − saved) / saved.</p>
+  <div class="stats">
+    <div class="stat"><b>0.67%</b><span>Largest |WikiText2 gap| through sparsity 0.5</span></div>
+    <div class="stat warn"><b>+11.3%</b><span>PTB gap at sparsity 0.7</span></div>
+  </div>
+
+  <h2>Perplexity change from the saved curve</h2>
+  <div class="legend">
+    <span><i class="swatch" style="background:#1d4ed8"></i>WikiText2</span>
+    <span><i class="swatch" style="background:#c2410c"></i>PTB</span>
+  </div>
+  <div class="chart-wrap">
+    <svg viewBox="0 0 760 320" role="img" aria-label="Relative perplexity change versus sparsity">
+      <line x1="52" y1="244.3" x2="742" y2="244.3" stroke="#e2e8f0"/>
+      <line x1="52" y1="184.7" x2="742" y2="184.7" stroke="#94a3b8" stroke-dasharray="4 4"/>
+      <line x1="52" y1="125.2" x2="742" y2="125.2" stroke="#e2e8f0"/>
+      <line x1="52" y1="65.6" x2="742" y2="65.6" stroke="#e2e8f0"/>
+      <text x="46" y="248" text-anchor="end" fill="#64748b" font-size="12">−5%</text>
+      <text x="46" y="188" text-anchor="end" fill="#64748b" font-size="12">0</text>
+      <text x="46" y="129" text-anchor="end" fill="#64748b" font-size="12">5%</text>
+      <text x="46" y="69" text-anchor="end" fill="#64748b" font-size="12">10%</text>
+      <text x="748" y="181" fill="#64748b" font-size="11">saved curve</text>
+      <polyline fill="none" stroke="#1d4ed8" stroke-width="2" points="52.0,185.0 121.0,184.7 190.0,185.9 259.0,183.6 328.0,187.8 397.0,176.7 466.0,189.1 535.0,150.1 604.0,210.7 673.0,223.1 742.0,114.5"/>
+      <polyline fill="none" stroke="#c2410c" stroke-width="2" points="52.0,184.7 121.0,183.9 190.0,185.1 259.0,178.6 328.0,191.2 397.0,187.6 466.0,177.0 535.0,75.7 604.0,247.0 673.0,88.0 742.0,49.8"/>
+      <g fill="#1d4ed8">
+        <circle cx="52" cy="185.0" r="3"/><circle cx="121" cy="184.7" r="3"/><circle cx="190" cy="185.9" r="3"/>
+        <circle cx="259" cy="183.6" r="3"/><circle cx="328" cy="187.8" r="3"/><circle cx="397" cy="176.7" r="3"/>
+        <circle cx="466" cy="189.1" r="3"/><circle cx="535" cy="150.1" r="3"/><circle cx="604" cy="210.7" r="3"/>
+        <circle cx="673" cy="223.1" r="3"/><circle cx="742" cy="114.5" r="3"/>
+      </g>
+      <g fill="#c2410c">
+        <circle cx="52" cy="184.7" r="3"/><circle cx="121" cy="183.9" r="3"/><circle cx="190" cy="185.1" r="3"/>
+        <circle cx="259" cy="178.6" r="3"/><circle cx="328" cy="191.2" r="3"/><circle cx="397" cy="187.6" r="3"/>
+        <circle cx="466" cy="177.0" r="3"/><circle cx="535" cy="75.7" r="3"/><circle cx="604" cy="247.0" r="3"/>
+        <circle cx="673" cy="88.0" r="3"/><circle cx="742" cy="49.8" r="3"/>
+      </g>
+      <g fill="#64748b" font-size="12" text-anchor="middle">
+        <text x="52" y="306">0</text><text x="121" y="306">0.1</text><text x="190" y="306">0.2</text>
+        <text x="259" y="306">0.3</text><text x="328" y="306">0.4</text><text x="397" y="306">0.45</text>
+        <text x="466" y="306">0.5</text><text x="535" y="306">0.55</text><text x="604" y="306">0.6</text>
+        <text x="673" y="306">0.65</text><text x="742" y="306">0.7</text>
+      </g>
+    </svg>
+  </div>
+  <p class="caption">Horizontal axis is sparsity. Vertical axis is relative perplexity change, percent. Source: figures/qwen3.5_family_sparsity_wikitext2.json and figures/qwen3.5_family_sparsity_ptb.json, compared with sparsegpt-gdn-batch/logs/sweep-0.8b/results.json. Run finished 18 Oct 2026.</p>
+
+  <h2>Perplexity at each sparsity</h2>
+  <table>
+    <thead>
+      <tr>
+        <th class="num">Sparsity</th>
+        <th class="num">Wiki saved</th>
+        <th class="num">Wiki Atlas</th>
+        <th class="num">Wiki Δ</th>
+        <th class="num">PTB saved</th>
+        <th class="num">PTB Atlas</th>
+        <th class="num">PTB Δ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="num">0</td><td class="num">17.182</td><td class="num">17.178</td><td class="num">−0.02%</td><td class="num">33.239</td><td class="num">33.239</td><td class="num">0.00%</td></tr>
+      <tr><td class="num">0.1</td><td class="num">17.344</td><td class="num">17.344</td><td class="num">0.00%</td><td class="num">33.217</td><td class="num">33.239</td><td class="num">+0.07%</td></tr>
+      <tr><td class="num">0.2</td><td class="num">17.860</td><td class="num">17.842</td><td class="num">−0.10%</td><td class="num">33.878</td><td class="num">33.866</td><td class="num">−0.03%</td></tr>
+      <tr><td class="num">0.3</td><td class="num">19.217</td><td class="num">19.236</td><td class="num">+0.10%</td><td class="num">36.868</td><td class="num">37.056</td><td class="num">+0.51%</td></tr>
+      <tr><td class="num">0.4</td><td class="num">23.409</td><td class="num">23.349</td><td class="num">−0.26%</td><td class="num">44.896</td><td class="num">44.653</td><td class="num">−0.54%</td></tr>
+      <tr><td class="num">0.45</td><td class="num">27.256</td><td class="num">27.439</td><td class="num">+0.67%</td><td class="num">55.779</td><td class="num">55.647</td><td class="num">−0.24%</td></tr>
+      <tr><td class="num">0.5</td><td class="num">35.679</td><td class="num">35.549</td><td class="num">−0.37%</td><td class="num">70.655</td><td class="num">71.113</td><td class="num">+0.65%</td></tr>
+      <tr class="warn"><td class="num">0.55</td><td class="num">47.518</td><td class="num">48.899</td><td class="num">+2.91%</td><td class="num">105.814</td><td class="num">115.506</td><td class="num">+9.16%</td></tr>
+      <tr class="warn"><td class="num">0.6</td><td class="num">89.283</td><td class="num">87.332</td><td class="num">−2.18%</td><td class="num">202.169</td><td class="num">191.605</td><td class="num">−5.23%</td></tr>
+      <tr class="warn"><td class="num">0.65</td><td class="num">183.7</td><td class="num">177.8</td><td class="num">−3.22%</td><td class="num">324.4</td><td class="num">350.7</td><td class="num">+8.13%</td></tr>
+      <tr class="warn"><td class="num">0.7</td><td class="num">380.4</td><td class="num">402.8</td><td class="num">+5.90%</td><td class="num">606.0</td><td class="num">674.7</td><td class="num">+11.33%</td></tr>
+    </tbody>
+  </table>
+  <p class="caption">Highlighted rows are where either dataset moves by more than 2%.</p>
+</main>
+</body>
+</html>

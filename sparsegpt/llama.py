@@ -1,11 +1,13 @@
+import math
 import time
 
 import torch
 import torch.nn as nn
 
-from sparsegpt import *
-from modelutils import *
-from quant import *
+from .geometry import GeometrySparseGPT, add_geometry_arguments, apply_geometry
+from .modelutils import *
+from .quant import *
+from .sparsegpt import *
 
 try:
     import wandb
@@ -98,7 +100,7 @@ def llama_sequential(model, dataloader, dev):
                     not (args.minlayer <= i < args.maxlayer and args.prune_only in name)
                 ) == (not args.invert):
                     continue
-                gpts[name] = SparseGPT(subset[name])
+                gpts[name] = (GeometrySparseGPT if args.geometry_alpha > 0 else SparseGPT)(subset[name])
                 if args.wbits < 16:
                     gpts[name].quantizer = Quantizer()
                     gpts[name].quantizer.configure(
@@ -112,17 +114,18 @@ def llama_sequential(model, dataloader, dev):
                 return tmp
 
             handles = []
-            for name in subset:
+            for name in gpts:
                 handles.append(subset[name].register_forward_hook(add_batch(name)))
             for j in range(args.nsamples):
                 outs[j] = layer(inps[j].unsqueeze(0), attention_mask=attention_mask)[0]
             for h in handles:
                 h.remove()
 
-            for name in subset:
+            for name in gpts:
                 print(i, name)
                 print("Pruning ...")
                 sparsity = args.sparsity
+                apply_geometry(gpts[name], args, i, name)
                 gpts[name].fasterprune(
                     sparsity,
                     prunen=args.prunen,
@@ -243,7 +246,7 @@ def llama_eval(model, testenc, dev,  dataset: str, log_wandb: bool = False):
 
 if __name__ == "__main__":
     import argparse
-    from datautils import *
+    from .datautils import *
 
     parser = argparse.ArgumentParser()
 
@@ -304,7 +307,14 @@ if __name__ == "__main__":
         "--log_wandb", action="store_true", help="Whether to log to wandb."
     )
 
+    add_geometry_arguments(parser)
     args = parser.parse_args()
+    if not math.isfinite(args.geometry_alpha) or args.geometry_alpha < 0:
+        parser.error("--geometry-alpha must be finite and nonnegative")
+    if args.geometry_alpha > 0 and args.geometry_probes is None:
+        parser.error("--geometry-probes is required with positive --geometry-alpha")
+    if args.geometry_alpha > 0 and args.gmp:
+        parser.error("geometry calibration requires SparseGPT, not --gmp")
 
     # init W&B logging
     if args.log_wandb:

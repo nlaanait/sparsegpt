@@ -1,11 +1,13 @@
+import math
 import time
 
 import torch
 import torch.nn as nn
 
-from quant import *
-from sparsegpt import *
-from modelutils import *
+from .geometry import GeometrySparseGPT, add_geometry_arguments, apply_geometry
+from .modelutils import *
+from .quant import *
+from .sparsegpt import *
 
 try:
     import wandb
@@ -88,7 +90,7 @@ def opt_sequential(model, dataloader, dev):
         for name in subset:
             if (not (args.minlayer <= i < args.maxlayer and args.prune_only in name)) == (not args.invert):
               continue
-            gpts[name] = SparseGPT(subset[name])
+            gpts[name] = (GeometrySparseGPT if args.geometry_alpha > 0 else SparseGPT)(subset[name])
             if args.wbits < 16:
                 gpts[name].quantizer = Quantizer()
                 gpts[name].quantizer.configure(
@@ -111,6 +113,7 @@ def opt_sequential(model, dataloader, dev):
             print(i, name)
             print('Pruning ...')
             sparsity = args.sparsity
+            apply_geometry(gpts[name], args, i, name)
             gpts[name].fasterprune(
                 sparsity, prunen=args.prunen, prunem=args.prunem, percdamp=args.percdamp, blocksize=args.blocksize
             )
@@ -233,7 +236,7 @@ def opt_eval(model, testenc, dev, dataset: str, log_wandb: bool = False):
 
 if __name__ == '__main__':
     import argparse
-    from datautils import *
+    from .datautils import *
 
     parser = argparse.ArgumentParser()
 
@@ -306,7 +309,14 @@ if __name__ == '__main__':
        help='Whether to log to wandb.'
     )
 
+    add_geometry_arguments(parser)
     args = parser.parse_args()
+    if not math.isfinite(args.geometry_alpha) or args.geometry_alpha < 0:
+        parser.error("--geometry-alpha must be finite and nonnegative")
+    if args.geometry_alpha > 0 and args.geometry_probes is None:
+        parser.error("--geometry-probes is required with positive --geometry-alpha")
+    if args.geometry_alpha > 0 and args.gmp:
+        parser.error("geometry calibration requires SparseGPT, not --gmp")
 
     # init W&B logging
     if args.log_wandb:

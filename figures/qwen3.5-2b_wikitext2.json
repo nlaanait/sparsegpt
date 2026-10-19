@@ -1,0 +1,92 @@
+{
+  "model": "Qwen/Qwen3.5-2B",
+  "eval": "raw-WikiText2",
+  "calibration": "c4",
+  "points": [
+    {
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 12.106592
+    },
+    {
+      "method": "magnitude",
+      "sparsity": 0.1,
+      "perplexity": 12.295918
+    },
+    {
+      "method": "magnitude",
+      "sparsity": 0.2,
+      "perplexity": 13.041772
+    },
+    {
+      "method": "magnitude",
+      "sparsity": 0.3,
+      "perplexity": 16.664061
+    },
+    {
+      "method": "magnitude",
+      "sparsity": 0.4,
+      "perplexity": 44.050858
+    },
+    {
+      "method": "magnitude",
+      "sparsity": 0.5,
+      "perplexity": 226.864655
+    },
+    {
+      "method": "magnitude",
+      "sparsity": 0.6,
+      "perplexity": 3121.661621
+    },
+    {
+      "method": "magnitude",
+      "sparsity": 0.7,
+      "perplexity": 1970829.75
+    },
+    {
+      "method": "magnitude",
+      "sparsity": 0.8,
+      "perplexity": 769794.4375
+    },
+    {
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 18.144793
+    },
+    {
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 12.10594
+    },
+    {
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 12.400369
+    },
+    {
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 12.632349
+    },
+    {
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 14.011392
+    },
+    {
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 32.0966
+    },
+    {
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 126.521118
+    },
+    {
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 547.986145
+    }
+  ]
+}

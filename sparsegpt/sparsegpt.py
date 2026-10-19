@@ -5,7 +5,7 @@ import torch
 import torch.nn as nn
 import transformers
 
-from quant import *
+from .quant import *
 
 
 DEBUG = False 
@@ -133,7 +133,9 @@ class SparseGPT:
                 print(torch.sum((self.layer(self.inp1) - self.out1) ** 2))
                 print(torch.sum(Losses))
 
-        torch.cuda.synchronize()
+        # CPU reference runs use the same solver without CUDA synchronization.
+        if self.dev.type == "cuda":
+            torch.cuda.synchronize(self.dev)
         print('time %.2f' % (time.time() - tick))
         print('error', torch.sum(Losses).item())
 
@@ -148,4 +150,6 @@ class SparseGPT:
             self.inp1 = None
             self.out1 = None
         self.H = None
-        torch.cuda.empty_cache()
+        # CPU-only runs have no caching allocator to flush.
+        if self.dev.type == 'cuda' and torch.cuda.is_available():
+            torch.cuda.empty_cache()
