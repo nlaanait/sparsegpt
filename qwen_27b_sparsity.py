@@ -1,9 +1,9 @@
-"""Missing Qwen3.5-27B unstructured SparseGPT points, PyTorch attention.
+"""Missing Qwen3.5-27B unstructured SparseGPT points.
 
 The tenth-grid points 0.3, 0.4, 0.6, 0.7, and 0.8 never landed: WikiText2
 eval of 0.3 was killed, and PTB was only run for checkpoints that already
 existed (0.1, 0.2, 0.5). Calibration stays C4. PTB is measured first. Each
-job uses the pure PyTorch gated-delta and causal-conv bodies.
+job uses the Atlas-Inference/gdn SM121 kernel (transformers use_kernels).
 
 The watcher kills a run whose resident memory is large, whose log has gone
 quiet, and whose GPU SMs have stayed at 0% utilization. That is the FLA
@@ -108,7 +108,6 @@ def run_one(dataset: str, sparsity: float, log_path: Path) -> float:
         sparsity_token(sparsity),
         "--eval-datasets",
         dataset,
-        "--pytorch-attention",
     ]
     if cached is None:
         cmd.extend(["--save", "sparse_opt/qwen3.5-27b"])

@@ -32,11 +32,11 @@ QWEN_36_38 = SweepSpec(
     name="qwen",
     models=("Qwen/Qwen3.6-27B", "Qwen/Qwen3.8-27B"),
     runner="sparsegpt.qwen",
-    extra_args=("--pytorch-attention",),
+    extra_args=(),
     result_dir=ROOT / "figures",
     log_dir=ROOT / "figures" / "logs",
     log_infix="pytorch",
-    attention="pytorch",
+    attention="atlas-gdn",
     holdout_suffix="27B",
     plot=False,
 )

@@ -52,7 +52,25 @@ def force_pytorch_attention() -> None:
         print(f"attention backend: {name} -> pytorch", flush=True)
 
 
-def get_qwen(model):
+def _enable_gdn_kernel(model) -> None:
+    """Swap Gated DeltaNet for Atlas-Inference/gdn without leaving the GPU.
+
+    ``kernelize`` picks the hub repo from ``model.device``. The checkpoint is
+    loaded on CPU and layers move to CUDA one at a time, so the first
+    parameter is parked on CUDA only while the SM121 kernel is bound.
+    """
+    if not torch.cuda.is_available():
+        raise RuntimeError("Atlas-Inference/gdn requires the GB10 CUDA device.")
+    first = next(model.parameters())
+    home = first.data
+    first.data = home.to("cuda")
+    try:
+        model.set_use_kernels(True)
+    finally:
+        first.data = home
+
+
+def get_qwen(model, *, use_kernels=True):
     def skip(*args, **kwargs):
         pass
 
@@ -62,9 +80,12 @@ def get_qwen(model):
     from transformers import AutoModelForCausalLM
 
     # Qwen/Qwen3.5-2B is a multimodal repo; AutoModelForCausalLM loads the text tower.
+    # Kernels are bound afterwards so the SM121 repo is visible to kernelize.
     model = AutoModelForCausalLM.from_pretrained(
-        model, dtype="auto", trust_remote_code=True
+        model, dtype="auto", trust_remote_code=True, use_kernels=False
     )
+    if use_kernels:
+        _enable_gdn_kernel(model)
     model.seqlen = 2048
     return model
 
@@ -103,6 +124,151 @@ def _run_layer(layer, hidden, *, attention_mask, position_embeddings, position_i
     )
 
 
+def forward_batch_size(nsamples: int, seqlen: int, intermediate: int, element_size: int) -> int:
+    """How many independent windows to run through one decoder layer at once.
+
+    Gate and up projections each keep a (seqlen, intermediate) activation.
+    A 4 GiB budget is about 30 windows on Qwen3.6-27B in bf16, and the whole
+    calibration set on the smaller models. Windows do not depend on each
+    other, so the chunk size does not change the layer outputs.
+    """
+    if nsamples <= 1:
+        return max(1, nsamples)
+    pair = 2 * seqlen * intermediate * element_size
+    if pair <= 0:
+        return nsamples
+    return max(1, min(nsamples, (4 * 1024**3) // pair))
+
+
+def resolve_forward_batch(nsamples: int, seqlen: int, intermediate: int, element_size: int) -> int:
+    requested = getattr(args, "forward_batch", 0)
+    if requested:
+        return max(1, min(nsamples, requested))
+    return forward_batch_size(nsamples, seqlen, intermediate, element_size)
+
+
+def _atlas_linear(layer) -> bool:
+    """True when this block's mixer forward is the Atlas SM121 kernel.
+
+    ``gdn_prefill`` computes batch row 0 correctly and mixes it into later
+    rows. Identical rows hide the leak. Distinct windows must not share a
+    real batch dimension.
+    """
+    attn = getattr(layer, "linear_attn", None)
+    if attn is None:
+        return False
+    return "gdn" in getattr(attn.forward, "__module__", "")
+
+
+def _run_layer_streams(
+    layer,
+    hidden,
+    outs,
+    *,
+    attention_mask,
+    position_embeddings,
+    position_ids,
+    width,
+):
+    """Run batch-1 forwards on separate CUDA streams.
+
+    This is the batched path for Atlas linear layers. Each stream sees one
+    window, which is the launch ``gdn_prefill`` gets right.
+    """
+    count = hidden.shape[0]
+    step = max(1, min(width, count))
+    current = torch.cuda.current_stream()
+    for start in range(0, count, step):
+        stop = min(start + step, count)
+        streams = [torch.cuda.Stream() for _ in range(stop - start)]
+        for stream in streams:
+            stream.wait_stream(current)
+        for offset, stream in enumerate(streams):
+            row = start + offset
+            with torch.cuda.stream(stream):
+                outs[row : row + 1] = _run_layer(
+                    layer,
+                    hidden[row : row + 1],
+                    attention_mask=attention_mask,
+                    position_embeddings=position_embeddings,
+                    position_ids=position_ids,
+                )
+        for stream in streams:
+            current.wait_stream(stream)
+
+
+def _run_layer_batched(
+    layer,
+    hidden,
+    outs,
+    *,
+    attention_mask,
+    position_embeddings,
+    position_ids,
+    batch,
+    parallel=False,
+):
+    """Write layer(hidden) into outs.
+
+    Full attention and the PyTorch delta rule take a real batch: the windows
+    are independent and the batch-1 mask and RoPE broadcast. Atlas linear
+    layers, when ``parallel`` is set, overlap batch-1 kernels on streams.
+    The Hessian pass leaves ``parallel`` off so ``add_batch`` stays serial.
+    """
+    count = hidden.shape[0]
+    step = max(1, min(batch, count))
+    if parallel and step > 1 and _atlas_linear(layer):
+        _run_layer_streams(
+            layer,
+            hidden,
+            outs,
+            attention_mask=attention_mask,
+            position_embeddings=position_embeddings,
+            position_ids=position_ids,
+            width=step,
+        )
+        return
+    if _atlas_linear(layer):
+        step = 1
+    for start in range(0, count, step):
+        stop = min(start + step, count)
+        outs[start:stop] = _run_layer(
+            layer,
+            hidden[start:stop],
+            attention_mask=attention_mask,
+            position_embeddings=position_embeddings,
+            position_ids=position_ids,
+        )
+
+
+def _leading_example(value):
+    """Keep the cache contract of a batch-1 catcher when the embed is batched.
+
+    Text RoPE cos/sin are (batch, seq, dim). Multimodal position ids are
+    (4, batch, seq) or (3, batch, seq) and the leading axis is not the batch.
+    """
+    if isinstance(value, tuple):
+        return tuple(_leading_example(item) for item in value)
+    if torch.is_tensor(value) and value.ndim >= 2 and value.shape[0] > 1:
+        if value.ndim >= 3 and value.shape[0] in (3, 4) and value.shape[1] > 1:
+            return value[:, :1]
+        return value[:1]
+    return value
+
+
+def gdn_backend(model) -> str:
+    """Module that owns the first Gated DeltaNet forward, after kernelize."""
+    for layer in model.model.layers:
+        attn = getattr(layer, "linear_attn", None)
+        if attn is None:
+            continue
+        fwd = attn.forward
+        module = getattr(fwd, "__module__", type(attn).__module__)
+        name = getattr(fwd, "__qualname__", getattr(fwd, "__name__", type(fwd).__name__))
+        return f"{module}.{name}"
+    return "no linear attention"
+
+
 @torch.no_grad()
 def qwen_sequential(model, dataloader, dev):
     print("Starting...")
@@ -134,17 +300,29 @@ def qwen_sequential(model, dataloader, dev):
             self.module = module
 
         def forward(self, inp, **kwargs):
-            inps[cache["i"]] = inp
-            cache["i"] += 1
-            cache["attention_mask"] = kwargs.get("attention_mask")
-            cache["position_embeddings"] = kwargs.get("position_embeddings")
-            cache["position_ids"] = kwargs.get("position_ids")
+            n = inp.shape[0]
+            inps[cache["i"] : cache["i"] + n] = inp
+            cache["i"] += n
+            # Later layers reuse one window's mask and RoPE. Every calibration
+            # window has the same length, so the first row stands for the batch.
+            cache["attention_mask"] = _leading_example(kwargs.get("attention_mask"))
+            cache["position_embeddings"] = _leading_example(kwargs.get("position_embeddings"))
+            cache["position_ids"] = _leading_example(kwargs.get("position_ids"))
             raise ValueError
 
     layers[0] = Catcher(layers[0])
-    for batch in dataloader:
+    tokens = torch.cat([batch[0] for batch in dataloader], dim=0)
+    capture_batch = resolve_forward_batch(
+        tokens.shape[0],
+        model.seqlen,
+        model.config.intermediate_size,
+        torch.empty((), dtype=dtype).element_size(),
+    )
+    print(f"forward batch={capture_batch}", flush=True)
+    for start in range(0, tokens.shape[0], capture_batch):
+        stop = min(start + capture_batch, tokens.shape[0])
         try:
-            model(batch[0].to(dev), use_cache=False)
+            model(tokens[start:stop].to(dev), use_cache=False)
         except ValueError:
             pass
     layers[0] = layers[0].module
@@ -214,14 +392,15 @@ def qwen_sequential(model, dataloader, dev):
             handles = []
             for name in gpts:
                 handles.append(subset[name].register_forward_hook(add_batch(name)))
-            for j in range(args.nsamples):
-                outs[j] = _run_layer(
-                    layer,
-                    inps[j].unsqueeze(0),
-                    attention_mask=layer_mask,
-                    position_embeddings=position_embeddings,
-                    position_ids=position_ids,
-                )
+            _run_layer_batched(
+                layer,
+                inps,
+                outs,
+                attention_mask=layer_mask,
+                position_embeddings=position_embeddings,
+                position_ids=position_ids,
+                batch=capture_batch,
+            )
             for h in handles:
                 h.remove()
 
@@ -238,14 +417,16 @@ def qwen_sequential(model, dataloader, dev):
                 )
                 gpts[name].free()
 
-        for j in range(args.nsamples):
-            outs[j] = _run_layer(
-                layer,
-                inps[j].unsqueeze(0),
-                attention_mask=layer_mask,
-                position_embeddings=position_embeddings,
-                position_ids=position_ids,
-            )
+        _run_layer_batched(
+            layer,
+            inps,
+            outs,
+            attention_mask=layer_mask,
+            position_embeddings=position_embeddings,
+            position_ids=position_ids,
+            batch=capture_batch,
+            parallel=True,
+        )
 
         layers[i] = layer.cpu()
         del layer
@@ -350,17 +531,31 @@ def _eval_windows(model, testenc, dev, start, stop, dtype, *, apply_gmp):
             self.module = module
 
         def forward(self, inp, **kwargs):
-            inps[cache["i"]] = inp
-            cache["i"] += 1
-            cache["attention_mask"] = kwargs.get("attention_mask")
-            cache["position_embeddings"] = kwargs.get("position_embeddings")
-            cache["position_ids"] = kwargs.get("position_ids")
+            n = inp.shape[0]
+            inps[cache["i"] : cache["i"] + n] = inp
+            cache["i"] += n
+            cache["attention_mask"] = _leading_example(kwargs.get("attention_mask"))
+            cache["position_embeddings"] = _leading_example(kwargs.get("position_embeddings"))
+            cache["position_ids"] = _leading_example(kwargs.get("position_ids"))
             raise ValueError
 
     layers[0] = Catcher(layers[0])
     print("eval capture", flush=True)
-    for i in range(start, stop):
-        batch = testenc[:, (i * model.seqlen) : ((i + 1) * model.seqlen)].to(dev)
+    windows = torch.cat(
+        [
+            testenc[:, (i * model.seqlen) : ((i + 1) * model.seqlen)]
+            for i in range(start, stop)
+        ],
+        dim=0,
+    )
+    capture_batch = resolve_forward_batch(
+        count,
+        model.seqlen,
+        model.config.intermediate_size,
+        torch.empty((), dtype=dtype).element_size(),
+    )
+    for offset in range(0, count, capture_batch):
+        batch = windows[offset : offset + capture_batch].to(dev)
         try:
             model(batch, use_cache=False)
         except ValueError:
@@ -404,14 +599,21 @@ def _eval_windows(model, testenc, dev, start, stop, dtype, *, apply_gmp):
                 ]
                 W.data[torch.abs(W.data) <= thresh] = 0
 
-        for j in range(count):
-            outs[j] = _run_layer(
-                layer,
-                inps[j].unsqueeze(0),
-                attention_mask=layer_mask,
-                position_embeddings=position_embeddings,
-                position_ids=position_ids,
-            )
+        _run_layer_batched(
+            layer,
+            inps,
+            outs,
+            attention_mask=layer_mask,
+            position_embeddings=position_embeddings,
+            position_ids=position_ids,
+            batch=resolve_forward_batch(
+                count,
+                model.seqlen,
+                model.config.intermediate_size,
+                torch.empty((), dtype=dtype).element_size(),
+            ),
+            parallel=True,
+        )
         layers[i] = layer.cpu()
         del layer
         torch.cuda.empty_cache()
@@ -531,6 +733,12 @@ if __name__ == "__main__":
         action="store_true",
         help="Run Qwen3.5 linear attention and causal conv as pure PyTorch.",
     )
+    parser.add_argument(
+        "--forward-batch",
+        type=int,
+        default=0,
+        help="Windows per decoder-layer forward. 0 picks a batch that fits in 4 GiB of MLP activations.",
+    )
 
     add_geometry_arguments(parser)
     args = parser.parse_args()
@@ -556,16 +764,18 @@ if __name__ == "__main__":
             "No pruned checkpoint matches this config; refusing to prune."
         )
 
+    use_kernels = not args.pytorch_attention
     if cached is not None:
         print(f"Loading pruned model from {cached} (matches pruning config).")
-        model = get_qwen(str(cached))
+        model = get_qwen(str(cached), use_kernels=use_kernels)
     else:
         if pruning:
             print(
                 "No pruned model in sparse_opt matches this config; "
                 "pruning from the base model."
             )
-        model = get_qwen(args.model)
+        model = get_qwen(args.model, use_kernels=use_kernels)
+    print(f"gdn backend: {gdn_backend(model)}", flush=True)
     model.eval()
 
     ran_sparsegpt = False
