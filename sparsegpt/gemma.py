@@ -10,8 +10,13 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import time
 from pathlib import Path
+
+# The first CUDA allocation otherwise tries to reserve a large pool. On this
+# unified-memory machine that reservation fails once the 31B weights are loaded.
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 
 import torch
 import torch.nn as nn
@@ -36,7 +41,8 @@ except ImportError:
     has_wandb = False
 
 # Decoder linears SparseGPT is allowed to touch. PLE projections, embeddings,
-# norms, and the packed per-layer table stay dense.
+# norms, routers, and the packed per-layer table stay dense. MoE expert
+# weights are packed 3D Parameters (not nn.Linear); they are pruned separately.
 PRUNE_NAMES = (
     "self_attn.q_proj",
     "self_attn.k_proj",
@@ -51,7 +57,9 @@ args = None
 
 
 def is_prunable_parameter(name: str) -> bool:
-    return any(name.endswith(f"{leaf}.weight") or name.endswith(f"{leaf}.bias") for leaf in PRUNE_NAMES)
+    if any(name.endswith(f"{leaf}.weight") or name.endswith(f"{leaf}.bias") for leaf in PRUNE_NAMES):
+        return True
+    return name.endswith("experts.gate_up_proj") or name.endswith("experts.down_proj")
 
 
 def _skip_init() -> dict:
@@ -106,12 +114,42 @@ def _weight_files(source: str) -> list[Path]:
     return found
 
 
+def _drop_file_cache(path: Path) -> None:
+    """Drop a shard from the page cache once its bytes have been copied.
+
+    The 31B text tower is about 62 GiB. Leaving the safetensors file cached
+    beside that allocation exhausts the unified memory on the next CUDA copy.
+    """
+    try:
+        fd = os.open(path, os.O_RDONLY)
+    except OSError:
+        return
+    try:
+        os.posix_fadvise(fd, 0, 0, os.POSIX_FADV_DONTNEED)
+    except OSError:
+        pass
+    finally:
+        os.close(fd)
+
+
+def _prime_cuda() -> None:
+    """Create the CUDA context while the weight file is not also resident."""
+    if torch.cuda.is_initialized():
+        return
+    torch.cuda.init()
+    torch.empty(1, device="cuda")
+
+
 def get_gemma(source: str):
     """Load the text causal LM. Encoder tensors stay in the checkpoint files."""
+    for path in _weight_files(source):
+        _drop_file_cache(path)
+    _prime_cuda()
     saved_init = _skip_init()
     from safetensors import safe_open
     from transformers import AutoConfig, Gemma4ForCausalLM, Gemma4UnifiedForCausalLM
 
+    print(f"Loading Gemma text tower from {source}", flush=True)
     config = AutoConfig.from_pretrained(source)
     text_config = _text_config(config)
     text_config._attn_implementation = "sdpa"
@@ -129,18 +167,21 @@ def get_gemma(source: str):
     buffers = dict(model.named_buffers())
     loaded: set[str] = set()
     for path in _weight_files(source):
+        _drop_file_cache(path)
         with safe_open(path, framework="pt", device="cpu") as handle:
             for key in handle.keys():
                 dest = _remap_key(key)
                 if dest is None:
                     continue
                 tensor = handle.get_tensor(key)
-                if dest in params:
-                    params[dest].copy_(tensor.to(dtype=params[dest].dtype))
-                    loaded.add(dest)
-                elif dest in buffers and buffers[dest].shape == tensor.shape:
-                    buffers[dest].copy_(tensor.to(dtype=buffers[dest].dtype))
-                    loaded.add(dest)
+                with torch.no_grad():
+                    if dest in params:
+                        params[dest].copy_(tensor.to(dtype=params[dest].dtype))
+                        loaded.add(dest)
+                    elif dest in buffers and buffers[dest].shape == tensor.shape:
+                        buffers[dest].copy_(tensor.to(dtype=buffers[dest].dtype))
+                        loaded.add(dest)
+        _drop_file_cache(path)
     if "lm_head.weight" not in loaded:
         model.lm_head.weight = model.model.embed_tokens.weight
         loaded.add("lm_head.weight")
@@ -151,6 +192,8 @@ def get_gemma(source: str):
         raise RuntimeError("Gemma text weights did not load: " + ", ".join(missing[:12]))
     model.seqlen = 2048
     model.eval()
+    model.requires_grad_(False)
+    print(f"loaded {len(loaded)} text tensors", flush=True)
     return model
 
 
@@ -163,12 +206,95 @@ def _true_sequential_groups() -> list[list[str]]:
     ]
 
 
+def _collect_expert_inputs(layer, inps: torch.Tensor, shared, positions, masks, position_ids, layer_type) -> list[list[torch.Tensor]]:
+    """Per-expert token inputs (after pre_feedforward_layernorm_2), on CPU."""
+    experts = layer.experts
+    buckets: list[list[torch.Tensor]] = [[] for _ in range(experts.num_experts)]
+
+    def capture(hidden_states, top_k_index, top_k_weights):
+        # hidden_states: [T, H], top_k_index: [T, K]
+        for expert_idx in top_k_index.unique().tolist():
+            expert_idx = int(expert_idx)
+            if expert_idx >= experts.num_experts:
+                continue
+            hit = (top_k_index == expert_idx).any(dim=-1)
+            if hit.any():
+                buckets[expert_idx].append(hidden_states[hit].detach().to("cpu"))
+        return experts_forward(hidden_states, top_k_index, top_k_weights)
+
+    experts_forward = experts.forward
+    experts.forward = capture
+    try:
+        for j in range(inps.shape[0]):
+            _run_layer(
+                layer,
+                inps[j].unsqueeze(0).to(DEV),
+                None,
+                shared[j],
+                positions[layer_type],
+                masks[layer_type],
+                position_ids,
+            )
+    finally:
+        experts.forward = experts_forward
+    return buckets
+
+
+def _prune_moe_experts(layer, buckets: list[list[torch.Tensor]], layer_idx: int) -> None:
+    """SparseGPT each expert's fused gate_up and down using tokens routed to it."""
+    experts = layer.experts
+    min_tokens = 64
+    hidden = experts.hidden_dim
+    inter = experts.intermediate_dim
+    for expert_idx, parts in enumerate(buckets):
+        if not parts:
+            continue
+        tokens = torch.cat(parts, dim=0)
+        if tokens.shape[0] < min_tokens:
+            continue
+        tokens = tokens.to(device=DEV, dtype=experts.gate_up_proj.dtype)
+        # Copy slices into real Linears so SparseGPT's nn.Linear path applies.
+        gate_up = nn.Linear(hidden, 2 * inter, bias=False, device=DEV, dtype=tokens.dtype)
+        down = nn.Linear(inter, hidden, bias=False, device=DEV, dtype=tokens.dtype)
+        gate_up.weight.data.copy_(experts.gate_up_proj[expert_idx])
+        down.weight.data.copy_(experts.down_proj[expert_idx])
+        for name, module, batch in (
+            (f"experts[{expert_idx}].gate_up_proj", gate_up, tokens),
+            (f"experts[{expert_idx}].down_proj", down, None),
+        ):
+            if (not (args.minlayer <= layer_idx < args.maxlayer and args.prune_only in name)) == (not args.invert):
+                continue
+            print(layer_idx, name)
+            print("Pruning ...")
+            gpt = SparseGPT(module)
+            if name.endswith("gate_up_proj"):
+                gpt.add_batch(batch, None)
+            else:
+                with torch.no_grad():
+                    gate, up = gate_up(tokens).chunk(2, dim=-1)
+                    act = experts.act_fn(gate) * up
+                gpt.add_batch(act, None)
+            gpt.fasterprune(
+                args.sparsity,
+                prunen=args.prunen,
+                prunem=args.prunem,
+                percdamp=args.percdamp,
+                blocksize=args.blocksize,
+            )
+            gpt.free()
+        experts.gate_up_proj.data[expert_idx].copy_(gate_up.weight.data)
+        experts.down_proj.data[expert_idx].copy_(down.weight.data)
+        del tokens, gate_up, down
+        torch.cuda.empty_cache()
+
+
 def _has_ple(module) -> bool:
     return bool(getattr(module, "hidden_size_per_layer_input", 0))
 
 
-def _ple_to(text, device) -> None:
-    text.embed_tokens = text.embed_tokens.to(device)
+def _ple_to(text, device, *, embeddings: bool = True) -> None:
+    if embeddings:
+        text.embed_tokens = text.embed_tokens.to(device)
     if not _has_ple(text):
         return
     text.embed_tokens_per_layer = text.embed_tokens_per_layer.to(device)
@@ -178,11 +304,19 @@ def _ple_to(text, device) -> None:
 
 def _embed(text, input_ids):
     """Hidden state the first layer sees, and projected per-layer inputs or None."""
+    weight_device = text.embed_tokens.weight.device
+    if input_ids.device != weight_device:
+        input_ids = input_ids.to(weight_device)
     embeds = text.embed_tokens(input_ids)
     if not _has_ple(text):
         return embeds, None
-    raw = text.get_per_layer_inputs(input_ids, embeds)
-    return embeds, text.project_per_layer_inputs(embeds, raw)
+    # Token embeddings stay on CPU during a 31B prune, while the per-layer
+    # tables are small enough to sit on the GPU. Look them up where they live.
+    ple_device = text.embed_tokens_per_layer.weight.device
+    ple_ids = input_ids.to(ple_device)
+    ple_embeds = embeds.to(ple_device)
+    raw = text.get_per_layer_inputs(ple_ids, ple_embeds)
+    return embeds, text.project_per_layer_inputs(ple_embeds, raw)
 
 
 def _context(text, sample, position_ids):
@@ -223,6 +357,17 @@ def _run_layer(layer, hidden, per_layer_input, shared_kv, position_embeddings, a
     return out[0] if isinstance(out, tuple) else out
 
 
+def _prefix_bos(ids: torch.Tensor, bos_id: int) -> torch.Tensor:
+    """Gemma 4 uses BOS as the attention sink. A window that does not start
+    with it assigns near-uniform mass to the next token. Keep the length fixed
+    by dropping the last id.
+    """
+    if ids.numel() == 0 or int(ids[0, 0]) == bos_id:
+        return ids
+    bos = torch.full((ids.shape[0], 1), bos_id, dtype=ids.dtype, device=ids.device)
+    return torch.cat([bos, ids[:, :-1]], dim=1)
+
+
 def _softcap(logits, config):
     cap = getattr(config, "final_logit_softcapping", None)
     if cap is None:
@@ -232,17 +377,23 @@ def _softcap(logits, config):
 
 @torch.no_grad()
 def gemma_sequential(model, dataloader, dev):
-    print("Starting...")
+    print("Starting...", flush=True)
+    _prime_cuda()
+    free, total = torch.cuda.mem_get_info()
+    print(f"cuda free={free / 1024**3:.1f}GiB total={total / 1024**3:.1f}GiB", flush=True)
     use_cache = model.config.use_cache
     model.config.use_cache = False
     text = model.model
     layers = text.layers
     dtype = next(iter(model.parameters())).dtype
     hidden = model.config.hidden_size
-    _ple_to(text, dev)
+    # The 31B embedding table is a few GiB. On this unified-memory machine the
+    # weights already occupy most of RAM, and copying that table to CUDA fails
+    # once C4 is loaded. Lookups stay on CPU; one sample moves with the layer.
+    _ple_to(text, dev, embeddings=False)
     text.rotary_emb = text.rotary_emb.to(dev)
 
-    inps = torch.zeros((args.nsamples, model.seqlen, hidden), dtype=dtype, device=dev)
+    inps = torch.zeros((args.nsamples, model.seqlen, hidden), dtype=dtype, device="cpu")
     ple = None
     if _has_ple(text):
         ple = torch.zeros(
@@ -255,17 +406,17 @@ def gemma_sequential(model, dataloader, dev):
             dtype=dtype,
             device="cpu",
         )
+    bos_id = int(getattr(model.config, "bos_token_id", 2))
     for index, batch in enumerate(dataloader):
-        ids = batch[0].to(dev)
-        embeds, projected = _embed(text, ids)
-        inps[index] = embeds[0]
+        embeds, projected = _embed(text, _prefix_bos(batch[0], bos_id))
+        inps[index] = embeds[0].to("cpu")
         if projected is not None:
             ple[index] = projected[0].to("cpu")
-    _ple_to(text, "cpu")
+    _ple_to(text, "cpu", embeddings=False)
     torch.cuda.empty_cache()
 
     position_ids = torch.arange(model.seqlen, device=dev).unsqueeze(0)
-    masks, positions = _context(text, inps[:1], position_ids)
+    masks, positions = _context(text, inps[:1].to(dev), position_ids)
     shared = [{} for _ in range(args.nsamples)]
     outs = torch.zeros_like(inps)
     print("Ready.")
@@ -300,13 +451,13 @@ def gemma_sequential(model, dataloader, dev):
                 ple_j = None if ple is None else ple[j, :, i, :].to(dev).unsqueeze(0)
                 outs[j] = _run_layer(
                     layer,
-                    inps[j].unsqueeze(0),
+                    inps[j].unsqueeze(0).to(dev),
                     ple_j,
                     shared[j],
                     positions[layer_type],
                     masks[layer_type],
                     position_ids,
-                )
+                ).to("cpu")
             for handle in handles:
                 handle.remove()
             for name in gpts:
@@ -321,17 +472,24 @@ def gemma_sequential(model, dataloader, dev):
                     blocksize=args.blocksize,
                 )
                 gpts[name].free()
+        if getattr(layer, "enable_moe_block", False) and args.sparsity > 0:
+            # Experts are packed Parameters, not nn.Linear. Capture routed
+            # tokens from a full layer forward, then SparseGPT each expert.
+            buckets = _collect_expert_inputs(
+                layer, inps, shared, positions, masks, position_ids, layer_type
+            )
+            _prune_moe_experts(layer, buckets, i)
         for j in range(args.nsamples):
             ple_j = None if ple is None else ple[j, :, i, :].to(dev).unsqueeze(0)
             outs[j] = _run_layer(
                 layer,
-                inps[j].unsqueeze(0),
+                inps[j].unsqueeze(0).to(dev),
                 ple_j,
                 shared[j],
                 positions[layer_type],
                 masks[layer_type],
                 position_ids,
-            )
+            ).to("cpu")
         layers[i] = layer.cpu()
         del layer
         torch.cuda.empty_cache()
@@ -385,8 +543,9 @@ def _eval_windows(model, testenc, dev, start, stop, dtype):
             dtype=dtype,
             device="cpu",
         )
+    bos_id = int(getattr(model.config, "bos_token_id", 2))
     for offset, index in enumerate(range(start, stop)):
-        ids = testenc[:, index * model.seqlen : (index + 1) * model.seqlen].to(dev)
+        ids = _prefix_bos(testenc[:, index * model.seqlen : (index + 1) * model.seqlen], bos_id).to(dev)
         embeds, projected = _embed(text, ids)
         inps[offset] = embeds[0]
         if projected is not None:
@@ -425,7 +584,9 @@ def _eval_windows(model, testenc, dev, start, stop, dtype):
         hidden_states = text.norm(inps[offset].unsqueeze(0))
         logits = _softcap(model.lm_head(hidden_states), model.config)
         shift_logits = logits[:, :-1, :].contiguous()
-        shift_labels = testenc[:, index * model.seqlen : (index + 1) * model.seqlen][:, 1:].to(dev)
+        shift_labels = _prefix_bos(
+            testenc[:, index * model.seqlen : (index + 1) * model.seqlen], bos_id
+        )[:, 1:].to(dev)
         loss = loss_fct(shift_logits.view(-1, shift_logits.size(-1)), shift_labels.view(-1))
         nlls.append(loss.float() * model.seqlen)
     text.norm = text.norm.cpu()
@@ -443,8 +604,9 @@ def gemma_reference_nlls(model, testenc, dev):
     model.to(dev)
     loss_fct = nn.CrossEntropyLoss()
     nlls = []
+    bos_id = int(getattr(model.config, "bos_token_id", 2))
     for index in range(nsamples):
-        ids = testenc[:, index * model.seqlen : (index + 1) * model.seqlen].to(dev)
+        ids = _prefix_bos(testenc[:, index * model.seqlen : (index + 1) * model.seqlen], bos_id).to(dev)
         logits = model(ids, use_cache=False).logits
         shift_logits = logits[:, :-1, :].contiguous()
         shift_labels = ids[:, 1:]
@@ -461,7 +623,7 @@ if __name__ == "__main__":
     from .datautils import get_loaders
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("model", type=str, help="Gemma 4 model, e.g. google/gemma-4-E2B-it.")
+    parser.add_argument("model", type=str, help="Gemma 4 model, e.g. google/gemma-4-E2B.")
     parser.add_argument("dataset", type=str, choices=["wikitext2", "ptb", "c4"])
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--nsamples", type=int, default=128)
