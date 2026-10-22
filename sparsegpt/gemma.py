@@ -12,6 +12,7 @@ import json
 import math
 import os
 import time
+from contextlib import contextmanager
 from pathlib import Path
 
 # The first CUDA allocation otherwise tries to reserve a large pool. On this
@@ -153,6 +154,11 @@ def get_gemma(source: str):
     config = AutoConfig.from_pretrained(source)
     text_config = _text_config(config)
     text_config._attn_implementation = "sdpa"
+    # Manual construct skips from_pretrained's experts dispatch. Without this,
+    # Gemma4TextExperts stays on the eager Python loop (config None → default
+    # forward). grouped_mm is the transformers default when dispatch runs.
+    if getattr(text_config, "enable_moe_block", False):
+        text_config._experts_implementation_internal = "grouped_mm"
     causal_cls = Gemma4UnifiedForCausalLM if "unified" in str(getattr(config, "model_type", "")) else Gemma4ForCausalLM
     # Build in bf16 so the 31B text tower is one allocation, not a fp32 copy.
     # RoPE inv_freq is created as fp32 inside the embedding and must stay that way.
@@ -206,8 +212,34 @@ def _true_sequential_groups() -> list[list[str]]:
     ]
 
 
+@contextmanager
+def _noop_experts(layer):
+    """Skip expert compute; router still runs. Used when the residual is unused."""
+    if not getattr(layer, "enable_moe_block", False):
+        yield
+        return
+    experts = layer.experts
+
+    def noop(hidden_states, top_k_index, top_k_weights):
+        return torch.zeros_like(hidden_states)
+
+    previous = experts.forward
+    experts.forward = noop
+    try:
+        yield
+    finally:
+        if "forward" in experts.__dict__:
+            del experts.__dict__["forward"]
+        else:
+            experts.forward = previous
+
+
 def _collect_expert_inputs(layer, inps: torch.Tensor, shared, positions, masks, position_ids, layer_type) -> list[list[torch.Tensor]]:
-    """Per-expert token inputs (after pre_feedforward_layernorm_2), on CPU."""
+    """Per-expert token inputs (after pre_feedforward_layernorm_2), on CPU.
+
+    Expert matmuls are skipped: only the router indices and normed tokens matter
+    for SparseGPT. The layer residual from this pass is discarded.
+    """
     experts = layer.experts
     buckets: list[list[torch.Tensor]] = [[] for _ in range(experts.num_experts)]
 
@@ -220,11 +252,12 @@ def _collect_expert_inputs(layer, inps: torch.Tensor, shared, positions, masks, 
             hit = (top_k_index == expert_idx).any(dim=-1)
             if hit.any():
                 buckets[expert_idx].append(hidden_states[hit].detach().to("cpu"))
-        return experts_forward(hidden_states, top_k_index, top_k_weights)
+        return torch.zeros_like(hidden_states)
 
-    experts_forward = experts.forward
+    previous = experts.forward
     experts.forward = capture
     try:
+        print(f"collect experts layer inputs ({inps.shape[0]} samples)", flush=True)
         for j in range(inps.shape[0]):
             _run_layer(
                 layer,
@@ -235,8 +268,13 @@ def _collect_expert_inputs(layer, inps: torch.Tensor, shared, positions, masks, 
                 masks[layer_type],
                 position_ids,
             )
+            if (j + 1) % 32 == 0 or j + 1 == inps.shape[0]:
+                print(f"collect experts {j + 1}/{inps.shape[0]}", flush=True)
     finally:
-        experts.forward = experts_forward
+        if "forward" in experts.__dict__:
+            del experts.__dict__["forward"]
+        else:
+            experts.forward = previous
     return buckets
 
 
@@ -246,6 +284,7 @@ def _prune_moe_experts(layer, buckets: list[list[torch.Tensor]], layer_idx: int)
     min_tokens = 64
     hidden = experts.hidden_dim
     inter = experts.intermediate_dim
+    pruned = 0
     for expert_idx, parts in enumerate(buckets):
         if not parts:
             continue
@@ -264,8 +303,8 @@ def _prune_moe_experts(layer, buckets: list[list[torch.Tensor]], layer_idx: int)
         ):
             if (not (args.minlayer <= layer_idx < args.maxlayer and args.prune_only in name)) == (not args.invert):
                 continue
-            print(layer_idx, name)
-            print("Pruning ...")
+            print(layer_idx, name, flush=True)
+            print("Pruning ...", flush=True)
             gpt = SparseGPT(module)
             if name.endswith("gate_up_proj"):
                 gpt.add_batch(batch, None)
@@ -285,7 +324,8 @@ def _prune_moe_experts(layer, buckets: list[list[torch.Tensor]], layer_idx: int)
         experts.gate_up_proj.data[expert_idx].copy_(gate_up.weight.data)
         experts.down_proj.data[expert_idx].copy_(down.weight.data)
         del tokens, gate_up, down
-        torch.cuda.empty_cache()
+        pruned += 1
+    print(f"layer {layer_idx}: pruned {pruned} experts", flush=True)
 
 
 def _has_ple(module) -> bool:
@@ -447,22 +487,24 @@ def gemma_sequential(model, dataloader, dev):
                 return tmp
 
             handles = [subset[name].register_forward_hook(add_batch(name)) for name in gpts]
-            for j in range(args.nsamples):
-                ple_j = None if ple is None else ple[j, :, i, :].to(dev).unsqueeze(0)
-                outs[j] = _run_layer(
-                    layer,
-                    inps[j].unsqueeze(0).to(dev),
-                    ple_j,
-                    shared[j],
-                    positions[layer_type],
-                    masks[layer_type],
-                    position_ids,
-                ).to("cpu")
+            # MoE expert outputs are unused while collecting attn/MLP Hessians.
+            with _noop_experts(layer):
+                for j in range(args.nsamples):
+                    ple_j = None if ple is None else ple[j, :, i, :].to(dev).unsqueeze(0)
+                    outs[j] = _run_layer(
+                        layer,
+                        inps[j].unsqueeze(0).to(dev),
+                        ple_j,
+                        shared[j],
+                        positions[layer_type],
+                        masks[layer_type],
+                        position_ids,
+                    ).to("cpu")
             for handle in handles:
                 handle.remove()
             for name in gpts:
-                print(i, name)
-                print("Pruning ...")
+                print(i, name, flush=True)
+                print("Pruning ...", flush=True)
                 apply_geometry(gpts[name], args, i, name)
                 gpts[name].fasterprune(
                     args.sparsity,
@@ -479,6 +521,8 @@ def gemma_sequential(model, dataloader, dev):
                 layer, inps, shared, positions, masks, position_ids, layer_type
             )
             _prune_moe_experts(layer, buckets, i)
+            del buckets
+        print(f"layer {i}: propagate outs", flush=True)
         for j in range(args.nsamples):
             ple_j = None if ple is None else ple[j, :, i, :].to(dev).unsqueeze(0)
             outs[j] = _run_layer(
@@ -490,6 +534,8 @@ def gemma_sequential(model, dataloader, dev):
                 masks[layer_type],
                 position_ids,
             ).to("cpu")
+            if (j + 1) % 32 == 0 or j + 1 == args.nsamples:
+                print(f"layer {i}: outs {j + 1}/{args.nsamples}", flush=True)
         layers[i] = layer.cpu()
         del layer
         torch.cuda.empty_cache()
