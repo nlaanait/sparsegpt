@@ -1,5 +1,7 @@
-"""C4 calibration, then PTB and WikiText2, for one model family.
+"""Calibration then eval sweeps for one model family.
 
+Default protocol is C4 calibration with PTB and WikiText2 eval. A SweepSpec
+may swap those (for example WikiText2 calibration with C4 and PTB eval).
 A prune is saved with --skip-eval and evaluated with --load-cached. The
 watcher kills a run only when it is armed, the SMs stay at 0%, the log is
 quiet, resident memory is flat, and the process is not writing a checkpoint.
@@ -10,6 +12,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import signal
 import subprocess
 import sys
@@ -24,6 +27,7 @@ from sparsegpt.prune_cache import find_pruned_model, prune_config_from_args
 from experiments.qwen import SweepSpec
 
 SPARSITIES = [round(i / 10, 1) for i in range(1, 9)]
+# Legacy alias for the default Gemma / C4-calibrated Qwen eval pair.
 DATASETS = ["ptb", "wikitext2"]
 POLL_S = 10
 STALL_POLLS = 12
@@ -46,7 +50,11 @@ def result_path(spec: SweepSpec, model: str) -> Path:
 def load_results(path: Path, spec: SweepSpec) -> dict:
     if path.is_file():
         return json.loads(path.read_text())
-    return {"calibration": "c4", "attention": spec.attention, "points": []}
+    return {
+        "calibration": spec.calibration,
+        "attention": spec.attention,
+        "points": [],
+    }
 
 
 def save_results(path: Path, results: dict) -> None:
@@ -83,8 +91,37 @@ def add_point(results, model, dataset, method, sparsity, perplexity) -> None:
     )
 
 
-def checkpoint(model: str, sparsity: float) -> Path | None:
-    return find_pruned_model(prune_config_from_args(_prune_args(model, sparsity)))
+def checkpoint(model: str, sparsity: float, calibration: str = "c4") -> Path | None:
+    return find_pruned_model(
+        prune_config_from_args(_prune_args(model, sparsity, dataset=calibration))
+    )
+
+
+def release_finished_checkpoints(spec: SweepSpec) -> None:
+    """Remove a Gemma checkpoint once every eval corpus is saved.
+
+    Four models at eight sparsities do not fit beside the Qwen cache. The
+    JSON point is the result. A missing checkpoint is pruned again only when
+    an eval point is still absent.
+    """
+    if spec.name != "gemma":
+        return
+    for model in spec.models:
+        path = result_path(spec, model)
+        if not path.exists():
+            continue
+        results = load_results(path, spec)
+        for sparsity in SPARSITIES:
+            if any(
+                lookup(results, dataset, "sparsegpt", sparsity) is None
+                for dataset in spec.eval_datasets
+            ):
+                continue
+            cached = checkpoint(model, sparsity, spec.calibration)
+            if cached is None:
+                continue
+            print(f"removing {cached} after both evals", flush=True)
+            shutil.rmtree(cached)
 
 
 def gpu_util() -> int | None:
@@ -225,7 +262,7 @@ def family_cmd(spec: SweepSpec, model: str, datasets: list[str], sparsity: float
         "-m",
         spec.runner,
         model,
-        "c4",
+        spec.calibration,
         "--sparsity",
         sparsity_token(sparsity),
         "--eval-datasets",
@@ -233,7 +270,7 @@ def family_cmd(spec: SweepSpec, model: str, datasets: list[str], sparsity: float
         *spec.extra_args,
     ]
     if sparsity > 0:
-        cached = checkpoint(model, sparsity)
+        cached = checkpoint(model, sparsity, spec.calibration)
         if cached is None:
             cmd.extend(["--save", f"sparse_opt/{short_name(model)}"])
         else:
@@ -247,7 +284,10 @@ def run_sweep(spec: SweepSpec, models: list[str] | None = None, phase: str = "al
     for model in chosen:
         if model not in spec.models:
             raise SystemExit(f"Unknown model {model}")
-    phases = DATASETS if phase == "all" else [phase]
+    phases = list(spec.eval_datasets) if phase == "all" else [phase]
+    for dataset in phases:
+        if dataset not in spec.eval_datasets:
+            raise SystemExit(f"Unknown eval dataset {dataset} for {spec.name}")
     spec.result_dir.mkdir(parents=True, exist_ok=True)
     spec.log_dir.mkdir(parents=True, exist_ok=True)
     for model in chosen:
@@ -273,14 +313,14 @@ def run_sweep(spec: SweepSpec, models: list[str] | None = None, phase: str = "al
                 if existing is not None:
                     print(f"skip {name} {dataset} sparsity={token} perplexity={existing:.4f}", flush=True)
                     continue
-                if checkpoint(model, sparsity) is None:
+                if checkpoint(model, sparsity, spec.calibration) is None:
                     prune_log = spec.log_dir / f"{name}_{spec.log_infix}_sparsity{token}_prune.log"
                     prune_cmd = [
                         sys.executable,
                         "-m",
                         spec.runner,
                         model,
-                        "c4",
+                        spec.calibration,
                         "--sparsity",
                         token,
                         "--skip-eval",
@@ -289,7 +329,7 @@ def run_sweep(spec: SweepSpec, models: list[str] | None = None, phase: str = "al
                         f"sparse_opt/{name}",
                     ]
                     run_job(prune_cmd, prune_log, expect_perplexity=False)
-                    if checkpoint(model, sparsity) is None:
+                    if checkpoint(model, sparsity, spec.calibration) is None:
                         raise RuntimeError(f"prune finished without a checkpoint for {name} {token}")
                 log_path = spec.log_dir / f"{name}_{dataset}_{spec.log_infix}_sparsity{token}.log"
                 found = None
@@ -306,6 +346,7 @@ def run_sweep(spec: SweepSpec, models: list[str] | None = None, phase: str = "al
                 save_results(path, results)
                 print(f"{model} {dataset} sparsity={token} perplexity={perplexity:.4f}", flush=True)
                 _refresh(spec)
+            release_finished_checkpoints(spec)
         _page(spec)
     _page(spec)
 
@@ -313,9 +354,12 @@ def run_sweep(spec: SweepSpec, models: list[str] | None = None, phase: str = "al
 def _refresh(spec: SweepSpec) -> None:
     if not spec.plot:
         return
-    from analysis.plots import refresh_family
+    try:
+        from analysis.plots import refresh_family
 
-    refresh_family(spec)
+        refresh_family(spec)
+    except Exception as exc:
+        print(f"plot refresh failed: {exc}", flush=True)
 
 
 def _page(spec: SweepSpec) -> None:
@@ -331,7 +375,11 @@ def main() -> None:
 
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--models", nargs="+", default=list(GEMMA.models))
-    parser.add_argument("--phase", choices=["ptb", "wikitext2", "all"], default="all")
+    parser.add_argument(
+        "--phase",
+        choices=[*GEMMA.eval_datasets, "all"],
+        default="all",
+    )
     args = parser.parse_args()
     os.chdir(ROOT)
     run_sweep(GEMMA, args.models, args.phase)

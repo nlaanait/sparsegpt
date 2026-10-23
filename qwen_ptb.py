@@ -43,10 +43,10 @@ def load_ptb_results(path: Path) -> dict:
     return results
 
 
-def _prune_args(model: str, sparsity: float) -> Namespace:
+def _prune_args(model: str, sparsity: float, dataset: str = "c4") -> Namespace:
     return Namespace(
         model=model,
-        dataset="c4",
+        dataset=dataset,
         seed=0,
         nsamples=128,
         percdamp=0.01,
@@ -151,7 +151,7 @@ def refresh_plots(results: dict, output: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--output", type=Path, default=ROOT / "figures")
+    parser.add_argument("--output", type=Path, default=ROOT / "figures" / "qwen")
     parser.add_argument("--plot-only", action="store_true")
     args = parser.parse_args()
     os.chdir(ROOT)
