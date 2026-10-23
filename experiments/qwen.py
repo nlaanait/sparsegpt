@@ -63,3 +63,29 @@ QWEN_WIKITEXT2_CAL = SweepSpec(
     calibration="wikitext2",
     eval_datasets=("c4", "ptb"),
 )
+
+# Qwen3.5 family counterpart to QWEN_WIKITEXT2_CAL. Keep its artifacts
+# separate from both the historical C4-calibrated family sweep and the live
+# 3.6/3.8 sweep.
+QWEN_35_WIKITEXT2_CAL = SweepSpec(
+    name="qwen3.5_wikitext2_cal",
+    models=(
+        "Qwen/Qwen3.5-0.8B",
+        "Qwen/Qwen3.5-2B",
+        "Qwen/Qwen3.5-4B",
+        "Qwen/Qwen3.5-9B",
+        "Qwen/Qwen3.5-27B",
+    ),
+    runner="sparsegpt.qwen",
+    extra_args=(),
+    result_dir=ROOT / "figures" / "qwen3.5_wikitext2_cal",
+    log_dir=ROOT / "figures" / "qwen3.5_wikitext2_cal" / "logs",
+    log_infix="pytorch",
+    attention="atlas-gdn",
+    holdout_suffix="27B",
+    # The generic plotter currently assumes one Qwen parameter count for
+    # every model. Do not publish that invalid fit for this multi-size family.
+    plot=False,
+    calibration="wikitext2",
+    eval_datasets=("c4", "ptb"),
+)
