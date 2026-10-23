@@ -2,7 +2,7 @@
 
 The Qwen page at figures/sparsity_principle.html is left untouched. A family
 page is written only after at least two models have dense perplexity and every
-tenth from 0.1 to 0.8 on both WikiText2 and PTB.
+tenth from 0.1 to 0.8 on every eval dataset in the SweepSpec.
 """
 
 from __future__ import annotations
@@ -32,11 +32,22 @@ def _have(points: list[dict], dataset: str, sparsity: float) -> bool:
     )
 
 
+_DATASET_LABELS = {
+    "wikitext2": "WikiText2",
+    "ptb": "PTB",
+    "c4": "C4",
+}
+
+
 def complete_models(spec: SweepSpec) -> list[str]:
     ready = []
     for model in spec.models:
         points = _points(spec, model)
-        if all(_have(points, dataset, sparsity) for dataset in ("wikitext2", "ptb") for sparsity in [0.0, *TENTHS]):
+        if all(
+            _have(points, dataset, sparsity)
+            for dataset in spec.eval_datasets
+            for sparsity in [0.0, *TENTHS]
+        ):
             ready.append(model)
     return ready
 
@@ -52,10 +63,12 @@ def write_family_page(spec: SweepSpec) -> Path | None:
         sizes = stored_params()
         effective = __import__("experiments.gemma", fromlist=["effective_params"]).effective_params()
     else:
-        sizes = {}
+        from sparsity_principle import EXTRA_PARAMS_B
+
+        sizes = {model: float(EXTRA_PARAMS_B) for model in ready}
         effective = {}
     sections = []
-    for dataset in ("wikitext2", "ptb"):
+    for dataset in spec.eval_datasets:
         sparsities, log_ratios, billions = [], [], []
         for model in ready:
             if model not in sizes:
@@ -96,7 +109,7 @@ def write_family_page(spec: SweepSpec) -> Path | None:
 def _html(spec, ready, sizes, effective, sections) -> str:
     laws = []
     for dataset, amplitude, n_star, slope, rmse, count in sections:
-        name = "WikiText2" if dataset == "wikitext2" else "PTB"
+        name = _DATASET_LABELS.get(dataset, dataset)
         laws.append(
             f"<p><b>{name}</b> ln(perplexity / dense) = "
             f"{amplitude:.2f} · (N / {n_star:.3f})^({slope:.2f} log10 s). "
@@ -111,12 +124,14 @@ def _html(spec, ready, sizes, effective, sections) -> str:
         stored_cell = f"{stored:.3f}" if stored else ""
         eff_cell = f"{eff:.3f}" if eff else ""
         rows.append(f"<tr><td>{label}</td><td>{stored_cell}</td><td>{eff_cell}</td></tr>")
+    cal = _DATASET_LABELS.get(spec.calibration, spec.calibration)
+    evals = ", ".join(_DATASET_LABELS.get(name, name) for name in spec.eval_datasets)
     return f"""<!DOCTYPE html>
 <html>
 <head><meta charset="utf-8"><title>{spec.name} sparsity principle</title></head>
 <body>
 <h1>{spec.name} sparsity principle</h1>
-<p>Unstructured SparseGPT, C4 calibration (128 × 2048, seed 0). Points at or below each model's own dense perplexity are excluded. The fit uses total stored parameters so N matches the Qwen page. Effective counts are recorded and are not the fit's N.</p>
+<p>Unstructured SparseGPT, {cal} calibration (128 × 2048, seed 0), eval on {evals}. Points at or below each model's own dense perplexity are excluded. The fit uses total stored parameters so N matches the Qwen page. Effective counts are recorded and are not the fit's N.</p>
 {''.join(laws)}
 <table>
 <tr><th>model</th><th>stored N (billions)</th><th>effective N (billions)</th></tr>

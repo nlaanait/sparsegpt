@@ -59,7 +59,7 @@ QWEN_WIKITEXT2_CAL = SweepSpec(
     log_infix="pytorch",
     attention="atlas-gdn",
     holdout_suffix="27B",
-    plot=False,
+    plot=True,
     calibration="wikitext2",
     eval_datasets=("c4", "ptb"),
 )
