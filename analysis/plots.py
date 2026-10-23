@@ -85,14 +85,23 @@ def _write(fig: go.Figure, path: Path) -> None:
     print(f"wrote {path}", flush=True)
 
 
-def refresh_family(spec: SweepSpec, sizes: dict[str, float] | None = None) -> None:
-    from experiments.gemma import stored_params
+def _family_sizes(spec: SweepSpec) -> dict[str, float]:
+    if spec.name == "gemma":
+        from experiments.gemma import stored_params
 
+        return stored_params()
+    # Qwen 3.6/3.8 share the 3.5-27B stored count used on the principle page.
+    from sparsity_principle import EXTRA_PARAMS_B
+
+    return {model: float(EXTRA_PARAMS_B) for model in spec.models}
+
+
+def refresh_family(spec: SweepSpec, sizes: dict[str, float] | None = None) -> None:
     rows = _load(spec)
     if not rows:
         return
     if sizes is None:
-        sizes = stored_params() if spec.name == "gemma" else {}
+        sizes = _family_sizes(spec)
     datasets = sorted({point["dataset"] for point in rows})
     for dataset in datasets:
         suffix = "" if dataset == "wikitext2" else f"_{dataset}"
