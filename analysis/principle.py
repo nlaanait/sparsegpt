@@ -62,6 +62,11 @@ def write_family_page(spec: SweepSpec) -> Path | None:
 
         sizes = stored_params()
         effective = __import__("experiments.gemma", fromlist=["effective_params"]).effective_params()
+    elif spec.name == "olmo2":
+        from experiments.olmo import stored_params
+
+        sizes = stored_params()
+        effective = {}
     else:
         from sparsity_principle import EXTRA_PARAMS_B
 

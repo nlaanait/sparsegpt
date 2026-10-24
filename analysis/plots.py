@@ -90,6 +90,10 @@ def _family_sizes(spec: SweepSpec) -> dict[str, float]:
         from experiments.gemma import stored_params
 
         return stored_params()
+    if spec.name == "olmo2":
+        from experiments.olmo import stored_params
+
+        return stored_params()
     # Qwen 3.6/3.8 share the 3.5-27B stored count used on the principle page.
     from sparsity_principle import EXTRA_PARAMS_B
 
