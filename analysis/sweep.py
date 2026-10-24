@@ -98,13 +98,13 @@ def checkpoint(model: str, sparsity: float, calibration: str = "c4") -> Path | N
 
 
 def release_finished_checkpoints(spec: SweepSpec) -> None:
-    """Remove a Gemma checkpoint once every eval corpus is saved.
+    """Remove a checkpoint once every eval corpus is saved.
 
-    Four models at eight sparsities do not fit beside the Qwen cache. The
-    JSON point is the result. A missing checkpoint is pruned again only when
-    an eval point is still absent.
+    Large 27B / Gemma caches do not fit for a full sparsity ladder. The JSON
+    point is the result. A missing checkpoint is pruned again only when an
+    eval point is still absent.
     """
-    if spec.name != "gemma":
+    if spec.name not in ("gemma", "qwen_wikitext2_cal"):
         return
     for model in spec.models:
         path = result_path(spec, model)
