@@ -104,7 +104,11 @@ def release_finished_checkpoints(spec: SweepSpec) -> None:
     point is the result. A missing checkpoint is pruned again only when an
     eval point is still absent.
     """
-    if spec.name not in ("gemma", "qwen_wikitext2_cal"):
+    if spec.name not in (
+        "gemma",
+        "qwen_wikitext2_cal",
+        "qwen3.5_wikitext2_cal",
+    ):
         return
     for model in spec.models:
         path = result_path(spec, model)
