@@ -98,13 +98,13 @@ def checkpoint(model: str, sparsity: float, calibration: str = "c4") -> Path | N
 
 
 def release_finished_checkpoints(spec: SweepSpec) -> None:
-    """Remove a Gemma checkpoint once every eval corpus is saved.
+    """Remove a Gemma / OLMo 2 checkpoint once every eval corpus is saved.
 
     Four models at eight sparsities do not fit beside the Qwen cache. The
     JSON point is the result. A missing checkpoint is pruned again only when
     an eval point is still absent.
     """
-    if spec.name != "gemma":
+    if spec.name not in ("gemma", "olmo2"):
         return
     for model in spec.models:
         path = result_path(spec, model)
@@ -277,6 +277,59 @@ def family_cmd(spec: SweepSpec, model: str, datasets: list[str], sparsity: float
             cmd.append("--load-cached")
             print(f"checkpoint {cached}", flush=True)
     return cmd
+
+
+def run_smoke_dense(
+    spec: SweepSpec,
+    models: list[str] | None = None,
+    *,
+    dataset: str = "wikitext2",
+    ppl_range: tuple[float, float] = (5.0, 50.0),
+) -> dict[str, float]:
+    """Dense perplexity gate before any prune.
+
+    Runs (or reuses) dense eval on ``dataset`` for each model. Raises if any
+    score is outside ``ppl_range``. Returns the dense scores that cleared.
+    """
+    chosen = list(spec.models if models is None else models)
+    for model in chosen:
+        if model not in spec.models:
+            raise SystemExit(f"Unknown model {model}")
+    if dataset not in spec.eval_datasets:
+        raise SystemExit(f"Unknown smoke dataset {dataset} for {spec.name}")
+    low, high = ppl_range
+    if not (low < high):
+        raise SystemExit(f"invalid smoke range {ppl_range}")
+    spec.result_dir.mkdir(parents=True, exist_ok=True)
+    spec.log_dir.mkdir(parents=True, exist_ok=True)
+    cleared: dict[str, float] = {}
+    for model in chosen:
+        path = result_path(spec, model)
+        results = load_results(path, spec)
+        name = short_name(model)
+        existing = lookup(results, dataset, "dense", 0.0)
+        if existing is None:
+            log_path = spec.log_dir / f"{name}_{dataset}_{spec.log_infix}_dense.log"
+            found = run_job(family_cmd(spec, model, [dataset], 0.0), log_path)
+            existing = found[dataset]
+            add_point(results, model, dataset, "dense", 0.0, existing)
+            save_results(path, results)
+            print(f"{model} {dataset} dense perplexity={existing:.4f}", flush=True)
+            _refresh(spec)
+        else:
+            print(f"skip {name} {dataset} dense perplexity={existing:.4f}", flush=True)
+        if not (low <= existing <= high):
+            raise SystemExit(
+                f"smoke failed for {model}: {dataset} dense perplexity "
+                f"{existing:.4f} outside [{low}, {high}]"
+            )
+        cleared[model] = existing
+    print(
+        f"smoke cleared for {len(cleared)} model(s) on {dataset} "
+        f"in [{low}, {high}]",
+        flush=True,
+    )
+    return cleared
 
 
 def run_sweep(spec: SweepSpec, models: list[str] | None = None, phase: str = "all") -> None:
