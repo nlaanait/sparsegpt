@@ -1,9 +1,9 @@
 # SparseGPT fork
 
-This fork measures unstructured SparseGPT on Qwen and Gemma 4 and fits one
-sparsity law per family. Upstream OPT / BLOOM / LLaMA entry points are still
-in `sparsegpt/`. The measurements that matter now are the Qwen and Gemma
-sweeps, plus OLMo 2 Instruct as an additional family.
+This fork measures unstructured SparseGPT on Qwen, Gemma 4, and OLMo 2
+Instruct and fits one sparsity law per family. Upstream OPT / BLOOM / LLaMA
+entry points are still in `sparsegpt/`. The measurements that matter now are
+the Qwen, Gemma, and OLMo 2 sweeps.
 
 ## Perplexity
 
@@ -58,12 +58,14 @@ own dense perplexity stay out of the fit. The fit is `analysis/fit.py`.
 
 ## Gemma sweep
 
-Instruction-tuned repos only: `google/gemma-4-E2B-it`, `E4B-it`, `12B-it`,
-`31B-it`. The 12B checkpoint is the unified text tower
-(`Gemma4UnifiedForCausalLM`). The 26B-A4B mixture is not in the sweep.
-Calibration is C4, 128 sequences of 2048, seed 0. Eval is raw WikiText2 and
-PTB at sequence length 2048, SDPA, text tower only. No magnitude pruning.
-Results are `figures/gemma/<short-name>_sparsity.json`.
+Base repos: `google/gemma-4-E2B`, `E4B`, `12B`, `26B-A4B`, `31B`. The 12B
+checkpoint is the unified text tower (`Gemma4UnifiedForCausalLM`). `26B-A4B`
+is the MoE text tower (128 experts, top-8); the fit still uses total stored
+N (safetensors bytes / 2), not active parameters. Instruction-tuned
+measurements live in `figures/gemma-it/`. Calibration is C4, 128 sequences of
+2048, seed 0. Eval is raw WikiText2 and PTB at sequence length 2048, SDPA,
+text tower only. No magnitude pruning. Results are
+`figures/gemma/<short-name>_sparsity.json`.
 
 ## OLMo 2 sweep
 
@@ -112,8 +114,8 @@ gbatch \
 - `--project`: family bucket, e.g. `olmo2-sparsegpt`, `gemma-sparsegpt`.
 - `--gpu-memory`: expected peak device memory for SparseGPT (layer-wise still
   spikes on activations). Cap to what the model needs so shared packing stays
-  honest; on this single-GPU host jobs are exclusive (`--gpus 1`) and gflow
-  serializes them.
+  honest; on this single-GPU host exclusive jobs (`--gpus 1` without
+  `--shared`) serialize. Co-locate small jobs with `--shared --gpu-memory`.
 - `--memory`: host RAM cap for the full checkpoint on CPU plus activations.
 - One model (or one clearly scoped phase) per job. Prefer
   `--depends-on` / `--depends-on-all` over launching competing waiters.

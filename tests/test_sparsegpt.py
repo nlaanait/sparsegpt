@@ -104,6 +104,23 @@ class SparseGPTBlockSparsityTests(unittest.TestCase):
         self.assertFalse(torch.equal(counts_u, torch.full_like(counts_u, 2)))
 
 
+class SparseGPTDampeningTests(unittest.TestCase):
+    def test_ill_conditioned_hessian_retries_instead_of_raising(self):
+        """Near-singular H used to abort on the second Cholesky; damp must rise."""
+        torch.manual_seed(0)
+        layer = nn.Linear(64, 32, bias=False)
+        gpt = SparseGPT(layer)
+        # Rank-1 covariance: PD only after enough diagonal damp.
+        direction = torch.randn(64, 1)
+        gpt.H = direction @ direction.T
+        gpt.nsamples = 8
+        with contextlib.redirect_stdout(io.StringIO()) as buf:
+            gpt.fasterprune(0.5, blocksize=16, percdamp=1e-8)
+        gpt.free()
+        self.assertIn("Cholesky failed", buf.getvalue())
+        self.assertGreater((layer.weight.data == 0).float().mean().item(), 0.4)
+
+
 @unittest.skipUnless(CUDA, "CUDA required")
 class SparseGPTCUDATests(unittest.TestCase):
     def tearDown(self):

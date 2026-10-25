@@ -1,0 +1,7 @@
+The equation predicts ln(y), where y = ln(perplexity / dense).
+ln_y_equation=((ln_Nb * -0.5844288433551156) + (ln_odds_s * 2.0975732326531156)) - 0.6073488911579032
+y_equation=exp(((ln_Nb * -0.5844288433551156) + (ln_odds_s * 2.0975732326531156)) - 0.6073488911579032)
+complexity=9
+log_RMSE=0.417197
+y_RMSE=0.361088
+n=54

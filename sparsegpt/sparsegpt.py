@@ -69,13 +69,41 @@ class SparseGPT:
 
         Losses = torch.zeros(self.rows, device=self.dev)
 
-        damp = percdamp * torch.mean(torch.diag(H))
+        # Invert H via Cholesky. High sparsity / tall FFN layers can make H only
+        # barely PD after the usual percdamp; retry with larger damp rather than
+        # aborting the whole model prune (seen on Gemma-4-31B at s>=0.7).
+        mean_diag = torch.mean(torch.diag(H))
         diag = torch.arange(self.columns, device=self.dev)
-        H[diag, diag] += damp
-        H = torch.linalg.cholesky(H)
-        H = torch.cholesky_inverse(H)
-        H = torch.linalg.cholesky(H, upper=True)
-        Hinv = H
+        H_base = H
+        scale = float(percdamp)
+        Hinv = None
+        for attempt in range(20):
+            H = H_base.clone()
+            damp = scale * mean_diag
+            H[diag, diag] += damp
+            H = 0.5 * (H + H.T)
+            try:
+                chol = torch.linalg.cholesky(H)
+                H = torch.cholesky_inverse(chol)
+                H = 0.5 * (H + H.T)
+                Hinv = torch.linalg.cholesky(H, upper=True)
+                break
+            except Exception as exc:  # LinAlgError name varies across torch builds
+                if "cholesky" not in str(exc).lower() and type(exc).__name__ != "LinAlgError":
+                    raise
+                scale *= 2.0
+                print(
+                    f"Cholesky failed (attempt {attempt + 1}); "
+                    f"retrying with percdamp={scale:.4g}",
+                    flush=True,
+                )
+        if Hinv is None:
+            raise RuntimeError(
+                f"Hessian Cholesky failed after 20 damp increases "
+                f"(last percdamp={scale:.4g})"
+            )
+        if scale != float(percdamp):
+            print(f"Cholesky ok with percdamp={scale:.4g}", flush=True)
 
         mask = None
 
