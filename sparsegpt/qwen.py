@@ -244,13 +244,20 @@ def _run_layer_batched(
 def _leading_example(value):
     """Keep the cache contract of a batch-1 catcher when the embed is batched.
 
-    Text RoPE cos/sin are (batch, seq, dim). Multimodal position ids are
-    (4, batch, seq) or (3, batch, seq) and the leading axis is not the batch.
+    Text RoPE cos/sin are floating (batch, seq, dim). Multimodal position ids
+    are integer (4, batch, seq) or (3, batch, seq); their leading axis is not
+    the batch. A float RoPE tensor with batch 3 or 4 must not take the
+    position-id branch — that was the Qwen3.5-9B dense C4 crash.
     """
     if isinstance(value, tuple):
         return tuple(_leading_example(item) for item in value)
     if torch.is_tensor(value) and value.ndim >= 2 and value.shape[0] > 1:
-        if value.ndim >= 3 and value.shape[0] in (3, 4) and value.shape[1] > 1:
+        if (
+            value.ndim >= 3
+            and value.shape[0] in (3, 4)
+            and value.shape[1] > 1
+            and value.dtype in (torch.int32, torch.int64, torch.long)
+        ):
             return value[:, :1]
         return value[:1]
     return value

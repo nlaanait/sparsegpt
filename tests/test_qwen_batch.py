@@ -26,10 +26,14 @@ def test_forward_batch_size_fits_27b_and_keeps_small_models_whole():
 
 def test_leading_example_slices_batch_not_mrope_axis():
     rope = torch.zeros(8, 4, 16)
-    ids = torch.zeros(4, 8, 4)
+    # Batch 4 is the Qwen3.5-9B C4 remainder (256 % 42). Float RoPE must keep
+    # the batch-first slice; only integer mRoPE position ids use axis 0.
+    rope_batch4 = torch.zeros(4, 2048, 64)
+    ids = torch.zeros(4, 8, 4, dtype=torch.long)
     cos, sin = _leading_example((rope, rope))
     assert cos.shape == (1, 4, 16)
     assert sin.shape == (1, 4, 16)
+    assert _leading_example(rope_batch4).shape == (1, 2048, 64)
     assert _leading_example(ids).shape == (4, 1, 4)
 
 
