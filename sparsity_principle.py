@@ -1,8 +1,9 @@
 """Refit the shared sparsity law on WikiText2 and PTB and rewrite the page.
 
 Points at or below each model's own dense perplexity are left out. The chosen
-form is a · (N / N*)^(b1 log10 s), fit separately on each eval. It is the same
-fit as a · s^(b0 + b1 log10 N). The other rows are comparisons.
+form is the scale-free law α · N^β · s^b, fit separately on each eval. Other
+rows in the comparison table are alternatives, including the older
+a · (N / N*)^(b1 log10 s) reference.
 """
 
 from __future__ import annotations
@@ -44,10 +45,19 @@ EXTRA_FILES = {
     "Qwen/Qwen3.8-27B": FIGURES / "qwen3.8-27b_sparsity.json",
 }
 SWEEP_SPARSITIES = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+MODEL_COLORS = {
+    "Qwen/Qwen3.5-0.8B": "#1d4ed8",
+    "Qwen/Qwen3.5-2B": "#0284c7",
+    "Qwen/Qwen3.5-4B": "#0d9488",
+    "Qwen/Qwen3.5-9B": "#7c3aed",
+    "Qwen/Qwen3.5-27B": "#15803d",
+    "Qwen/Qwen3.6-27B": "#65a30d",
+    "Qwen/Qwen3.8-27B": "#ca8a04",
+}
 FORMS = (
-    ("ref", "a · (N / N*)^(b1 log10 s)", "3", True),
+    ("power", "α · N^β · s^b", "3", True),
+    ("ref", "a · (N / N*)^(b1 log10 s)", "3", False),
     ("slog", "a · s^(b0 + b1 log10 N)", "3", False),
-    ("power", "a · N^c · s^b", "3", False),
     ("slog0", "a · s^(b log10 N)", "2", False),
     ("log1s", "a · (−log(1−s))^b · N^c", "3", False),
     ("exp", "a · exp(b · s · N^c)", "3", False),
@@ -57,6 +67,14 @@ FORMS = (
 
 def _rmse(residual: np.ndarray) -> float:
     return float(np.sqrt(np.mean(np.square(residual))))
+
+
+def _r2(y: np.ndarray, pred: np.ndarray) -> float:
+    ss_res = float(np.sum(np.square(pred - y)))
+    ss_tot = float(np.sum(np.square(y - np.mean(y))))
+    if ss_tot <= 0:
+        return float("nan")
+    return 1.0 - ss_res / ss_tot
 
 
 def _fit(residual, guesses, bounds):
@@ -187,12 +205,45 @@ def _rows(path: Path, sizes: dict[str, float], models_order: list[str] | None = 
         np.asarray(billions, dtype=float),
         models,
         above,
+        dense,
     )
+
+
+def _per_model_sonly(sparsities, targets, models, models_order):
+    """Fit y = β · s^b inside each model (N fixed)."""
+    out = {}
+    for model in models_order:
+        idx = np.asarray([m == model for m in models])
+        if int(idx.sum()) < 4:
+            continue
+        s = sparsities[idx]
+        y = targets[idx]
+
+        def resid(theta, s=s, y=y):
+            amp, exp = theta
+            return amp * np.power(s, exp) - y
+
+        err, coef = _fit(
+            resid,
+            [[8.0, 4.0], [12.0, 5.0], [5.0, 3.0], [15.0, 6.0]],
+            ([1.0e-6, 0.1], [1.0e4, 15.0]),
+        )
+        pred = float(coef[0]) * np.power(s, float(coef[1]))
+        out[model] = {
+            "beta": float(coef[0]),
+            "b": float(coef[1]),
+            "rmse": err,
+            "r2": _r2(y, pred),
+            "n": int(idx.sum()),
+            "s": [float(v) for v in s],
+            "y": [float(v) for v in y],
+        }
+    return out
 
 
 def analyze(path: Path, sizes: dict[str, float], models_order: list[str] | None = None) -> dict:
     models_order = list(models_order or ORDER)
-    sparsities, targets, billions, models, above = _rows(path, sizes, models_order)
+    sparsities, targets, billions, models, above, dense = _rows(path, sizes, models_order)
 
     def power(theta, sparsities=sparsities, targets=targets, billions=billions):
         amplitude, exponent, scale = theta
@@ -200,10 +251,14 @@ def analyze(path: Path, sizes: dict[str, float], models_order: list[str] | None 
 
     err, coef = _fit(
         power,
-        [[18.0, 5.0, -0.4], [16.0, 4.7, -0.38], [12.0, 4.0, -0.3]],
+        [[18.0, 5.0, -0.4], [16.0, 4.7, -0.38], [12.0, 4.0, -0.3], [15.0, 4.6, -0.35]],
         ([0.0, 0.0, -5.0], [1.0e4, 30.0, 5.0]),
     )
     amplitude, exponent, scale = (float(coef[0]), float(coef[1]), float(coef[2]))
+    power_pred = amplitude * np.power(billions, scale) * np.power(sparsities, exponent)
+    power_r2 = _r2(targets, power_pred)
+    var_y = float(np.mean(np.square(targets - np.mean(targets))))
+
     mask = np.asarray([not str(model).endswith("27B") for model in models])
 
     def held(theta, sparsities=sparsities[mask], targets=targets[mask], billions=billions[mask]):
@@ -246,8 +301,6 @@ def analyze(path: Path, sizes: dict[str, float], models_order: list[str] | None 
     def nosize(theta, sparsities=sparsities, targets=targets):
         amplitude_n, exponent_n = theta
         return amplitude_n * np.power(sparsities, exponent_n) - targets
-
-    mask = np.asarray([not str(model).endswith("27B") for model in models])
 
     def slog_held(
         theta,
@@ -319,24 +372,54 @@ def analyze(path: Path, sizes: dict[str, float], models_order: list[str] | None 
             ([0.0, 0.0], [1.0e4, 30.0]),
         )[0],
     }
+
+    per_model = {}
+    for model in models_order:
+        idx = np.asarray([m == model for m in models])
+        if int(idx.sum()) < 3:
+            continue
+        y = targets[idx]
+        pred = power_pred[idx]
+        per_model[model] = {
+            "n": int(idx.sum()),
+            "rmse": _rmse(pred - y),
+            "r2": _r2(y, pred),
+            "var_y": float(np.mean(np.square(y - np.mean(y)))),
+            "s": [float(v) for v in sparsities[idx]],
+            "y": [float(v) for v in y],
+            "N": float(sizes[model]),
+        }
+
     return {
         "n": int(len(targets)),
         "a": amplitude,
         "b": exponent,
         "c": scale,
         "rmse": err,
-        "median": float(np.median(np.abs(slog(slog_coef)))),
+        "r2": power_r2,
+        "var_y": var_y,
+        "median": float(np.median(np.abs(power_pred - targets))),
         "models": models_order,
         "pref": {model: amplitude * (sizes[model] ** scale) for model in models_order},
         "held": [float(value) for value in held_coef],
         "above": above,
         "forms": {**forms, "ref": slog_err},
+        "per_model": per_model,
+        "per_model_sonly": _per_model_sonly(sparsities, targets, models, models_order),
+        "points": {
+            "s": [float(v) for v in sparsities],
+            "y": [float(v) for v in targets],
+            "N": [float(v) for v in billions],
+            "model": list(models),
+        },
+        "dense": {model: float(value) for model, value in dense.items()},
         "ref": {
             "a": ref_a,
             "b0": ref_b0,
             "b1": ref_b1,
             "n_star": ref_nstar,
             "rmse": slog_err,
+            "r2": _r2(targets, ref_a * np.power(sparsities, ref_b0 + ref_b1 * np.log10(billions))),
             "exponent": {
                 model: ref_b1 * math.log10(sizes[model] / ref_nstar) for model in models_order
             },
@@ -375,60 +458,215 @@ def _label(model: str, models: list[str]) -> str:
     later = [item for item in models if item in EXTRA_FILES]
     if later and model.endswith("27B"):
         return model.split("/")[-1].removeprefix("Qwen")
-    return SHORT[model]
+    return SHORT.get(model, model.split("/")[-1])
+
+
+def _s_grid(lo: float = 0.08, hi: float = 0.82, n: int = 120) -> np.ndarray:
+    return np.linspace(lo, hi, n)
 
 
 def _chart(wiki: dict, ptb: dict) -> tuple[str, str]:
+    """Interactive collapse: family law + per-model points; dropdown to isolate a model fit."""
     models = wiki["models"]
-    labels = [_label(model, models) for model in models]
+    labels = {model: _label(model, models) for model in models}
+    s_grid = _s_grid()
     fig = go.Figure()
-    fig.add_trace(
-        go.Scatter(
-            x=labels,
-            y=[wiki["ref"]["exponent"][model] for model in models],
-            mode="lines+markers",
-            name="WikiText2",
-            hovertemplate="WikiText2 %{x}<br>exponent b1 log10(N/N*) = %{y:.2f}<extra></extra>",
-            line=dict(color="#2563eb", width=2.5),
-            marker=dict(color="#2563eb", size=10, line=dict(color="#1e3a8a", width=1)),
+
+    # Family master curves on the collapsed y = α · s^b  (after dividing out N^β)
+    for name, row, color, dash in (
+        ("WikiText2 family", wiki, "#1d4ed8", "solid"),
+        ("PTB family", ptb, "#c2410c", "dash"),
+    ):
+        fig.add_trace(
+            go.Scatter(
+                x=s_grid,
+                y=row["a"] * np.power(s_grid, row["b"]),
+                mode="lines",
+                name=f"{name}: {row['a']:.2f}·N^({row['c']:.2f})·s^{row['b']:.2f}",
+                line=dict(color=color, width=2.6, dash=dash),
+                hovertemplate="%{fullData.name}<br>s=%{x:.2f}<br>α·s^b=%{y:.3f}<extra></extra>",
+                legendgroup="family",
+            )
         )
+
+    # Per-model collapsed points (both evals); model-specific s-only curves start hidden
+    for model in models:
+        color = MODEL_COLORS.get(model, "#334155")
+        label = labels[model]
+        for row, symbol, ds_name in (
+            (wiki, "circle", "WikiText2"),
+            (ptb, "diamond-open", "PTB"),
+        ):
+            info = row["per_model"].get(model)
+            if not info:
+                continue
+            collapsed = [
+                y * (info["N"] ** (-row["c"])) for y in info["y"]
+            ]
+            fig.add_trace(
+                go.Scatter(
+                    x=info["s"],
+                    y=collapsed,
+                    mode="markers",
+                    name=f"{label} · {ds_name}",
+                    marker=dict(
+                        color=color,
+                        symbol=symbol,
+                        size=9,
+                        line=dict(width=1.2, color=color),
+                    ),
+                    hovertemplate=(
+                        f"{label} · {ds_name}<br>s=%{{x:.2f}}<br>"
+                        f"N^(-β)·ln(ppl/dense)=%{{y:.3f}}<extra></extra>"
+                    ),
+                    legendgroup=model,
+                )
+            )
+        # Model-specific WikiText2 s-only fit in collapsed coordinates of the WikiText2 family β
+        sonly = wiki["per_model_sonly"].get(model)
+        info = wiki["per_model"].get(model)
+        if sonly and info:
+            # y_model = β_m · s^{b_m}; collapsed with family scale: y / N^β_family
+            y_curve = (sonly["beta"] * np.power(s_grid, sonly["b"])) * (
+                info["N"] ** (-wiki["c"])
+            )
+            fig.add_trace(
+                go.Scatter(
+                    x=s_grid,
+                    y=y_curve,
+                    mode="lines",
+                    name=f"{label} own fit (WT2): {sonly['beta']:.2f}·s^{sonly['b']:.2f}",
+                    line=dict(color=color, width=2.0, dash="dot"),
+                    visible=False,
+                    legendgroup=f"{model}-fit",
+                    hovertemplate=(
+                        f"{label} own WT2 fit<br>s=%{{x:.2f}}<br>collapsed=%{{y:.3f}}<extra></extra>"
+                    ),
+                )
+            )
+
+    # Trace inventory: 2 family curves, then for each model: up to 2 point traces + 1 own-fit.
+    n_family = 2
+    idx = n_family
+    model_trace_ranges: dict[str, tuple[int, int]] = {}
+    model_fit_index: dict[str, int | None] = {}
+    for model in models:
+        start = idx
+        for row in (wiki, ptb):
+            if model in row["per_model"]:
+                idx += 1
+        fit_idx = None
+        if model in wiki["per_model_sonly"] and model in wiki["per_model"]:
+            fit_idx = idx
+            idx += 1
+        model_trace_ranges[model] = (start, idx)
+        model_fit_index[model] = fit_idx
+    n_traces = idx
+    if n_traces != len(fig.data):
+        raise RuntimeError(f"trace count mismatch: planned {n_traces}, fig has {len(fig.data)}")
+
+    family_title = (
+        f"Scale-free collapse · WikiText2 {wiki['a']:.2f}·N^({wiki['c']:.2f})·s^{wiki['b']:.2f}"
+        f" · PTB {ptb['a']:.2f}·N^({ptb['c']:.2f})·s^{ptb['b']:.2f}"
     )
-    fig.add_trace(
-        go.Scatter(
-            x=labels,
-            y=[ptb["ref"]["exponent"][model] for model in models],
-            mode="lines+markers",
-            name="PTB",
-            hovertemplate="PTB %{x}<br>exponent b1 log10(N/N*) = %{y:.2f}<extra></extra>",
-            line=dict(color="#c2410c", width=2.5),
-            marker=dict(color="#c2410c", size=10, line=dict(color="#7c2d12", width=1)),
+    # Default: family + all points, hide own-fit curves
+    default_visible = [True] * n_traces
+    for fit_idx in model_fit_index.values():
+        if fit_idx is not None:
+            default_visible[fit_idx] = False
+
+    buttons = [
+        dict(
+            label="All models",
+            method="update",
+            args=[{"visible": default_visible}, {"title": family_title}],
         )
-    )
+    ]
+    for model in models:
+        label = labels[model]
+        visible = [False] * n_traces
+        visible[0] = True
+        visible[1] = True
+        start, stop = model_trace_ranges[model]
+        for t in range(start, stop):
+            visible[t] = True
+        sonly = wiki["per_model_sonly"].get(model, {})
+        pm = wiki["per_model"].get(model, {})
+        title = (
+            f"{label} · family law + own WT2 fit "
+            f"({sonly.get('beta', float('nan')):.2f}·s^{sonly.get('b', float('nan')):.2f}, "
+            f"R²={sonly.get('r2', float('nan')):.3f}, family R²={pm.get('r2', float('nan')):.3f})"
+        )
+        buttons.append(
+            dict(
+                label=label,
+                method="update",
+                args=[{"visible": visible}, {"title": title}],
+            )
+        )
+
     fig.update_layout(
         template="plotly_white",
-        width=760,
-        height=380,
-        margin=dict(t=48, b=64, l=78, r=28),
+        width=860,
+        height=480,
+        margin=dict(t=80, b=60, l=70, r=30),
+        title=dict(
+            text=(
+                f"Scale-free collapse · WikiText2 {wiki['a']:.2f}·N^({wiki['c']:.2f})·s^{wiki['b']:.2f}"
+                f" · PTB {ptb['a']:.2f}·N^({ptb['c']:.2f})·s^{ptb['b']:.2f}"
+            ),
+            x=0.02,
+            xanchor="left",
+        ),
         legend=dict(
-            title_text="Exponent b1 log10(N/N*)",
             orientation="h",
-            yanchor="bottom",
-            y=1.02,
+            yanchor="top",
+            y=-0.18,
             xanchor="left",
             x=0,
+            font=dict(size=11),
             bgcolor="rgba(255,255,255,0.92)",
-            bordercolor="rgba(15,23,42,0.18)",
+            bordercolor="rgba(15,23,42,0.12)",
             borderwidth=1,
         ),
         font=dict(family="Segoe UI, Helvetica, Arial, sans-serif", size=13, color="#0f172a"),
-        yaxis=dict(title_text="Exponent b1 log10(N/N*)", range=[0, 10], tickformat=".1f"),
-        xaxis=dict(
-            title_text="Model, ordered by parameter count",
-            type="category",
-            categoryorder="array",
-            categoryarray=labels,
-        ),
+        xaxis=dict(title_text="Unstructured sparsity s (log)", type="log"),
+        yaxis=dict(title_text="N^(−β) · ln(perplexity / dense) (log)", type="log"),
+        updatemenus=[
+            dict(
+                type="dropdown",
+                direction="down",
+                x=1.0,
+                xanchor="right",
+                y=1.18,
+                yanchor="top",
+                buttons=buttons,
+                bgcolor="#f8fafc",
+                bordercolor="#cbd5e1",
+                font=dict(size=12),
+                active=0,
+            )
+        ],
+        annotations=[
+            dict(
+                text="Show fit for",
+                x=1.0,
+                xref="paper",
+                y=1.18,
+                yref="paper",
+                xanchor="right",
+                yanchor="bottom",
+                showarrow=False,
+                font=dict(size=11, color="#475569"),
+                xshift=-8,
+                yshift=18,
+            )
+        ],
     )
+    # Apply default visibility (hide own-fit curves until a model is selected)
+    for i, vis in enumerate(default_visible):
+        fig.data[i].visible = vis
+
     chart = fig.to_html(
         full_html=False,
         include_plotlyjs=False,
@@ -439,7 +677,7 @@ def _chart(wiki: dict, ptb: dict) -> tuple[str, str]:
     end = chart.find("</div>", start) + len("</div>")
     div = chart[start:end].replace(
         'style="height:100%; width:100%;"',
-        'style="height:380px; width:100%;"',
+        'style="height:480px; width:100%;"',
         1,
     )
     script = chart[chart.find("<script") :]
@@ -447,15 +685,10 @@ def _chart(wiki: dict, ptb: dict) -> tuple[str, str]:
     return div, script
 
 
-def _signed(value: float, digits: int) -> str:
-    return f"{value:.{digits}f}".replace("-", "−")
-
-
-def _law(row: dict) -> str:
-    ref = row["ref"]
+def _law_power(row: dict) -> str:
     return (
-        f"ln(perplexity / dense) = {ref['a']:.2f} · (N / {ref['n_star']:.3f})"
-        f"<sup>{ref['b1']:.2f} log10 s</sup>"
+        f"ln(perplexity / dense) = {row['a']:.2f} · N<sup>{row['c']:.2f}</sup>"
+        f" · s<sup>{row['b']:.2f}</sup>"
     )
 
 
@@ -508,19 +741,6 @@ def _sample_rows(models: list[str]) -> str:
 def render(wiki: dict, ptb: dict) -> str:
     models = wiki["models"]
     sizes = load_sizes(models)
-    pref_rows = []
-    for model in models:
-        billions = float(sizes[model])
-        billions_txt = f"{billions:.2f}" if billions < 20 else f"{billions:.1f}"
-        pref_rows.append(
-            "<tr>"
-            f"<td>{_label(model, models)}</td>"
-            f"<td class=\"num\">{billions_txt}</td>"
-            f"<td class=\"num\">{wiki['ref']['exponent'][model]:.2f}</td>"
-            f"<td class=\"num\">{ptb['ref']['exponent'][model]:.2f}</td>"
-            "</tr>"
-        )
-    smallest = float(sizes[models[0]])
     later_names = [model.split("/")[-1] for model in models if model in EXTRA_FILES]
     later_sentence = ""
     if later_names:
@@ -530,27 +750,59 @@ def render(wiki: dict, ptb: dict) -> str:
             + ", at the same parameter count as Qwen3.5-27B."
         )
     sample_table = _sample_rows(models)
-    above_txt = "; ".join(
-        f"{_label(model, models)} has {wiki['above'][model]} WikiText2 points above dense and {ptb['above'][model]} on PTB"
-        for model in models
-        if model.endswith("27B")
-    )
-    wiki_ratio = smallest / wiki["ref"]["n_star"]
-    ptb_ratio = smallest / ptb["ref"]["n_star"]
-    wiki_penalty = math.exp(wiki["ref"]["a"])
-    ptb_penalty = math.exp(ptb["ref"]["a"])
-    wiki_base = 10.0 ** (1.0 / wiki["ref"]["b1"])
-    ptb_base = 10.0 ** (1.0 / ptb["ref"]["b1"])
     form_rows = []
     for key, formula, params, chosen in FORMS:
         cls = " class=\"chosen\"" if chosen else ""
         tag = "<span class=\"chosen-tag\">chosen</span>" if chosen else ""
+        if key == "power":
+            w_r2, p_r2 = f"{wiki['r2']:.3f}", f"{ptb['r2']:.3f}"
+        elif key == "ref":
+            w_r2, p_r2 = f"{wiki['ref']['r2']:.3f}", f"{ptb['ref']['r2']:.3f}"
+        else:
+            w_r2, p_r2 = "—", "—"
         form_rows.append(
             f"<tr{cls}><td><code>{formula}</code>{tag}</td>"
             f"<td class=\"num\">{params}</td>"
             f"<td class=\"num\">{wiki['forms'][key]:.3f}</td>"
-            f"<td class=\"num\">{ptb['forms'][key]:.3f}</td></tr>"
+            f"<td class=\"num\">{ptb['forms'][key]:.3f}</td>"
+            f"<td class=\"num\">{w_r2}</td>"
+            f"<td class=\"num\">{p_r2}</td></tr>"
         )
+
+    per_model_rows = []
+    for model in models:
+        label = _label(model, models)
+        w = wiki["per_model"].get(model)
+        p = ptb["per_model"].get(model)
+        ws = wiki["per_model_sonly"].get(model)
+        ps = ptb["per_model_sonly"].get(model)
+        if not w and not p:
+            continue
+        per_model_rows.append(
+            "<tr>"
+            f"<td>{label}</td>"
+            f"<td class=\"num\">{sizes[model]:.2f}</td>"
+            f"<td class=\"num\">{(w['r2'] if w else float('nan')):.3f}</td>"
+            f"<td class=\"num\">{(p['r2'] if p else float('nan')):.3f}</td>"
+            f"<td class=\"num\">{(w['rmse'] if w else float('nan')):.3f}</td>"
+            f"<td class=\"num\">{(p['rmse'] if p else float('nan')):.3f}</td>"
+            f"<td class=\"num\">{(ws['r2'] if ws else float('nan')):.3f}</td>"
+            f"<td class=\"num\">{(ps['r2'] if ps else float('nan')):.3f}</td>"
+            "</tr>"
+        )
+
+    amp_rows = []
+    for model in models:
+        label = _label(model, models)
+        amp_rows.append(
+            "<tr>"
+            f"<td>{label}</td>"
+            f"<td class=\"num\">{sizes[model]:.2f}</td>"
+            f"<td class=\"num\">{wiki['pref'][model]:.3f}</td>"
+            f"<td class=\"num\">{ptb['pref'][model]:.3f}</td>"
+            "</tr>"
+        )
+
     div, chart_script = _chart(wiki, ptb)
     bundle = _bundle()
     return f"""<!DOCTYPE html>
@@ -558,7 +810,7 @@ def render(wiki: dict, ptb: dict) -> str:
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>One sparsity law for the Qwen3.5 family</title>
+<title>Scale-free sparsity law for the Qwen family</title>
 <style>
   :root {{
     --ink: #0f172a; --muted: #475569; --faint: #64748b; --line: #e2e8f0;
@@ -568,7 +820,7 @@ def render(wiki: dict, ptb: dict) -> str:
   * {{ box-sizing: border-box; }}
   body {{ margin: 0; color: var(--ink); background: #f1f5f9;
     font-family: "Segoe UI", Helvetica, Arial, sans-serif; line-height: 1.5; }}
-  main {{ max-width: 880px; margin: 32px auto 64px; padding: 32px 36px 40px;
+  main {{ max-width: 920px; margin: 32px auto 64px; padding: 32px 36px 40px;
     background: #fff; border: 1px solid var(--line); border-radius: 12px; }}
   h1 {{ margin: 0 0 12px; font-size: 28px; line-height: 1.25; letter-spacing: -0.02em; }}
   h2 {{ margin: 28px 0 8px; font-size: 18px; }}
@@ -610,75 +862,69 @@ def render(wiki: dict, ptb: dict) -> str:
 </head>
 <body>
 <main>
-  <h1>One sparsity law for the Qwen3.5 family</h1>
-  <p class="lead">Unstructured SparseGPT, C4 calibration. The same expression is fit separately on raw WikiText2 ({wiki['n']} points) and PTB ({ptb['n']} points). Each point has perplexity above that model’s own dense value, from 0.8B through 27B.{later_sentence}</p>
-  <p class="principle">The sparsity exponent is b1 log10(N / N*). It is zero at N* and rises by b1 each time the model grows tenfold.</p>
-  <p class="law"><span class="ds">WikiText2</span> {_law(wiki)}</p>
-  <p class="law ptb"><span class="ds">PTB</span> {_law(ptb)}</p>
-  <p class="small muted">s is sparsity. N and N* are parameter counts in billions. Points at or below dense are left out: this form is positive for N &gt; N*, and those measurements are a small improvement rather than a cost.</p>
+  <h1>Scale-free sparsity law for the Qwen family</h1>
+  <p class="lead">Unstructured SparseGPT, C4 calibration. The same expression is fit separately on raw WikiText2 ({wiki['n']} points) and PTB ({ptb['n']} points). Each point has SparseGPT perplexity above that model’s own dense value, from 0.8B through 27B.{later_sentence}</p>
+  <p class="principle">The chosen form is scale-free: <code>ln(ppl / dense) = α · N<sup>β</sup> · s<sup>b</sup></code>. Size and sparsity factorize; changing the unit of N only rescales α.</p>
+  <p class="law"><span class="ds">WikiText2</span> {_law_power(wiki)}</p>
+  <p class="law ptb"><span class="ds">PTB</span> {_law_power(ptb)}</p>
+  <p class="small muted">s is unstructured sparsity. N is stored parameters in billions (safetensors bytes / 2). Points at or below dense are left out. R² = 1 − RMSE² / Var(y) on y = ln(ppl / dense).</p>
   <table>
     <thead>
-      <tr><th>Eval</th><th class="num">a</th><th class="num">N* (billions)</th><th class="num">b1</th><th class="num">RMSE</th><th class="num">Exponent at 27B</th></tr>
+      <tr><th>Eval</th><th class="num">α</th><th class="num">β</th><th class="num">b</th><th class="num">RMSE</th><th class="num">Var(y)</th><th class="num">R²</th></tr>
     </thead>
     <tbody>
-      <tr><td>WikiText2</td><td class="num">{wiki['ref']['a']:.2f}</td><td class="num">{wiki['ref']['n_star']:.3f}</td><td class="num">{wiki['ref']['b1']:.2f}</td><td class="num">{wiki['ref']['rmse']:.3f}</td><td class="num">{wiki['ref']['exponent']['Qwen/Qwen3.5-27B']:.2f}</td></tr>
-      <tr><td>PTB</td><td class="num">{ptb['ref']['a']:.2f}</td><td class="num">{ptb['ref']['n_star']:.3f}</td><td class="num">{ptb['ref']['b1']:.2f}</td><td class="num">{ptb['ref']['rmse']:.3f}</td><td class="num">{ptb['ref']['exponent']['Qwen/Qwen3.5-27B']:.2f}</td></tr>
+      <tr><td>WikiText2</td><td class="num">{wiki['a']:.2f}</td><td class="num">{wiki['c']:.3f}</td><td class="num">{wiki['b']:.2f}</td><td class="num">{wiki['rmse']:.3f}</td><td class="num">{wiki['var_y']:.3f}</td><td class="num">{wiki['r2']:.3f}</td></tr>
+      <tr><td>PTB</td><td class="num">{ptb['a']:.2f}</td><td class="num">{ptb['c']:.3f}</td><td class="num">{ptb['b']:.2f}</td><td class="num">{ptb['rmse']:.3f}</td><td class="num">{ptb['var_y']:.3f}</td><td class="num">{ptb['r2']:.3f}</td></tr>
     </tbody>
   </table>
   <div class="callout">
     <h3>What the law says</h3>
-    <p>Each model follows a · s raised to b1 log10(N / N*). The amplitude a is shared. On WikiText2 the exponent is {wiki['ref']['exponent']['Qwen/Qwen3.5-0.8B']:.2f} at 0.8B and {wiki['ref']['exponent']['Qwen/Qwen3.5-27B']:.2f} at 27B. On PTB it is {ptb['ref']['exponent']['Qwen/Qwen3.5-0.8B']:.2f} at 0.8B and {ptb['ref']['exponent']['Qwen/Qwen3.5-27B']:.2f} at 27B. Writing the same fit as a · s<sup>(b0 + b1 log10 N)</sup> gives the same RMSE, {wiki['forms']['slog']:.3f} on WikiText2 and {ptb['forms']['slog']:.3f} on PTB.</p>
+    <p>Doubling N multiplies ln(ppl / dense) by 2<sup>β</sup> ≈ {2 ** wiki['c']:.2f} on WikiText2 and {2 ** ptb['c']:.2f} on PTB, at every sparsity. Holding cost fixed requires N ∝ s<sup>(b / |β|)</sup> ≈ s<sup>{abs(wiki['b'] / wiki['c']):.1f}</sup> (WikiText2). A rounded fixed rule near these fits is <code>15 · N<sup>(−1/3)</sup> · s<sup>4.6</sup></code>.</p>
   </div>
   {sample_table}
-  <h2>What N* means</h2>
-  <p>The coefficients that are estimated are a, b0, and b1 in a · s<sup>(b0 + b1 log10 N)</sup>. On WikiText2 they are a = {wiki['ref']['a']:.2f}, b0 = {wiki['ref']['b0']:.2f}, b1 = {wiki['ref']['b1']:.2f}. On PTB they are a = {ptb['ref']['a']:.2f}, b0 = {ptb['ref']['b0']:.2f}, b1 = {ptb['ref']['b1']:.2f}.</p>
-  <p>b1 is a change of base. b1 log10 N = log<sub>β</sub> N with β = 10<sup>(1 / b1)</sup>, which is {wiki_base:.2f} on WikiText2 and {ptb_base:.2f} on PTB. The exponent is then b0 + log<sub>β</sub> N, and b0 is still there. A rescaling of N absorbs b0, because log10(kN) = log10 k + log10 N and b1 factors out of both terms. Choosing the unit so that the additive constant vanishes gives</p>
-  <p class="identity">b0 + b1 log10 N = b1 log10(N / N*), &nbsp; N* = 10<sup>(−b0 / b1)</sup></p>
-  <p>That is the law at the top of the page. N* is {wiki['ref']['n_star'] * 1000:.0f} million parameters on WikiText2 and {ptb['ref']['n_star'] * 1000:.0f} million on PTB. The smallest measured model has {smallest:.2f} billion parameters, {wiki_ratio:.0f}× the WikiText2 value and {ptb_ratio:.0f}× the PTB value.</p>
-  <p>The exponent of sparsity is k(N) = b1 log10(N / N*), and the predicted log-cost is a · s<sup>k(N)</sup>. Hold N fixed and let s approach 0 from above.</p>
-  <table>
-    <thead>
-      <tr><th>Size</th><th>Exponent k(N)</th><th>Limit of ln(perplexity / dense)</th></tr>
-    </thead>
-    <tbody>
-      <tr><td>N &gt; N*</td><td>positive</td><td>0</td></tr>
-      <tr><td>N = N*</td><td>0</td><td>a, at every s &gt; 0</td></tr>
-      <tr><td>N &lt; N*</td><td>negative</td><td>grows without bound</td></tr>
-    </tbody>
-  </table>
-  <p>N* is the greatest lower bound on size for which that limit is 0. The condition is N &gt; N*: at the bound itself the size ratio is 1, and 1 to any power is 1, so the formula returns a for every positive sparsity. On WikiText2 that constant is a perplexity about {wiki_penalty:,.0f} times dense. On PTB it is about {ptb_penalty:,.0f} times dense. Dense, s = 0, is defined separately as cost 0, because log10 0 is undefined. The jump from 0 at s = 0 to a at every s &gt; 0 is the formula past the measured range.</p>
-  <p>Every model in the sweep is above N*, from {smallest:.2f}B to 27B, so each has a positive exponent. An infinitesimal prune on those models is predicted to cost nothing in the limit. N* itself was not trained or pruned. It is the pivot read off by rewriting the fit.</p>
-  <p>At N = N* the predicted cost does not change with s. Remaining parameters are N*(1 − s), so a search that minimizes remaining weights among sparsities the formula scores the same way selects the largest sparsity, and keeps selecting it out to a model with no weights left. That preference is what a flat extrapolation does.</p>
-  <p>A finite cutoff makes a size. Require the predicted cost at sparsity ε to stay at most δ. The smallest N that meets it is</p>
-  <p class="identity">N<sub>min</sub> = N* · 10<sup>ln(δ / a) / (b1 ln ε)</sup></p>
-  <p class="small muted">For a small ε and a small allowed cost δ, N<sub>min</sub> is still below {smallest:.2f}B. The expression extrapolates a fit made on models from {smallest:.2f}B to 27B.</p>
   <hr>
-  <h2>Exponent at each model size</h2>
-  <p class="small muted">Horizontal axis: model, ordered by parameter count. Vertical axis: b1 log10(N / N*) from that eval’s own fit. The amplitude a is the same for every model.</p>
+  <h2>Universal collapse (interactive)</h2>
+  <p class="small muted">Vertical axis: N<sup>(−β)</sup> · ln(ppl / dense) with that eval’s family β, so every model should fall on α · s<sup>b</sup>. Use the dropdown to isolate one model: its points stay, and its own WikiText2 fit <code>β · s<sup>b</sup></code> appears as a dotted curve. Click legend entries to toggle series.</p>
   <div class="chart-wrap">
     {div}
   </div>
-  <p class="caption faint">Source: C4 calibration, points with perplexity above that model’s dense value. WikiText2 from figures/qwen3.5_family_sparsity_wikitext2.json. PTB from figures/qwen3.5_family_sparsity_ptb.json.{' ' + ', '.join(model.split('/')[-1] + ' from figures/' + EXTRA_FILES[model].name for model in models if model in EXTRA_FILES) + '.' if any(model in EXTRA_FILES for model in models) else ''}</p>
-  <h2>Same points, other forms</h2>
-  <p class="small muted">RMSE is on ln(perplexity / dense). Each column is fit on that eval alone. The highlighted row is the form used above. The next row is that same fit written as a · s^(b0 + b1 log10 N), so the two RMSE values match.</p>
+  <p class="caption faint">Filled circles = WikiText2 · open diamonds = PTB. Solid / dashed curves = family laws. Dotted = selected model’s own WT2 fit.</p>
+  <h2>R² by model</h2>
+  <p class="small muted">Family columns use the shared α · N<sup>β</sup> · s<sup>b</sup> predictions. Own-fit columns refit <code>β · s<sup>b</sup></code> on that model alone (N fixed).</p>
   <table>
     <thead>
-      <tr><th>Form</th><th class="num">Parameters</th><th class="num">WikiText2 RMSE</th><th class="num">PTB RMSE</th></tr>
+      <tr>
+        <th>Model</th><th class="num">N (B)</th>
+        <th class="num">WT2 family R²</th><th class="num">PTB family R²</th>
+        <th class="num">WT2 family RMSE</th><th class="num">PTB family RMSE</th>
+        <th class="num">WT2 own R²</th><th class="num">PTB own R²</th>
+      </tr>
+    </thead>
+    <tbody>
+      {''.join(per_model_rows)}
+    </tbody>
+  </table>
+  <h2>Amplitude α · N<sup>β</sup> at each size</h2>
+  <p class="small muted">With sparsity factored out, each model’s prefactor is α · N<sup>β</sup>. Larger models have smaller prefators.</p>
+  <table>
+    <thead>
+      <tr><th>Model</th><th class="num">Parameters (billions)</th><th class="num">WikiText2 α·N<sup>β</sup></th><th class="num">PTB α·N<sup>β</sup></th></tr>
+    </thead>
+    <tbody>
+      {''.join(amp_rows)}
+    </tbody>
+  </table>
+  <h2>Same points, other forms</h2>
+  <p class="small muted">RMSE is on ln(perplexity / dense). R² is shown for the scale-free law and the older reference law. The highlighted row is the form used above.</p>
+  <table>
+    <thead>
+      <tr><th>Form</th><th class="num">Parameters</th><th class="num">WikiText2 RMSE</th><th class="num">PTB RMSE</th><th class="num">WikiText2 R²</th><th class="num">PTB R²</th></tr>
     </thead>
     <tbody>
       {''.join(form_rows)}
     </tbody>
   </table>
-  <h2>Exponent the law assigns</h2>
-  <table>
-    <thead>
-      <tr><th>Model</th><th class="num">Parameters (billions)</th><th class="num">WikiText2 b1 log10(N/N*)</th><th class="num">PTB b1 log10(N/N*)</th></tr>
-    </thead>
-    <tbody>
-      {''.join(pref_rows)}
-    </tbody>
-  </table>
-  <p class="faint">Median absolute error on ln(perplexity / dense) is {wiki['median']:.3f} across the {wiki['n']} WikiText2 points and {ptb['median']:.3f} across the {ptb['n']} PTB points. Holding out every 27B model leaves a, N*, and b1 at {wiki['ref']['held'][0]:.2f}, {wiki['ref']['held'][1]:.3f}, {wiki['ref']['held'][2]:.2f} on WikiText2 and {ptb['ref']['held'][0]:.2f}, {ptb['ref']['held'][1]:.3f}, {ptb['ref']['held'][2]:.2f} on PTB. {above_txt}.</p>
+  <p class="faint">Median absolute error on ln(perplexity / dense) is {wiki['median']:.3f} across the {wiki['n']} WikiText2 points and {ptb['median']:.3f} across the {ptb['n']} PTB points. Holding out every 27B model leaves α, β, b at {wiki['held'][0]:.2f}, {wiki['held'][2]:.3f}, {wiki['held'][1]:.2f} on WikiText2 and {ptb['held'][0]:.2f}, {ptb['held'][2]:.3f}, {ptb['held'][1]:.2f} on PTB. Source: C4 calibration; WikiText2 from figures/qwen3.5_family_sparsity_wikitext2.json; PTB from figures/qwen3.5_family_sparsity_ptb.json.{' ' + ', '.join(model.split('/')[-1] + ' from figures/' + EXTRA_FILES[model].name for model in models if model in EXTRA_FILES) + '.' if any(model in EXTRA_FILES for model in models) else ''}</p>
 </main>
 {bundle}
 {chart_script}
@@ -699,22 +945,23 @@ def write_page() -> dict:
         raise RuntimeError("sparsity principle page is missing Plotly")
     PAGE.write_text(text)
     print(
-        f"wiki ln(ppl/dense) = {wiki['ref']['a']:.2f} * (N / {wiki['ref']['n_star']:.4f})"
-        f"^( {wiki['ref']['b1']:.2f} log10 s ) RMSE {wiki['ref']['rmse']:.3f} n={wiki['n']}",
+        f"wiki ln(ppl/dense) = {wiki['a']:.2f} * N^({wiki['c']:.3f}) * s^{wiki['b']:.2f} "
+        f"RMSE {wiki['rmse']:.3f} R² {wiki['r2']:.3f} n={wiki['n']}",
         flush=True,
     )
     print(
-        f"ptb  ln(ppl/dense) = {ptb['ref']['a']:.2f} * (N / {ptb['ref']['n_star']:.4f})"
-        f"^( {ptb['ref']['b1']:.2f} log10 s ) RMSE {ptb['ref']['rmse']:.3f} n={ptb['n']}",
+        f"ptb  ln(ppl/dense) = {ptb['a']:.2f} * N^({ptb['c']:.3f}) * s^{ptb['b']:.2f} "
+        f"RMSE {ptb['rmse']:.3f} R² {ptb['r2']:.3f} n={ptb['n']}",
         flush=True,
     )
-    for name, row in (("wiki", wiki), ("ptb", ptb)):
-        fit = row["slog0_fit"]
-        print(
-            f"{name} slog0 a={fit['a']:.4f} b={fit['b']:.4f} RMSE {fit['rmse']:.3f} | "
-            f"power RMSE {row['forms']['power']:.3f} slog RMSE {row['forms']['slog']:.3f}",
-            flush=True,
-        )
+    for model in models:
+        w = wiki["per_model"].get(model)
+        p = ptb["per_model"].get(model)
+        if not w and not p:
+            continue
+        w_r2 = f"{w['r2']:.3f}" if w else "  —  "
+        p_r2 = f"{p['r2']:.3f}" if p else "  —  "
+        print(f"  {_label(model, models):12s}  WT2 R²={w_r2}  PTB R²={p_r2}", flush=True)
     print(f"Wrote {PAGE}", flush=True)
     return {"wiki": wiki, "ptb": ptb}
 
