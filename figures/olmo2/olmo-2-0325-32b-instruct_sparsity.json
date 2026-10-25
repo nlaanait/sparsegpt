@@ -1,0 +1,13 @@
+{
+  "calibration": "c4",
+  "attention": "sdpa",
+  "points": [
+    {
+      "model": "allenai/OLMo-2-0325-32B-Instruct",
+      "dataset": "wikitext2",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 4.467928
+    }
+  ]
+}
