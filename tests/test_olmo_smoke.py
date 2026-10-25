@@ -20,6 +20,7 @@ def test_olmo2_spec_protocol():
     assert all(name.endswith("-Instruct") for name in MODELS)
     low, high = SMOKE_PPL_RANGE
     assert 0 < low < high
+    assert low <= 3.0  # 32B Instruct dense WikiText2 can land near ~4.5
 
 
 def test_stored_params_cover_models():
