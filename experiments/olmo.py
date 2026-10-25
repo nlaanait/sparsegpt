@@ -21,9 +21,9 @@ MODELS = (
 )
 
 # Dense WikiText2 must sit in this band before the sparsity sweep starts.
-# Matches the Qwen / Gemma language-model range; hundreds or thousands fail.
+# Larger OLMo 2 Instruct can land near ~4.5; hundreds or thousands fail.
 SMOKE_DATASET = "wikitext2"
-SMOKE_PPL_RANGE = (5.0, 50.0)
+SMOKE_PPL_RANGE = (3.0, 50.0)
 
 # Total stored parameters, in billions: HF safetensors parameter counts
 # (bf16 bytes / 2). Fallback until a local snapshot is measured.
