@@ -8,12 +8,23 @@ from dataclasses import replace
 import pytest
 
 from analysis.sweep import load_results, lookup, result_path, run_smoke_dense
-from experiments.olmo import MODELS, OLMO2, SMOKE_DATASET, SMOKE_PPL_RANGE, stored_params
+from experiments.olmo import (
+    MODELS,
+    OLMO2,
+    OLMO2_WIKITEXT2_CAL,
+    SMOKE_DATASET,
+    SMOKE_PPL_RANGE,
+    stored_params,
+)
 
 
 def test_olmo2_spec_protocol():
     assert OLMO2.calibration == "c4"
     assert OLMO2.eval_datasets == ("wikitext2", "ptb")
+    assert OLMO2_WIKITEXT2_CAL.calibration == "wikitext2"
+    assert OLMO2_WIKITEXT2_CAL.eval_datasets == ("c4", "ptb")
+    assert OLMO2_WIKITEXT2_CAL.models == MODELS
+    assert OLMO2_WIKITEXT2_CAL.result_dir != OLMO2.result_dir
     assert OLMO2.runner == "sparsegpt.olmo"
     assert SMOKE_DATASET == "wikitext2"
     assert len(MODELS) == 4

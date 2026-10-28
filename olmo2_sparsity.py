@@ -39,6 +39,13 @@ def main() -> None:
         action="store_true",
         help="Skip the dense WikiText2 gate (only when resuming a cleared smoke).",
     )
+    parser.add_argument(
+        "--sparsities",
+        nargs="+",
+        type=float,
+        default=None,
+        help="Sparsity levels to prune. Default is 0.1 through 0.8.",
+    )
     args = parser.parse_args()
     os.chdir(ROOT)
     if args.phase == "smoke":
@@ -56,7 +63,12 @@ def main() -> None:
             dataset=SMOKE_DATASET,
             ppl_range=SMOKE_PPL_RANGE,
         )
-    run_sweep(OLMO2, args.models, "all" if args.phase == "all" else args.phase)
+    run_sweep(
+        OLMO2,
+        args.models,
+        "all" if args.phase == "all" else args.phase,
+        sparsities=args.sparsities,
+    )
 
 
 if __name__ == "__main__":

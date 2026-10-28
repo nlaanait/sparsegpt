@@ -1,0 +1,231 @@
+{
+  "calibration": "c4",
+  "attention": "sdpa",
+  "points": [
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 9.749934
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 17.59346
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 9.824227
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 17.641333
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 10.136642
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 18.071959
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 10.925159
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 19.355478
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 12.937338
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 23.21274
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 18.998699
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 31.183146
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 46.835011
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 62.43784
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 133.154678
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 152.190948
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 523.784973
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 544.350098
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.45,
+      "perplexity": 14.96025
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.45,
+      "perplexity": 26.214285
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.55,
+      "perplexity": 27.496298
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.55,
+      "perplexity": 41.087051
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.65,
+      "perplexity": 77.21788
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.65,
+      "perplexity": 97.961937
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.85,
+      "perplexity": 1342.581055
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.85,
+      "perplexity": 1210.979736
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.9,
+      "perplexity": 5387.059082
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.9,
+      "perplexity": 4670.628906
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.95,
+      "perplexity": 23887.646484
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.95,
+      "perplexity": 28321.003906
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.99,
+      "perplexity": 125579.109375
+    },
+    {
+      "model": "meta-llama/Llama-3.2-1B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.99,
+      "perplexity": 92609.03125
+    }
+  ],
+  "model": "meta-llama/Llama-3.2-1B"
+}

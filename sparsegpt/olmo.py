@@ -241,7 +241,16 @@ def olmo_sequential(model, dataloader, dev):
 
 
 @torch.no_grad()
-def olmo_eval(model, testenc, dev, dataset: str, log_wandb: bool = False):
+def olmo_eval(
+    model,
+    testenc,
+    dev,
+    dataset: str,
+    log_wandb: bool = False,
+    *,
+    tokenizer=None,
+    metrics_out: dict | None = None,
+):
     print("Evaluating ...")
     testenc = testenc.input_ids
     nsamples = testenc.numel() // model.seqlen
@@ -265,6 +274,19 @@ def olmo_eval(model, testenc, dev, dataset: str, log_wandb: bool = False):
     print(f"Perplexity: {ppl.item():3f}")
     if log_wandb:
         wandb.log({f"{dataset}/perplexity": ppl.item()})
+    if tokenizer is not None:
+        from .likelihood_metrics import pack_metrics, print_metrics_line, scored_label_ids
+
+        metrics = pack_metrics(
+            nlls,
+            seqlen=model.seqlen,
+            scored_token_ids=scored_label_ids(testenc, model.seqlen),
+            tokenizer=tokenizer,
+        )
+        print_metrics_line(metrics)
+        if metrics_out is not None:
+            metrics_out.clear()
+            metrics_out.update(metrics)
     model.config.use_cache = use_cache
     return ppl
 

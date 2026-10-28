@@ -546,7 +546,16 @@ def gemma_sequential(model, dataloader, dev):
 
 
 @torch.no_grad()
-def gemma_eval(model, testenc, dev, dataset: str, log_wandb: bool = False):
+def gemma_eval(
+    model,
+    testenc,
+    dev,
+    dataset: str,
+    log_wandb: bool = False,
+    *,
+    tokenizer=None,
+    metrics_out: dict | None = None,
+):
     print("Evaluating ...")
     testenc = testenc.input_ids
     nsamples = testenc.numel() // model.seqlen
@@ -570,6 +579,26 @@ def gemma_eval(model, testenc, dev, dataset: str, log_wandb: bool = False):
     print(f"Perplexity: {ppl.item():3f}")
     if log_wandb:
         wandb.log({f"{dataset}/perplexity": ppl.item()})
+    if tokenizer is not None:
+        from .likelihood_metrics import pack_metrics, print_metrics_line
+
+        bos_id = int(getattr(model.config, "bos_token_id", 2))
+        chunks = []
+        for index in range(nsamples):
+            window = testenc[:, index * model.seqlen : (index + 1) * model.seqlen]
+            labels = _prefix_bos(window, bos_id)[:, 1:].reshape(-1)
+            chunks.append(labels.detach().to("cpu").long())
+        scored = torch.cat(chunks) if chunks else testenc.new_empty((0,), dtype=torch.long)
+        metrics = pack_metrics(
+            nlls,
+            seqlen=model.seqlen,
+            scored_token_ids=scored,
+            tokenizer=tokenizer,
+        )
+        print_metrics_line(metrics)
+        if metrics_out is not None:
+            metrics_out.clear()
+            metrics_out.update(metrics)
     model.config.use_cache = use_cache
     return ppl
 

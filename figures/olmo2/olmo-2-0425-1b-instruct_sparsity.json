@@ -113,6 +113,119 @@
       "method": "sparsegpt",
       "sparsity": 0.7,
       "perplexity": 120.884674
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 224.529419
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 431.494812
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.45,
+      "perplexity": 16.182163
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.45,
+      "perplexity": 40.629063
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.55,
+      "perplexity": 20.70705
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.55,
+      "perplexity": 39.338932
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.65,
+      "perplexity": 36.089169
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.65,
+      "perplexity": 66.487305
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.85,
+      "perplexity": 396.163025
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.85,
+      "perplexity": 809.430969
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.9,
+      "perplexity": 998.495789
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.9,
+      "perplexity": 1570.854492
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.95,
+      "perplexity": 2673.593018
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.95,
+      "perplexity": 2893.172607
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.99,
+      "perplexity": 5973.181641
+    },
+    {
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.99,
+      "perplexity": 7800.608398
     }
-  ]
+  ],
+  "model": "allenai/OLMo-2-0425-1B-Instruct"
 }

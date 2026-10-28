@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>llama3 sparsity principle</title></head>
+<body>
+<h1>llama3 sparsity principle</h1>
+<p>Unstructured SparseGPT, C4 calibration (128 × 2048, seed 0), eval on WikiText2, PTB. The law is scale-free: ln(perplexity / dense) = α · N<sup>β</sup> · s<sup>b</sup>. Size and sparsity factorize, so changing the unit of N only rescales α. Points at or below each model's own dense perplexity are excluded. N is total stored parameters. Effective counts are recorded and are not the fit's N.</p>
+<p><b>WikiText2</b> ln(perplexity / dense) = 9.96 · N<sup>-0.039</sup> · s<sup>4.46</sup>. RMSE 0.504 over 69 points. N is total stored parameters in billions.</p><p><b>PTB</b> ln(perplexity / dense) = 9.54 · N<sup>-0.036</sup> · s<sup>4.97</sup>. RMSE 0.472 over 69 points. N is total stored parameters in billions.</p>
+<table>
+<tr><th>model</th><th>stored N (billions)</th><th>effective N (billions)</th></tr>
+<tr><td>Llama-3.2-1B</td><td>1.236</td><td></td></tr><tr><td>Llama-3.2-3B</td><td>3.213</td><td></td></tr><tr><td>Llama-3.1-8B</td><td>8.030</td><td></td></tr><tr><td>Llama-3.2-11B-Vision</td><td>10.643</td><td></td></tr><tr><td>Llama-3.1-70B</td><td>70.554</td><td></td></tr><tr><td>Llama-3.2-90B-Vision</td><td>88.593</td><td></td></tr>
+</table>
+</body>
+</html>

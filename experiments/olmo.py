@@ -49,6 +49,23 @@ OLMO2 = SweepSpec(
     eval_datasets=("wikitext2", "ptb"),
 )
 
+# Same four Instruct sizes with calibration and eval swapped: WikiText2
+# calibrate, C4 and PTB evaluate. Artifacts stay out of figures/olmo2/.
+OLMO2_WIKITEXT2_CAL = SweepSpec(
+    name="olmo2_wikitext2_cal",
+    models=MODELS,
+    runner="sparsegpt.olmo",
+    extra_args=(),
+    result_dir=ROOT / "figures" / "olmo2_wikitext2_cal",
+    log_dir=ROOT / "figures" / "olmo2_wikitext2_cal" / "logs",
+    log_infix="sdpa",
+    attention="sdpa",
+    holdout_suffix="32B-Instruct",
+    plot=True,
+    calibration="wikitext2",
+    eval_datasets=("c4", "ptb"),
+)
+
 
 def stored_params() -> dict[str, float]:
     sizes = dict(PUBLISHED_STORED_B)

@@ -43,6 +43,23 @@ def sparsity_token(sparsity: float) -> str:
     return f"{sparsity:.2f}".rstrip("0").rstrip(".")
 
 
+def parse_sparsities(values: list[float] | None) -> list[float]:
+    """Sparsity levels for one sweep. The default ladder is 0.1 through 0.8.
+
+    Extra levels are how a follow-up job samples where the scale-free fit is
+    poor without changing the ladder the full sweeps already use.
+    """
+    if not values:
+        return list(SPARSITIES)
+    parsed: list[float] = []
+    for value in values:
+        sparsity = round(float(value), 5)
+        if not 0.0 < sparsity < 1.0:
+            raise SystemExit(f"sparsity {value} is outside (0, 1)")
+        parsed.append(sparsity)
+    return sorted(set(parsed))
+
+
 def result_path(spec: SweepSpec, model: str) -> Path:
     return spec.result_dir / f"{short_name(model)}_sparsity.json"
 
@@ -97,7 +114,7 @@ def checkpoint(model: str, sparsity: float, calibration: str = "c4") -> Path | N
     )
 
 
-def release_finished_checkpoints(spec: SweepSpec) -> None:
+def release_finished_checkpoints(spec: SweepSpec, sparsities: list[float] | None = None) -> None:
     """Remove a checkpoint once every eval corpus is saved.
 
     Large 27B / Gemma caches do not fit for a full sparsity ladder. The JSON
@@ -106,7 +123,11 @@ def release_finished_checkpoints(spec: SweepSpec) -> None:
     """
     if spec.name not in (
         "gemma",
+        "gemma_it_wikitext2_cal",
+        "llama3",
+        "llama3_wikitext2_cal",
         "olmo2",
+        "olmo2_wikitext2_cal",
         "qwen_wikitext2_cal",
         "qwen3.5_wikitext2_cal",
     ):
@@ -116,7 +137,7 @@ def release_finished_checkpoints(spec: SweepSpec) -> None:
         if not path.exists():
             continue
         results = load_results(path, spec)
-        for sparsity in SPARSITIES:
+        for sparsity in list(SPARSITIES if sparsities is None else sparsities):
             if any(
                 lookup(results, dataset, "sparsegpt", sparsity) is None
                 for dataset in spec.eval_datasets
@@ -311,6 +332,7 @@ def run_smoke_dense(
     for model in chosen:
         path = result_path(spec, model)
         results = load_results(path, spec)
+        results["model"] = model
         name = short_name(model)
         existing = lookup(results, dataset, "dense", 0.0)
         if existing is None:
@@ -337,7 +359,12 @@ def run_smoke_dense(
     return cleared
 
 
-def run_sweep(spec: SweepSpec, models: list[str] | None = None, phase: str = "all") -> None:
+def run_sweep(
+    spec: SweepSpec,
+    models: list[str] | None = None,
+    phase: str = "all",
+    sparsities: list[float] | None = None,
+) -> None:
     chosen = list(spec.models if models is None else models)
     for model in chosen:
         if model not in spec.models:
@@ -346,11 +373,13 @@ def run_sweep(spec: SweepSpec, models: list[str] | None = None, phase: str = "al
     for dataset in phases:
         if dataset not in spec.eval_datasets:
             raise SystemExit(f"Unknown eval dataset {dataset} for {spec.name}")
+    levels = parse_sparsities(sparsities)
     spec.result_dir.mkdir(parents=True, exist_ok=True)
     spec.log_dir.mkdir(parents=True, exist_ok=True)
     for model in chosen:
         path = result_path(spec, model)
         results = load_results(path, spec)
+        results["model"] = model
         name = short_name(model)
         for dataset in phases:
             existing = lookup(results, dataset, "dense", 0.0)
@@ -364,7 +393,7 @@ def run_sweep(spec: SweepSpec, models: list[str] | None = None, phase: str = "al
             save_results(path, results)
             print(f"{model} {dataset} dense perplexity={perplexity:.4f}", flush=True)
             _refresh(spec)
-        for sparsity in SPARSITIES:
+        for sparsity in levels:
             token = sparsity_token(sparsity)
             for dataset in phases:
                 existing = lookup(results, dataset, "sparsegpt", sparsity)
@@ -404,7 +433,7 @@ def run_sweep(spec: SweepSpec, models: list[str] | None = None, phase: str = "al
                 save_results(path, results)
                 print(f"{model} {dataset} sparsity={token} perplexity={perplexity:.4f}", flush=True)
                 _refresh(spec)
-            release_finished_checkpoints(spec)
+            release_finished_checkpoints(spec, levels)
         _page(spec)
     _page(spec)
 

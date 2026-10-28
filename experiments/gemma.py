@@ -24,6 +24,14 @@ MODELS = (
     "google/gemma-4-31B",
 )
 
+# Instruction-tuned repos on the Gemma row of figures/universal_scaling_law.html.
+# WikiText2 calibration, C4 and PTB eval, fills the wt→ menu entries.
+IT_MODELS = (
+    "google/gemma-4-E4B-it",
+    "google/gemma-4-12B-it",
+    "google/gemma-4-31B-it",
+)
+
 # Total stored parameters, in billions: safetensors tensor bytes / 2.
 # Counted on the instruction-tuned files of these same sizes. stored_params()
 # replaces a value once that base checkpoint's index is cached.
@@ -57,15 +65,38 @@ GEMMA = SweepSpec(
     holdout_suffix="31B",
 )
 
+# Same three -it repos as the carried C4 curves. Results stay out of figures/gemma/.
+GEMMA_IT_WIKITEXT2_CAL = SweepSpec(
+    name="gemma_it_wikitext2_cal",
+    models=IT_MODELS,
+    runner="sparsegpt.gemma",
+    extra_args=(),
+    result_dir=ROOT / "figures" / "gemma_it_wikitext2_cal",
+    log_dir=ROOT / "figures" / "gemma_it_wikitext2_cal" / "logs",
+    log_infix="sdpa",
+    attention="sdpa",
+    holdout_suffix="31B-it",
+    plot=True,
+    calibration="wikitext2",
+    eval_datasets=("c4", "ptb"),
+)
+
+
+def _base_id(model: str) -> str:
+    return model[:-3] if model.endswith("-it") else model
+
 
 def effective_params() -> dict[str, float]:
-    return dict(EFFECTIVE_B)
+    sizes = dict(EFFECTIVE_B)
+    for model in IT_MODELS:
+        sizes[model] = EFFECTIVE_B[_base_id(model)]
+    return sizes
 
 
 def stored_params() -> dict[str, float]:
-    sizes = dict(PUBLISHED_STORED_B)
+    sizes = {model: PUBLISHED_STORED_B[_base_id(model)] for model in (*MODELS, *IT_MODELS)}
     hub = Path.home() / ".cache" / "huggingface" / "hub"
-    for model in MODELS:
+    for model in (*MODELS, *IT_MODELS):
         org, name = model.split("/", 1)
         measured = _index_billions(hub / f"models--{org}--{name}")
         if measured is not None:

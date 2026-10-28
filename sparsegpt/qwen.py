@@ -141,7 +141,9 @@ def forward_batch_size(nsamples: int, seqlen: int, intermediate: int, element_si
 
 
 def resolve_forward_batch(nsamples: int, seqlen: int, intermediate: int, element_size: int) -> int:
-    requested = getattr(args, "forward_batch", 0)
+    # CLI sets module-level `args` in __main__; library callers do not.
+    cli = globals().get("args")
+    requested = getattr(cli, "forward_batch", 0) if cli is not None else 0
     if requested:
         return max(1, min(nsamples, requested))
     return forward_batch_size(nsamples, seqlen, intermediate, element_size)
@@ -471,10 +473,14 @@ def qwen_eval(
     log_wandb: bool = False,
     *,
     apply_gmp: bool | None = None,
+    tokenizer=None,
+    metrics_out: dict | None = None,
 ):
     print("Evaluating ...")
+    # Library callers (e.g. collect_likelihood_metrics) omit apply_gmp; do not
+    # fall back to CLI `args`, which is undefined outside __main__.
     if apply_gmp is None:
-        apply_gmp = args.gmp
+        apply_gmp = False
 
     testenc = testenc.input_ids
     nsamples = testenc.numel() // model.seqlen
@@ -510,7 +516,21 @@ def qwen_eval(
     print(f"Perplexity: {ppl.item():3f}")
     if log_wandb:
         wandb.log({f"{dataset}/perplexity": ppl.item()})
+    if tokenizer is not None:
+        from .likelihood_metrics import pack_metrics, print_metrics_line, scored_label_ids
+
+        metrics = pack_metrics(
+            nlls,
+            seqlen=model.seqlen,
+            scored_token_ids=scored_label_ids(testenc, model.seqlen),
+            tokenizer=tokenizer,
+        )
+        print_metrics_line(metrics)
+        if metrics_out is not None:
+            metrics_out.clear()
+            metrics_out.update(metrics)
     model.config.use_cache = use_cache
+    return ppl
 
 
 def _eval_windows(model, testenc, dev, start, stop, dtype, *, apply_gmp):

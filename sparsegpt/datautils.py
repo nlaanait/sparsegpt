@@ -10,8 +10,14 @@ def set_seed(seed):
     np.random.seed(seed)
     torch.random.manual_seed(seed)
 
+def uses_legacy_llama_tokenizer(model: str) -> bool:
+    """Llama 2 sentencepiece ids. Llama 3 keeps bos at 128000."""
+    name = model.lower()
+    return "llama" in name and "llama-3" not in name and "llama3" not in name
+
+
 def get_tokenizer(model):
-    if "llama" in model.lower():
+    if uses_legacy_llama_tokenizer(model):
         tokenizer = LlamaTokenizer.from_pretrained(model, use_fast=False)
         # fix for transformer 4.28.0.dev0 compatibility
         if tokenizer.bos_token_id != 1 or tokenizer.eos_token_id != 2:
@@ -20,9 +26,12 @@ def get_tokenizer(model):
                 tokenizer.eos_token_id = 2
             except AttributeError:
                 pass
-    else:
-        tokenizer = AutoTokenizer.from_pretrained(model, use_fast=False)
-    return tokenizer
+        return tokenizer
+    name = model.lower()
+    # Llama 3 ships a fast tokenizer. Leave every other family on the slow
+    # tokenizer this sweep already measured with.
+    use_fast = "llama-3" in name or "llama3" in name
+    return AutoTokenizer.from_pretrained(model, use_fast=use_fast)
 
 def get_wikitext2(nsamples, seed, seqlen, model, tokenizer):
     

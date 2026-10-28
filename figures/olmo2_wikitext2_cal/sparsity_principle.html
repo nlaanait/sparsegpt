@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>olmo2_wikitext2_cal sparsity principle</title></head>
+<body>
+<h1>olmo2_wikitext2_cal sparsity principle</h1>
+<p>Unstructured SparseGPT, WikiText2 calibration (128 × 2048, seed 0), eval on C4, PTB. The law is scale-free: ln(perplexity / dense) = α · N<sup>β</sup> · s<sup>b</sup>. Size and sparsity factorize, so changing the unit of N only rescales α. Points at or below each model's own dense perplexity are excluded. N is total stored parameters. Effective counts are recorded and are not the fit's N.</p>
+<p><b>C4</b> ln(perplexity / dense) = 5.34 · N<sup>0.061</sup> · s<sup>4.77</sup>. RMSE 0.153 over 38 points. N is total stored parameters in billions.</p><p><b>PTB</b> ln(perplexity / dense) = 5.82 · N<sup>0.071</sup> · s<sup>4.26</sup>. RMSE 0.165 over 36 points. N is total stored parameters in billions.</p>
+<table>
+<tr><th>model</th><th>stored N (billions)</th><th>effective N (billions)</th></tr>
+<tr><td>OLMo-2-0425-1B-Instruct</td><td>1.485</td><td></td></tr><tr><td>OLMo-2-1124-7B-Instruct</td><td>7.299</td><td></td></tr><tr><td>OLMo-2-1124-13B-Instruct</td><td>13.716</td><td></td></tr>
+</table>
+</body>
+</html>

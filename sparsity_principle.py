@@ -805,6 +805,9 @@ def render(wiki: dict, ptb: dict) -> str:
 
     div, chart_script = _chart(wiki, ptb)
     bundle = _bundle()
+    from universal_scaling import other_family_section
+
+    other_section = other_family_section()
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -924,6 +927,7 @@ def render(wiki: dict, ptb: dict) -> str:
       {''.join(form_rows)}
     </tbody>
   </table>
+  {other_section}
   <p class="faint">Median absolute error on ln(perplexity / dense) is {wiki['median']:.3f} across the {wiki['n']} WikiText2 points and {ptb['median']:.3f} across the {ptb['n']} PTB points. Holding out every 27B model leaves α, β, b at {wiki['held'][0]:.2f}, {wiki['held'][2]:.3f}, {wiki['held'][1]:.2f} on WikiText2 and {ptb['held'][0]:.2f}, {ptb['held'][2]:.3f}, {ptb['held'][1]:.2f} on PTB. Source: C4 calibration; WikiText2 from figures/qwen3.5_family_sparsity_wikitext2.json; PTB from figures/qwen3.5_family_sparsity_ptb.json.{' ' + ', '.join(model.split('/')[-1] + ' from figures/' + EXTRA_FILES[model].name for model in models if model in EXTRA_FILES) + '.' if any(model in EXTRA_FILES for model in models) else ''}</p>
 </main>
 {bundle}

@@ -1,0 +1,50 @@
+{
+  "model": "allenai/OLMo-2-0425-1B-Instruct",
+  "dataset": "wikitext2",
+  "calibration": "c4",
+  "attention": "sdpa",
+  "seqlen": 2048,
+  "word_rule": "whitespace",
+  "0": {
+    "sum_nll_nats": 746979.0859375,
+    "n_tokens": 288627,
+    "n_bytes": 1293222,
+    "n_chars": 1291193,
+    "n_words": 240612,
+    "perplexity": 13.303710701855271,
+    "cross_entropy_nats": 2.588042996453901,
+    "bits_per_token": 3.733756796591456,
+    "bits_per_byte": 0.8333163392903942,
+    "bits_per_character": 0.8346258250546604,
+    "byte_perplexity": 1.781776447947771,
+    "word_perplexity": 22.2979867087736
+  },
+  "0.1": {
+    "sum_nll_nats": 747698.734375,
+    "n_tokens": 288627,
+    "n_bytes": 1293222,
+    "n_chars": 1291193,
+    "n_words": 240612,
+    "perplexity": 13.336922910728648,
+    "cross_entropy_nats": 2.5905363475177303,
+    "bits_per_token": 3.737353941806438,
+    "bits_per_byte": 0.8341191660532893,
+    "bits_per_character": 0.8354299133915433,
+    "byte_perplexity": 1.7827682416808242,
+    "word_perplexity": 22.36477777637613
+  },
+  "0.2": {
+    "sum_nll_nats": 750417.40625,
+    "n_tokens": 288627,
+    "n_bytes": 1293222,
+    "n_chars": 1291193,
+    "n_words": 240612,
+    "perplexity": 13.463141251329661,
+    "cross_entropy_nats": 2.599955673758865,
+    "bits_per_token": 3.7509431570630385,
+    "bits_per_byte": 0.8371520671575596,
+    "bits_per_character": 0.8384675804419894,
+    "byte_perplexity": 1.7865200027822585,
+    "word_perplexity": 22.618910126498058
+  }
+}

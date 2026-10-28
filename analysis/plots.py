@@ -12,11 +12,24 @@ from pathlib import Path
 import plotly.graph_objects as go
 import plotly.io as pio
 
-from analysis.fit import exponent_at, solve_reference_law
+from analysis.fit import solve_scale_free_law
 from experiments.qwen import SweepSpec
 
 SPARSITIES = [round(i / 10, 1) for i in range(1, 9)]
 COLORS = ("#1d4ed8", "#0f766e", "#b45309", "#6d28d9", "#be123c", "#0369a1")
+# Follow-up samples reach 0.99. Curves and log axes cover that end.
+SPARSITY_AXIS_MAX = 0.99
+
+
+def _measured_sparsities(rows: list[dict], dataset: str | None = None) -> list[float]:
+    found = {float(sparsity) for sparsity in SPARSITIES}
+    for point in rows:
+        if dataset is not None and point["dataset"] != dataset:
+            continue
+        sparsity = float(point["sparsity"])
+        if sparsity > 0:
+            found.add(round(sparsity, 5))
+    return sorted(found)
 
 
 def _load(spec: SweepSpec) -> list[dict]:
@@ -52,7 +65,7 @@ def _law(rows: list[dict], dataset: str, sizes: dict[str, float]):
         if dense is None or dense <= 0:
             continue
         kept = []
-        for sparsity in SPARSITIES:
+        for sparsity in _measured_sparsities(rows, dataset):
             perplexity = _lookup(rows, model, dataset, sparsity)
             if perplexity is None or perplexity <= dense:
                 continue
@@ -64,15 +77,15 @@ def _law(rows: list[dict], dataset: str, sizes: dict[str, float]):
             usable.append((model, dense, n_billions, kept))
     if len(usable) < 2 or len(sparsities) < 4:
         return None
-    amplitude, n_star, slope, rmse = solve_reference_law(
+    alpha, beta, exponent, rmse = solve_scale_free_law(
         np.asarray(sparsities),
         np.asarray(log_ratios),
         np.asarray(billions),
     )
     return {
-        "a": amplitude,
-        "n_star": n_star,
-        "b1": slope,
+        "alpha": alpha,
+        "beta": beta,
+        "b": exponent,
         "rmse": rmse,
         "n": len(sparsities),
         "usable": usable,
@@ -86,12 +99,16 @@ def _write(fig: go.Figure, path: Path) -> None:
 
 
 def _family_sizes(spec: SweepSpec) -> dict[str, float]:
-    if spec.name == "gemma":
+    if spec.name in ("gemma", "gemma_it_wikitext2_cal"):
         from experiments.gemma import stored_params
 
         return stored_params()
-    if spec.name == "olmo2":
+    if spec.name in ("olmo2", "olmo2_wikitext2_cal"):
         from experiments.olmo import stored_params
+
+        return stored_params()
+    if spec.name in ("llama3", "llama3_wikitext2_cal"):
+        from experiments.llama import stored_params
 
         return stored_params()
     # Qwen 3.6/3.8 share the 3.5-27B stored count used on the principle page.
@@ -122,7 +139,7 @@ def _series(spec: SweepSpec, rows: list[dict], dataset: str):
         if dense is not None:
             xs.append(0.0)
             ys.append(dense)
-        for sparsity in SPARSITIES:
+        for sparsity in _measured_sparsities(rows, dataset):
             perplexity = _lookup(rows, model, dataset, sparsity)
             if perplexity is not None:
                 xs.append(sparsity)
@@ -149,18 +166,69 @@ def _perplexity(spec, rows, dataset, sizes, suffix) -> None:
     _write(fig, spec.result_dir / f"{spec.name}_sparsity_perplexity{suffix}.html")
 
 
+def _law_log_ratio(fit: dict, n_billions: float, sparsity: float) -> float | None:
+    """ln(perplexity / dense) = α · N^β · s^b."""
+    if sparsity <= 0 or n_billions <= 0:
+        return None
+    value = fit["alpha"] * (n_billions ** fit["beta"]) * (sparsity ** fit["b"])
+    if not math.isfinite(value) or value <= 0:
+        return None
+    return value
+
+
+def _collapsed(fit: dict, n_billions: float, log_ratio: float) -> float | None:
+    """N^(-β) · ln(perplexity / dense). One curve, α · s^b, for every size."""
+    if n_billions <= 0 or log_ratio <= 0:
+        return None
+    scale = n_billions ** (-fit["beta"])
+    value = log_ratio * scale
+    if not math.isfinite(value) or value <= 0:
+        return None
+    return value
+
+
+def _law_label(fit: dict | None) -> str:
+    if not fit:
+        return ""
+    return (
+        f"{fit['alpha']:.2f} · N^({fit['beta']:.3f}) · s^{fit['b']:.2f}"
+        f" · RMSE {fit['rmse']:.3f} over {fit['n']}"
+    )
+
+
 def _loglog(spec, rows, dataset, sizes, suffix) -> None:
+    """Scale-free collapse: N^(-β) · ln(ppl / dense) versus sparsity, both axes log."""
     fig = go.Figure()
     fit = _law(rows, dataset, sizes)
+    if fit:
+        grid = [0.08 * (SPARSITY_AXIS_MAX / 0.08) ** (index / 79) for index in range(80)]
+        curve = [(sparsity, fit["alpha"] * sparsity ** fit["b"]) for sparsity in grid]
+        curve = [(sparsity, value) for sparsity, value in curve if math.isfinite(value) and value > 0]
+        if curve:
+            fig.add_trace(
+                go.Scatter(
+                    x=[sparsity for sparsity, _value in curve],
+                    y=[value for _sparsity, value in curve],
+                    mode="lines",
+                    name="α · s^b",
+                    line={"color": "#111827", "width": 2},
+                )
+            )
     for model, color, xs, ys, dense in _series(spec, rows, dataset):
-        if dense is None or dense <= 0:
+        if dense is None or dense <= 0 or not fit:
+            continue
+        n_billions = sizes.get(model)
+        if not n_billions:
             continue
         sx, sy = [], []
         for sparsity, perplexity in zip(xs, ys):
             if sparsity <= 0 or perplexity <= dense:
                 continue
-            sx.append(math.log10(sparsity))
-            sy.append(math.log(math.log(perplexity / dense)))
+            collapsed = _collapsed(fit, n_billions, math.log(perplexity / dense))
+            if collapsed is None:
+                continue
+            sx.append(sparsity)
+            sy.append(collapsed)
         if sx:
             fig.add_trace(
                 go.Scatter(
@@ -168,63 +236,112 @@ def _loglog(spec, rows, dataset, sizes, suffix) -> None:
                     y=sy,
                     mode="markers",
                     name=model.split("/")[-1],
-                    marker={"color": color},
+                    marker={"color": color, "size": 8},
                 )
             )
-    if fit:
-        fig.update_layout(
-            title=(
-                f"ln ln(ppl/dense) vs log10 s · "
-                f"{fit['a']:.2f} · (N / {fit['n_star']:.3f})^({fit['b1']:.2f} log10 s)"
-            )
-        )
     fig.update_layout(
-        xaxis_title="log10 sparsity",
-        yaxis_title="ln ln(perplexity / dense)",
+        title=f"{spec.name} collapse ({dataset})",
+        xaxis_title="unstructured sparsity",
+        yaxis_title="N^(−β) · ln(perplexity / dense)",
         template="plotly_white",
+        xaxis={"type": "log", "range": [math.log10(0.08), math.log10(SPARSITY_AXIS_MAX + 0.005)]},
+        yaxis={"type": "log"},
     )
+    if fit:
+        fig.add_annotation(
+            text=_law_label(fit),
+            xref="paper",
+            yref="paper",
+            x=0.02,
+            y=0.98,
+            showarrow=False,
+            align="left",
+            xanchor="left",
+            yanchor="top",
+        )
     _write(fig, spec.result_dir / f"{spec.name}_sparsity_loglog{suffix}.html")
 
 
 def _normalized(spec, rows, dataset, sizes, suffix) -> None:
+    """Perplexity / own dense perplexity versus sparsity. Log y, dashed line at 1."""
     fig = go.Figure()
     fit = _law(rows, dataset, sizes)
+    fig.add_trace(
+        go.Scatter(
+            x=[0.0, SPARSITY_AXIS_MAX],
+            y=[1.0, 1.0],
+            mode="lines",
+            name="dense",
+            line={"color": "#666666", "width": 1, "dash": "dash"},
+        )
+    )
+    shown = [1.0]
     for model, color, xs, ys, dense in _series(spec, rows, dataset):
-        n_billions = sizes.get(model)
-        if dense is None or dense <= 0 or not n_billions or not fit:
+        if dense is None or dense <= 0:
             continue
-        exponent = exponent_at(n_billions, fit["n_star"], fit["b1"])
-        sx, sy = [], []
-        for sparsity, perplexity in zip(xs, ys):
-            if sparsity <= 0 or perplexity <= dense or exponent == 0:
-                continue
-            sx.append(sparsity ** exponent)
-            sy.append(math.log(perplexity / dense))
-        if sx:
-            fig.add_trace(
-                go.Scatter(
-                    x=sx,
-                    y=sy,
-                    mode="markers",
-                    name=model.split("/")[-1],
-                    marker={"color": color},
+        label = model.split("/")[-1]
+        n_billions = sizes.get(model)
+        if fit and n_billions:
+            grid = [0.05 + (SPARSITY_AXIS_MAX - 0.05) * index / 79 for index in range(80)]
+            curve = []
+            for sparsity in grid:
+                log_ratio = _law_log_ratio(fit, n_billions, sparsity)
+                if log_ratio is None:
+                    continue
+                predicted = math.exp(log_ratio)
+                if math.isfinite(predicted) and predicted > 0:
+                    curve.append((sparsity, predicted))
+            if curve:
+                shown.extend(value for _sparsity, value in curve)
+                fig.add_trace(
+                    go.Scatter(
+                        x=[sparsity for sparsity, _value in curve],
+                        y=[value for _sparsity, value in curve],
+                        mode="lines",
+                        name=f"{label} law",
+                        legendgroup=label,
+                        showlegend=False,
+                        line={"color": color, "width": 2},
+                    )
                 )
-            )
-    if fit:
-        xs = [index / 40 for index in range(1, 41)]
+        ratios = [
+            (sparsity, perplexity / dense)
+            for sparsity, perplexity in zip(xs, ys)
+            if perplexity > 0 and math.isfinite(perplexity)
+        ]
+        if not ratios:
+            continue
+        shown.extend(ratio for _sparsity, ratio in ratios)
         fig.add_trace(
             go.Scatter(
-                x=xs,
-                y=[fit["a"] * x for x in xs],
-                mode="lines",
-                name="shared law",
-                line={"color": "#111827", "dash": "dash"},
+                x=[sparsity for sparsity, _ratio in ratios],
+                y=[ratio for _sparsity, ratio in ratios],
+                mode="markers",
+                name=label,
+                legendgroup=label,
+                marker={"color": color, "size": 8},
             )
         )
+    finite = [value for value in shown if value > 0 and math.isfinite(value)]
+    y_axis: dict = {"type": "log", "title": "perplexity / dense"}
+    if finite:
+        y_axis["range"] = [math.log10(min(finite) / 1.15), math.log10(max(finite) * 1.25)]
     fig.update_layout(
-        title="normalized SparseGPT law",
-        xaxis_title="s ^ (b1 log10(N/N*))",
-        yaxis_title="ln(perplexity / dense)",
+        title=f"{spec.name} SparseGPT normalized ({dataset})",
+        xaxis_title="unstructured sparsity",
+        yaxis=y_axis,
         template="plotly_white",
     )
+    if fit:
+        fig.add_annotation(
+            text=_law_label(fit),
+            xref="paper",
+            yref="paper",
+            x=0.02,
+            y=0.98,
+            showarrow=False,
+            align="left",
+            xanchor="left",
+            yanchor="top",
+        )
     _write(fig, spec.result_dir / f"{spec.name}_sparsity_normalized{suffix}.html")

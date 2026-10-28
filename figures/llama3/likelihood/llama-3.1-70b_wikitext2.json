@@ -1,0 +1,36 @@
+{
+  "model": "meta-llama/Llama-3.1-70B",
+  "dataset": "wikitext2",
+  "calibration": "c4",
+  "attention": "sdpa",
+  "seqlen": 2048,
+  "word_rule": "whitespace",
+  "0": {
+    "sum_nll_nats": 298092.3759765625,
+    "n_tokens": 288627,
+    "n_bytes": 1294208,
+    "n_chars": 1292178,
+    "n_words": 240817,
+    "perplexity": 2.8089043392867956,
+    "cross_entropy_nats": 1.032794492464539,
+    "bits_per_token": 1.4900074925360243,
+    "bits_per_byte": 0.3322931032323978,
+    "bits_per_character": 0.33281513270477836,
+    "byte_perplexity": 1.2590129332230457,
+    "word_perplexity": 3.44814967308233
+  },
+  "0.1": {
+    "sum_nll_nats": 302292.32421875,
+    "n_tokens": 288627,
+    "n_bytes": 1294208,
+    "n_chars": 1292178,
+    "n_words": 240817,
+    "perplexity": 2.8500768713264515,
+    "cross_entropy_nats": 1.0473459663120568,
+    "bits_per_token": 1.5110008316934638,
+    "bits_per_byte": 0.33697491983451605,
+    "bits_per_character": 0.33750430439861173,
+    "byte_perplexity": 1.2631053035216235,
+    "word_perplexity": 3.50881430228375
+  }
+}
