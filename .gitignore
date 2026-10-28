@@ -9,3 +9,4 @@ sparse_opt/
 figures/logs/
 wandb/
 *.log
+figures/**/logs/
