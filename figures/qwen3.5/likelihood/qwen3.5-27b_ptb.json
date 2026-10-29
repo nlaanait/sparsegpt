@@ -1,0 +1,22 @@
+{
+  "model": "Qwen/Qwen3.5-27B",
+  "dataset": "ptb",
+  "calibration": "c4",
+  "attention": "atlas-gdn",
+  "seqlen": 2048,
+  "word_rule": "whitespace",
+  "0": {
+    "sum_nll_nats": 228496.375,
+    "n_tokens": 94162,
+    "n_bytes": 438428,
+    "n_chars": 438428,
+    "n_words": 77954,
+    "perplexity": 11.32067199787109,
+    "cross_entropy_nats": 2.426630434782609,
+    "bits_per_token": 3.500887694331099,
+    "bits_per_byte": 0.751892185429774,
+    "bits_per_character": 0.751892185429774,
+    "byte_perplexity": 1.684000054890938,
+    "word_perplexity": 18.74954233763324
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "model": "Qwen/Qwen3.5-9B",
+  "dataset": "ptb",
+  "calibration": "c4",
+  "attention": "atlas-gdn",
+  "seqlen": 2048,
+  "word_rule": "whitespace",
+  "0": {
+    "sum_nll_nats": 248294.703125,
+    "n_tokens": 94162,
+    "n_bytes": 438428,
+    "n_chars": 438428,
+    "n_words": 77954,
+    "perplexity": 13.969670503102314,
+    "cross_entropy_nats": 2.636888586956522,
+    "bits_per_token": 3.8042260877788805,
+    "bits_per_byte": 0.8170407384506349,
+    "bits_per_character": 0.8170407384506349,
+    "byte_perplexity": 1.7617884964809372,
+    "word_perplexity": 24.17076494735401
+  },
+  "0.1": {
+    "sum_nll_nats": 248358.671875,
+    "n_tokens": 94162,
+    "n_bytes": 438428,
+    "n_chars": 438428,
+    "n_words": 77954,
+    "perplexity": 13.9791639927154,
+    "cross_entropy_nats": 2.637567934782609,
+    "bits_per_token": 3.8052061795186147,
+    "bits_per_byte": 0.817251234583174,
+    "bits_per_character": 0.817251234583174,
+    "byte_perplexity": 1.7620455686341219,
+    "word_perplexity": 24.190607523563386
+  },
+  "0.2": {
+    "sum_nll_nats": 248998.359375,
+    "n_tokens": 94162,
+    "n_bytes": 438428,
+    "n_chars": 438428,
+    "n_words": 77954,
+    "perplexity": 14.074454449747565,
+    "cross_entropy_nats": 2.644361413043478,
+    "bits_per_token": 3.815007096915958,
+    "bits_per_byte": 0.8193561959085652,
+    "bits_per_character": 0.8193561959085652,
+    "byte_perplexity": 1.7646183541632197,
+    "word_perplexity": 24.389931414052235
+  }
+}

@@ -18,5 +18,33 @@
     "bits_per_character": 0.7147229333158691,
     "byte_perplexity": 1.6398911103356364,
     "word_perplexity": 14.273184735343243
+  },
+  "0.1": {
+    "sum_nll_nats": 639927.3828125,
+    "n_tokens": 296815,
+    "n_bytes": 1294623,
+    "n_chars": 1292589,
+    "n_words": 240883,
+    "perplexity": 8.636354867402636,
+    "cross_entropy_nats": 2.155980603448276,
+    "bits_per_token": 3.1104225248476225,
+    "bits_per_byte": 0.7131188475043677,
+    "bits_per_character": 0.7142410013644299,
+    "byte_perplexity": 1.6393442569459507,
+    "word_perplexity": 14.247622596541229
+  },
+  "0.2": {
+    "sum_nll_nats": 634969.8046875,
+    "n_tokens": 296815,
+    "n_bytes": 1294623,
+    "n_chars": 1292589,
+    "n_words": 240883,
+    "perplexity": 8.4933033961317,
+    "cross_entropy_nats": 2.1392780172413794,
+    "bits_per_token": 3.0863257865569125,
+    "bits_per_byte": 0.7075942481609627,
+    "bits_per_character": 0.7087077085886465,
+    "byte_perplexity": 1.6330786212158237,
+    "word_perplexity": 13.957391189688536
   }
 }
