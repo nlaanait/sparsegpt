@@ -48,11 +48,11 @@ submit qwen35-0.8b-wikitext2-likelihood qwen-likelihood 16G 32G 12:00:00 qwen3.5
 submit qwen35-2b-wikitext2-likelihood   qwen-likelihood 24G 48G 18:00:00 qwen3.5_wikitext2_cal Qwen/Qwen3.5-2B
 submit qwen35-4b-wikitext2-likelihood   qwen-likelihood 32G 64G 24:00:00 qwen3.5_wikitext2_cal Qwen/Qwen3.5-4B
 submit qwen35-9b-wikitext2-likelihood   qwen-likelihood 48G 64G 36:00:00 qwen3.5_wikitext2_cal Qwen/Qwen3.5-9B
-submit qwen35-27b-wikitext2-likelihood  qwen-likelihood 64G 96G 72:00:00 qwen3.5_wikitext2_cal Qwen/Qwen3.5-27B
+submit qwen35-27b-wikitext2-likelihood  qwen-likelihood 46G 96G 72:00:00 qwen3.5_wikitext2_cal Qwen/Qwen3.5-27B
 
 # Qwen 3.6 / 3.8 (WikiText2 → c4/ptb)
-submit qwen36-27b-wikitext2-likelihood qwen-likelihood 64G 96G 72:00:00 qwen_wikitext2_cal Qwen/Qwen3.6-27B
-submit qwen38-27b-wikitext2-likelihood qwen-likelihood 64G 96G 72:00:00 qwen_wikitext2_cal Qwen/Qwen3.8-27B
+submit qwen36-27b-wikitext2-likelihood qwen-likelihood 46G 96G 72:00:00 qwen_wikitext2_cal Qwen/Qwen3.6-27B
+submit qwen38-27b-wikitext2-likelihood qwen-likelihood 46G 96G 72:00:00 qwen_wikitext2_cal Qwen/Qwen3.8-27B
 
 # Gemma 4 Instruct (WikiText2 → c4/ptb)
 submit gemma-e4b-it-wikitext2-likelihood  gemma-likelihood 32G 64G 36:00:00 gemma_it_wikitext2_cal google/gemma-4-E4B-it

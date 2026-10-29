@@ -49,11 +49,11 @@ submit qwen35-0.8b-c4-likelihood qwen-likelihood 16G 32G 12:00:00 qwen3.5 Qwen/Q
 submit qwen35-2b-c4-likelihood   qwen-likelihood 24G 48G 18:00:00 qwen3.5 Qwen/Qwen3.5-2B
 submit qwen35-4b-c4-likelihood   qwen-likelihood 32G 64G 24:00:00 qwen3.5 Qwen/Qwen3.5-4B
 submit qwen35-9b-c4-likelihood   qwen-likelihood 48G 64G 36:00:00 qwen3.5 Qwen/Qwen3.5-9B
-submit qwen35-27b-c4-likelihood  qwen-likelihood 64G 96G 72:00:00 qwen3.5 Qwen/Qwen3.5-27B
+submit qwen35-27b-c4-likelihood  qwen-likelihood 46G 96G 72:00:00 qwen3.5 Qwen/Qwen3.5-27B
 
 # Qwen 3.6 / 3.8 (C4 → wt/ptb)
-submit qwen36-27b-c4-likelihood qwen-likelihood 64G 96G 72:00:00 qwen Qwen/Qwen3.6-27B
-submit qwen38-27b-c4-likelihood qwen-likelihood 64G 96G 72:00:00 qwen Qwen/Qwen3.8-27B
+submit qwen36-27b-c4-likelihood qwen-likelihood 46G 96G 72:00:00 qwen Qwen/Qwen3.6-27B
+submit qwen38-27b-c4-likelihood qwen-likelihood 46G 96G 72:00:00 qwen Qwen/Qwen3.8-27B
 
 # Gemma 4 base (C4 → wt/ptb)
 submit gemma-e2b-c4-likelihood      gemma-likelihood 24G 48G 24:00:00 gemma google/gemma-4-E2B
