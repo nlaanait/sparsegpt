@@ -1,0 +1,70 @@
+{
+  "c4": {
+    "law": "ln(perplexity / dense) = a * (N / N*)^(b1 log10 s)",
+    "a": 6.177526862156233,
+    "n_star": 1.481013102202918e-103,
+    "b1": 0.046608863320354306,
+    "rmse": 0.05489519101449307,
+    "n_points": 30,
+    "models": [
+      {
+        "model": "allenai/OLMo-2-0425-1B-Instruct",
+        "stored_b": 1.484927112,
+        "dense": 23.841858,
+        "in_fit": true,
+        "exponent": 4.800766346757324,
+        "n_points": 11
+      },
+      {
+        "model": "allenai/OLMo-2-1124-7B-Instruct",
+        "stored_b": 7.298617344,
+        "dense": 17.81377,
+        "in_fit": true,
+        "exponent": 4.8329980284043526,
+        "n_points": 11
+      },
+      {
+        "model": "allenai/OLMo-2-1124-13B-Instruct",
+        "stored_b": 13.7161984,
+        "dense": 13.015738,
+        "in_fit": true,
+        "exponent": 4.845768538316963,
+        "n_points": 8
+      }
+    ]
+  },
+  "ptb": {
+    "law": "ln(perplexity / dense) = a * (N / N*)^(b1 log10 s)",
+    "a": 7.281514154895631,
+    "n_star": 5.025212560468678e+127,
+    "b1": -0.03617851141623109,
+    "rmse": 0.12691167049454322,
+    "n_points": 28,
+    "models": [
+      {
+        "model": "allenai/OLMo-2-0425-1B-Instruct",
+        "stored_b": 1.484927112,
+        "dense": 28.286686,
+        "in_fit": true,
+        "exponent": 4.613825637401681,
+        "n_points": 11
+      },
+      {
+        "model": "allenai/OLMo-2-1124-7B-Instruct",
+        "stored_b": 7.298617344,
+        "dense": 20.415705,
+        "in_fit": true,
+        "exponent": 4.588806913936651,
+        "n_points": 10
+      },
+      {
+        "model": "allenai/OLMo-2-1124-13B-Instruct",
+        "stored_b": 13.7161984,
+        "dense": 13.434504,
+        "in_fit": true,
+        "exponent": 4.578894249139638,
+        "n_points": 7
+      }
+    ]
+  }
+}

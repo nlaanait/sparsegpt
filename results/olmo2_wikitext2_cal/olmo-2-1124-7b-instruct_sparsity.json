@@ -1,0 +1,231 @@
+{
+  "calibration": "wikitext2",
+  "attention": "sdpa",
+  "points": [
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 17.81377
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 20.415705
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 17.817894
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 20.360302
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 17.902
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 20.793631
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 18.288656
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 21.784142
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 19.755526
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 25.107477
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 23.663624
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 32.557777
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 29.849958
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 44.440788
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 48.941479
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 70.583298
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 127.660004
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 279.541962
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.45,
+      "perplexity": 21.259151
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.45,
+      "perplexity": 27.848143
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.55,
+      "perplexity": 26.517151
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.55,
+      "perplexity": 37.106449
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.65,
+      "perplexity": 37.868114
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.65,
+      "perplexity": 57.237831
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.85,
+      "perplexity": 259.798523
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.85,
+      "perplexity": 571.637756
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.9,
+      "perplexity": 533.53302
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.9,
+      "perplexity": 1333.620239
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.95,
+      "perplexity": 1299.47229
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.95,
+      "perplexity": 3554.433594
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.99,
+      "perplexity": 10108.146484
+    },
+    {
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.99,
+      "perplexity": 18410.050781
+    }
+  ],
+  "model": "allenai/OLMo-2-1124-7B-Instruct"
+}

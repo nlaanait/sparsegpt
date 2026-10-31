@@ -6,6 +6,8 @@ sparse_opt/
 .pixi/
 *.egg-info/
 .pytest_cache/
-figures/logs/
+results/**/logs/
+.tmp-shots/
+**/gpu_monitor.csv
 wandb/
 *.log

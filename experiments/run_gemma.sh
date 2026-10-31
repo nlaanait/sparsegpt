@@ -3,14 +3,14 @@
 # forward, then run the four instruction-tuned Gemma 4 models.
 set -euo pipefail
 cd "$(dirname "$0")/.."
-mkdir -p figures/gemma/logs
-exec > figures/gemma/logs/driver.log 2>&1
+mkdir -p results/gemma/logs
+exec > results/gemma/logs/driver.log 2>&1
 
 echo "download E2B $(date)"
 pixi run python -c "from huggingface_hub import snapshot_download; snapshot_download('google/gemma-4-E2B-it')"
 
 echo "waiting for Qwen $(date)"
-while pgrep -f "qwen_36_38_sparsity.py" >/dev/null || pgrep -f "python -m sparsegpt.qwen" >/dev/null; do
+while pgrep -f "drivers.qwen_36_38_sparsity" >/dev/null || pgrep -f "python -m sparsegpt.qwen" >/dev/null; do
   echo "still waiting $(date)"
   sleep 60
 done

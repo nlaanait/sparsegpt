@@ -1,0 +1,86 @@
+{
+  "wikitext2": {
+    "law": "ln(perplexity / dense) = a * (N / N*)^(b1 log10 s)",
+    "a": 7.169824695750843,
+    "n_star": 1.227927863074324e-27,
+    "b1": 0.16328609471356606,
+    "rmse": 0.07047958985293795,
+    "n_points": 30,
+    "models": [
+      {
+        "model": "allenai/OLMo-2-0425-1B-Instruct",
+        "stored_b": 1.484927112,
+        "dense": 13.303711,
+        "in_fit": true,
+        "exponent": 4.422200931382783,
+        "n_points": 11
+      },
+      {
+        "model": "allenai/OLMo-2-1124-7B-Instruct",
+        "stored_b": 7.298617344,
+        "dense": 8.487803,
+        "in_fit": true,
+        "exponent": 4.5351190556893215,
+        "n_points": 11
+      },
+      {
+        "model": "allenai/OLMo-2-1124-13B-Instruct",
+        "stored_b": 13.7161984,
+        "dense": 5.816511,
+        "in_fit": true,
+        "exponent": 4.579858329350612,
+        "n_points": 8
+      },
+      {
+        "model": "allenai/OLMo-2-0325-32B-Instruct",
+        "stored_b": 32.234279936,
+        "dense": 4.467928,
+        "in_fit": false,
+        "exponent": null,
+        "n_points": null
+      }
+    ]
+  },
+  "ptb": {
+    "law": "ln(perplexity / dense) = a * (N / N*)^(b1 log10 s)",
+    "a": 6.892693344559043,
+    "n_star": 1.7249629542533308e-23,
+    "b1": 0.1942787144319518,
+    "rmse": 0.09820574895493984,
+    "n_points": 29,
+    "models": [
+      {
+        "model": "allenai/OLMo-2-0425-1B-Instruct",
+        "stored_b": 1.484927112,
+        "dense": 28.286686,
+        "in_fit": true,
+        "exponent": 4.455767815357078,
+        "n_points": 11
+      },
+      {
+        "model": "allenai/OLMo-2-1124-7B-Instruct",
+        "stored_b": 7.298617344,
+        "dense": 20.415705,
+        "in_fit": true,
+        "exponent": 4.590118435137803,
+        "n_points": 10
+      },
+      {
+        "model": "allenai/OLMo-2-1124-13B-Instruct",
+        "stored_b": 13.7161984,
+        "dense": 13.434504,
+        "in_fit": true,
+        "exponent": 4.643349474723764,
+        "n_points": 8
+      },
+      {
+        "model": "allenai/OLMo-2-0325-32B-Instruct",
+        "stored_b": 32.234279936,
+        "dense": 11.020930038283318,
+        "in_fit": false,
+        "exponent": null,
+        "n_points": null
+      }
+    ]
+  }
+}

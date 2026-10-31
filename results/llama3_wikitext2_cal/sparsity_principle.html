@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>llama3_wikitext2_cal sparsity principle</title></head>
+<body>
+<h1>llama3_wikitext2_cal sparsity principle</h1>
+<p>Unstructured SparseGPT, WikiText2 calibration (128 × 2048, seed 0), eval on C4, PTB. Points at or below each model's own dense perplexity are excluded. The fit uses total stored parameters so N matches the Qwen page. Effective counts are recorded and are not the fit's N.</p>
+<p><b>C4</b> ln(perplexity / dense) = 7.97 · (N / 0.003)^(1.23 log10 s). RMSE 0.104 over 57 points. N and N* are total stored parameters in billions.</p><p><b>PTB</b> ln(perplexity / dense) = 8.47 · (N / 0.001)^(1.25 log10 s). RMSE 0.101 over 57 points. N and N* are total stored parameters in billions.</p>
+<table>
+<tr><th>model</th><th>stored N (billions)</th><th>effective N (billions)</th></tr>
+<tr><td>Llama-3.2-1B</td><td>1.236</td><td></td></tr><tr><td>Llama-3.2-3B</td><td>3.213</td><td></td></tr><tr><td>Llama-3.1-8B</td><td>8.030</td><td></td></tr><tr><td>Llama-3.2-11B-Vision</td><td>10.643</td><td></td></tr><tr><td>Llama-3.1-70B</td><td>70.554</td><td></td></tr><tr><td>Llama-3.2-90B-Vision</td><td>88.593</td><td></td></tr>
+</table>
+</body>
+</html>

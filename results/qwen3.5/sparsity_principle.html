@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>qwen3.5 sparsity principle</title></head>
+<body>
+<h1>qwen3.5 sparsity principle</h1>
+<p>Unstructured SparseGPT, C4 calibration (128 × 2048, seed 0), eval on WikiText2, PTB. Points at or below each model's own dense perplexity are excluded. The fit uses total stored parameters so N matches the Qwen page. Effective counts are recorded and are not the fit's N.</p>
+<p><b>WikiText2</b> ln(perplexity / dense) = 11.69 · (N / 0.040)^(2.80 log10 s). RMSE 0.095 over 67 points. N and N* are total stored parameters in billions.</p><p><b>PTB</b> ln(perplexity / dense) = 10.52 · (N / 0.033)^(2.49 log10 s). RMSE 0.116 over 70 points. N and N* are total stored parameters in billions.</p>
+<table>
+<tr><th>model</th><th>stored N (billions)</th><th>effective N (billions)</th></tr>
+<tr><td>Qwen3.5-0.8B</td><td>0.873</td><td></td></tr><tr><td>Qwen3.5-2B</td><td>2.274</td><td></td></tr><tr><td>Qwen3.5-4B</td><td>4.660</td><td></td></tr><tr><td>Qwen3.5-9B</td><td>9.653</td><td></td></tr><tr><td>Qwen3.5-27B</td><td>27.781</td><td></td></tr><tr><td>Qwen3.6-27B</td><td>27.781</td><td></td></tr><tr><td>Qwen3.8-27B</td><td>27.781</td><td></td></tr>
+</table>
+</body>
+</html>

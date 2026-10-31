@@ -1,0 +1,86 @@
+{
+  "ptb": {
+    "law": "ln(perplexity / dense) = a * (N / N*)^(b1 log10 s)",
+    "a": 6.782396992216522,
+    "n_star": 8456.276523064544,
+    "b1": -1.2285898611213442,
+    "rmse": 0.37175970702244265,
+    "n_points": 24,
+    "models": [
+      {
+        "model": "google/gemma-4-12B",
+        "stored_b": 11.959774704,
+        "dense": 36.04874891943551,
+        "in_fit": true,
+        "exponent": 3.5008129694289405,
+        "n_points": 8
+      },
+      {
+        "model": "google/gemma-4-26B-A4B",
+        "stored_b": 25.805936206,
+        "dense": 18.982868828108792,
+        "in_fit": true,
+        "exponent": 3.0904681075108864,
+        "n_points": 8
+      },
+      {
+        "model": "google/gemma-4-31B",
+        "stored_b": 31.273088876,
+        "dense": 17.5500503382097,
+        "in_fit": true,
+        "exponent": 2.987940858740938,
+        "n_points": 8
+      }
+    ]
+  },
+  "wikitext2": {
+    "law": "ln(perplexity / dense) = a * (N / N*)^(b1 log10 s)",
+    "a": 8.142714610447436,
+    "n_star": 0.004809123097704975,
+    "b1": 1.3773761571682128,
+    "rmse": 0.13940677656646816,
+    "n_points": 40,
+    "models": [
+      {
+        "model": "google/gemma-4-E2B",
+        "stored_b": 5.123310959,
+        "dense": 8.235834698091468,
+        "in_fit": true,
+        "exponent": 4.169985410597797,
+        "n_points": 8
+      },
+      {
+        "model": "google/gemma-4-E4B",
+        "stored_b": 7.996297942,
+        "dense": 7.072832269098866,
+        "in_fit": true,
+        "exponent": 4.436284908354566,
+        "n_points": 8
+      },
+      {
+        "model": "google/gemma-4-12B",
+        "stored_b": 11.959774704,
+        "dense": 6.913172828681025,
+        "in_fit": true,
+        "exponent": 4.677097134135644,
+        "n_points": 8
+      },
+      {
+        "model": "google/gemma-4-26B-A4B",
+        "stored_b": 25.805936206,
+        "dense": 5.7264937537832035,
+        "in_fit": true,
+        "exponent": 5.137136116149176,
+        "n_points": 8
+      },
+      {
+        "model": "google/gemma-4-31B",
+        "stored_b": 31.273088876,
+        "dense": 5.331515668790685,
+        "in_fit": true,
+        "exponent": 5.252079753879419,
+        "n_points": 8
+      }
+    ]
+  }
+}

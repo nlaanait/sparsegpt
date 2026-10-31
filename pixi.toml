@@ -62,24 +62,24 @@ demo-qwen-nm = "python -m sparsegpt.qwen Qwen/Qwen3.5-2B c4 --prunen 2 --prunem 
 demo-qwen-smoke = { cmd = "python -m sparsegpt.qwen Qwen/Qwen3.5-2B c4 --sparsity {{ sparsity }} --nsamples 4 --maxlayer 1 --skip-eval --save sparse_opt/qwen3.5-2b-smoke", args = [{ arg = "sparsity", default = "0.5" }] }
 
 # Figure 1: sparsity vs raw-WikiText2 perplexity (dense, magnitude, SparseGPT).
-# Resumes from figures/qwen3.5-2b_wikitext2.json and skips finished points.
-# Writes figures/qwen3.5-2b_sparsity_perplexity.html.
-qwen-figure1 = "python qwen_figure1.py"
-qwen-figure1-plot = "python qwen_figure1.py --plot-only"
+# Resumes from results/qwen3.5/qwen3.5-2b_wikitext2.json and skips finished points.
+# Writes results/qwen3.5/qwen3.5-2b_sparsity_perplexity.html.
+qwen-figure1 = "python -m drivers.qwen_figure1"
+qwen-figure1-plot = "python -m drivers.qwen_figure1 --plot-only"
 
 # Figure 1 for each Qwen3.5 model. Magnitude stops above perplexity 100,
 # unstructured SparseGPT stops above 200. Resumes from
-# figures/qwen3.5_family_sparsity_wikitext2.json.
-qwen-figure1-family = "python qwen_figure1_family.py"
-qwen-figure1-family-plot = "python qwen_figure1_family.py --plot-only"
+# results/qwen3.5/qwen3.5_family_sparsity_wikitext2.json.
+qwen-figure1-family = "python -m drivers.qwen_figure1_family"
+qwen-figure1-family-plot = "python -m drivers.qwen_figure1_family --plot-only"
 
 # PTB perplexity vs sparsity, reusing C4 SparseGPT checkpoints in sparse_opt.
-# Resumes from figures/qwen3.5_family_sparsity_ptb.json.
-qwen-ptb = "python -u qwen_ptb.py"
-qwen-ptb-plot = "python qwen_ptb.py --plot-only"
+# Resumes from results/qwen3.5/qwen3.5_family_sparsity_ptb.json.
+qwen-ptb = "python -u -m drivers.qwen_ptb"
+qwen-ptb-plot = "python -m drivers.qwen_ptb --plot-only"
 
 # Figure 2: raw-WikiText2 perplexity vs Qwen3.5 model size
 # (dense, 50% unstructured, 4:8, 2:4). Resumes from
-# figures/qwen3.5_family_wikitext2.json.
-qwen-figure2 = "python qwen_figure2.py"
-qwen-figure2-plot = "python qwen_figure2.py --plot-only"
+# results/qwen3.5/qwen3.5_family_wikitext2.json.
+qwen-figure2 = "python -m drivers.qwen_figure2"
+qwen-figure2-plot = "python -m drivers.qwen_figure2 --plot-only"

@@ -1,0 +1,49 @@
+{
+  "calibration": "wikitext2",
+  "attention": "sdpa",
+  "points": [
+    {
+      "model": "meta-llama/Llama-3.1-70B",
+      "dataset": "c4",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 7.115411
+    },
+    {
+      "model": "meta-llama/Llama-3.1-70B",
+      "dataset": "ptb",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 8.452911
+    },
+    {
+      "model": "meta-llama/Llama-3.1-70B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 7.144533
+    },
+    {
+      "model": "meta-llama/Llama-3.1-70B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 8.473035
+    },
+    {
+      "model": "meta-llama/Llama-3.1-70B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 7.276644
+    },
+    {
+      "model": "meta-llama/Llama-3.1-70B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 8.522102
+    }
+  ],
+  "model": "meta-llama/Llama-3.1-70B"
+}

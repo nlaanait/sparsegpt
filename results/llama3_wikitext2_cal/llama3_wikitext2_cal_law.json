@@ -1,0 +1,118 @@
+{
+  "c4": {
+    "law": "ln(perplexity / dense) = a * (N / N*)^(b1 log10 s)",
+    "a": 7.97283562570396,
+    "n_star": 0.0032726579228162123,
+    "b1": 1.2345479792879805,
+    "rmse": 0.10377367362382542,
+    "n_points": 57,
+    "models": [
+      {
+        "model": "meta-llama/Llama-3.2-1B",
+        "stored_b": 1.2358144,
+        "dense": 14.019468,
+        "in_fit": true,
+        "exponent": 3.1814951276342676,
+        "n_points": 11
+      },
+      {
+        "model": "meta-llama/Llama-3.2-3B",
+        "stored_b": 3.212749824,
+        "dense": 11.343549,
+        "in_fit": true,
+        "exponent": 3.6937382900157543,
+        "n_points": 11
+      },
+      {
+        "model": "meta-llama/Llama-3.1-8B",
+        "stored_b": 8.030261248,
+        "dense": 9.540385,
+        "in_fit": true,
+        "exponent": 4.184906618230921,
+        "n_points": 11
+      },
+      {
+        "model": "meta-llama/Llama-3.2-11B-Vision",
+        "stored_b": 10.642941475,
+        "dense": 11.421359,
+        "in_fit": true,
+        "exponent": 4.335931341151282,
+        "n_points": 8
+      },
+      {
+        "model": "meta-llama/Llama-3.1-70B",
+        "stored_b": 70.553706496,
+        "dense": 7.115411,
+        "in_fit": true,
+        "exponent": 5.3500608527621,
+        "n_points": 8
+      },
+      {
+        "model": "meta-llama/Llama-3.2-90B-Vision",
+        "stored_b": 88.593355323,
+        "dense": 8.336506312498411,
+        "in_fit": true,
+        "exponent": 5.472134581714287,
+        "n_points": 8
+      }
+    ]
+  },
+  "ptb": {
+    "law": "ln(perplexity / dense) = a * (N / N*)^(b1 log10 s)",
+    "a": 8.46920848894198,
+    "n_star": 0.0013047025540478758,
+    "b1": 1.2495828256402013,
+    "rmse": 0.10055134145077518,
+    "n_points": 57,
+    "models": [
+      {
+        "model": "meta-llama/Llama-3.2-1B",
+        "stored_b": 1.2358144,
+        "dense": 17.59346,
+        "in_fit": true,
+        "exponent": 3.719310478399815,
+        "n_points": 11
+      },
+      {
+        "model": "meta-llama/Llama-3.2-3B",
+        "stored_b": 3.212749824,
+        "dense": 13.549071,
+        "in_fit": true,
+        "exponent": 4.237791954213091,
+        "n_points": 11
+      },
+      {
+        "model": "meta-llama/Llama-3.1-8B",
+        "stored_b": 8.030261248,
+        "dense": 11.145162,
+        "in_fit": true,
+        "exponent": 4.734941937634606,
+        "n_points": 11
+      },
+      {
+        "model": "meta-llama/Llama-3.2-11B-Vision",
+        "stored_b": 10.642941475,
+        "dense": 13.118835,
+        "in_fit": true,
+        "exponent": 4.8878059033730565,
+        "n_points": 8
+      },
+      {
+        "model": "meta-llama/Llama-3.1-70B",
+        "stored_b": 70.553706496,
+        "dense": 8.452911,
+        "in_fit": true,
+        "exponent": 5.9142859122056315,
+        "n_points": 8
+      },
+      {
+        "model": "meta-llama/Llama-3.2-90B-Vision",
+        "stored_b": 88.593355323,
+        "dense": 9.482902963127609,
+        "in_fit": true,
+        "exponent": 6.037846306552141,
+        "n_points": 8
+      }
+    ]
+  }
+}

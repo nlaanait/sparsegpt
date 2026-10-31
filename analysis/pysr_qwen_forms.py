@@ -26,9 +26,9 @@ import pandas as pd
 from pysr import PySRRegressor
 
 ROOT = Path(__file__).resolve().parents[1]
-QWEN = ROOT / "figures" / "qwen"
+FAMILY = ROOT / "results" / "qwen3.5"
 HUB = Path.home() / ".cache" / "huggingface" / "hub"
-OUT = ROOT / "figures" / "qwen" / "pysr_forms"
+OUT = ROOT / "results" / "qwen" / "pysr_forms"
 
 ORDER = [
     "Qwen/Qwen3.5-0.8B",
@@ -64,7 +64,7 @@ CALIBRATION_SEQUENCE_LENGTH = 2048
 
 
 def arch_table() -> dict[str, dict[str, float]]:
-    sizes = json.loads((QWEN / "qwen3.5_family_wikitext2.json").read_text())["params_b"]
+    sizes = json.loads((FAMILY / "qwen3.5_family_wikitext2.json").read_text())["params_b"]
     out = {}
     for model in ORDER:
         name = model.split("/")[-1]
@@ -300,17 +300,17 @@ def main() -> None:
     arch = arch_table()
     OUT.mkdir(parents=True, exist_ok=True)
     write_dataset_size_note()
-    run_eval("wikitext2", QWEN / "qwen3.5_family_sparsity_wikitext2.json", arch, seed=0)
-    run_eval("ptb", QWEN / "qwen3.5_family_sparsity_ptb.json", arch, seed=1)
+    run_eval("wikitext2", FAMILY / "qwen3.5_family_sparsity_wikitext2.json", arch, seed=0)
+    run_eval("ptb", FAMILY / "qwen3.5_family_sparsity_ptb.json", arch, seed=1)
     run_power_eval(
         "wikitext2",
-        QWEN / "qwen3.5_family_sparsity_wikitext2.json",
+        FAMILY / "qwen3.5_family_sparsity_wikitext2.json",
         arch,
         seed=2,
     )
     run_power_eval(
         "ptb",
-        QWEN / "qwen3.5_family_sparsity_ptb.json",
+        FAMILY / "qwen3.5_family_sparsity_ptb.json",
         arch,
         seed=3,
     )

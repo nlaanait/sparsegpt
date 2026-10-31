@@ -20,11 +20,10 @@ import threading
 import time
 from pathlib import Path
 
-from qwen_figure1_family import PPL_RE, ROOT
-from qwen_ptb import _prune_args
+from experiments.protocol import PPL_RE, ROOT, prune_args as _prune_args
 from sparsegpt.prune_cache import find_pruned_model, prune_config_from_args
 
-from experiments.qwen import SweepSpec
+from experiments.protocol import SweepSpec
 
 SPARSITIES = [round(i / 10, 1) for i in range(1, 9)]
 # Legacy alias for the default Gemma / C4-calibrated Qwen eval pair.

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import torch
 
-from qwen_ptb import _prune_args
+from experiments.protocol import prune_args as _prune_args
 from sparsegpt.datautils import get_loaders
 from sparsegpt.gemma import (
     gemma_eval,

@@ -1,0 +1,231 @@
+{
+  "calibration": "wikitext2",
+  "attention": "sdpa",
+  "points": [
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 9.540385
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "dense",
+      "sparsity": 0.0,
+      "perplexity": 11.145162
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 9.613126
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.1,
+      "perplexity": 11.152735
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 9.911287
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.2,
+      "perplexity": 11.259315
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 10.642739
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.3,
+      "perplexity": 11.60095
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 12.043552
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.4,
+      "perplexity": 12.433328
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 14.722257
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 14.437616
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 23.653713
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 22.690424
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 64.670296
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 60.764
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 221.678467
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 228.465698
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.45,
+      "perplexity": 13.107446
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.45,
+      "perplexity": 13.244201
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.55,
+      "perplexity": 17.684259
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.55,
+      "perplexity": 17.156742
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.65,
+      "perplexity": 36.872025
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.65,
+      "perplexity": 34.787312
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.85,
+      "perplexity": 457.712067
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.85,
+      "perplexity": 439.482544
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.9,
+      "perplexity": 947.939758
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.9,
+      "perplexity": 1630.658936
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.95,
+      "perplexity": 4134.547852
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.95,
+      "perplexity": 4027.700928
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "c4",
+      "method": "sparsegpt",
+      "sparsity": 0.99,
+      "perplexity": 48205.796875
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B",
+      "dataset": "ptb",
+      "method": "sparsegpt",
+      "sparsity": 0.99,
+      "perplexity": 57795.949219
+    }
+  ],
+  "model": "meta-llama/Llama-3.1-8B"
+}

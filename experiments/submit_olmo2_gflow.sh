@@ -28,7 +28,7 @@ submit() {
   fi
   cmd+=(
     --
-    pixi run python -u olmo2_sparsity.py
+    pixi run python -u -m drivers.olmo2_sparsity
     --models "$model"
     --skip-smoke
   )

@@ -1,0 +1,134 @@
+{
+  "c4": {
+    "law": "ln(perplexity / dense) = a * (N / N*)^(b1 log10 s)",
+    "a": 9.705827224154113,
+    "n_star": 0.03900220784682052,
+    "b1": 2.434203801123914,
+    "rmse": 0.09488247041917613,
+    "n_points": 56,
+    "models": [
+      {
+        "model": "Qwen/Qwen3.5-0.8B",
+        "stored_b": 0.873438784,
+        "dense": 23.549112,
+        "in_fit": true,
+        "exponent": 3.286523904151015,
+        "n_points": 8
+      },
+      {
+        "model": "Qwen/Qwen3.5-2B",
+        "stored_b": 2.274069824,
+        "dense": 17.999889,
+        "in_fit": true,
+        "exponent": 4.298109198185344,
+        "n_points": 8
+      },
+      {
+        "model": "Qwen/Qwen3.5-4B",
+        "stored_b": 4.659865088,
+        "dense": 14.158273,
+        "in_fit": true,
+        "exponent": 5.056532975996005,
+        "n_points": 8
+      },
+      {
+        "model": "Qwen/Qwen3.5-9B",
+        "stored_b": 9.653104368,
+        "dense": 12.314067,
+        "in_fit": true,
+        "exponent": 5.8264562018593775,
+        "n_points": 8
+      },
+      {
+        "model": "Qwen/Qwen3.5-27B",
+        "stored_b": 27.781427952,
+        "dense": 10.495558,
+        "in_fit": true,
+        "exponent": 6.943968892169236,
+        "n_points": 8
+      },
+      {
+        "model": "Qwen/Qwen3.6-27B",
+        "stored_b": 27.781427952,
+        "dense": 10.66149,
+        "in_fit": true,
+        "exponent": 6.943968892169236,
+        "n_points": 8
+      },
+      {
+        "model": "Qwen/Qwen3.8-27B",
+        "stored_b": 27.781427952,
+        "dense": 11.265934,
+        "in_fit": true,
+        "exponent": 6.943968892169236,
+        "n_points": 8
+      }
+    ]
+  },
+  "ptb": {
+    "law": "ln(perplexity / dense) = a * (N / N*)^(b1 log10 s)",
+    "a": 10.215858049774274,
+    "n_star": 0.028306352200290798,
+    "b1": 2.324577111303858,
+    "rmse": 0.10795555927144493,
+    "n_points": 54,
+    "models": [
+      {
+        "model": "Qwen/Qwen3.5-0.8B",
+        "stored_b": 0.873438784,
+        "dense": 33.239418,
+        "in_fit": true,
+        "exponent": 3.462105587939349,
+        "n_points": 7
+      },
+      {
+        "model": "Qwen/Qwen3.5-2B",
+        "stored_b": 2.274069824,
+        "dense": 23.698725,
+        "in_fit": true,
+        "exponent": 4.4281331734513145,
+        "n_points": 8
+      },
+      {
+        "model": "Qwen/Qwen3.5-4B",
+        "stored_b": 4.659865088,
+        "dense": 17.162573,
+        "in_fit": true,
+        "exponent": 5.152400613077057,
+        "n_points": 8
+      },
+      {
+        "model": "Qwen/Qwen3.5-9B",
+        "stored_b": 9.653104368,
+        "dense": 13.969673,
+        "in_fit": true,
+        "exponent": 5.887649612144787,
+        "n_points": 8
+      },
+      {
+        "model": "Qwen/Qwen3.5-27B",
+        "stored_b": 27.781427952,
+        "dense": 11.332214,
+        "in_fit": true,
+        "exponent": 6.954834052612127,
+        "n_points": 8
+      },
+      {
+        "model": "Qwen/Qwen3.6-27B",
+        "stored_b": 27.781427952,
+        "dense": 12.104124,
+        "in_fit": true,
+        "exponent": 6.954834052612127,
+        "n_points": 7
+      },
+      {
+        "model": "Qwen/Qwen3.8-27B",
+        "stored_b": 27.781427952,
+        "dense": 10.014241,
+        "in_fit": true,
+        "exponent": 6.954834052612127,
+        "n_points": 8
+      }
+    ]
+  }
+}

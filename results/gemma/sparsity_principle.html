@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>gemma sparsity principle</title></head>
+<body>
+<h1>gemma sparsity principle</h1>
+<p>Unstructured SparseGPT, C4 calibration (128 × 2048, seed 0), eval on PTB, WikiText2. Points at or below each model's own dense perplexity are excluded. The fit uses total stored parameters so N matches the Qwen page. Effective counts are recorded and are not the fit's N.</p>
+<p><b>PTB</b> ln(perplexity / dense) = 6.78 · (N / 8.46e+03)^(-1.23 log10 s). RMSE 0.372 over 24 points. N and N* are total stored parameters in billions.</p><p><b>WikiText2</b> ln(perplexity / dense) = 8.14 · (N / 0.005)^(1.38 log10 s). RMSE 0.139 over 40 points. N and N* are total stored parameters in billions.</p>
+<table>
+<tr><th>model</th><th>stored N (billions)</th><th>effective N (billions)</th></tr>
+<tr><td>gemma-4-12B</td><td>11.960</td><td>11.950</td></tr><tr><td>gemma-4-26B-A4B</td><td>25.806</td><td>4.000</td></tr><tr><td>gemma-4-31B</td><td>31.273</td><td>30.700</td></tr><tr><td>gemma-4-E2B</td><td>5.123</td><td>2.300</td></tr><tr><td>gemma-4-E4B</td><td>7.996</td><td>4.500</td></tr>
+</table>
+</body>
+</html>

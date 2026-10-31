@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>olmo2 sparsity principle</title></head>
+<body>
+<h1>olmo2 sparsity principle</h1>
+<p>Unstructured SparseGPT, C4 calibration (128 × 2048, seed 0), eval on WikiText2, PTB. Points at or below each model's own dense perplexity are excluded. The fit uses total stored parameters so N matches the Qwen page. Effective counts are recorded and are not the fit's N.</p>
+<p><b>WikiText2</b> ln(perplexity / dense) = 7.17 · (N / 1.23e-27)^(0.16 log10 s). RMSE 0.070 over 30 points. N and N* are total stored parameters in billions.</p><p><b>PTB</b> ln(perplexity / dense) = 6.89 · (N / 1.72e-23)^(0.19 log10 s). RMSE 0.098 over 29 points. N and N* are total stored parameters in billions.</p>
+<table>
+<tr><th>model</th><th>stored N (billions)</th><th>effective N (billions)</th></tr>
+<tr><td>OLMo-2-0425-1B-Instruct</td><td>1.485</td><td></td></tr><tr><td>OLMo-2-1124-7B-Instruct</td><td>7.299</td><td></td></tr><tr><td>OLMo-2-1124-13B-Instruct</td><td>13.716</td><td></td></tr>
+</table>
+</body>
+</html>
