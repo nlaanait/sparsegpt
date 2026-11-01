@@ -9,6 +9,9 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
+# Corpora a runner accepts as calibration or eval. Sweep validation uses this set.
+CORPORA = frozenset({"wikitext2", "ptb", "c4"})
+
 
 @dataclass(frozen=True)
 class RunConfig:
@@ -30,13 +33,13 @@ class RunConfig:
     pruner_options: dict = field(default_factory=dict)
 
     def __post_init__(self) -> None:
-        if self.calibration not in {"wikitext2", "ptb", "c4"}:
+        if self.calibration not in CORPORA:
             raise ValueError(f"unknown calibration corpus {self.calibration!r}")
         if not 0.0 <= self.sparsity < 1.0:
             raise ValueError("sparsity must be in [0, 1)")
         if self.nsamples <= 0 or self.seqlen <= 0:
             raise ValueError("nsamples and seqlen must be positive")
-        unknown = set(self.eval_datasets) - {"wikitext2", "ptb", "c4"}
+        unknown = set(self.eval_datasets) - CORPORA
         if unknown:
             raise ValueError(f"unknown eval corpora: {sorted(unknown)}")
         if self.pruner == "geometry":

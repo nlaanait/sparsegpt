@@ -8,17 +8,19 @@ LLaMA entry points are still in `sparsegpt/`. Run them as
 
 ## Layout
 
-- `sparsifier/` — one run: a pruner, a metric, and a registered model.
+- `src/sparsifier/` — the pixi project. One run: a pruner, a metric, and a registered model.
   Perplexity is the metric recorded today. Bits per byte is the other
   metric, once an eval counts bytes. SparseGPT and geometry are the two
   pruners. `sparsifier.catalog` is the model table: Hugging Face id, family,
   runner, and stored parameter count. It does not import `experiments`.
+  `sparsifier.sweeps` is the `SweepSpec` type and `validate`. Family records
+  stay in `experiments`.
 - `sparsegpt/` — the SparseGPT solver, the geometry solver, and the model
   entry points that still own the layer loops (`python -m sparsegpt.qwen`
   and the same for `opt`, `bloom`, `llama`, `gemma`, `olmo`).
-- `experiments/` — one `SweepSpec` per family and calibration, plus the
-  submit scripts. The spec type and the prune-arg live in
-  `experiments/protocol.py`. `experiments.sweeps` lists the specs.
+- `experiments/` — one sweep record per family and calibration, plus the
+  submit scripts. The prune-arg lives in `experiments/protocol.py`.
+  `experiments.sweeps` lists the specs.
   `python -m experiments.reproduce plan <sweep>` prints the commands still
   missing. `python -m experiments.reproduce figures <sweep>` rewrites the
   three pages and the family principle page from saved JSON.

@@ -63,7 +63,7 @@ def test_a_known_prefix_resolves_without_a_stored_count():
 
 
 def test_sparsifier_does_not_import_the_sweep_stack():
-    root = Path(__file__).resolve().parents[1] / "sparsifier"
+    root = Path(__file__).resolve().parents[1] / "src" / "sparsifier"
     for path in sorted(root.glob("*.py")):
         tree = ast.parse(path.read_text())
         for node in ast.walk(tree):
