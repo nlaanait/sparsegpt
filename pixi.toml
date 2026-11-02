@@ -1,10 +1,11 @@
 [workspace]
 name = "sparsifier"
 version = "0.1.0"
-description = "Sparsifier runs a prune and a metric. SparseGPT and geometry are pruners."
+description = "Sparsity-based pruning of LLMs."
 authors = ["nlaanait"]
 channels = ["conda-forge"]
 platforms = [{ platform = "linux-aarch64", cuda = "13.0" }]
+preview = ["pixi-build"]
 
 [dependencies]
 python = "3.12.*"
@@ -12,9 +13,25 @@ pip = "*"
 setuptools = "<82"
 ninja = "*"
 packaging = "*"
+sparsifier = { path = "." }
+
+[package]
+name = { workspace = true }
+version = { workspace = true }
+description = { workspace = true }
+authors = { workspace = true }
+
+[package.build]
+backend = { name = "pixi-build-python", version = "0.*" }
+
+[package.host-dependencies]
+python = "3.12.*"
+setuptools = "<82"
+
+[package.run-dependencies]
+click = ">=8.1"
 
 [pypi-dependencies]
-sparsifier = { path = ".", editable = true }
 torch = { version = "==2.12.0+cu130", index = "https://download.pytorch.org/whl/cu130" }
 transformers = ">=4.56"
 datasets = ">=3.6"
@@ -27,7 +44,7 @@ pytest = ">=8.3"
 plotly = ">=6"
 ipykernel = ">=6.29"
 jupyter = ">=1.1"
-# Qwen3.5 linear-attention kernels (avoids slow PyTorch fallbacks)
+# Qwen3.5 linear-attention kernels (avoids slow PyTorch fallbacks).
 # Prebuilt for torch==2.12.0+cu130 on linux-aarch64. See ~/.pixi/wheels/cu130.
 causal-conv1d = { path = "/home/nlaanait/.pixi/wheels/cu130/causal_conv1d-1.7.0-cp312-cp312-linux_aarch64.whl" }
 flash-linear-attention = { version = ">=0.5.0", extras = ["cuda", "conv1d"] }
@@ -38,52 +55,77 @@ kernels = ">=0.17.2,<0.18"
 [activation.env]
 PYTHONPATH = "src:."
 
-[tasks]
-cuda-check = "python -c \"import torch; print(torch.__version__); print(torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'no-cuda')\""
-test = "python -m pytest -v tests/"
-test-sparsegpt = "python -m pytest -v tests/test_sparsegpt.py"
-test-geometry = "python -m pytest -v tests/test_geometry.py"
+[tasks.cuda-check]
+description = "Print the torch build and the visible GPU"
+cmd = """python -c "import torch; print(torch.__version__); print(torch.cuda.is_available()); print(torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'no-cuda')" """
 
-# Layer-level geometry demo (no model download)
-# sparsity: one or more targets, e.g. `pixi run geometry-demo 0.5` or `pixi run geometry-demo "0.5 0.9"`
-geometry-demo = { cmd = "python -m sparsegpt.geometry_demo --output geometry_results --device cpu --requested-sparsity {{ sparsity }}", args = [{ arg = "sparsity", default = "0.5 0.75 0.9 0.95" }] }
-geometry-demo-cpu = { cmd = "python -m sparsegpt.geometry_demo --output geometry_results --device cpu --requested-sparsity {{ sparsity }}", args = [{ arg = "sparsity", default = "0.5 0.75 0.9 0.95" }] }
-geometry-demo-cuda = { cmd = "python -m sparsegpt.geometry_demo --output geometry_results_cuda --device cuda --requested-sparsity {{ sparsity }}", args = [{ arg = "sparsity", default = "0.5 0.75 0.9 0.95" }] }
+[tasks.test]
+description = "Run the test suite"
+cmd = "python -m pytest -v tests/"
 
-# Colab-style OPT demo (demo.ipynb) and its prune commands
-demo = "jupyter notebook demo.ipynb"
-demo-lab = "jupyter lab demo.ipynb"
-demo-opt = { cmd = "python -m sparsegpt.opt facebook/opt-125m c4 --sparsity {{ sparsity }} --save sparse_opt/opt-125m", args = [{ arg = "sparsity", default = "0.5" }] }
-demo-opt-nm = "python -m sparsegpt.opt facebook/opt-125m c4 --prunen 2 --prunem 4 --save sparse_opt/opt-125m-2-4"
+[tasks.test-sparsegpt]
+description = "Run the SparseGPT solver tests"
+cmd = "python -m pytest -v tests/test_sparsegpt.py"
 
-# BLOOM prune demos (small 560m checkpoint)
-demo-bloom = { cmd = "python -m sparsegpt.bloom bigscience/bloom-560m c4 --sparsity {{ sparsity }} --save sparse_opt/bloom-560m", args = [{ arg = "sparsity", default = "0.5" }] }
-demo-bloom-nm = "python -m sparsegpt.bloom bigscience/bloom-560m c4 --prunen 2 --prunem 4 --save sparse_opt/bloom-560m-2-4"
+# Qwen runs through the Click command. N:M flags are --zeros-per-group and --group-size.
+[tasks.demo-qwen]
+description = "SparseGPT on Qwen3.5-2B"
+cmd = "python -m sparsifier Qwen/Qwen3.5-2B c4 --sparsity {{ sparsity }} --save sparse_opt/qwen3.5-2b"
+args = [{ arg = "sparsity", default = "0.5" }]
 
-# Qwen3.5-2B text-tower SparseGPT
-demo-qwen = { cmd = "python -m sparsegpt.qwen Qwen/Qwen3.5-2B c4 --sparsity {{ sparsity }} --save sparse_opt/qwen3.5-2b", args = [{ arg = "sparsity", default = "0.5" }] }
-demo-qwen-nm = "python -m sparsegpt.qwen Qwen/Qwen3.5-2B c4 --prunen 2 --prunem 4 --save sparse_opt/qwen3.5-2b-2-4"
-demo-qwen-smoke = { cmd = "python -m sparsegpt.qwen Qwen/Qwen3.5-2B c4 --sparsity {{ sparsity }} --nsamples 4 --maxlayer 1 --skip-eval --save sparse_opt/qwen3.5-2b-smoke", args = [{ arg = "sparsity", default = "0.5" }] }
+[tasks.demo-qwen-nm]
+description = "2:4 SparseGPT on Qwen3.5-2B"
+cmd = "python -m sparsifier Qwen/Qwen3.5-2B c4 --zeros-per-group 2 --group-size 4 --save sparse_opt/qwen3.5-2b-2-4"
 
-# Figure 1: sparsity vs raw-WikiText2 perplexity (dense, magnitude, SparseGPT).
-# Resumes from results/qwen3.5/qwen3.5-2b_wikitext2.json and skips finished points.
-# Writes results/qwen3.5/qwen3.5-2b_sparsity_perplexity.html.
-qwen-figure1 = "python -m drivers.qwen_figure1"
-qwen-figure1-plot = "python -m drivers.qwen_figure1 --plot-only"
+[tasks.demo-qwen-smoke]
+description = "Qwen3.5-2B prune of one layer, four C4 samples, no eval"
+cmd = "python -m sparsifier Qwen/Qwen3.5-2B c4 --sparsity {{ sparsity }} --nsamples 4 --maxlayer 1 --skip-eval --save sparse_opt/qwen3.5-2b-smoke"
+args = [{ arg = "sparsity", default = "0.5" }]
 
-# Figure 1 for each Qwen3.5 model. Magnitude stops above perplexity 100,
-# unstructured SparseGPT stops above 200. Resumes from
-# results/qwen3.5/qwen3.5_family_sparsity_wikitext2.json.
-qwen-figure1-family = "python -m drivers.qwen_figure1_family"
-qwen-figure1-family-plot = "python -m drivers.qwen_figure1_family --plot-only"
+[tasks._qwen-figure1]
+cmd = "python -m drivers.qwen_figure1 {{ extra }}"
+args = [{ arg = "extra", default = "" }]
 
-# PTB perplexity vs sparsity, reusing C4 SparseGPT checkpoints in sparse_opt.
-# Resumes from results/qwen3.5/qwen3.5_family_sparsity_ptb.json.
-qwen-ptb = "python -u -m drivers.qwen_ptb"
-qwen-ptb-plot = "python -m drivers.qwen_ptb --plot-only"
+[tasks.qwen-figure1]
+description = "WikiText2 perplexity versus sparsity for Qwen3.5-2B. Resumes from results/qwen3.5/qwen3.5-2b_wikitext2.json."
+depends-on = ["_qwen-figure1"]
 
-# Figure 2: raw-WikiText2 perplexity vs Qwen3.5 model size
-# (dense, 50% unstructured, 4:8, 2:4). Resumes from
-# results/qwen3.5/qwen3.5_family_wikitext2.json.
-qwen-figure2 = "python -m drivers.qwen_figure2"
-qwen-figure2-plot = "python -m drivers.qwen_figure2 --plot-only"
+[tasks.qwen-figure1-plot]
+description = "Redraw the Qwen3.5-2B sparsity page from saved JSON"
+depends-on = [{ task = "_qwen-figure1", args = ["--plot-only"] }]
+
+[tasks._qwen-figure1-family]
+cmd = "python -m drivers.qwen_figure1_family {{ extra }}"
+args = [{ arg = "extra", default = "" }]
+
+[tasks.qwen-figure1-family]
+description = "WikiText2 perplexity versus sparsity for each Qwen3.5 model. Resumes from results/qwen3.5/qwen3.5_family_sparsity_wikitext2.json."
+depends-on = ["_qwen-figure1-family"]
+
+[tasks.qwen-figure1-family-plot]
+description = "Redraw the Qwen3.5 family sparsity page from saved JSON"
+depends-on = [{ task = "_qwen-figure1-family", args = ["--plot-only"] }]
+
+[tasks._qwen-ptb]
+cmd = "python -u -m drivers.qwen_ptb {{ extra }}"
+args = [{ arg = "extra", default = "" }]
+
+[tasks.qwen-ptb]
+description = "PTB perplexity versus sparsity, reusing C4 checkpoints in sparse_opt. Resumes from results/qwen3.5/qwen3.5_family_sparsity_ptb.json."
+depends-on = ["_qwen-ptb"]
+
+[tasks.qwen-ptb-plot]
+description = "Redraw the PTB sparsity page from saved JSON"
+depends-on = [{ task = "_qwen-ptb", args = ["--plot-only"] }]
+
+[tasks._qwen-figure2]
+cmd = "python -m drivers.qwen_figure2 {{ extra }}"
+args = [{ arg = "extra", default = "" }]
+
+[tasks.qwen-figure2]
+description = "WikiText2 perplexity versus Qwen3.5 model size. Resumes from results/qwen3.5/qwen3.5_family_wikitext2.json."
+depends-on = ["_qwen-figure2"]
+
+[tasks.qwen-figure2-plot]
+description = "Redraw the Qwen3.5 size page from saved JSON"
+depends-on = [{ task = "_qwen-figure2", args = ["--plot-only"] }]

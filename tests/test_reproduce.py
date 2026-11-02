@@ -50,7 +50,7 @@ def test_every_sweep_model_resolves_to_its_runner():
 def test_a_known_prefix_resolves_without_a_stored_count():
     qwen = resolve("Qwen/Qwen3.5-1B")
     assert qwen.family == "qwen"
-    assert qwen.runner == "sparsegpt.qwen"
+    assert qwen.runner == "sparsifier"
     assert qwen.stored_b is None
     opt = resolve("facebook/opt-125m")
     assert opt.runner == "sparsegpt.opt"
@@ -198,7 +198,7 @@ def _toy_spec(result_dir: Path, models: tuple[str, ...] = ("org/Toy-1B",)) -> Sw
     return SweepSpec(
         name="toy",
         models=models,
-        runner="sparsegpt.llama",
+        runner="sparsifier",
         extra_args=("--true-sequential",),
         result_dir=result_dir,
         log_dir=result_dir / "logs",

@@ -102,7 +102,7 @@ def run_qwen(model: str, method: str, log_path: Path) -> float:
     cmd = [
         sys.executable,
         "-m",
-        "sparsegpt.qwen",
+        "sparsifier",
         model,
         "c4",
         "--eval-datasets",
@@ -113,9 +113,9 @@ def run_qwen(model: str, method: str, log_path: Path) -> float:
     elif method == "50% Unstructured":
         cmd.extend(["--sparsity", "0.5", "--save", f"sparse_opt/{short}"])
     elif method == "4:8":
-        cmd.extend(["--prunen", "4", "--prunem", "8", "--save", f"sparse_opt/{short}"])
+        cmd.extend(["--zeros-per-group", "4", "--group-size", "8", "--save", f"sparse_opt/{short}"])
     elif method == "2:4":
-        cmd.extend(["--prunen", "2", "--prunem", "4", "--save", f"sparse_opt/{short}"])
+        cmd.extend(["--zeros-per-group", "2", "--group-size", "4", "--save", f"sparse_opt/{short}"])
     else:
         raise ValueError(method)
     print("+", " ".join(cmd), flush=True)

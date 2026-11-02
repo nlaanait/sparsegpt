@@ -24,7 +24,7 @@ def _qwen() -> SweepSpec:
 
 def test_validate_qwen_uses_the_catalog_runner(tmp_path: Path):
     checked = validate(_qwen(), tmp_path)
-    assert checked.runner == "sparsegpt.qwen"
+    assert checked.runner == "sparsifier"
     assert checked.calibration == "c4"
     assert checked.eval_datasets == ("ptb", "wikitext2")
     assert checked.plot is False
@@ -76,7 +76,7 @@ def test_mixed_runners_are_rejected(tmp_path: Path):
         attention="atlas-gdn",
         holdout_suffix="2B",
     )
-    with pytest.raises(ValueError, match="one runner"):
+    with pytest.raises(ValueError, match="one family"):
         validate(spec, tmp_path)
 
 

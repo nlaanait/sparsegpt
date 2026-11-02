@@ -1,7 +1,7 @@
 """One checkpoint: which pruner, which metric, which calibration corpus.
 
-``run`` is not wired to a family yet. Sweep commands stay
-``python -m sparsegpt.<family>`` until those loops move here.
+A sweep validates these configs. The Click command in ``sparsifier.cli``
+runs one checkpoint.
 """
 
 from __future__ import annotations

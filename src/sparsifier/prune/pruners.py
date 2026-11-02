@@ -175,6 +175,22 @@ class Geometry:
         )
 
 
+def bind_layer(
+    layer: nn.Module,
+    *,
+    block_index: int,
+    module_name: str,
+    geometry_alpha: float = 0.0,
+    geometry_probes: Path | None = None,
+) -> BoundPruner:
+    """Bind the activation pruner, or geometry when ``geometry_alpha`` is positive."""
+    if geometry_alpha > 0:
+        pruner = get_pruner("geometry", alpha=geometry_alpha, probes=geometry_probes)
+    else:
+        pruner = get_pruner("sparsegpt")
+    return pruner.bind(layer, block_index=block_index, module_name=module_name)
+
+
 def get_pruner(name: str, **options) -> Pruner:
     """Look up a pruner by name. Geometry accepts ``alpha`` and ``probes``."""
     if name == SparseGPT.name:

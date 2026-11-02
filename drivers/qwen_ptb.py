@@ -18,7 +18,7 @@ from argparse import Namespace
 from pathlib import Path
 
 from experiments.protocol import prune_args
-from sparsegpt.prune_cache import find_pruned_model, prune_config_from_args
+from sparsifier.data.cache import find_pruned_model, prune_config_from_args
 from drivers.qwen_figure1_family import (
     MODELS,
     PPL_RE,
@@ -58,7 +58,13 @@ def cached_sparse_points() -> list[tuple[str, float, Path]]:
         sparsity = float(config.get("sparsity") or 0.0)
         if model not in MODELS or sparsity <= 0:
             continue
-        if config.get("prunen") or config.get("prunem") or config.get("gmp"):
+        if (
+            config.get("zeros_per_group")
+            or config.get("group_size")
+            or config.get("prunen")
+            or config.get("prunem")
+            or config.get("gmp")
+        ):
             continue
         if config.get("dataset") != "c4" or config.get("nsamples") != 128:
             continue
@@ -84,7 +90,7 @@ def run_qwen(model: str, sparsity: float, log_path: Path) -> float:
     cmd = [
         sys.executable,
         "-m",
-        "sparsegpt.qwen",
+        "sparsifier",
         model,
         "c4",
         "--sparsity",

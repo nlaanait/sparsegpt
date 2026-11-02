@@ -1,7 +1,7 @@
 """Sweep records application code builds, and the check a runner requires.
 
 A ``SweepSpec`` is data. ``validate`` resolves its models in the catalog,
-requires one shared runner and a stored parameter count, and returns a
+requires one shared runner, one family, and a stored parameter count, and returns a
 ``CheckedSweep``. Command builders take that checked value.
 """
 
@@ -115,6 +115,10 @@ def validate(spec: SweepSpec, root: Path) -> CheckedSweep:
     if len(runners) != 1:
         found = ", ".join(f"{record.model_id} -> {record.runner}" for record in records)
         raise ValueError(f"sweep {spec.name} must use one runner; found {found}")
+    families = {record.family for record in records}
+    if len(families) != 1:
+        found = ", ".join(f"{record.model_id} -> {record.family}" for record in records)
+        raise ValueError(f"sweep {spec.name} must use one family; found {found}")
     result_dir = root / "results" / spec.name
     return CheckedSweep(
         spec=spec,

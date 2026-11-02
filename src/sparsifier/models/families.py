@@ -1,20 +1,22 @@
-"""Family protocols for the layer loop, once it moves out of ``sparsegpt``.
+"""Family protocols for a shared layer loop.
 
 A decoder family supplies capture, the layer forward, and which linears are
 prunable. A family whose block is not that shape implements ``prune_model``
-and ``likelihood`` itself. Gemma is the second kind. Model lookup is
-``sparsifier.models.catalog.resolve``. Nothing here is wired to a loop yet.
+and ``likelihood`` itself. Gemma is the second kind. The Click command
+dispatches to these methods. Model lookup is
+``sparsifier.models.catalog.resolve``.
 """
 
 from __future__ import annotations
 
-from typing import Protocol
+from typing import Protocol, runtime_checkable
 
 from sparsifier.metrics import Likelihood
 from sparsifier.prune import Pruner
 from sparsifier.sweep import RunConfig
 
 
+@runtime_checkable
 class DecoderFamily(Protocol):
     """Shared layer loop: capture inputs, forward one block, score."""
 
@@ -38,10 +40,14 @@ class DecoderFamily(Protocol):
     def prunable(self, layer) -> dict:
         """Name to linear module for the linears SparseGPT may touch."""
 
+    def sequential_groups(self, layer) -> list[list[str]]:
+        """True-sequential order. Names are keys of ``prunable``."""
+
     def likelihood(self, model, encoded, config: RunConfig) -> Likelihood:
         """Summed negative log-likelihood on ``encoded``."""
 
 
+@runtime_checkable
 class OwnLoopFamily(Protocol):
     """Owns the layer loop. The shared run only loads, caches, and scores."""
 

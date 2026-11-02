@@ -17,7 +17,7 @@ def test_registered_ids_are_sorted_and_have_a_stored_count():
 def test_exact_id_returns_the_stored_count():
     record = resolve("Qwen/Qwen3.5-0.8B")
     assert record.family == "qwen"
-    assert record.runner == "sparsegpt.qwen"
+    assert record.runner == "sparsifier"
     assert stored_count(record.model_id) == record.stored_b
 
 

@@ -1,10 +1,9 @@
 # SparseGPT fork
 
 This fork measures unstructured SparseGPT on Qwen, Gemma 4, OLMo 2 Instruct,
-and Llama 3, and fits one sparsity law per family. Upstream OPT / BLOOM /
-LLaMA entry points are still in `sparsegpt/`. Run them as
-`python -m sparsegpt.qwen` (and the same for `opt`, `bloom`, `llama`,
-`gemma`, `olmo`).
+and Llama 3, and fits one sparsity law per family. Those four families run
+as `python -m sparsifier`. OPT and BLOOM stay in `sparsegpt/`
+(`python -m sparsegpt.opt`, `python -m sparsegpt.bloom`).
 
 ## Layout
 
@@ -13,12 +12,18 @@ LLaMA entry points are still in `sparsegpt/`. Run them as
   metric, once an eval counts bytes. `sparsifier.prune` owns the SparseGPT
   and geometry solvers plus the pruner adapters that bind them to a layer.
   `sparsifier.models` holds the catalog (Hugging Face id, family, runner,
-  stored parameter count) and family protocols. It does not import
-  `experiments`. `sparsifier.sweep` is the run config, `SweepSpec`, and
-  `validate`. Family sweep records stay in `experiments`.
-- `sparsegpt/` — the legacy SparseGPT / geometry solvers used by the model
-  entry points that still own the layer loops (`python -m sparsegpt.qwen`
-  and the same for `opt`, `bloom`, `llama`, `gemma`, `olmo`).
+  stored parameter count), the family protocols, and the Qwen, OLMo, Llama,
+  and Gemma layer loops.
+  It does not import `experiments`. The Click command
+  is `sparsifier.cli` (`python -m sparsifier`). N:M flags are
+  `--zeros-per-group` and `--group-size`. `sparsifier.data` loads the
+  calibration windows (`loaders`) and finds a pruned checkpoint (`cache`).
+  `sparsifier.sweep` is the run
+  config, `SweepSpec`, and `validate`. Family sweep records stay in
+  `experiments`.
+- `sparsegpt/` — the legacy package. OPT and BLOOM still run from here.
+  The copied Qwen, OLMo, Llama, and Gemma modules stay on disk for parity
+  tests. The Click command does not import them.
 - `experiments/` — one sweep record per family and calibration, plus the
   submit scripts. The prune-arg lives in `experiments/protocol.py`.
   `experiments.sweeps` lists the specs.
@@ -48,12 +53,12 @@ not fit it, do not quote it, and do not treat it as a point on the law.
 `model()` on the same windows. Those two paths once agreed near 12,000 on
 WikiText2. Agreement is not a valid score.
 
-When a Gemma dense score is implausible, trace `sparsegpt/gemma.py`:
+When a Gemma dense score is implausible, trace `sparsifier/models/gemma.py`:
 `get_gemma`, `gemma_eval`, `gemma_reference_nlls`, and the inputs from
-`sparsegpt/datautils.py`. Logs are `results/gemma/logs/<model>_<dataset>_sdpa_dense.log`.
+`sparsifier/data/loaders.py`. Logs are `results/gemma/logs/<model>_<dataset>_sdpa_dense.log`.
 The line `Perplexity:` is the number that was stored. Leave `analysis/sweep.py`,
 `experiments/run_gemma.sh`, and any running `python -m analysis.sweep` or
-`python -m sparsegpt.gemma` process alone. Do not load another full model
+`python -m sparsifier` process alone. Do not load another full model
 onto the GPU while one of those is running — submit through gflow instead
 (see Scheduling below).
 
@@ -109,7 +114,7 @@ under `results/olmo2/`. Driver: `drivers.olmo2_sparsity`.
 ## Scheduling (gflow)
 
 All GPU experiments on this machine go through **gflow**. Do not start
-`python -m sparsegpt.*`, `python -m drivers.olmo2_sparsity`, or `analysis.sweep`
+`python -m sparsifier`, `python -m sparsegpt.*`, `python -m drivers.olmo2_sparsity`, or `analysis.sweep`
 in a bare tmux/shell while another GPU job may run. Ad-hoc `pgrep` wait loops
 are not a queue.
 
@@ -172,5 +177,5 @@ gjob log <id>
 ginfo
 ```
 
-Cancel with `gcancel <id>`. Do not kill random `python -m sparsegpt.*`
+Cancel with `gcancel <id>`. Do not kill random `python -m sparsifier` or `python -m sparsegpt.*`
 processes that gflow owns; cancel the job instead.

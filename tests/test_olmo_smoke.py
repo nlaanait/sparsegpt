@@ -14,7 +14,7 @@ from experiments.olmo import MODELS, OLMO2, SMOKE_DATASET, SMOKE_PPL_RANGE, stor
 def test_olmo2_spec_protocol():
     assert OLMO2.calibration == "c4"
     assert OLMO2.eval_datasets == ("wikitext2", "ptb")
-    assert OLMO2.runner == "sparsegpt.olmo"
+    assert OLMO2.runner == "sparsifier"
     assert SMOKE_DATASET == "wikitext2"
     assert len(MODELS) == 4
     assert all(name.endswith("-Instruct") for name in MODELS)

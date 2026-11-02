@@ -1,3 +1,5 @@
+# pip and uv install this file. The Pixi workspace and package are pixi.toml.
+
 [build-system]
 requires = ["setuptools>=61,<82"]
 build-backend = "setuptools.build_meta"
@@ -5,10 +7,14 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sparsifier"
 version = "0.1.0"
-description = "Sparsifier runs a prune and a metric. SparseGPT and geometry are pruners."
+description = "Sparsity-based pruning of LLMs."
 readme = "README.md"
 requires-python = ">=3.12"
 authors = [{ name = "nlaanait" }]
+dependencies = ["click>=8.1"]
+
+[project.scripts]
+sparsifier = "sparsifier.cli:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

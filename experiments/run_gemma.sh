@@ -10,7 +10,7 @@ echo "download E2B $(date)"
 pixi run python -c "from huggingface_hub import snapshot_download; snapshot_download('google/gemma-4-E2B-it')"
 
 echo "waiting for Qwen $(date)"
-while pgrep -f "drivers.qwen_36_38_sparsity" >/dev/null || pgrep -f "python -m sparsegpt.qwen" >/dev/null; do
+while pgrep -f "drivers.qwen_36_38_sparsity" >/dev/null || pgrep -f "python -m sparsegpt.qwen" >/dev/null || pgrep -f "python -m sparsifier" >/dev/null; do
   echo "still waiting $(date)"
   sleep 60
 done

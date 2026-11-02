@@ -10,16 +10,16 @@ from __future__ import annotations
 import torch
 
 from experiments.protocol import prune_args as _prune_args
-from sparsegpt.datautils import get_loaders
-from sparsegpt.gemma import (
+from sparsifier.data.loaders import get_loaders
+from sparsifier.models.layers import DEV
+from sparsifier.models.gemma import (
     gemma_eval,
     gemma_reference_nlls,
     gemma_sequential,
     get_gemma,
     is_prunable_parameter,
 )
-from sparsegpt.modelutils import DEV
-import sparsegpt.gemma as gemma_mod
+import sparsifier.models.gemma as gemma_mod
 
 MODEL = "google/gemma-4-E2B-it"
 
@@ -78,7 +78,7 @@ def main() -> None:
             raise SystemExit(f"{name} sparsity {fraction:.4f} is not 50%")
     if seen == 0:
         raise SystemExit("no decoder linears were pruned")
-    from sparsegpt.prune_cache import prune_config_from_args, resolve_save_dir, write_prune_config
+    from sparsifier.data.cache import prune_config_from_args, resolve_save_dir, write_prune_config
 
     config = prune_config_from_args(gemma_mod.args)
     dest = resolve_save_dir("sparse_opt/gemma-4-e2b-it", config)

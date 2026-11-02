@@ -21,7 +21,7 @@ import threading
 import time
 from pathlib import Path
 
-from sparsegpt.prune_cache import find_pruned_model, prune_config_from_args
+from sparsifier.data.cache import find_pruned_model, prune_config_from_args
 
 from drivers.qwen_figure1_family import (
     PPL_RE,
@@ -101,7 +101,7 @@ def run_one(dataset: str, sparsity: float, log_path: Path) -> float:
     cmd = [
         sys.executable,
         "-m",
-        "sparsegpt.qwen",
+        "sparsifier",
         MODEL,
         "c4",
         "--sparsity",

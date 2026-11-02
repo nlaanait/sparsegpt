@@ -50,7 +50,7 @@ def run_qwen(sparsity: float, gmp: bool, log_path: Path) -> float:
     cmd = [
         sys.executable,
         "-m",
-        "sparsegpt.qwen",
+        "sparsegpt.qwen" if gmp else "sparsifier",
         MODEL,
         "c4",
         "--sparsity",
