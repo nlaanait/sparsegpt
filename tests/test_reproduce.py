@@ -20,7 +20,7 @@ from experiments.reproduce import (
     write_reports,
 )
 from experiments.sweeps import sweeps
-from sparsifier.catalog import models, resolve
+from sparsifier.models import models, resolve
 
 
 def test_every_sweep_model_resolves_to_its_runner():

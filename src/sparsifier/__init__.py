@@ -4,11 +4,10 @@
 Model loops still live under `sparsegpt/` until they move behind a family.
 """
 
-from sparsifier.catalog import ModelRecord, models, resolve, stored_count
+from sparsifier.models import ModelRecord, models, resolve, stored_count
 from sparsifier.metrics import BitsPerByte, Likelihood, Perplexity, format_result
-from sparsifier.pruners import Geometry, SparseGPT, get_pruner
-from sparsifier.run import RunConfig
-from sparsifier.sweeps import CheckedSweep, SweepSpec, repo_root, validate
+from sparsifier.prune import Geometry, SparseGPT, get_pruner
+from sparsifier.sweep import CheckedSweep, RunConfig, SweepSpec, repo_root, validate
 
 __all__ = [
     "BitsPerByte",

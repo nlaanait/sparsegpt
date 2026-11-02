@@ -14,6 +14,14 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class ModelRecord:
+    """One checkpoint the sweeps can measure.
+
+    ``stored_b`` is safetensors bytes / 2, in billions. ``None`` means the
+    id matched a family prefix but is not a registered checkpoint.
+    ``loop`` is ``decoder`` when the shared layer loop can drive it, or
+    ``own`` when the family runs its own loop (Gemma).
+    """
+
     model_id: str
     family: str
     runner: str
@@ -70,10 +78,12 @@ _EXACT = {record.model_id: record for record in _MODELS}
 
 
 def models() -> tuple[ModelRecord, ...]:
+    """Registered checkpoints, sorted by Hugging Face id."""
     return tuple(_EXACT[model_id] for model_id in sorted(_EXACT))
 
 
 def stored_count(model_id: str) -> float:
+    """Stored parameter count in billions. Rejects prefix-only ids."""
     count = resolve(model_id).stored_b
     if count is None:
         raise LookupError(f"{model_id} has no stored parameter count")
@@ -81,6 +91,7 @@ def stored_count(model_id: str) -> float:
 
 
 def resolve(model_id: str) -> ModelRecord:
+    """Exact catalog row, or a prefix match with no stored count."""
     exact = _EXACT.get(model_id)
     if exact is not None:
         return exact

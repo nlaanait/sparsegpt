@@ -1,8 +1,7 @@
 """Pruners bound to one linear layer.
 
 SparseGPT observes calibration activations and prunes. Geometry does that
-and then adds a tangent term to the Hessian before the same solve. The
-solver classes still live in the ``sparsegpt`` package.
+and then adds a tangent term to the Hessian before the same solve.
 """
 
 from __future__ import annotations
@@ -15,29 +14,39 @@ from typing import Protocol
 import numpy as np
 import torch.nn as nn
 
-from sparsegpt.geometry import GeometrySparseGPT
-from sparsegpt.sparsegpt import SparseGPT as SparseGPTSolver
+from sparsifier.prune.geometry import GeometrySparseGPT
+from sparsifier.prune.sparsegpt import SparseGPT as SparseGPTSolver
 
 
 class BoundPruner(Protocol):
-    def add_batch(self, inp, out) -> None: ...
+    """A solver already attached to one layer."""
 
-    def finalize(self) -> None: ...
+    def add_batch(self, inputs, outputs) -> None: ...
+
+    def finalize(self) -> None:
+        """Finish calibration. Geometry loads probes here; SparseGPT is a no-op."""
 
     def prune(
         self,
         *,
         sparsity: float,
-        prunen: int = 0,
-        prunem: int = 0,
+        zeros_per_group: int = 0,
+        group_size: int = 0,
         blocksize: int = 128,
         percdamp: float = 0.01,
-    ) -> None: ...
+    ) -> None:
+        """Write the pruned weights into the bound layer.
+
+        ``zeros_per_group`` / ``group_size`` select N:M sparsity (see ``SparseGPT.fasterprune``).
+        ``zeros_per_group == 0`` is unstructured at ``sparsity``.
+        """
 
     def free(self) -> None: ...
 
 
 class Pruner(Protocol):
+    """Factory that binds a solver to one linear."""
+
     name: str
 
     def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> BoundPruner: ...
@@ -47,8 +56,8 @@ class Pruner(Protocol):
 class _SparseGPTBound:
     solver: SparseGPTSolver
 
-    def add_batch(self, inp, out) -> None:
-        self.solver.add_batch(inp, out)
+    def add_batch(self, inputs, outputs) -> None:
+        self.solver.add_batch(inputs, outputs)
 
     def finalize(self) -> None:
         return None
@@ -57,15 +66,15 @@ class _SparseGPTBound:
         self,
         *,
         sparsity: float,
-        prunen: int = 0,
-        prunem: int = 0,
+        zeros_per_group: int = 0,
+        group_size: int = 0,
         blocksize: int = 128,
         percdamp: float = 0.01,
     ) -> None:
         self.solver.fasterprune(
             sparsity,
-            prunen=prunen,
-            prunem=prunem,
+            zeros_per_group=zeros_per_group,
+            group_size=group_size,
             blocksize=blocksize,
             percdamp=percdamp,
         )
@@ -83,8 +92,8 @@ class _GeometryBound:
     module_name: str
     _finalized: bool = False
 
-    def add_batch(self, inp, out) -> None:
-        self.solver.add_batch(inp, out)
+    def add_batch(self, inputs, outputs) -> None:
+        self.solver.add_batch(inputs, outputs)
 
     def finalize(self) -> None:
         if self._finalized:
@@ -99,24 +108,24 @@ class _GeometryBound:
             raise FileNotFoundError(
                 f"missing geometry probes for layer {self.block_index}/{self.module_name}: {path}"
             )
-        loaded = np.load(path, allow_pickle=False, mmap_mode="c")
-        self.solver.add_geometry(loaded, alpha=self.alpha)
+        probes = np.load(path, allow_pickle=False, mmap_mode="c")
+        self.solver.add_geometry(probes, alpha=self.alpha)
         self._finalized = True
 
     def prune(
         self,
         *,
         sparsity: float,
-        prunen: int = 0,
-        prunem: int = 0,
+        zeros_per_group: int = 0,
+        group_size: int = 0,
         blocksize: int = 128,
         percdamp: float = 0.01,
     ) -> None:
         self.finalize()
         self.solver.fasterprune(
             sparsity,
-            prunen=prunen,
-            prunem=prunem,
+            zeros_per_group=zeros_per_group,
+            group_size=group_size,
             blocksize=blocksize,
             percdamp=percdamp,
         )
@@ -131,8 +140,14 @@ class SparseGPT:
 
     name: str = "sparsegpt"
 
-    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _SparseGPTBound:
-        del block_index, module_name
+    def bind(
+        self,
+        layer: nn.Module,
+        *,
+        block_index: int,
+        module_name: str,
+    ) -> _SparseGPTBound:
+        _ = (block_index, module_name)
         return _SparseGPTBound(SparseGPTSolver(layer))
 
 
@@ -161,6 +176,7 @@ class Geometry:
 
 
 def get_pruner(name: str, **options) -> Pruner:
+    """Look up a pruner by name. Geometry accepts ``alpha`` and ``probes``."""
     if name == SparseGPT.name:
         if options:
             raise TypeError(f"sparsegpt pruner takes no options, got {sorted(options)}")

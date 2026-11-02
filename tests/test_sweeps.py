@@ -6,8 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from sparsifier.run import RunConfig
-from sparsifier.sweeps import SweepSpec, repo_root, validate
+from sparsifier.sweep import RunConfig, SweepSpec, repo_root, validate
 
 
 def _qwen() -> SweepSpec:
@@ -44,7 +43,7 @@ def test_prepare_creates_the_results_directories(tmp_path: Path):
 def test_repo_root_is_the_pixi_project():
     root = repo_root()
     assert (root / "pixi.toml").is_file()
-    assert (root / "src" / "sparsifier" / "sweeps.py").is_file()
+    assert (root / "src" / "sparsifier" / "sweep" / "sweeps.py").is_file()
 
 
 def test_a_model_outside_the_spec_is_rejected(tmp_path: Path):

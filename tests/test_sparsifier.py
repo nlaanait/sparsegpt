@@ -11,10 +11,10 @@ import torch
 from torch import nn
 
 from experiments.protocol import PPL_RE
-from sparsifier.catalog import resolve
+from sparsifier.models import resolve
 from sparsifier.metrics import BitsPerByte, Likelihood, Perplexity, format_result, get_metric
-from sparsifier.pruners import get_pruner
-from sparsifier.run import RunConfig
+from sparsifier.prune import get_pruner
+from sparsifier.sweep import RunConfig
 
 
 def test_perplexity_matches_the_eval_reduction():
@@ -116,3 +116,42 @@ def test_geometry_pruner_adds_the_tangent_term(tmp_path: Path):
 def test_geometry_without_probes_is_refused():
     with pytest.raises(ValueError, match="probes"):
         get_pruner("geometry", alpha=0.5)
+
+
+def test_sparsegpt_pruner_rejects_options():
+    with pytest.raises(TypeError, match="options"):
+        get_pruner("sparsegpt", alpha=1.0)
+
+
+def test_unknown_pruner_is_rejected():
+    with pytest.raises(KeyError, match="magnitude"):
+        get_pruner("magnitude")
+
+
+def test_run_config_rejects_sparsity_outside_the_half_open_interval():
+    with pytest.raises(ValueError, match="sparsity"):
+        RunConfig(model="Qwen/Qwen3.5-2B", calibration="c4", sparsity=1.0)
+
+
+def test_sparsegpt_config_rejects_pruner_options():
+    with pytest.raises(ValueError, match="pruner options"):
+        RunConfig(
+            model="Qwen/Qwen3.5-2B",
+            calibration="c4",
+            pruner_options={"alpha": 1.0},
+        )
+
+
+def test_likelihood_rejects_a_nonpositive_token_count():
+    with pytest.raises(ValueError, match="tokens"):
+        Likelihood(nats=1.0, tokens=0)
+
+
+def test_missing_geometry_probe_file_is_reported(tmp_path: Path):
+    layer = nn.Linear(4, 3, bias=False)
+    bound = get_pruner("geometry", alpha=0.5, probes=tmp_path).bind(
+        layer, block_index=0, module_name="mlp.down_proj"
+    )
+    _observe(bound, layer)
+    with pytest.raises(FileNotFoundError, match="mlp.down_proj"):
+        bound.finalize()

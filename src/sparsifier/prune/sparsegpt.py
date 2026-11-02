@@ -1,0 +1,202 @@
+"""One-shot SparseGPT prune for a single linear (or Conv) layer.
+
+Accumulates an activation Hessian with ``add_batch``, then runs
+``fasterprune``. Unstructured / N:M sparsity only (no GPTQ path).
+
+Copy/paste of the layer prune from upstream
+https://github.com/IST-DASLab/sparsegpt (Frantar & Alistarh, 2023,
+https://arxiv.org/abs/2301.00774), minus the GPTQ path. Geometry is not
+in upstream — see ``sparsifier.prune.geometry`` for this fork's tangent
+term on the same solver.
+"""
+
+from __future__ import annotations
+
+import math
+
+import torch
+import torch.nn as nn
+import transformers
+
+
+def _weight_matrix(layer: nn.Module) -> torch.Tensor:
+    """Layer weights as a 2-D matrix, rows = outputs, columns = inputs."""
+    weights = layer.weight.data.clone()
+    if isinstance(layer, nn.Conv2d):
+        weights = weights.flatten(1)
+    if isinstance(layer, transformers.Conv1D):
+        weights = weights.t()
+    return weights
+
+
+class SparseGPT:
+    """Hessian-aware one-shot prune bound to one layer.
+
+    ``H`` is the accumulated activation Hessian. ``nsamples`` counts
+    leading-dimension batches passed to ``add_batch``, matching upstream
+    (not the flattened token count). ``columns`` is the Hessian width.
+    """
+
+    def __init__(self, layer: nn.Module) -> None:
+        self.layer = layer
+        self.device = layer.weight.device
+        weights = _weight_matrix(layer)
+        self.columns = weights.shape[1]
+        self.H = torch.zeros((self.columns, self.columns), device=self.device)
+        self.nsamples = 0
+
+    def add_batch(self, inputs: torch.Tensor, out=None, blocksize: int = 1024) -> None:
+        """Fold one activation batch into the Hessian.
+
+        ``out`` and ``blocksize`` are unused. They stay in the signature so
+        callers match upstream SparseGPT.
+        """
+        _ = (out, blocksize)
+        if inputs.ndim == 2:
+            inputs = inputs.unsqueeze(0)
+        batch_count = inputs.shape[0]
+        if isinstance(self.layer, (nn.Linear, transformers.Conv1D)):
+            if inputs.ndim == 3:
+                inputs = inputs.reshape((-1, inputs.shape[-1]))
+            inputs = inputs.t()
+        self.H *= self.nsamples / (self.nsamples + batch_count)
+        self.nsamples += batch_count
+        inputs = math.sqrt(2 / self.nsamples) * inputs.float()
+        self.H += inputs.matmul(inputs.t())
+
+    def fasterprune(
+        self,
+        sparsity: float,
+        zeros_per_group: int = 0,
+        group_size: int = 0,
+        blocksize: int = 128,
+        percdamp: float = 0.01,
+    ) -> None:
+        """Prune ``self.layer`` in place from the accumulated Hessian.
+
+        Parameters
+        ----------
+        sparsity:
+            Target fraction of weights to zero for unstructured pruning
+            (``zeros_per_group == 0``). Ignored when ``zeros_per_group > 0``.
+        zeros_per_group, group_size:
+            N:M structured sparsity: in every block of ``group_size`` consecutive
+            columns, zero the ``zeros_per_group`` smallest (by SparseGPT metric)
+            weights. ``zeros_per_group == 0`` means unstructured. Example: 2:4 is
+            ``zeros_per_group=2, group_size=4``.
+        blocksize:
+            Column block width for the OBS-style update sweep.
+        percdamp:
+            Relative Hessian diagonal dampening before the Cholesky inverse.
+            Retried with a larger scale if the first factorization fails.
+        """
+        weights = _weight_matrix(self.layer).float()
+
+        # Same tensor as ``self.H``, not a copy. Clear the attribute so this
+        # method owns the only reference while mutating it.
+        hessian = self.H
+        self.H = None
+        dead = torch.diag(hessian) == 0
+        hessian[dead, dead] = 1
+        weights[:, dead] = 0
+
+        # Invert the Hessian via Cholesky. High sparsity / tall FFN layers can
+        # make it only barely positive definite after the usual percdamp.
+        hessian_inverse = self._invert_hessian(hessian, percdamp)
+
+        for col_start in range(0, self.columns, blocksize):
+            col_end = min(col_start + blocksize, self.columns)
+            self._prune_column_block(
+                weights,
+                hessian_inverse,
+                col_start,
+                col_end,
+                sparsity=sparsity,
+                zeros_per_group=zeros_per_group,
+                group_size=group_size,
+            )
+
+        if isinstance(self.layer, transformers.Conv1D):
+            weights = weights.t()
+        self.layer.weight.data = weights.reshape(self.layer.weight.shape).to(
+            self.layer.weight.data.dtype
+        )
+
+    def _invert_hessian(self, hessian: torch.Tensor, percdamp: float) -> torch.Tensor:
+        mean_diag = torch.mean(torch.diag(hessian))
+        diagonal = torch.arange(self.columns, device=self.device)
+        damp_scale = float(percdamp)
+        for attempt in range(20):
+            damped = hessian.clone()
+            damped[diagonal, diagonal] += damp_scale * mean_diag
+            damped = (damped + damped.T) / 2
+            try:
+                cholesky = torch.linalg.cholesky(damped)
+                inverse = torch.cholesky_inverse(cholesky)
+                inverse = (inverse + inverse.T) / 2
+                return torch.linalg.cholesky(inverse, upper=True)
+            except Exception as exc:
+                if "cholesky" not in str(exc).lower() and type(exc).__name__ != "LinAlgError":
+                    raise
+                damp_scale *= 2.0
+                print(
+                    f"Cholesky failed (attempt {attempt + 1}); "
+                    f"retrying with percdamp={damp_scale:.4g}",
+                    flush=True,
+                )
+        raise RuntimeError(
+            f"Hessian Cholesky failed after 20 damp increases (last percdamp={damp_scale:.4g})"
+        )
+
+    def _prune_column_block(
+        self,
+        weights: torch.Tensor,
+        hessian_inverse: torch.Tensor,
+        col_start: int,
+        col_end: int,
+        *,
+        sparsity: float,
+        zeros_per_group: int,
+        group_size: int,
+    ) -> None:
+        weight_block = weights[:, col_start:col_end].clone()
+        pruned_block = torch.zeros_like(weight_block)
+        error_block = torch.zeros_like(weight_block)
+        inverse_block = hessian_inverse[col_start:col_end, col_start:col_end]
+
+        if zeros_per_group == 0:
+            metric = weight_block**2 / (torch.diag(inverse_block).reshape((1, -1))) ** 2
+            threshold = torch.sort(metric.flatten())[0][int(metric.numel() * sparsity)]
+            mask = metric <= threshold
+        else:
+            mask = torch.zeros_like(weight_block, dtype=torch.bool)
+
+        for column in range(col_end - col_start):
+            column_weights = weight_block[:, column]
+            diag = inverse_block[column, column]
+
+            if zeros_per_group != 0 and column % group_size == 0:
+                metric = (
+                    weight_block[:, column : (column + group_size)] ** 2
+                    / (torch.diag(inverse_block)[column : (column + group_size)].reshape((1, -1))) ** 2
+                )
+                smallest = torch.topk(metric, zeros_per_group, dim=1, largest=False)[1]
+                mask.scatter_(1, column + smallest, True)
+
+            pruned = column_weights.clone()
+            pruned[mask[:, column]] = 0
+            pruned_block[:, column] = pruned
+            error = (column_weights - pruned) / diag
+            weight_block[:, column:] -= error.unsqueeze(1).matmul(
+                inverse_block[column, column:].unsqueeze(0)
+            )
+            error_block[:, column] = error
+
+        weights[:, col_start:col_end] = pruned_block
+        weights[:, col_end:] -= error_block.matmul(hessian_inverse[col_start:col_end, col_end:])
+
+    def free(self) -> None:
+        """Drop the Hessian and flush the CUDA cache when the layer is on GPU."""
+        self.H = None
+        if self.device.type == "cuda" and torch.cuda.is_available():
+            torch.cuda.empty_cache()

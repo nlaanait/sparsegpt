@@ -94,7 +94,7 @@ def short_name(model: str) -> str:
 
 
 def _qwen_sizes() -> dict[str, float]:
-    from sparsifier.catalog import models
+    from sparsifier.models import models
 
     return {
         record.model_id: float(record.stored_b)

@@ -1,7 +1,7 @@
 """Gemma 4 base sweep.
 
 The instruction-tuned -it repos are not part of this sweep. Stored N comes
-from ``sparsifier.catalog`` and is replaced once a checkpoint is cached.
+from ``sparsifier.models.catalog`` and is replaced once a checkpoint is cached.
 Effective N is Google's count and is never used as the fit's N. The 26B-A4B
 entry is the MoE text tower (128 experts, top-8); N is still total stored
 parameters, not active parameters.
@@ -13,7 +13,7 @@ import json
 from pathlib import Path
 
 from experiments.protocol import ROOT, SweepSpec
-from sparsifier.catalog import stored_count
+from sparsifier.models import stored_count
 
 # Confirmed against the google/gemma-4 collection. The 12B checkpoint is the
 # unified text tower. 26B-A4B is the mixture-of-experts text tower.

@@ -10,12 +10,13 @@ LLaMA entry points are still in `sparsegpt/`. Run them as
 
 - `src/sparsifier/` — the pixi project. One run: a pruner, a metric, and a registered model.
   Perplexity is the metric recorded today. Bits per byte is the other
-  metric, once an eval counts bytes. SparseGPT and geometry are the two
-  pruners. `sparsifier.catalog` is the model table: Hugging Face id, family,
-  runner, and stored parameter count. It does not import `experiments`.
-  `sparsifier.sweeps` is the `SweepSpec` type and `validate`. Family records
-  stay in `experiments`.
-- `sparsegpt/` — the SparseGPT solver, the geometry solver, and the model
+  metric, once an eval counts bytes. `sparsifier.prune` owns the SparseGPT
+  and geometry solvers plus the pruner adapters that bind them to a layer.
+  `sparsifier.models` holds the catalog (Hugging Face id, family, runner,
+  stored parameter count) and family protocols. It does not import
+  `experiments`. `sparsifier.sweep` is the run config, `SweepSpec`, and
+  `validate`. Family sweep records stay in `experiments`.
+- `sparsegpt/` — the legacy SparseGPT / geometry solvers used by the model
   entry points that still own the layer loops (`python -m sparsegpt.qwen`
   and the same for `opt`, `bloom`, `llama`, `gemma`, `olmo`).
 - `experiments/` — one sweep record per family and calibration, plus the

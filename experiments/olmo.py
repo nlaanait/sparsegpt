@@ -2,7 +2,7 @@
 
 Four Instruct sizes, C4 calibration (128 × 2048, seed 0), eval on WikiText2
 and PTB. Dense WikiText2 must land in SMOKE_PPL_RANGE before any prune runs.
-Stored N comes from ``sparsifier.catalog`` and is replaced once a checkpoint
+Stored N comes from ``sparsifier.models.catalog`` and is replaced once a checkpoint
 is cached.
 """
 
@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 
 from experiments.protocol import ROOT, SweepSpec
-from sparsifier.catalog import stored_count
+from sparsifier.models import stored_count
 
 MODELS = (
     "allenai/OLMo-2-0425-1B-Instruct",

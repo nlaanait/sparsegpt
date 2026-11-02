@@ -11,8 +11,8 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from sparsifier.catalog import ModelRecord, resolve
-from sparsifier.run import CORPORA
+from sparsifier.models import ModelRecord, resolve
+from sparsifier.sweep.run import CORPORA
 
 _NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
 
@@ -71,6 +71,7 @@ class CheckedSweep:
     log_dir: Path
 
     def __getattr__(self, name: str):
+        """Attribute reads fall through to the underlying ``SweepSpec``."""
         return getattr(self.spec, name)
 
     def record(self, model: str) -> ModelRecord:

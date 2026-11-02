@@ -2,7 +2,7 @@
 
 Base text repos and the two Vision repos share results/llama3/, one fit, and
 one set of plots. Every JSON point keeps the full Hugging Face id. Stored N
-comes from ``sparsifier.catalog`` and includes the vision tower on the 11B
+comes from ``sparsifier.models.catalog`` and includes the vision tower on the 11B
 and 90B repos. A local snapshot replaces that count once it is cached.
 """
 
@@ -12,7 +12,7 @@ import json
 from pathlib import Path
 
 from experiments.protocol import ROOT, SweepSpec
-from sparsifier.catalog import stored_count
+from sparsifier.models import stored_count
 
 MODELS = (
     "meta-llama/Llama-3.2-1B",

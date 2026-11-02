@@ -15,6 +15,15 @@ CORPORA = frozenset({"wikitext2", "ptb", "c4"})
 
 @dataclass(frozen=True)
 class RunConfig:
+    """One checkpoint prune.
+
+    ``zeros_per_group`` / ``group_size`` are N:M sparsity: zero that many
+    weights in every block of ``group_size`` consecutive columns. Both zero
+    means unstructured ``sparsity``.
+    A geometry pruner copies ``geometry_alpha`` and ``geometry_probes`` into
+    ``pruner_options`` so ``get_pruner`` can take them as keyword arguments.
+    """
+
     model: str
     calibration: str
     sparsity: float = 0.0
@@ -25,8 +34,8 @@ class RunConfig:
     nsamples: int = 128
     seqlen: int = 2048
     percdamp: float = 0.01
-    prunen: int = 0
-    prunem: int = 0
+    zeros_per_group: int = 0
+    group_size: int = 0
     blocksize: int = 128
     geometry_alpha: float = 0.0
     geometry_probes: Path | None = None

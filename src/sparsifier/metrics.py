@@ -48,6 +48,8 @@ class Metric(Protocol):
 
 
 class Perplexity:
+    """``exp(nats / tokens)``, the reduction the sweep logs print."""
+
     name = "perplexity"
 
     def score(self, likelihood: Likelihood) -> Score:
