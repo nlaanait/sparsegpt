@@ -67,6 +67,10 @@ cmd = "python -m pytest -v tests/"
 description = "Run the SparseGPT solver tests"
 cmd = "python -m pytest -v tests/test_sparsegpt.py"
 
+[tasks.tangent-reference]
+description = "Run the multi-seed CPU reference study for tangent-aware pruning"
+cmd = "python examples/tangent_pruning_experiment.py --output /tmp/tangent-pruning-reference.json"
+
 # Qwen runs through the Click command. N:M flags are --zeros-per-group and --group-size.
 [tasks.demo-qwen]
 description = "SparseGPT on Qwen3.5-2B"

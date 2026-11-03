@@ -288,14 +288,22 @@ def _prune_moe_experts(layer, buckets: list[list[torch.Tensor]], layer_idx: int)
                 block_index=layer_idx,
                 module_name=name,
                 geometry_alpha=0.0,
+                tangent_alpha=getattr(args, "tangent_alpha", 0.0),
+                tangent_charts=getattr(args, "tangent_charts", 8),
+                tangent_rank=getattr(args, "tangent_rank", 2),
+                tangent_samples=getattr(args, "tangent_samples", 512),
+                tangent_seed=getattr(args, "seed", 0),
             )
             if name.endswith("gate_up_proj"):
-                gpt.add_batch(batch, None)
+                with torch.no_grad():
+                    layer_outputs = gate_up(batch) if args.tangent_alpha > 0 else None
+                gpt.add_batch(batch, layer_outputs)
             else:
                 with torch.no_grad():
                     gate, up = gate_up(tokens).chunk(2, dim=-1)
                     act = experts.act_fn(gate) * up
-                gpt.add_batch(act, None)
+                    layer_outputs = down(act) if args.tangent_alpha > 0 else None
+                gpt.add_batch(act, layer_outputs)
             gpt.prune(
                 sparsity=args.sparsity,
                 zeros_per_group=args.zeros_per_group,

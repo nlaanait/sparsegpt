@@ -33,6 +33,10 @@ class RunRequest:
     forward_batch: int
     geometry_alpha: float
     geometry_probes: Path | None
+    tangent_alpha: float
+    tangent_charts: int
+    tangent_rank: int
+    tangent_samples: int
     family: str
 
 
@@ -65,6 +69,10 @@ def run_family(request: RunRequest) -> None:
         forward_batch=request.forward_batch,
         geometry_alpha=request.geometry_alpha,
         geometry_probes=request.geometry_probes,
+        tangent_alpha=request.tangent_alpha,
+        tangent_charts=request.tangent_charts,
+        tangent_rank=request.tangent_rank,
+        tangent_samples=request.tangent_samples,
         gmp=False,
     )
     runners = {

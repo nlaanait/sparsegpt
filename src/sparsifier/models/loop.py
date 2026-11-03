@@ -133,7 +133,16 @@ def excluded(args, index: int, name: str) -> bool:
 
 
 def pruner_for(args):
-    """The pruner named by the run. Geometry carries its alpha and probes."""
+    """Select input-geometry or output-tangent mask weighting for this run."""
+    if args.tangent_alpha > 0:
+        return get_pruner(
+            "tangent",
+            alpha=args.tangent_alpha,
+            charts=args.tangent_charts,
+            rank=args.tangent_rank,
+            calibration_samples=args.tangent_samples,
+            seed=args.seed,
+        )
     if args.geometry_alpha > 0:
         return get_pruner("geometry", alpha=args.geometry_alpha, probes=args.geometry_probes)
     return get_pruner("sparsegpt")
@@ -202,6 +211,13 @@ def check_geometry(args) -> None:
         raise ValueError("geometry alpha must be finite and nonnegative")
     if args.geometry_alpha > 0 and args.geometry_probes is None:
         raise ValueError("geometry probes are required when geometry alpha is positive")
+    if not math.isfinite(args.tangent_alpha) or not 0.0 <= args.tangent_alpha <= 1.0:
+        raise ValueError("tangent alpha must be finite and in [0, 1]")
+    if args.tangent_alpha > 0:
+        if args.geometry_alpha > 0:
+            raise ValueError("input geometry and output tangent modes are mutually exclusive")
+        if args.tangent_charts < 1 or args.tangent_rank < 1 or args.tangent_samples < 3:
+            raise ValueError("tangent charts/rank must be positive and samples >= 3")
 
 
 def open_checkpoint(args):

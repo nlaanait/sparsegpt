@@ -116,6 +116,78 @@ python -m sparsegpt.llama LLAMA_HF_WEIGHTS_LOCATION c4 --sparsity .5 \
 Geometry mode requires SparseGPT (not `--gmp`). Layers and Hessians follow the
 device chosen by the existing scripts (CUDA when available, otherwise CPU).
 
+## Output-tangent pruning experiments
+
+`--tangent-alpha` enables a separate, output-space candidate. During the normal
+layer calibration forward pass, it keeps a bounded uniform reservoir of paired
+input/output token samples, clusters outputs into local charts, and fits a
+rank-limited PCA tangent basis in each chart. The mask multiplier for output
+row `p` and input column `q` is
+
+```text
+G[p,q] = sum_c diag(U_c U_c.T)[p] * sum_{n in c} x[n,q]^2
+         / sum_n x[n,q]^2
+M[p,q] = (1 - alpha) + alpha * G[p,q]
+```
+
+The candidate multiplies the current ambient SparseGPT mask score by `M`.
+SparseGPT still performs its usual ambient Cholesky compensation, so this is a
+mask-ranking heuristic, not an exact solver for the sample-dependent projected
+quadratic. Each sample is assigned to one chart; overlapping concept factors,
+chart uncertainty, and cross-output curvature are not represented. A zero
+calibration-energy input feature receives zero measured tangent coupling and is
+reported as inactive in the tangent calibration diagnostics.
+
+```bash
+python -m sparsifier Qwen/Qwen3.5-2B c4 --sparsity 0.5 \
+  --tangent-alpha 0.5 --tangent-charts 8 --tangent-rank 2 \
+  --tangent-samples 512 --eval-datasets wikitext2
+```
+
+The same mode is wired into Qwen, OLMo, Llama, and Gemma layer loops, including
+Gemma's packed experts. It cannot be combined with the existing input-side
+`--geometry-alpha` mode. Tangent estimator settings enter the checkpoint cache
+identity only when tangent pruning is enabled; baseline SparseGPT cache keys
+stay unchanged.
+
+### Experiments
+
+The small CPU reference study compares held-out local and global tangent
+approximations, direct and OBS score rankings, matched-sparsity masks, projected
+bias fitting, and a control where off-tangent error remains visible to a
+downstream readout. It uses five synthetic seeds by default and writes a JSON
+report without modifying repository results:
+
+```bash
+pixi run tangent-reference
+# or
+python examples/tangent_pruning_experiment.py --seeds 0 1 2 3 4 \
+  --output /tmp/tangent-reference.json
+```
+
+For a full-model matched comparison, `experiments.tangent_pruning_pair` runs
+ambient SparseGPT and the tangent mask sequentially with the same model,
+calibration, seed, layer range, sparsity, damping, and evaluation datasets. It
+writes a log per arm and a `report.json` with settings and measured perplexities.
+Run it inside the repository's Pixi GPU environment, through the configured
+GPU scheduler on this machine:
+
+```bash
+gbatch --gpus 1 --gpu-memory 16G --memory 32G \
+  --name qwen-2b-tangent-c4-sp50 --project tangent-sparsegpt \
+  --time 8:00:00 --auto-close -- \
+  pixi run python -m experiments.tangent_pruning_pair \
+    --model Qwen/Qwen3.5-2B --calibration c4 --nsamples 128 \
+    --sparsity 0.5 --eval-dataset wikitext2 \
+    --tangent-alpha 0.5 --tangent-charts 8 --tangent-rank 2 \
+    --tangent-samples 512 --output-dir results/tangent/qwen3.5-2b-c4-sp50
+```
+
+Interpret the synthetic and model runs as hypothesis tests. They can support
+or disconfirm score prediction, post-compensation reconstruction, and task
+quality claims; neither a lower projected error nor a low tangent score by
+itself establishes safety or preservation of downstream behavior.
+
 ## Demo
 
 One can try SparseGPT via the colab demo - `demo.ipynb`. 

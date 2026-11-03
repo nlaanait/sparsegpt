@@ -16,6 +16,7 @@ import torch.nn as nn
 
 from sparsifier.prune.geometry import GeometrySparseGPT
 from sparsifier.prune.sparsegpt import SparseGPT as SparseGPTSolver
+from sparsifier.prune.tangent import TangentAwareSparseGPT
 
 
 class BoundPruner(Protocol):
@@ -133,6 +134,55 @@ class _GeometryBound:
     def free(self) -> None:
         self.solver.free()
 
+@dataclass
+class _TangentBound:
+    solver: TangentAwareSparseGPT
+    block_index: int
+    module_name: str
+    _finalized: bool = False
+
+    def add_batch(self, inputs, outputs) -> None:
+        self.solver.add_batch(inputs, outputs)
+
+    def finalize(self) -> None:
+        if self._finalized:
+            return
+        self.solver.finalize_tangents()
+        diagnostics = self.solver.tangent_diagnostics or {}
+        print(
+            "Tangent calibration "
+            f"{self.block_index}/{self.module_name}: "
+            f"samples={diagnostics.get('sample_count')} "
+            f"charts={diagnostics.get('chart_count')} "
+            f"rank={diagnostics.get('chart_ranks')} "
+            f"inactive_inputs={diagnostics.get('inactive_input_features')} "
+            f"mean_coupling={diagnostics.get('mean_tangent_coupling', float('nan')):.4f} "
+            f"captured_var={diagnostics.get('mean_chart_variance_captured', float('nan')):.4f}",
+            flush=True,
+        )
+        self._finalized = True
+
+    def prune(
+        self,
+        *,
+        sparsity: float,
+        zeros_per_group: int = 0,
+        group_size: int = 0,
+        blocksize: int = 128,
+        percdamp: float = 0.01,
+    ) -> None:
+        self.finalize()
+        self.solver.fasterprune(
+            sparsity,
+            zeros_per_group=zeros_per_group,
+            group_size=group_size,
+            blocksize=blocksize,
+            percdamp=percdamp,
+        )
+
+    def free(self) -> None:
+        self.solver.free()
+
 
 @dataclass(frozen=True)
 class SparseGPT:
@@ -149,6 +199,38 @@ class SparseGPT:
     ) -> _SparseGPTBound:
         _ = (block_index, module_name)
         return _SparseGPTBound(SparseGPTSolver(layer))
+
+@dataclass(frozen=True)
+class TangentAware:
+    """Output-tangent mask weighting with ambient SparseGPT compensation."""
+
+    alpha: float = 1.0
+    charts: int = 8
+    rank: int = 2
+    calibration_samples: int = 512
+    seed: int = 0
+    name: str = "tangent"
+
+    def __post_init__(self) -> None:
+        if not math.isfinite(self.alpha) or not 0.0 < self.alpha <= 1.0:
+            raise ValueError("tangent alpha must be finite and in (0, 1]")
+        if self.charts < 1 or self.rank < 1 or self.calibration_samples < 3:
+            raise ValueError("tangent charts/rank must be positive and samples >= 3")
+
+    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _TangentBound:
+        _ = (block_index, module_name)
+        return _TangentBound(
+            TangentAwareSparseGPT(
+                layer,
+                alpha=self.alpha,
+                charts=self.charts,
+                rank=self.rank,
+                calibration_samples=self.calibration_samples,
+                seed=self.seed,
+            ),
+            block_index,
+            module_name,
+        )
 
 
 @dataclass(frozen=True)
@@ -182,9 +264,27 @@ def bind_layer(
     module_name: str,
     geometry_alpha: float = 0.0,
     geometry_probes: Path | None = None,
+    tangent_alpha: float = 0.0,
+    tangent_charts: int = 8,
+    tangent_rank: int = 2,
+    tangent_samples: int = 512,
+    tangent_seed: int = 0,
 ) -> BoundPruner:
-    """Bind the activation pruner, or geometry when ``geometry_alpha`` is positive."""
-    if geometry_alpha > 0:
+    """Bind ambient, input-geometry, or output-tangent pruning."""
+    if not math.isfinite(tangent_alpha) or not 0.0 <= tangent_alpha <= 1.0:
+        raise ValueError("tangent alpha must be finite and in [0, 1]")
+    if tangent_alpha > 0 and geometry_alpha > 0:
+        raise ValueError("input geometry and output tangent modes are mutually exclusive")
+    if tangent_alpha > 0:
+        pruner = get_pruner(
+            "tangent",
+            alpha=tangent_alpha,
+            charts=tangent_charts,
+            rank=tangent_rank,
+            calibration_samples=tangent_samples,
+            seed=tangent_seed,
+        )
+    elif geometry_alpha > 0:
         pruner = get_pruner("geometry", alpha=geometry_alpha, probes=geometry_probes)
     else:
         pruner = get_pruner("sparsegpt")
@@ -199,4 +299,6 @@ def get_pruner(name: str, **options) -> Pruner:
         return SparseGPT()
     if name == Geometry.name:
         return Geometry(**options)
-    raise KeyError(f"unknown pruner {name!r}; known: geometry, sparsegpt")
+    if name == TangentAware.name:
+        return TangentAware(**options)
+    raise KeyError(f"unknown pruner {name!r}; known: sparsegpt, geometry, tangent")
