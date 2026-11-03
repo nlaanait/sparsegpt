@@ -1,4 +1,3 @@
-import argparse
 import contextlib
 import io
 import tempfile
@@ -10,11 +9,12 @@ import torch
 from torch import nn
 import transformers
 
-from sparsegpt import SparseGPT
-from sparsegpt.geometry import GeometrySparseGPT, add_geometry_arguments, apply_geometry
-from sparsegpt.geometry_demo import evaluate, prune, resolve_device, save_csr
-from sparsegpt.geometry_export import export_layer_probes
-from sparsegpt.geometry_features import BlockDictionary
+from sparsifier.prune.geometry import GeometrySparseGPT
+from sparsifier.prune.pruners import Geometry
+from sparsifier.prune.sparsegpt import SparseGPT
+from examples.geometry_demo import evaluate, prune, resolve_device, save_csr
+from sparsifier.prune.geometry_export import export_layer_probes
+from sparsifier.prune.geometry_features import BlockDictionary
 
 
 CUDA = torch.cuda.is_available()
@@ -128,24 +128,27 @@ class GeometryTests(unittest.TestCase):
         g.add_batch(self.x, None)
         g.add_geometry(self.t)
         with contextlib.redirect_stdout(io.StringIO()):
-            g.fasterprune(.5, prunen=2, prunem=4, blocksize=4)
+            g.fasterprune(.5, zeros_per_group=2, group_size=4, blocksize=4)
         counts = (layer.weight.T.reshape(4, 2, 4) == 0).sum(dim=2)
         self.assertTrue(torch.equal(counts, torch.full_like(counts, 2)))
 
     def test_cli_probe_loading_and_csr_roundtrip(self):
-        parser = argparse.ArgumentParser()
-        add_geometry_arguments(parser)
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory)
             (path / '0').mkdir()
             np.save(path / '0' / 'fc1.npy', self.t.numpy())
-            args = parser.parse_args(['--geometry-alpha', '0.5', '--geometry-probes', directory])
-            g = GeometrySparseGPT(self.layer)
-            g.add_batch(self.x, None)
-            apply_geometry(g, args, 0, 'fc1')
-            self.assertTrue(g.geometry_finalized)
+            bound = Geometry(alpha=0.5, probes=path).bind(
+                self.layer, block_index=0, module_name='fc1'
+            )
+            bound.add_batch(self.x, None)
+            bound.finalize()
+            self.assertTrue(bound.solver.geometry_finalized)
+            missing = Geometry(alpha=0.5, probes=path).bind(
+                nn.Linear(8, 4, bias=False), block_index=0, module_name='missing'
+            )
+            missing.add_batch(self.x, None)
             with self.assertRaises(FileNotFoundError):
-                apply_geometry(g, args, 0, 'missing')
+                missing.finalize()
             s = prune(
                 self.layer.weight.detach().numpy(),
                 self.x.reshape(-1, 8).T.numpy(),

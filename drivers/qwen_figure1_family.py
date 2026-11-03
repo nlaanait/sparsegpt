@@ -12,12 +12,14 @@ import argparse
 import json
 import math
 import os
-import re
 import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+from sparsifier.metrics import PPL_RE
+from sparsifier.sweep import SPARSITIES, repo_root, sparsity_token
+
+ROOT = repo_root()
 MODELS = [
     "Qwen/Qwen3.5-0.8B",
     "Qwen/Qwen3.5-2B",
@@ -25,7 +27,6 @@ MODELS = [
     "Qwen/Qwen3.5-9B",
     "Qwen/Qwen3.5-27B",
 ]
-SPARSITIES = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
 # Half-steps on the rising part of the log-log curve. Kept off SPARSITIES so
 # the full sweep does not pick them up, and so main() does not resume 27B.
 UNSTRUCTURED_HALF_STEPS = {
@@ -36,10 +37,6 @@ UNSTRUCTURED_HALF_STEPS = {
 }
 MAGNITUDE_STOP = 100.0
 SPARSEGPT_STOP = 200.0
-PPL_RE = re.compile(
-    r"Perplexity:\s*([+-]?(?:[0-9]*\.)?[0-9]+(?:[eE][+-]?\d+)?|inf|nan)",
-    re.I,
-)
 FIGURE1 = ROOT / "results" / "qwen3.5" / "qwen3.5-2b_wikitext2.json"
 FIGURE2 = ROOT / "results" / "qwen3.5" / "qwen3.5_family_wikitext2.json"
 
@@ -102,11 +99,6 @@ def seed_known_points(results: dict) -> None:
                 add_point(results, point["model"], "dense", 0.0, point["perplexity"])
             elif point["method"] == "50% Unstructured":
                 add_point(results, point["model"], "sparsegpt", 0.5, point["perplexity"])
-
-
-def sparsity_token(sparsity: float) -> str:
-    """CLI token that keeps half-steps (0.15) distinct from tenths (0.1)."""
-    return f"{sparsity:.2f}".rstrip("0").rstrip(".")
 
 
 def run_qwen(model: str, sparsity: float, gmp: bool, log_path: Path) -> float:

@@ -61,11 +61,19 @@ cmd = """python -c "import torch; print(torch.__version__); print(torch.cuda.is_
 
 [tasks.test]
 description = "Run the test suite"
-cmd = "python -m pytest -v tests/"
+cmd = "python -m pytest -v"
 
 [tasks.test-sparsegpt]
 description = "Run the SparseGPT solver tests"
 cmd = "python -m pytest -v tests/test_sparsegpt.py"
+
+[tasks.geometry-demo]
+description = "Synthetic layer demo: activation-only versus geometry-aware SparseGPT. Pass cpu or cuda, then sparsity targets."
+cmd = """python -m examples.geometry_demo --device {{ device }} --output {{ "geometry_results_cuda" if device == "cuda" else "geometry_results" }} --requested-sparsity {{ sparsity }}"""
+args = [
+  { arg = "device", default = "cpu" },
+  { arg = "sparsity", default = "0.5 0.75 0.9 0.95" },
+]
 
 # Qwen runs through the Click command. N:M flags are --zeros-per-group and --group-size.
 [tasks.demo-qwen]

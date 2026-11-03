@@ -1,1 +1,1 @@
-"""Per-family sweep specs. Model runners stay in sparsegpt/."""
+"""Per-family sweep records. The measurement runners live in sparsifier."""

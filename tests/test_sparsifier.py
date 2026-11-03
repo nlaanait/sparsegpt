@@ -10,9 +10,8 @@ import pytest
 import torch
 from torch import nn
 
-from experiments.protocol import PPL_RE
 from sparsifier.models import resolve
-from sparsifier.metrics import BitsPerByte, Likelihood, Perplexity, format_result, get_metric
+from sparsifier.metrics import BitsPerByte, Likelihood, PPL_RE, Perplexity, format_result, get_metric
 from sparsifier.prune import get_pruner
 from sparsifier.sweep import RunConfig
 

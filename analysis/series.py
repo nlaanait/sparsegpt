@@ -12,7 +12,9 @@ import json
 import math
 from pathlib import Path
 
-from experiments.protocol import ROOT, SweepSpec
+from sparsifier.sweep import SweepRecord, repo_root, short_name
+
+ROOT = repo_root()
 
 TENTHS = [round(index / 10, 1) for index in range(1, 9)]
 MAX_SPARSITY = 0.8
@@ -27,7 +29,7 @@ FIGURE_MODELS = {
 }
 
 
-def models_for(spec: SweepSpec) -> tuple[str, ...]:
+def models_for(spec: SweepRecord) -> tuple[str, ...]:
     extra = FIGURE_MODELS.get(spec.name, ())
     return tuple(dict.fromkeys((*spec.models, *extra)))
 
@@ -40,7 +42,7 @@ def plausible_dense(perplexity: float | None) -> bool:
     )
 
 
-def family_sizes(spec: SweepSpec) -> dict[str, float]:
+def family_sizes(spec: SweepRecord) -> dict[str, float]:
     if spec.name in ("gemma", "gemma_it_wikitext2_cal"):
         from experiments.gemma import stored_params
 
@@ -58,7 +60,7 @@ def family_sizes(spec: SweepSpec) -> dict[str, float]:
     return {}
 
 
-def load_rows(spec: SweepSpec) -> list[dict]:
+def load_rows(spec: SweepRecord) -> list[dict]:
     """SparseGPT perplexity points with ``sparsity <= 0.8``."""
     found: dict[tuple[str, str, float], dict] = {}
     for model in models_for(spec):
@@ -73,7 +75,7 @@ def load_rows(spec: SweepSpec) -> list[dict]:
     return list(found.values())
 
 
-def points_for(spec: SweepSpec, model: str, rows: list[dict] | None = None) -> list[dict]:
+def points_for(spec: SweepRecord, model: str, rows: list[dict] | None = None) -> list[dict]:
     source = load_rows(spec) if rows is None else rows
     return [point for point in source if point["model"] == model]
 
@@ -89,10 +91,6 @@ def lookup(rows: list[dict], model: str, dataset: str, sparsity: float) -> float
     return None
 
 
-def short_name(model: str) -> str:
-    return model.rstrip("/").split("/")[-1].lower()
-
-
 def _qwen_sizes() -> dict[str, float]:
     from sparsifier.models import models
 
@@ -103,7 +101,7 @@ def _qwen_sizes() -> dict[str, float]:
     }
 
 
-def _sparsity_path(spec: SweepSpec, model: str) -> Path | None:
+def _sparsity_path(spec: SweepRecord, model: str) -> Path | None:
     name = f"{short_name(model)}_sparsity.json"
     direct = spec.result_dir / name
     if direct.is_file():
@@ -118,7 +116,7 @@ def _sparsity_path(spec: SweepSpec, model: str) -> Path | None:
     return None
 
 
-def _bundles(spec: SweepSpec) -> list[tuple[Path, str]]:
+def _bundles(spec: SweepRecord) -> list[tuple[Path, str]]:
     if spec.name != "qwen3.5":
         return []
     root = ROOT / "results" / "qwen3.5"
@@ -128,7 +126,7 @@ def _bundles(spec: SweepSpec) -> list[tuple[Path, str]]:
     ]
 
 
-def _likelihood_dirs(spec: SweepSpec, model: str) -> list[Path]:
+def _likelihood_dirs(spec: SweepRecord, model: str) -> list[Path]:
     dirs = [spec.result_dir / "likelihood"]
     extra = _sparsity_path(spec, model)
     if extra is not None:
@@ -140,7 +138,7 @@ def _likelihood_dirs(spec: SweepSpec, model: str) -> list[Path]:
     return unique
 
 
-def _likelihood_files(spec: SweepSpec, model: str) -> list[tuple[Path, str]]:
+def _likelihood_files(spec: SweepRecord, model: str) -> list[tuple[Path, str]]:
     prefix = f"{short_name(model)}_"
     found = []
     for directory in _likelihood_dirs(spec, model):

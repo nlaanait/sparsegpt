@@ -10,14 +10,15 @@ from __future__ import annotations
 import argparse
 import os
 
-from drivers.qwen_figure1_family import PPL_RE, ROOT, sparsity_token
-from drivers.qwen_ptb import _prune_args
-
 from analysis.sweep import run_sweep
+from drivers.qwen_ptb import _prune_args
 from experiments.qwen import QWEN_WIKITEXT2_CAL
+from sparsifier.metrics import PPL_RE
+from sparsifier.sweep import SPARSITIES, repo_root, sparsity_token
+
+ROOT = repo_root()
 
 MODELS = list(QWEN_WIKITEXT2_CAL.models)
-SPARSITIES = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
 DATASETS = list(QWEN_WIKITEXT2_CAL.eval_datasets)
 
 __all__ = [

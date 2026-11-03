@@ -1,4 +1,4 @@
-"""Geometry calibration edges. Parity with upstream lives in test_prune_sparsegpt."""
+"""Geometry calibration edges on the sparsifier solver."""
 
 from __future__ import annotations
 

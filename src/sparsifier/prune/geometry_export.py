@@ -14,7 +14,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .geometry_features import BlockDictionary
+from sparsifier.prune.geometry_features import BlockDictionary
 
 
 def export_layer_probes(

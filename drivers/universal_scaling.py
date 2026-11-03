@@ -21,7 +21,9 @@ from analysis.fit import solve_scale_free_law
 from analysis.series import load_rows
 from experiments.llama import LLAMA3, stored_params as llama_stored_params
 from experiments.olmo import OLMO2, stored_params as olmo_stored_params
-from experiments.protocol import ROOT
+from sparsifier.sweep import repo_root
+
+ROOT = repo_root()
 
 PAGE = ROOT / "results" / "universal_scaling_law.html"
 CARRIED = ROOT / "results" / "universal_qwen_gemma_traces.json"

@@ -12,9 +12,9 @@ import numpy as np
 import torch
 from torch import nn
 
-from .geometry import GeometrySparseGPT
-from .geometry_features import BlockDictionary, synthetic
-from .sparsegpt import SparseGPT
+from sparsifier.prune.geometry import GeometrySparseGPT
+from sparsifier.prune.geometry_features import BlockDictionary, synthetic
+from sparsifier.prune.sparsegpt import SparseGPT
 
 
 def validate_matrix(value, name, rows=None):

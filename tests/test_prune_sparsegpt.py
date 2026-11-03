@@ -1,4 +1,4 @@
-"""Parity: sparsifier.prune solvers match the original sparsegpt package."""
+"""Parity: the sparsifier SparseGPT solver matches the original package."""
 
 from __future__ import annotations
 
@@ -10,8 +10,6 @@ import torch
 from torch import nn
 
 from sparsegpt import SparseGPT as RefSparseGPT
-from sparsegpt.geometry import GeometrySparseGPT as RefGeometry
-from sparsifier.prune.geometry import GeometrySparseGPT
 from sparsifier.prune.sparsegpt import SparseGPT
 
 
@@ -63,23 +61,4 @@ def test_nm_fasterprune_matches_reference():
     with _quiet():
         ref.fasterprune(0.0, prunen=2, prunem=4, blocksize=16, percdamp=0.01)
         new.fasterprune(0.0, zeros_per_group=2, group_size=4, blocksize=16, percdamp=0.01)
-    assert torch.allclose(new_layer.weight.data, ref_layer.weight.data)
-
-
-def test_geometry_hessian_and_prune_match_reference():
-    ref_layer, new_layer, x = _pair_layers()
-    torch.manual_seed(1)
-    probes = torch.randn(x.shape[-1], 6)
-
-    ref = RefGeometry(ref_layer)
-    new = GeometrySparseGPT(new_layer)
-    ref.add_batch(x, None)
-    new.add_batch(x, None)
-    ref.add_geometry(probes.numpy(), alpha=0.5)
-    new.add_geometry(probes.numpy(), alpha=0.5)
-    assert torch.allclose(new.H, ref.H)
-
-    with _quiet():
-        ref.fasterprune(0.25, blocksize=8, percdamp=0.01)
-        new.fasterprune(0.25, blocksize=8, percdamp=0.01)
     assert torch.allclose(new_layer.weight.data, ref_layer.weight.data)

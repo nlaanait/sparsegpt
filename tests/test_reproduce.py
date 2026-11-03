@@ -8,19 +8,16 @@ from pathlib import Path
 
 import pytest
 
-from analysis.sweep import SPARSITIES, family_cmd
+from analysis.sweep import family_cmd
 from experiments.gemma import GEMMA
-from experiments.protocol import SweepSpec
 from experiments.reproduce import (
     _done_from_disk,
-    eval_command,
     main,
-    plan_jobs,
-    prune_command,
     write_reports,
 )
 from experiments.sweeps import sweeps
 from sparsifier.models import models, resolve
+from sparsifier.sweep import SPARSITIES, SweepRecord, eval_command, plan_jobs, prune_command
 
 
 def test_every_sweep_model_resolves_to_its_runner():
@@ -194,8 +191,8 @@ def test_figures_rewrite_from_saved_json(tmp_path: Path):
     assert written["law"]["wikitext2"]["a"] > 0
 
 
-def _toy_spec(result_dir: Path, models: tuple[str, ...] = ("org/Toy-1B",)) -> SweepSpec:
-    return SweepSpec(
+def _toy_spec(result_dir: Path, models: tuple[str, ...] = ("org/Toy-1B",)) -> SweepRecord:
+    return SweepRecord(
         name="toy",
         models=models,
         runner="sparsifier",

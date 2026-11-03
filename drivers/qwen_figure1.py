@@ -11,15 +11,15 @@ import argparse
 import json
 import math
 import os
-import re
 import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+from sparsifier.metrics import PPL_RE
+from sparsifier.sweep import SPARSITIES, repo_root
+
+ROOT = repo_root()
 MODEL = "Qwen/Qwen3.5-2B"
-SPARSITIES = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
-PPL_RE = re.compile(r"Perplexity:\s*([+-]?(?:[0-9]*\.)?[0-9]+(?:[eE][+-]?\d+)?|inf|nan)", re.I)
 
 
 def result_path(output: Path) -> Path:

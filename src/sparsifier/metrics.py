@@ -2,14 +2,21 @@
 
 Perplexity is the metric the sweeps record today. Bits per byte uses the
 same nats once an eval also counts bytes. The historical log line for
-perplexity stays `Perplexity:` so `experiments.protocol.PPL_RE` still matches.
+perplexity stays `Perplexity:` so ``PPL_RE`` still matches.
 """
 
 from __future__ import annotations
 
 import math
+import re
 from dataclasses import dataclass
 from typing import Protocol
+
+# The sweep parser reads this line. Keep the spelling `format_result` prints.
+PPL_RE = re.compile(
+    r"Perplexity:\s*([+-]?(?:[0-9]*\.)?[0-9]+(?:[eE][+-]?\d+)?|inf|nan)",
+    re.I,
+)
 
 
 @dataclass(frozen=True)

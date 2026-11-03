@@ -6,6 +6,7 @@ runs one checkpoint.
 
 from __future__ import annotations
 
+from argparse import Namespace
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -39,6 +40,13 @@ class RunConfig:
     blocksize: int = 128
     geometry_alpha: float = 0.0
     geometry_probes: Path | None = None
+    # Layer filter and true-sequential order. The Click namespace carries the
+    # same fields; a bare RunConfig prunes every decoder linear in one group.
+    minlayer: int = -1
+    maxlayer: int = 1000
+    prune_only: str = ""
+    invert: bool = False
+    true_sequential: bool = False
     pruner_options: dict = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -60,3 +68,34 @@ class RunConfig:
             object.__setattr__(self, "pruner_options", options)
         elif self.pruner_options:
             raise ValueError(f"{self.pruner} does not take pruner options")
+
+
+def default_prune_args(model: str, sparsity: float, dataset: str = "c4") -> Namespace:
+    """Namespace the cache matches. Eval-only flags stay at their defaults."""
+    return Namespace(
+        model=model,
+        dataset=dataset,
+        seed=0,
+        nsamples=128,
+        percdamp=0.01,
+        sparsity=sparsity,
+        zeros_per_group=0,
+        group_size=0,
+        blocksize=128,
+        gmp=False,
+        wbits=16,
+        minlayer=-1,
+        maxlayer=1000,
+        prune_only="",
+        invert=False,
+        true_sequential=False,
+        geometry_alpha=0.0,
+        geometry_probes=None,
+    )
+
+
+def default_prune_config(model: str, sparsity: float, dataset: str = "c4") -> dict:
+    """Cache key for one unstructured SparseGPT checkpoint."""
+    from sparsifier.data.cache import prune_config_from_args
+
+    return prune_config_from_args(default_prune_args(model, sparsity, dataset))

@@ -11,12 +11,14 @@ import argparse
 import json
 import math
 import os
-import re
 import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+from sparsifier.metrics import PPL_RE
+from sparsifier.sweep import repo_root
+
+ROOT = repo_root()
 MODELS = [
     "Qwen/Qwen3.5-0.8B",
     "Qwen/Qwen3.5-2B",
@@ -32,10 +34,6 @@ METHOD_STYLE = {
     "50% Unstructured": dict(color="#ff7f0e", symbol="square"),
     "Dense": dict(color="#2ca02c", symbol="circle-open"),
 }
-PPL_RE = re.compile(
-    r"Perplexity:\s*([+-]?(?:[0-9]*\.)?[0-9]+(?:[eE][+-]?\d+)?|inf|nan)",
-    re.I,
-)
 FIGURE1 = ROOT / "results" / "qwen3.5" / "qwen3.5-2b_wikitext2.json"
 
 

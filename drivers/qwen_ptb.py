@@ -17,18 +17,17 @@ import sys
 from argparse import Namespace
 from pathlib import Path
 
-from experiments.protocol import prune_args
 from sparsifier.data.cache import find_pruned_model, prune_config_from_args
+from sparsifier.metrics import PPL_RE
+from sparsifier.sweep import default_prune_args, sparsity_token
 from drivers.qwen_figure1_family import (
     MODELS,
-    PPL_RE,
     ROOT,
     add_point,
     load_results,
     lookup,
     plot_results,
     save_results,
-    sparsity_token,
 )
 
 
@@ -45,7 +44,7 @@ def load_ptb_results(path: Path) -> dict:
 
 
 def _prune_args(model: str, sparsity: float, dataset: str = "c4") -> Namespace:
-    return prune_args(model, sparsity, dataset)
+    return default_prune_args(model, sparsity, dataset)
 
 
 def cached_sparse_points() -> list[tuple[str, float, Path]]:

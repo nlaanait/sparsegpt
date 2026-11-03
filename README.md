@@ -75,10 +75,10 @@ hooks finish, then runs the same prune/compensate path on CPU or CUDA.
 
 ```bash
 # CPU
-python -m sparsegpt.geometry_demo --output geometry_results --device cpu
+python -m examples.geometry_demo --output geometry_results --device cpu
 
 # CUDA (requires a GPU build of torch)
-python -m sparsegpt.geometry_demo --output geometry_results_cuda --device cuda
+python -m examples.geometry_demo --output geometry_results_cuda --device cuda
 
 python -m unittest -v tests.test_geometry
 ```
@@ -92,7 +92,7 @@ and optional `T_train` / `T_test` (columns are samples / probes).
 1. Export per-layer probes into `<probes>/<block>/<module>.npy`:
 
 ```bash
-python -m sparsegpt.geometry_export \
+python -m sparsifier.prune.geometry_export \
   --activations layer0_fc1_acts.npz --key H \
   --output probes --block-index 0 --module-name fc1
 ```

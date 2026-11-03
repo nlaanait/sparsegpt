@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from sparsifier.sweep import RunConfig, SweepSpec, repo_root, validate
+from sparsifier.sweep import RunConfig, SweepRecord, SweepSpec, repo_root, validate
 
 
 def _qwen() -> SweepSpec:
@@ -38,6 +38,13 @@ def test_prepare_creates_the_results_directories(tmp_path: Path):
     checked.prepare()
     assert checked.result_dir.is_dir()
     assert checked.log_dir.is_dir()
+
+
+def test_from_spec_fills_the_runner_and_the_results_directory(tmp_path: Path):
+    record = SweepRecord.from_spec(_qwen(), tmp_path)
+    assert record.runner == "sparsifier"
+    assert record.result_dir == tmp_path.resolve() / "results" / "qwen"
+    assert record.log_dir == record.result_dir / "logs"
 
 
 def test_repo_root_is_the_pixi_project():

@@ -41,8 +41,6 @@ PRUNE_NAMES = (
     "mlp.down_proj",
 )
 
-args = None
-
 
 def is_prunable_parameter(name: str) -> bool:
     if any(name.endswith(f"{leaf}.weight") or name.endswith(f"{leaf}.bias") for leaf in PRUNE_NAMES):
@@ -256,7 +254,7 @@ def _collect_expert_inputs(layer, inps: torch.Tensor, shared, positions, masks, 
     return buckets
 
 
-def _prune_moe_experts(layer, buckets: list[list[torch.Tensor]], layer_idx: int) -> None:
+def _prune_moe_experts(layer, buckets: list[list[torch.Tensor]], layer_idx: int, config) -> None:
     """SparseGPT each expert's fused gate_up and down using tokens routed to it."""
     experts = layer.experts
     min_tokens = 64
@@ -279,7 +277,7 @@ def _prune_moe_experts(layer, buckets: list[list[torch.Tensor]], layer_idx: int)
             (f"experts[{expert_idx}].gate_up_proj", gate_up, tokens),
             (f"experts[{expert_idx}].down_proj", down, None),
         ):
-            if (not (args.minlayer <= layer_idx < args.maxlayer and args.prune_only in name)) == (not args.invert):
+            if (not (config.minlayer <= layer_idx < config.maxlayer and config.prune_only in name)) == (not config.invert):
                 continue
             print(layer_idx, name, flush=True)
             print("Pruning ...", flush=True)
@@ -297,11 +295,11 @@ def _prune_moe_experts(layer, buckets: list[list[torch.Tensor]], layer_idx: int)
                     act = experts.act_fn(gate) * up
                 gpt.add_batch(act, None)
             gpt.prune(
-                sparsity=args.sparsity,
-                zeros_per_group=args.zeros_per_group,
-                group_size=args.group_size,
-                percdamp=args.percdamp,
-                blocksize=args.blocksize,
+                sparsity=config.sparsity,
+                zeros_per_group=config.zeros_per_group,
+                group_size=config.group_size,
+                percdamp=config.percdamp,
+                blocksize=config.blocksize,
             )
             gpt.free()
         experts.gate_up_proj.data[expert_idx].copy_(gate_up.weight.data)
@@ -399,7 +397,7 @@ def _softcap(logits, config):
 
 
 @torch.no_grad()
-def gemma_sequential(model, dataloader, dev, pruner=None):
+def gemma_sequential(model, dataloader, dev, config, pruner=None):
     print("Starting...", flush=True)
     _prime_cuda()
     free, total = torch.cuda.mem_get_info()
@@ -416,12 +414,12 @@ def gemma_sequential(model, dataloader, dev, pruner=None):
     _ple_to(text, dev, embeddings=False)
     text.rotary_emb = text.rotary_emb.to(dev)
 
-    inps = torch.zeros((args.nsamples, model.seqlen, hidden), dtype=dtype, device="cpu")
+    inps = torch.zeros((config.nsamples, model.seqlen, hidden), dtype=dtype, device="cpu")
     ple = None
     if _has_ple(text):
         ple = torch.zeros(
             (
-                args.nsamples,
+                config.nsamples,
                 model.seqlen,
                 text.config.num_hidden_layers,
                 text.hidden_size_per_layer_input,
@@ -440,7 +438,7 @@ def gemma_sequential(model, dataloader, dev, pruner=None):
 
     position_ids = torch.arange(model.seqlen, device=dev).unsqueeze(0)
     masks, positions = _context(text, inps[:1].to(dev), position_ids)
-    shared = [{} for _ in range(args.nsamples)]
+    shared = [{} for _ in range(config.nsamples)]
     outs = torch.zeros_like(inps)
     print("Ready.")
 
@@ -449,16 +447,16 @@ def gemma_sequential(model, dataloader, dev, pruner=None):
         layer = layers[i].to(dev)
         layer_type = text.config.layer_types[i]
         full = {name: module for name, module in find_layers(layer).items() if name in PRUNE_NAMES}
-        groups = decoder_groups() if args.true_sequential else [list(full.keys())]
+        groups = decoder_groups() if config.true_sequential else [list(full.keys())]
         for names in groups:
             subset = {name: full[name] for name in names if name in full}
-            gpts = bind_selected(subset, args, i, pruner)
+            gpts = bind_selected(subset, config, i, pruner)
             if not gpts:
                 continue
             handles = hessian_hooks(gpts, subset)
             # MoE expert outputs are unused while collecting attn/MLP Hessians.
             with _noop_experts(layer):
-                for j in range(args.nsamples):
+                for j in range(config.nsamples):
                     ple_j = None if ple is None else ple[j, :, i, :].to(dev).unsqueeze(0)
                     outs[j] = _run_layer(
                         layer,
@@ -471,17 +469,17 @@ def gemma_sequential(model, dataloader, dev, pruner=None):
                     ).to("cpu")
             for handle in handles:
                 handle.remove()
-            prune_bound(gpts, args, i, flush=True)
-        if getattr(layer, "enable_moe_block", False) and args.sparsity > 0:
+            prune_bound(gpts, config, i, flush=True)
+        if getattr(layer, "enable_moe_block", False) and config.sparsity > 0:
             # Experts are packed Parameters, not nn.Linear. Capture routed
             # tokens from a full layer forward, then SparseGPT each expert.
             buckets = _collect_expert_inputs(
                 layer, inps, shared, positions, masks, position_ids, layer_type
             )
-            _prune_moe_experts(layer, buckets, i)
+            _prune_moe_experts(layer, buckets, i, config)
             del buckets
         print(f"layer {i}: propagate outs", flush=True)
-        for j in range(args.nsamples):
+        for j in range(config.nsamples):
             ple_j = None if ple is None else ple[j, :, i, :].to(dev).unsqueeze(0)
             outs[j] = _run_layer(
                 layer,
@@ -492,8 +490,8 @@ def gemma_sequential(model, dataloader, dev, pruner=None):
                 masks[layer_type],
                 position_ids,
             ).to("cpu")
-            if (j + 1) % 32 == 0 or j + 1 == args.nsamples:
-                print(f"layer {i}: outs {j + 1}/{args.nsamples}", flush=True)
+            if (j + 1) % 32 == 0 or j + 1 == config.nsamples:
+                print(f"layer {i}: outs {j + 1}/{config.nsamples}", flush=True)
         layers[i] = layer.cpu()
         del layer
         torch.cuda.empty_cache()
@@ -627,6 +625,19 @@ def gemma_reference_nlls(model, testenc, dev):
     return nlls
 
 
+def reference_gap(layer_nll, reference_nlls, seqlen: int) -> float:
+    """Relative gap between the layer walk and a full forward.
+
+    ``layer_nll`` is the perplexity ``gemma_eval`` returns. ``reference_nlls``
+    is the per-window nats from ``gemma_reference_nlls``. The gap is not a
+    score to store.
+    """
+    layer = float(layer_nll)
+    total = torch.stack(list(reference_nlls)).sum()
+    reference = torch.exp(total / (len(reference_nlls) * seqlen)).item()
+    return abs(layer - reference) / reference
+
+
 def _report_sparsity(model) -> None:
     for name, param in model.named_parameters():
         if is_prunable_parameter(name):
@@ -648,8 +659,7 @@ class Gemma:
         model.eval()
 
     def prune_model(self, model, batches, config, pruner) -> None:
-        _ = config
-        gemma_sequential(model, batches, DEV, pruner)
+        gemma_sequential(model, batches, DEV, config, pruner)
 
     def likelihood(self, model, encoded, config) -> Likelihood:
         _ = config
@@ -662,6 +672,4 @@ GEMMA = Gemma()
 
 def run(cli_args) -> None:
     """Load, prune, evaluate, and optionally save one Gemma checkpoint."""
-    global args
-    args = cli_args
-    run_model(GEMMA, args, _report_sparsity)
+    run_model(GEMMA, cli_args, _report_sparsity)

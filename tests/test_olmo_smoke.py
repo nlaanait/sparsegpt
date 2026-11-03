@@ -1,4 +1,4 @@
-"""Smoke-range and SweepSpec checks for the OLMo 2 driver (no GPU)."""
+"""Smoke-range and SweepRecord checks for the OLMo 2 driver (no GPU)."""
 
 from __future__ import annotations
 

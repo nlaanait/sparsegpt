@@ -14,7 +14,7 @@ import numpy as np
 
 from analysis.fit import format_n_star, solve_reference_law
 from analysis.series import TENTHS, family_sizes, load_rows, lookup, models_for, plausible_dense
-from experiments.protocol import SweepSpec
+from sparsifier.sweep import SweepRecord
 
 
 def _have(points: list[dict], dataset: str, sparsity: float) -> bool:
@@ -30,7 +30,7 @@ _DATASET_LABELS = {
 }
 
 
-def _ready(spec: SweepSpec, rows: list[dict], dataset: str) -> list[str]:
+def _ready(spec: SweepRecord, rows: list[dict], dataset: str) -> list[str]:
     ready = []
     for model in models_for(spec):
         dense = lookup(rows, model, dataset, 0.0)
@@ -45,7 +45,7 @@ def points_for_model(rows: list[dict], model: str) -> list[dict]:
     return [point for point in rows if point["model"] == model]
 
 
-def write_family_page(spec: SweepSpec, sizes: dict[str, float] | None = None) -> Path | None:
+def write_family_page(spec: SweepRecord, sizes: dict[str, float] | None = None) -> Path | None:
     rows = load_rows(spec)
     if sizes is None:
         sizes = family_sizes(spec)

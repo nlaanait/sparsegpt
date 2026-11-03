@@ -10,7 +10,13 @@ try:
 except ImportError:
     _wandb = None
 
-from sparsifier.models.catalog import ModelRecord, models, resolve, stored_count
+from sparsifier.models.catalog import (
+    ModelRecord,
+    measured_stored_counts,
+    models,
+    resolve,
+    stored_count,
+)
 
 has_wandb = _wandb is not None
 
@@ -39,6 +45,7 @@ __all__ = [
     "has_wandb",
     "init_wandb",
     "log_perplexity",
+    "measured_stored_counts",
     "models",
     "resolve",
     "stored_count",

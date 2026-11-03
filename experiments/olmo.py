@@ -8,11 +8,7 @@ is cached.
 
 from __future__ import annotations
 
-import json
-from pathlib import Path
-
-from experiments.protocol import ROOT, SweepSpec
-from sparsifier.models import stored_count
+from sparsifier.sweep import SweepRecord, SweepSpec, repo_root
 
 MODELS = (
     "allenai/OLMo-2-0425-1B-Instruct",
@@ -26,61 +22,35 @@ MODELS = (
 SMOKE_DATASET = "wikitext2"
 SMOKE_PPL_RANGE = (3.0, 50.0)
 
-OLMO2 = SweepSpec(
-    name="olmo2",
-    models=MODELS,
-    runner="sparsifier",
-    extra_args=(),
-    result_dir=ROOT / "results" / "olmo2",
-    log_dir=ROOT / "results" / "olmo2" / "logs",
-    log_infix="sdpa",
-    attention="sdpa",
-    holdout_suffix="32B-Instruct",
-    plot=True,
-    calibration="c4",
-    eval_datasets=("wikitext2", "ptb"),
+OLMO2 = SweepRecord.from_spec(
+    SweepSpec(
+        name="olmo2",
+        models=MODELS,
+        calibration="c4",
+        eval_datasets=("wikitext2", "ptb"),
+        log_infix="sdpa",
+        attention="sdpa",
+        holdout_suffix="32B-Instruct",
+    ),
+    repo_root(),
 )
 
 # WikiText2 calibration, C4 and PTB eval. The 32B file is absent until that
 # ladder is collected; the loader skips a model with no points.
-OLMO2_WIKITEXT2_CAL = SweepSpec(
-    name="olmo2_wikitext2_cal",
-    models=MODELS,
-    runner="sparsifier",
-    extra_args=(),
-    result_dir=ROOT / "results" / "olmo2_wikitext2_cal",
-    log_dir=ROOT / "results" / "olmo2_wikitext2_cal" / "logs",
-    log_infix="sdpa",
-    attention="sdpa",
-    holdout_suffix="32B-Instruct",
-    plot=True,
-    calibration="wikitext2",
-    eval_datasets=("c4", "ptb"),
+OLMO2_WIKITEXT2_CAL = SweepRecord.from_spec(
+    SweepSpec(
+        name="olmo2_wikitext2_cal",
+        models=MODELS,
+        calibration="wikitext2",
+        eval_datasets=("c4", "ptb"),
+        log_infix="sdpa",
+        attention="sdpa",
+        holdout_suffix="32B-Instruct",
+    ),
+    repo_root(),
 )
 
 
 def stored_params() -> dict[str, float]:
     """Catalog stored N, replaced once that checkpoint's index is cached."""
-    sizes = {model: stored_count(model) for model in MODELS}
-    hub = Path.home() / ".cache" / "huggingface" / "hub"
-    for model in MODELS:
-        org, name = model.split("/", 1)
-        measured = _index_billions(hub / f"models--{org}--{name}")
-        if measured is not None:
-            sizes[model] = measured
-    return sizes
-
-
-def _index_billions(snapshot_root: Path) -> float | None:
-    if not snapshot_root.exists():
-        return None
-    for path in snapshot_root.rglob("model.safetensors.index.json"):
-        data = json.loads(path.read_text())
-        total = data.get("metadata", {}).get("total_size")
-        if total:
-            return float(total) / 2 / 1e9
-    for path in snapshot_root.rglob("model.safetensors"):
-        if path.is_file():
-            # bf16-dominated single-file packs: bytes / 2 ≈ parameter count.
-            return float(path.stat().st_size) / 2 / 1e9
-    return None
+    return OLMO2.stored_params()

@@ -9,7 +9,9 @@ import them.
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
+from pathlib import Path
 
 
 @dataclass(frozen=True)
@@ -88,6 +90,43 @@ def stored_count(model_id: str) -> float:
     if count is None:
         raise LookupError(f"{model_id} has no stored parameter count")
     return count
+
+
+def snapshot_billions(model_id: str, hub: Path | None = None) -> float | None:
+    """Safetensors bytes / 2, in billions, from a local Hugging Face snapshot."""
+    if "/" not in model_id:
+        return None
+    org, name = model_id.split("/", 1)
+    root = (Path.home() / ".cache" / "huggingface" / "hub" if hub is None else hub)
+    return _snapshot_billions(root / f"models--{org}--{name}")
+
+
+def measured_stored_counts(model_ids) -> dict[str, float]:
+    """Catalog N, replaced when that checkpoint's snapshot is on disk."""
+    sizes = {}
+    for model_id in model_ids:
+        measured = snapshot_billions(model_id)
+        sizes[model_id] = stored_count(model_id) if measured is None else measured
+    return sizes
+
+
+def _snapshot_billions(snapshot_root: Path) -> float | None:
+    if not snapshot_root.exists():
+        return None
+    for path in snapshot_root.rglob("model.safetensors.index.json"):
+        if ".no_exist" in path.parts or path.stat().st_size == 0:
+            continue
+        try:
+            data = json.loads(path.read_text())
+        except json.JSONDecodeError:
+            continue
+        total = data.get("metadata", {}).get("total_size")
+        if total:
+            return float(total) / 2 / 1e9
+    for path in snapshot_root.rglob("model.safetensors"):
+        if path.is_file() and ".no_exist" not in path.parts:
+            return float(path.stat().st_size) / 2 / 1e9
+    return None
 
 
 def resolve(model_id: str) -> ModelRecord:

@@ -19,14 +19,16 @@ as `python -m sparsifier`. OPT and BLOOM stay in `sparsegpt/`
   `--zeros-per-group` and `--group-size`. `sparsifier.data` loads the
   calibration windows (`loaders`) and finds a pruned checkpoint (`cache`).
   `sparsifier.sweep` is the run
-  config, `SweepSpec`, and `validate`. Family sweep records stay in
-  `experiments`.
+  config, `SweepSpec`, `SweepRecord`, `validate`, and
+  `sparsifier.sweep.commands` (the argv and the tenth-step ladder). Family
+  sweep records stay in `experiments` and are `SweepRecord` values.
 - `sparsegpt/` — the legacy package. OPT and BLOOM still run from here.
   The copied Qwen, OLMo, Llama, and Gemma modules stay on disk for parity
   tests. The Click command does not import them.
 - `experiments/` — one sweep record per family and calibration, plus the
-  submit scripts. The prune-arg lives in `experiments/protocol.py`.
-  `experiments.sweeps` lists the specs.
+  submit scripts. The default prune namespace is
+  `sparsifier.sweep.default_prune_args`. `experiments.sweeps` lists the
+  records.
   `python -m experiments.reproduce plan <sweep>` prints the commands still
   missing. `python -m experiments.reproduce figures <sweep>` rewrites the
   three pages and the family principle page from saved JSON.
@@ -49,9 +51,10 @@ in `results/qwen3.5/`. Qwen 3.6 and 3.8 live in `results/qwen/`. A dense
 score in the hundreds or thousands is not a language-model perplexity. Do
 not fit it, do not quote it, and do not treat it as a point on the law.
 
-`experiments/gemma_gate.py` only checks that the layer-wise loop matches
-`model()` on the same windows. Those two paths once agreed near 12,000 on
-WikiText2. Agreement is not a valid score.
+`experiments/gemma_gate.py` checks that the layer-wise loop matches
+`model()` on the same windows for `google/gemma-4-E2B-it`. Those two paths
+once agreed near 12,000 on WikiText2. The gap is not stored. A dense score
+in the base sweep is the `Perplexity:` line from `python -m sparsifier`.
 
 When a Gemma dense score is implausible, trace `sparsifier/models/gemma.py`:
 `get_gemma`, `gemma_eval`, `gemma_reference_nlls`, and the inputs from

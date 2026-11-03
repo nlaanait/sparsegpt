@@ -1,6 +1,6 @@
 """Calibration then eval sweeps for one model family.
 
-Default protocol is C4 calibration with PTB and WikiText2 eval. A SweepSpec
+Default protocol is C4 calibration with PTB and WikiText2 eval. A SweepRecord
 may swap those (for example WikiText2 calibration with C4 and PTB eval).
 A prune is saved with --skip-eval and evaluated with --load-cached. The
 watcher kills a run only when it is armed, the SMs stay at 0%, the log is
@@ -20,12 +20,19 @@ import threading
 import time
 from pathlib import Path
 
-from experiments.protocol import PPL_RE, ROOT, prune_args as _prune_args
-from sparsifier.data.cache import find_pruned_model, prune_config_from_args
+from sparsifier.data.cache import find_pruned_model
+from sparsifier.metrics import PPL_RE
+from sparsifier.sweep import (
+    SPARSITIES,
+    SweepRecord,
+    default_prune_config,
+    eval_command,
+    repo_root,
+    short_name,
+    sparsity_token,
+)
 
-from experiments.protocol import SweepSpec
-
-SPARSITIES = [round(i / 10, 1) for i in range(1, 9)]
+ROOT = repo_root()
 # Legacy alias for the default Gemma / C4-calibrated Qwen eval pair.
 DATASETS = ["ptb", "wikitext2"]
 POLL_S = 10
@@ -34,19 +41,11 @@ RSS_GIB = 8
 ARM_MARKERS = ("Starting...", "Pruning ...", "Evaluating ...", "Dataset:")
 
 
-def short_name(model: str) -> str:
-    return model.rstrip("/").split("/")[-1].lower()
-
-
-def sparsity_token(sparsity: float) -> str:
-    return f"{sparsity:.2f}".rstrip("0").rstrip(".")
-
-
-def result_path(spec: SweepSpec, model: str) -> Path:
+def result_path(spec: SweepRecord, model: str) -> Path:
     return spec.result_dir / f"{short_name(model)}_sparsity.json"
 
 
-def load_results(path: Path, spec: SweepSpec) -> dict:
+def load_results(path: Path, spec: SweepRecord) -> dict:
     if path.is_file():
         return json.loads(path.read_text())
     return {
@@ -91,12 +90,10 @@ def add_point(results, model, dataset, method, sparsity, perplexity) -> None:
 
 
 def checkpoint(model: str, sparsity: float, calibration: str = "c4") -> Path | None:
-    return find_pruned_model(
-        prune_config_from_args(_prune_args(model, sparsity, dataset=calibration))
-    )
+    return find_pruned_model(default_prune_config(model, sparsity, calibration))
 
 
-def release_finished_checkpoints(spec: SweepSpec) -> None:
+def release_finished_checkpoints(spec: SweepRecord) -> None:
     """Remove a checkpoint once every eval corpus is saved.
 
     Large 27B / Gemma caches do not fit for a full sparsity ladder. The JSON
@@ -260,31 +257,19 @@ def run_job(cmd: list[str], log_path: Path, *, expect_perplexity: bool = True) -
     return found
 
 
-def family_cmd(spec: SweepSpec, model: str, datasets: list[str], sparsity: float) -> list[str]:
-    cmd = [
-        sys.executable,
-        "-m",
-        spec.runner,
-        model,
-        spec.calibration,
-        "--sparsity",
-        sparsity_token(sparsity),
-        "--eval-datasets",
-        *datasets,
-        *spec.extra_args,
-    ]
+def family_cmd(spec: SweepRecord, model: str, datasets: list[str], sparsity: float) -> list[str]:
+    """Argv of one eval. A saved checkpoint is loaded; otherwise the run saves one."""
+    load_cached = False
     if sparsity > 0:
         cached = checkpoint(model, sparsity, spec.calibration)
-        if cached is None:
-            cmd.extend(["--save", f"sparse_opt/{short_name(model)}"])
-        else:
-            cmd.append("--load-cached")
+        if cached is not None:
+            load_cached = True
             print(f"checkpoint {cached}", flush=True)
-    return cmd
+    return eval_command(spec, model, datasets, sparsity, load_cached=load_cached)
 
 
 def run_smoke_dense(
-    spec: SweepSpec,
+    spec: SweepRecord,
     models: list[str] | None = None,
     *,
     dataset: str = "wikitext2",
@@ -336,7 +321,7 @@ def run_smoke_dense(
     return cleared
 
 
-def run_sweep(spec: SweepSpec, models: list[str] | None = None, phase: str = "all") -> None:
+def run_sweep(spec: SweepRecord, models: list[str] | None = None, phase: str = "all") -> None:
     chosen = list(spec.models if models is None else models)
     for model in chosen:
         if model not in spec.models:
@@ -408,7 +393,7 @@ def run_sweep(spec: SweepSpec, models: list[str] | None = None, phase: str = "al
     _page(spec)
 
 
-def _refresh(spec: SweepSpec) -> None:
+def _refresh(spec: SweepRecord) -> None:
     if not spec.plot:
         return
     try:
@@ -419,7 +404,7 @@ def _refresh(spec: SweepSpec) -> None:
         print(f"plot refresh failed: {exc}", flush=True)
 
 
-def _page(spec: SweepSpec) -> None:
+def _page(spec: SweepRecord) -> None:
     if not spec.plot:
         return
     from analysis.principle import write_family_page

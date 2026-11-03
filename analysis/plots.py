@@ -28,7 +28,7 @@ from analysis.series import (
     models_for,
     plausible_dense,
 )
-from experiments.protocol import SweepSpec
+from sparsifier.sweep import SweepRecord
 
 COLORS = (
     "#1d4ed8",
@@ -52,7 +52,7 @@ QWEN_COLORS = {
 }
 
 
-def refresh_family(spec: SweepSpec, sizes: dict[str, float] | None = None) -> dict | None:
+def refresh_family(spec: SweepRecord, sizes: dict[str, float] | None = None) -> dict | None:
     rows = load_rows(spec)
     if not rows:
         print(f"{spec.name}: no perplexity points", flush=True)

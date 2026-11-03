@@ -3,6 +3,9 @@
 A ``SweepSpec`` is data. ``validate`` resolves its models in the catalog,
 requires one shared runner, one family, and a stored parameter count, and returns a
 ``CheckedSweep``. Command builders take that checked value.
+
+A ``SweepRecord`` is the family record experiments store. The runner and the
+results directories are already filled in.
 """
 
 from __future__ import annotations
@@ -11,7 +14,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from sparsifier.models import ModelRecord, resolve
+from sparsifier.models import ModelRecord, measured_stored_counts, resolve
 from sparsifier.sweep.run import CORPORA
 
 _NAME = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]*")
@@ -59,6 +62,49 @@ class SweepSpec:
             raise ValueError("plot must be a bool")
         if not isinstance(self.extra_args, tuple) or not all(isinstance(arg, str) for arg in self.extra_args):
             raise ValueError("extra_args must be a tuple of strings")
+
+
+@dataclass(frozen=True)
+class SweepRecord:
+    """One family sweep whose runner and result paths are already chosen."""
+
+    name: str
+    models: tuple[str, ...]
+    runner: str
+    extra_args: tuple[str, ...]
+    result_dir: Path
+    log_dir: Path
+    log_infix: str
+    attention: str
+    holdout_suffix: str
+    plot: bool = True
+    # SparseGPT calibration corpus (positional dataset arg to the runner).
+    calibration: str = "c4"
+    # Perplexity corpora after prune (or dense). Order is the sweep order.
+    eval_datasets: tuple[str, ...] = ("ptb", "wikitext2")
+
+    @classmethod
+    def from_spec(cls, spec: SweepSpec, root: Path) -> SweepRecord:
+        """Fill the runner and the results directories from ``validate``."""
+        checked = validate(spec, root)
+        return cls(
+            name=spec.name,
+            models=spec.models,
+            runner=checked.runner,
+            extra_args=spec.extra_args,
+            result_dir=checked.result_dir,
+            log_dir=checked.log_dir,
+            log_infix=spec.log_infix,
+            attention=spec.attention,
+            holdout_suffix=spec.holdout_suffix,
+            plot=spec.plot,
+            calibration=spec.calibration,
+            eval_datasets=spec.eval_datasets,
+        )
+
+    def stored_params(self) -> dict[str, float]:
+        """Catalog stored N, replaced once that checkpoint's index is cached."""
+        return measured_stored_counts(self.models)
 
 
 @dataclass(frozen=True)

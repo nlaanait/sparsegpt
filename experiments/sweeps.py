@@ -5,13 +5,13 @@ from __future__ import annotations
 from experiments.gemma import GEMMA
 from experiments.llama import LLAMA3, LLAMA3_WIKITEXT2_CAL
 from experiments.olmo import OLMO2, OLMO2_WIKITEXT2_CAL
-from experiments.protocol import SweepSpec
 from experiments.qwen import (
     QWEN_35,
     QWEN_35_WIKITEXT2_CAL,
     QWEN_36_38,
     QWEN_WIKITEXT2_CAL,
 )
+from sparsifier.sweep import SweepRecord
 
 _SWEEPS = (
     QWEN_35,
@@ -26,5 +26,5 @@ _SWEEPS = (
 )
 
 
-def sweeps() -> tuple[SweepSpec, ...]:
+def sweeps() -> tuple[SweepRecord, ...]:
     return _SWEEPS
