@@ -2,11 +2,12 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 export PATH="${HOME}/.pixi/bin:${HOME}/.local/bin:${PATH}"
-MODEL="${MODEL:-Qwen/Qwen3.5-9B}"
-NAME="${1:-qwen-9b-tangent-c4-sparsity-sweep}"
-OUT="${OUT:-results/tangent/qwen3.5-9b-c4-sparsity-sweep}"
+# 9B OOMs on GH200 with pytorch/fla linear-attn fallback even at forward-batch=1.
+MODEL="${MODEL:-Qwen/Qwen3.5-4B}"
+NAME="${1:-qwen-4b-tangent-c4-sparsity-sweep}"
+OUT="${OUT:-results/tangent/qwen3.5-4b-c4-sparsity-sweep}"
 PYTORCH_ATTENTION="${PYTORCH_ATTENTION:-1}"
-FORWARD_BATCH="${FORWARD_BATCH:-4}"
+FORWARD_BATCH="${FORWARD_BATCH:-8}"
 DEPENDS_ON="${DEPENDS_ON:-}"
 extra=()
 if [[ -n "$DEPENDS_ON" ]]; then extra+=(--depends-on "$DEPENDS_ON"); fi
