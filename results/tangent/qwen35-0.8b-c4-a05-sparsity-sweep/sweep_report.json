@@ -1,0 +1,128 @@
+{
+  "design": {
+    "comparison": "one mid-size model; unstructured SparseGPT vs output-tangent mask across a sparsity sweep; likelihood (nats) and perplexity on eval sets",
+    "baseline": "SparseGPT ambient mask and ambient compensation",
+    "tangent": "output tangent weighted mask scores with ambient SparseGPT compensation",
+    "settings": {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "calibration": "c4",
+      "eval_dataset": [
+        "wikitext2"
+      ],
+      "seed": 0,
+      "nsamples": 128,
+      "percdamp": 0.01,
+      "minlayer": -1,
+      "maxlayer": 1000,
+      "blocksize": 128,
+      "forward_batch": 1,
+      "true_sequential": false,
+      "pytorch_attention": true,
+      "tangent_alpha": 0.5,
+      "tangent_charts": 8,
+      "tangent_rank": 2,
+      "tangent_samples": 512,
+      "include_dense": true
+    },
+    "sparsities": [
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8
+    ]
+  },
+  "points": [
+    {
+      "sparsity": 0.0,
+      "variants": {
+        "baseline": {
+          "command": [
+            "/home/ubuntu/sparsegpt/.pixi/envs/gh200/bin/python",
+            "-m",
+            "sparsifier",
+            "Qwen/Qwen3.5-0.8B",
+            "c4",
+            "--seed",
+            "0",
+            "--nsamples",
+            "128",
+            "--percdamp",
+            "0.01",
+            "--sparsity",
+            "0",
+            "--minlayer",
+            "-1",
+            "--maxlayer",
+            "1000",
+            "--blocksize",
+            "128",
+            "--forward-batch",
+            "1",
+            "--eval-datasets",
+            "wikitext2",
+            "--pytorch-attention",
+            "--tangent-alpha",
+            "0"
+          ],
+          "returncode": 0,
+          "log": "/home/ubuntu/sparsegpt/results/tangent/qwen35-0.8b-c4-a05-sparsity-sweep/s0.0_baseline.log",
+          "eval": {
+            "wikitext2": {
+              "perplexity": 17.18007,
+              "likelihood_nats": 844480.0,
+              "tokens": 296960.0
+            }
+          }
+        }
+      }
+    },
+    {
+      "sparsity": 0.1,
+      "variants": {
+        "baseline": {
+          "command": [
+            "/home/ubuntu/sparsegpt/.pixi/envs/gh200/bin/python",
+            "-m",
+            "sparsifier",
+            "Qwen/Qwen3.5-0.8B",
+            "c4",
+            "--seed",
+            "0",
+            "--nsamples",
+            "128",
+            "--percdamp",
+            "0.01",
+            "--sparsity",
+            "0.1",
+            "--minlayer",
+            "-1",
+            "--maxlayer",
+            "1000",
+            "--blocksize",
+            "128",
+            "--forward-batch",
+            "1",
+            "--eval-datasets",
+            "wikitext2",
+            "--pytorch-attention",
+            "--tangent-alpha",
+            "0"
+          ],
+          "returncode": 0,
+          "log": "/home/ubuntu/sparsegpt/results/tangent/qwen35-0.8b-c4-a05-sparsity-sweep/s0.1_baseline.log",
+          "eval": {
+            "wikitext2": {
+              "perplexity": 17.340022,
+              "likelihood_nats": 847232.0,
+              "tokens": 296960.0
+            }
+          }
+        }
+      }
+    }
+  ]
+}
