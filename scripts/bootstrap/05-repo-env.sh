@@ -202,13 +202,87 @@ ensure_hf_cache() {
   fi
 }
 
+driver_cuda_version() {
+  # nvidia-smi "CUDA Version" is the max toolkit the driver supports (e.g. 12.8).
+  nvidia-smi 2>/dev/null | awk -F'CUDA Version: ' '/CUDA Version:/ {print $2; exit}' | awk '{print $1}'
+}
+
+adapt_pixi_cuda_to_driver() {
+  # Workspace default is linux-aarch64 + torch cu130. Lambda GH200 images often
+  # ship driver max CUDA 12.8, which cannot load cu130 wheels. Downgrade the
+  # manifest to cu126 (torch 2.12 still published) and drop the lock so pixi
+  # re-resolves.
+  local drv
+  drv="$(driver_cuda_version)"
+  log "driver max CUDA: ${drv:-unknown}"
+  if [[ -z "$drv" ]]; then
+    warn "could not read driver CUDA version; leaving pixi.toml CUDA pins alone"
+    return 0
+  fi
+  # Compare major.minor as numbers: 12.8 < 13.0 → adapt.
+  local need_adapt
+  need_adapt="$(python3 - <<PY
+maj, min = map(int, "${drv}".split(".")[:2])
+print("yes" if (maj, min) < (13, 0) else "no")
+PY
+)"
+  if [[ "$need_adapt" != "yes" ]]; then
+    log "driver supports CUDA 13+; keeping cu130 pins"
+    CUDA_TAG="${drv}"
+    return 0
+  fi
+
+  local toml="${WORKDIR}/pixi.toml"
+  [[ -f "$toml" ]] || die "missing $toml"
+  if [[ ! -f "${toml}.bootstrap.bak" ]]; then
+    cp -f "$toml" "${toml}.bootstrap.bak"
+  fi
+
+  # Prefer cu126: torch==2.12.0+cu126 exists for aarch64; cu128 stops at 2.11.
+  local target_cuda="12.6"
+  local target_tag="cu126"
+  local torch_ver="2.12.0+${target_tag}"
+  log "adapting pixi.toml to torch ${torch_ver} (driver CUDA ${drv} < 13.0)"
+
+  python3 - <<PY
+from pathlib import Path
+import re
+path = Path("${toml}")
+text = path.read_text()
+text2, n1 = re.subn(
+    r'(platforms\s*=\s*\[\s*\{\s*platform\s*=\s*"linux-aarch64"\s*,\s*cuda\s*=\s*")[^"]+(")',
+    r"\g<1>${target_cuda}\2",
+    text,
+    count=1,
+)
+text2, n2 = re.subn(
+    r'torch\s*=\s*\{\s*version\s*=\s*"==[^"]+"\s*,\s*index\s*=\s*"https://download\.pytorch\.org/whl/[^"]+"\s*\}',
+    'torch = { version = "==${torch_ver}", index = "https://download.pytorch.org/whl/${target_tag}" }',
+    text2,
+    count=1,
+)
+if n1 != 1 or n2 != 1:
+    raise SystemExit(f"failed to rewrite CUDA pins (platform={n1}, torch={n2})")
+path.write_text(text2)
+print(f"rewrote platform cuda=${target_cuda} and torch==${torch_ver}")
+PY
+
+  if [[ -f "${WORKDIR}/pixi.lock" ]]; then
+    mv -f "${WORKDIR}/pixi.lock" "${WORKDIR}/pixi.lock.cu130.bak"
+    log "moved pixi.lock aside for re-resolve (pixi.lock.cu130.bak)"
+  fi
+  CUDA_TAG="$target_cuda"
+}
+
 pixi_install() {
   cd "$WORKDIR"
   log "pixi install (platform=$(pixi_platform), cuda=$CUDA_TAG)"
-  # Lockfile is authored for linux-aarch64+cu130 on the Grace host; GH200 matches.
   pixi install
   log "pixi env ready"
-  pixi run cuda-check || warn "cuda-check failed inside pixi (driver/toolkit mismatch?)"
+  pixi run cuda-check || true
+  if ! pixi run python -c "import torch; raise SystemExit(0 if torch.cuda.is_available() else 1)"; then
+    die "torch.cuda.is_available() is False; fix driver/torch CUDA pin before scheduling"
+  fi
 }
 
 prepare_tree
@@ -224,5 +298,6 @@ else
   fi
 fi
 
+adapt_pixi_cuda_to_driver
 pixi_install
 log "repo env ready at $WORKDIR"
