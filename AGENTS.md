@@ -115,9 +115,13 @@ under `results/olmo2/`. Driver: `drivers.olmo2_sparsity`.
 
 To stand up a fresh Ubuntu GH200 node (Pixi, gflow, `tangent-aware-pruning`
 env): `scripts/bootstrap/bootstrap.sh`. Details and env knobs are in
-`scripts/bootstrap/README.md`. Tangent GPU jobs:
-`scripts/submit_tangent_smoke_gflow.sh` and
-`scripts/submit_tangent_pair_gflow.sh`.
+`scripts/bootstrap/README.md`.
+
+`causal-conv1d` has no matching aarch64 wheel on PyPI for our torch pin — do
+**not** block on building it. Bootstrap strips the path pin, then phase 7
+submits `scripts/submit_causal_conv1d_build_gflow.sh`. Schedule immediately
+with `scripts/schedule_tangent_gh200.sh` (smoke via `--pytorch-attention`;
+full pair `--depends-on` the build, then `scripts/ensure_causal_conv1d.sh`).
 
 ## Scheduling (gflow)
 

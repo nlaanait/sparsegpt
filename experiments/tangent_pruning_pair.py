@@ -59,6 +59,8 @@ def _command(args, arm: str) -> list[str]:
         command.append("--true-sequential")
     if args.skip_eval:
         command.append("--skip-eval")
+    if args.pytorch_attention:
+        command.append("--pytorch-attention")
     if arm == "baseline":
         command.extend(("--tangent-alpha", "0"))
     else:
@@ -123,6 +125,14 @@ def main() -> int:
     parser.add_argument("--forward-batch", type=int, default=0)
     parser.add_argument("--true-sequential", action="store_true")
     parser.add_argument("--skip-eval", action="store_true")
+    parser.add_argument(
+        "--pytorch-attention",
+        action="store_true",
+        help=(
+            "Force Qwen PyTorch attention/causal-conv fallbacks. Use while a "
+            "causal-conv1d wheel build is still running."
+        ),
+    )
     parser.add_argument("--tangent-alpha", type=float, default=0.5)
     parser.add_argument("--tangent-charts", type=int, default=8)
     parser.add_argument("--tangent-rank", type=int, default=2)
@@ -179,6 +189,7 @@ def main() -> int:
                     "forward_batch",
                     "true_sequential",
                     "skip_eval",
+                    "pytorch_attention",
                     "tangent_alpha",
                     "tangent_charts",
                     "tangent_rank",

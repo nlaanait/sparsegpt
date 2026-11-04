@@ -25,4 +25,11 @@ else
   log "NVML library present"
 fi
 
+if command -v nvcc >/dev/null 2>&1 || [[ -x /usr/local/cuda/bin/nvcc ]]; then
+  log "nvcc present (needed for background causal-conv1d wheel build)"
+else
+  warn "nvcc missing — causal-conv1d gbatch build will fail until a CUDA 13 toolkit is installed"
+  warn "drivers alone are enough for torch; the toolkit is only for compiling the wheel"
+fi
+
 log "GPU check OK"
