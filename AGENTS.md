@@ -111,6 +111,14 @@ raw WikiText2 and PTB (no chat template). Dense WikiText2 must clear
 `SMOKE_PPL_RANGE` in `experiments/olmo.py` before any prune. Results land
 under `results/olmo2/`. Driver: `drivers.olmo2_sparsity`.
 
+## Bare-metal GH200 bootstrap
+
+To stand up a fresh Ubuntu GH200 node (Pixi, gflow, `tangent-aware-pruning`
+env): `scripts/bootstrap/bootstrap.sh`. Details and env knobs are in
+`scripts/bootstrap/README.md`. Tangent GPU jobs:
+`scripts/submit_tangent_smoke_gflow.sh` and
+`scripts/submit_tangent_pair_gflow.sh`.
+
 ## Scheduling (gflow)
 
 All GPU experiments on this machine go through **gflow**. Do not start
