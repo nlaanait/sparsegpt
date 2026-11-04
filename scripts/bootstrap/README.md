@@ -60,7 +60,7 @@ Needs `nvcc` (CUDA 13 toolkit). Build sets `TORCH_CUDA_ARCH_LIST` from
 
 | Variable | Default | Meaning |
 |---|---|---|
-| `BOOTSTRAP_BRANCH` | `tangent-aware-pruning` | Git branch for phase 5 |
+| `BOOTSTRAP_BRANCH` | current HEAD, else `tangent-aware-pruning` | Git branch for phase 5 |
 | `BOOTSTRAP_WORKDIR` | this repo root | Checkout / `pixi install` directory |
 | `BOOTSTRAP_REPO_URL` | `https://github.com/nlaanait/sparsegpt.git` | Clone URL if no `.git` |
 | `BOOTSTRAP_REQUIRE_GPU` | `1` | Fail phase 2 without `nvidia-smi` |

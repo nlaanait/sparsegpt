@@ -15,11 +15,21 @@ ensure_path_exports
 need_cmd pixi
 need_cmd git
 
-BRANCH="${BOOTSTRAP_BRANCH:-tangent-aware-pruning}"
 REPO_URL="${BOOTSTRAP_REPO_URL:-https://github.com/nlaanait/sparsegpt.git}"
 WORKDIR="${BOOTSTRAP_WORKDIR:-$REPO_ROOT}"
 CUDA_TAG="${BOOTSTRAP_CUDA_TAG:-13.0}"
 EXPECT_ARCH="${BOOTSTRAP_EXPECT_ARCH:-aarch64}"
+
+# Prefer an explicit BOOTSTRAP_BRANCH. Otherwise stay on the current checkout
+# (e.g. cursor/gpu-node-bootstrap-*) so a single-branch clone of the bootstrap
+# PR does not force-fetch tangent-aware-pruning and fail.
+if [[ -n "${BOOTSTRAP_BRANCH:-}" ]]; then
+  BRANCH="$BOOTSTRAP_BRANCH"
+elif [[ -d "${WORKDIR}/.git" ]]; then
+  BRANCH="$(git -C "$WORKDIR" rev-parse --abbrev-ref HEAD)"
+else
+  BRANCH="tangent-aware-pruning"
+fi
 
 arch="$(detect_arch)"
 if [[ "$arch" != "$EXPECT_ARCH" ]]; then
@@ -31,10 +41,13 @@ fi
 
 prepare_tree() {
   if [[ -d "${WORKDIR}/.git" ]]; then
-    log "using existing git tree at $WORKDIR"
+    log "using existing git tree at $WORKDIR (want branch $BRANCH)"
     cd "$WORKDIR"
-    git fetch origin "$BRANCH" || git fetch origin
-    # Stay on current branch if it already tracks the target tip; otherwise check out.
+    # Single-branch clones do not create refs/remotes/origin/<other>; write the
+    # ref explicitly so checkout works for any BOOTSTRAP_BRANCH.
+    if ! git fetch origin "+refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}"; then
+      git fetch origin || die "git fetch origin failed"
+    fi
     local cur
     cur="$(git rev-parse --abbrev-ref HEAD)"
     if [[ "$cur" != "$BRANCH" ]]; then
@@ -43,7 +56,7 @@ prepare_tree() {
       elif git show-ref --verify --quiet "refs/remotes/origin/$BRANCH"; then
         git checkout -B "$BRANCH" "origin/$BRANCH"
       else
-        die "branch $BRANCH not found locally or on origin"
+        die "branch $BRANCH not found locally or on origin after fetch"
       fi
     fi
     git pull --ff-only origin "$BRANCH" 2>/dev/null || true
