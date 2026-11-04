@@ -148,7 +148,9 @@ stage_causal_conv1d_wheel() {
 }
 
 patch_pixi_for_missing_wheel() {
-  # Drop the absolute path dep so install can proceed without the local wheel.
+  # Drop the absolute path dep and the flash-linear-attention `conv1d` extra
+  # (that extra re-pulls causal-conv1d from PyPI and compiles it during
+  # `pixi install`, which fails when system nvcc ≠ torch's CUDA).
   # Backup once at pixi.toml.bootstrap.bak.
   local toml="${WORKDIR}/pixi.toml"
   [[ -f "$toml" ]] || die "missing $toml"
@@ -162,16 +164,32 @@ import re
 import sys
 path = Path(sys.argv[1])
 text = path.read_text()
+changed = []
 new, n = re.subn(
     r'(?m)^causal-conv1d\s*=\s*\{[^}]*\}\s*\n',
     '',
     text,
 )
 if n:
-    path.write_text(new)
-    print(f"removed {n} causal-conv1d path pin(s) from {path}")
-else:
-    print(f"no causal-conv1d path pin in {path}")
+    changed.append(f"removed {n} causal-conv1d path pin(s)")
+    text = new
+# Keep fla, but do not pull/build causal-conv1d via the conv1d extra.
+def _drop_conv1d(m: re.Match[str]) -> str:
+    parts = [x.strip().strip("\"'") for x in m.group(2).split(",")]
+    parts = [p for p in parts if p and p != "conv1d"]
+    return m.group(1) + ", ".join(f'"{p}"' for p in parts) + m.group(3)
+
+new, n = re.subn(
+    r'(flash-linear-attention\s*=\s*\{[^}]*extras\s*=\s*\[)([^\]]*)(\])',
+    _drop_conv1d,
+    text,
+    count=1,
+)
+if n:
+    changed.append("dropped flash-linear-attention conv1d extra")
+    text = new
+path.write_text(text)
+print("; ".join(changed) if changed else f"no causal-conv1d / conv1d edits in {path}")
 PY
 }
 
