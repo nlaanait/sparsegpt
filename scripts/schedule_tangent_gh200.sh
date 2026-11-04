@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# GH200: mid-size Qwen3.5-4B sparsity sweep — unstructured SparseGPT vs
+# GH200: mid-size OLMo-2-7B-Instruct sparsity sweep — unstructured SparseGPT vs
 # output-tangent, recording likelihood (nats) and perplexity on WikiText2.
-# (9B OOMs here under the pytorch/fla linear-attn fallback.)
+# (Qwen3.5 mid-size OOMs under FLA on GH200; use OLMo 7B.)
 #
 # Starts immediately with --pytorch-attention (no wait on causal-conv1d).
 # BUILD_FIRST=1 waits on a wheel build instead and runs with CUDA kernels.
@@ -26,9 +26,9 @@ if [[ "$BUILD_FIRST" == "1" ]]; then
   DEPENDS_ON="$BUILD_ID" PYTORCH_ATTENTION=0 \
     bash scripts/submit_tangent_sparsity_sweep_gflow.sh
 else
-  echo "=== Qwen3.5-4B unstructured vs tangent sparsity sweep (pytorch attention) ==="
+  echo "=== OLMo-2-7B-Instruct unstructured vs tangent sparsity sweep (pytorch attention) ==="
   bash scripts/submit_tangent_sparsity_sweep_gflow.sh
 fi
 
 gqueue
-echo "report: results/tangent/qwen3.5-4b-c4-sparsity-sweep/sweep_report.json"
+echo "report: results/tangent/olmo2-7b-c4-sparsity-sweep/sweep_report.json"

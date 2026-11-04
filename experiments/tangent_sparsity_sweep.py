@@ -169,8 +169,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--model",
-        default="Qwen/Qwen3.5-4B",
-        help="Mid-size default is Qwen3.5-4B (9B OOMs on GH200 with fla fallback).",
+        default="allenai/OLMo-2-1124-7B-Instruct",
+        help="Mid-size default is OLMo-2-7B-Instruct (Qwen3.5 FLA OOMs on GH200).",
     )
     parser.add_argument("--calibration", choices=("wikitext2", "ptb", "c4"), default="c4")
     parser.add_argument(
