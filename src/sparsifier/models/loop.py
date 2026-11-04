@@ -197,6 +197,8 @@ def publish_likelihood(likelihood: Likelihood, dataset: str, log_wandb: bool) ->
     """Print perplexity from a likelihood and, when asked, send it to wandb."""
     value = Perplexity().score(likelihood).value
     print(f"Perplexity: {value:3f}")
+    print(f"Likelihood nats: {likelihood.nats:.6f}")
+    print(f"Tokens: {likelihood.tokens}")
     log_perplexity(dataset, value, log_wandb)
     return value
 
