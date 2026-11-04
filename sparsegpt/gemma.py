@@ -379,6 +379,14 @@ def _context(text, sample, position_ids):
     return masks, positions
 
 
+def _write_bank(dst: torch.Tensor, src: torch.Tensor) -> None:
+    """Copy into a preallocated bank; assignment can retain temps on GH200."""
+    value = src.detach()
+    if value.shape != dst.shape and value.ndim == dst.ndim + 1 and value.shape[0] == 1:
+        value = value[0]
+    dst.copy_(value)
+
+
 def _run_layer(layer, hidden, per_layer_input, shared_kv, position_embeddings, attention_mask, position_ids):
     # Gemma 4 E2B/E4B take a per-layer embedding as the second argument.
     # Gemma 4 12B Unified and 31B do not; a positional tensor there would be
@@ -449,9 +457,9 @@ def gemma_sequential(model, dataloader, dev):
     bos_id = int(getattr(model.config, "bos_token_id", 2))
     for index, batch in enumerate(dataloader):
         embeds, projected = _embed(text, _prefix_bos(batch[0], bos_id))
-        inps[index] = embeds[0].to("cpu")
+        _write_bank(inps[index], embeds[0])
         if projected is not None:
-            ple[index] = projected[0].to("cpu")
+            _write_bank(ple[index], projected[0])
     _ple_to(text, "cpu", embeddings=False)
     torch.cuda.empty_cache()
 
@@ -491,7 +499,7 @@ def gemma_sequential(model, dataloader, dev):
             with _noop_experts(layer):
                 for j in range(args.nsamples):
                     ple_j = None if ple is None else ple[j, :, i, :].to(dev).unsqueeze(0)
-                    outs[j] = _run_layer(
+                    out = _run_layer(
                         layer,
                         inps[j].unsqueeze(0).to(dev),
                         ple_j,
@@ -499,7 +507,9 @@ def gemma_sequential(model, dataloader, dev):
                         positions[layer_type],
                         masks[layer_type],
                         position_ids,
-                    ).to("cpu")
+                    )
+                    _write_bank(outs[j], out)
+                    del out
             for handle in handles:
                 handle.remove()
             for name in gpts:
@@ -525,7 +535,7 @@ def gemma_sequential(model, dataloader, dev):
         print(f"layer {i}: propagate outs", flush=True)
         for j in range(args.nsamples):
             ple_j = None if ple is None else ple[j, :, i, :].to(dev).unsqueeze(0)
-            outs[j] = _run_layer(
+            out = _run_layer(
                 layer,
                 inps[j].unsqueeze(0).to(dev),
                 ple_j,
@@ -533,7 +543,9 @@ def gemma_sequential(model, dataloader, dev):
                 positions[layer_type],
                 masks[layer_type],
                 position_ids,
-            ).to("cpu")
+            )
+            _write_bank(outs[j], out)
+            del out
             if (j + 1) % 32 == 0 or j + 1 == args.nsamples:
                 print(f"layer {i}: outs {j + 1}/{args.nsamples}", flush=True)
         layers[i] = layer.cpu()
@@ -593,9 +605,9 @@ def _eval_windows(model, testenc, dev, start, stop, dtype):
     for offset, index in enumerate(range(start, stop)):
         ids = _prefix_bos(testenc[:, index * model.seqlen : (index + 1) * model.seqlen], bos_id).to(dev)
         embeds, projected = _embed(text, ids)
-        inps[offset] = embeds[0]
+        _write_bank(inps[offset], embeds[0])
         if projected is not None:
-            ple[offset] = projected[0].to("cpu")
+            _write_bank(ple[offset], projected[0])
     _ple_to(text, "cpu")
     torch.cuda.empty_cache()
 
@@ -608,7 +620,7 @@ def _eval_windows(model, testenc, dev, start, stop, dtype):
         layer_type = text.config.layer_types[i]
         for j in range(count):
             ple_j = None if ple is None else ple[j, :, i, :].to(dev).unsqueeze(0)
-            outs[j] = _run_layer(
+            out = _run_layer(
                 layer,
                 inps[j].unsqueeze(0),
                 ple_j,
@@ -617,6 +629,8 @@ def _eval_windows(model, testenc, dev, start, stop, dtype):
                 masks[layer_type],
                 position_ids,
             )
+            _write_bank(outs[j], out)
+            del out
         layers[i] = layer.cpu()
         del layer
         torch.cuda.empty_cache()

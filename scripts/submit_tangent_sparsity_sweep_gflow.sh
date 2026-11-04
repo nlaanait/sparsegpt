@@ -15,6 +15,8 @@ NAME="${1:-olmo2-7b-tangent-c4-sparsity-sweep}"
 OUT="${OUT:-results/tangent/olmo2-7b-c4-sparsity-sweep}"
 FORWARD_BATCH="${FORWARD_BATCH:-8}"
 NSAMPLES="${NSAMPLES:-128}"
+# GH200 driver 12.8: use the restored pixi env (torch 2.10+cu128 + causal-conv1d wheel).
+PIXI_ENV="${PIXI_ENV:-gh200}"
 # Only set for Qwen linear-attn fallbacks; OLMo does not need it.
 PYTORCH_ATTENTION="${PYTORCH_ATTENTION:-0}"
 DEPENDS_ON="${DEPENDS_ON:-}"
@@ -27,7 +29,7 @@ gbatch \
   --gpus 1 --gpu-memory 48G --memory 64G \
   --name "$NAME" --project tangent-sparsegpt --time 36:00:00 --auto-close \
   "${extra[@]}" -- \
-  bash -lc "export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True; cd \$HOME/sparsegpt && pixi run python -u -m experiments.tangent_sparsity_sweep --model '$MODEL' --calibration c4 --nsamples $NSAMPLES --forward-batch $FORWARD_BATCH --eval-dataset wikitext2 --tangent-alpha 0.5 --tangent-charts 8 --tangent-rank 2 --tangent-samples 512 --output-dir '$OUT' ${attn[*]}"
+  bash -lc "cd \$HOME/sparsegpt && pixi run -e '$PIXI_ENV' python -u -m experiments.tangent_sparsity_sweep --model '$MODEL' --calibration c4 --nsamples $NSAMPLES --forward-batch $FORWARD_BATCH --eval-dataset wikitext2 --tangent-alpha 0.5 --tangent-charts 8 --tangent-rank 2 --tangent-samples 512 --output-dir '$OUT' ${attn[*]}"
 
 echo
 gqueue

@@ -18,6 +18,7 @@ from sparsifier.models.loop import (
     eval_chunk_size,
     likelihood_from_nlls,
     run_model,
+    write_bank,
 )
 
 PRUNE_NAMES = (
@@ -96,8 +97,11 @@ def _capture_olmo(model, dataloader, dev):
     layers[0] = layers[0].to(dev)
 
     dtype = next(iter(model.parameters())).dtype
+    # Keep the calibration window bank on CPU. On GH200 (96 GiB HBM) holding
+    # inps+outs on CUDA (~4 GiB) plus layer-wise SDPA workspace OOMs the prune
+    # path; Gemma uses the same host-side pattern.
     inps = torch.zeros(
-        (args.nsamples, model.seqlen, model.config.hidden_size), dtype=dtype, device=dev
+        (args.nsamples, model.seqlen, model.config.hidden_size), dtype=dtype, device="cpu"
     )
     cache = capture_cache()
     layers[0] = Catcher(layers[0], inps, cache, squeeze=True)
@@ -116,12 +120,16 @@ def _capture_olmo(model, dataloader, dev):
     torch.cuda.empty_cache()
 
     position_ids = cache["position_ids"]
+    sample = inps[:1].to(dev)
+    attention_mask = _causal_mask(model, sample, position_ids)
+    del sample
+    torch.cuda.empty_cache()
     return {
         "hidden": inps,
         "outs": torch.zeros_like(inps),
         "use_cache": use_cache,
         "propagate": False,
-        "attention_mask": _causal_mask(model, inps[:1], position_ids),
+        "attention_mask": attention_mask,
         "position_embeddings": cache["position_embeddings"],
         "position_ids": position_ids,
     }
@@ -129,14 +137,18 @@ def _capture_olmo(model, dataloader, dev):
 
 def _forward_olmo(layer, hidden, captured):
     outs = captured["outs"]
+    device = next(layer.parameters()).device
+    # write_bank / copy_: assigning into outs[i] retains activations on GH200.
     for index in range(hidden.shape[0]):
-        outs[index] = _run_layer(
+        out = _run_layer(
             layer,
-            hidden[index].unsqueeze(0),
+            hidden[index].unsqueeze(0).to(device, non_blocking=False),
             attention_mask=captured["attention_mask"],
             position_embeddings=captured["position_embeddings"],
             position_ids=captured["position_ids"],
-        )[0]
+        )
+        write_bank(outs[index], out)
+        del out
     return outs
 
 
@@ -197,13 +209,15 @@ def _eval_windows(model, testenc, dev, start, stop, dtype):
         print(i)
         layer = layers[i].to(dev)
         for j in range(count):
-            outs[j] = _run_layer(
+            out = _run_layer(
                 layer,
                 inps[j].unsqueeze(0),
                 attention_mask=attention_mask,
                 position_embeddings=position_embeddings,
                 position_ids=position_ids,
-            )[0]
+            )
+            write_bank(outs[j], out)
+            del out
         layers[i] = layer.cpu()
         del layer
         torch.cuda.empty_cache()

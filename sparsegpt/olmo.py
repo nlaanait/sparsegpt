@@ -72,6 +72,14 @@ def _true_sequential_groups() -> list[list[str]]:
     ]
 
 
+def _write_bank(dst: torch.Tensor, src: torch.Tensor) -> None:
+    """Copy into a preallocated bank; assignment can retain temps on GH200."""
+    value = src.detach()
+    if value.shape != dst.shape and value.ndim == dst.ndim + 1 and value.shape[0] == 1:
+        value = value[0]
+    dst.copy_(value)
+
+
 def _leading_example(value):
     if isinstance(value, tuple):
         return tuple(_leading_example(item) for item in value)
@@ -201,13 +209,15 @@ def olmo_sequential(model, dataloader, dev):
 
             handles = [subset[name].register_forward_hook(add_batch(name)) for name in gpts]
             for j in range(args.nsamples):
-                outs[j] = _run_layer(
+                out = _run_layer(
                     layer,
                     inps[j].unsqueeze(0),
                     attention_mask=attention_mask,
                     position_embeddings=position_embeddings,
                     position_ids=position_ids,
                 )[0]
+                _write_bank(outs[j], out)
+                del out
             for handle in handles:
                 handle.remove()
             for name in gpts:
@@ -224,13 +234,15 @@ def olmo_sequential(model, dataloader, dev):
                 gpts[name].free()
 
         for j in range(args.nsamples):
-            outs[j] = _run_layer(
+            out = _run_layer(
                 layer,
                 inps[j].unsqueeze(0),
                 attention_mask=attention_mask,
                 position_embeddings=position_embeddings,
                 position_ids=position_ids,
             )[0]
+            _write_bank(outs[j], out)
+            del out
         layers[i] = layer.cpu()
         del layer
         torch.cuda.empty_cache()
@@ -319,13 +331,15 @@ def _eval_windows(model, testenc, dev, start, stop, dtype):
         print(i)
         layer = layers[i].to(dev)
         for j in range(count):
-            outs[j] = _run_layer(
+            out = _run_layer(
                 layer,
                 inps[j].unsqueeze(0),
                 attention_mask=attention_mask,
                 position_embeddings=position_embeddings,
                 position_ids=position_ids,
             )[0]
+            _write_bank(outs[j], out)
+            del out
         layers[i] = layer.cpu()
         del layer
         torch.cuda.empty_cache()

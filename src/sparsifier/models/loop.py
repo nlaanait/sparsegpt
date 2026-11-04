@@ -55,6 +55,20 @@ def capture_cache(*, positions: bool = True) -> dict:
     return cache
 
 
+def write_bank(dst: torch.Tensor, src: torch.Tensor) -> None:
+    """Copy ``src`` into a preallocated activation bank without replacing storage.
+
+    Assigning ``bank[i] = x.to("cpu")`` (or a fresh GPU tensor) into a slot of
+    a preallocated bank can retain the source on some torch builds
+    (GH200 / 2.10+cu128) and OOM mid SparseGPT. ``copy_`` keeps the bank's
+    storage and drops the temporary.
+    """
+    value = src.detach()
+    if value.shape != dst.shape and value.ndim == dst.ndim + 1 and value.shape[0] == 1:
+        value = value[0]
+    dst.copy_(value)
+
+
 class Catcher(nn.Module):
     """Replace a layer, store its input, then abort the forward.
 
@@ -90,11 +104,11 @@ class Catcher(nn.Module):
     def forward(self, inp, **kwargs):
         if self.batched:
             n = inp.shape[0]
-            self.inps[self.cache["i"] : self.cache["i"] + n] = inp
+            write_bank(self.inps[self.cache["i"] : self.cache["i"] + n], inp)
             self.cache["i"] += n
         else:
             stored = inp[0] if self.squeeze and inp.ndim == 3 else inp
-            self.inps[self.cache["i"]] = stored
+            write_bank(self.inps[self.cache["i"]], stored)
             self.cache["i"] += 1
         for field in self.fields:
             value = kwargs[field] if field in self.required else kwargs.get(field)

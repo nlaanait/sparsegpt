@@ -25,6 +25,7 @@ from sparsifier.models.loop import (
     eval_chunk_size,
     likelihood_from_nlls,
     run_model,
+    write_bank,
 )
 from sparsifier.prune import bind_layer
 
@@ -440,9 +441,9 @@ def gemma_sequential(model, dataloader, dev, pruner=None):
     bos_id = int(getattr(model.config, "bos_token_id", 2))
     for index, batch in enumerate(dataloader):
         embeds, projected = _embed(text, _prefix_bos(batch[0], bos_id))
-        inps[index] = embeds[0].to("cpu")
+        write_bank(inps[index], embeds[0])
         if projected is not None:
-            ple[index] = projected[0].to("cpu")
+            write_bank(ple[index], projected[0])
     _ple_to(text, "cpu", embeddings=False)
     torch.cuda.empty_cache()
 
@@ -468,7 +469,7 @@ def gemma_sequential(model, dataloader, dev, pruner=None):
             with _noop_experts(layer):
                 for j in range(args.nsamples):
                     ple_j = None if ple is None else ple[j, :, i, :].to(dev).unsqueeze(0)
-                    outs[j] = _run_layer(
+                    out = _run_layer(
                         layer,
                         inps[j].unsqueeze(0).to(dev),
                         ple_j,
@@ -476,7 +477,11 @@ def gemma_sequential(model, dataloader, dev, pruner=None):
                         positions[layer_type],
                         masks[layer_type],
                         position_ids,
-                    ).to("cpu")
+                    )
+                    # CPU bank: copy_ avoids the GH200 retention leak from
+                    # ``outs[j] = out.to("cpu")``.
+                    write_bank(outs[j], out)
+                    del out
             for handle in handles:
                 handle.remove()
             prune_bound(gpts, args, i, flush=True)
@@ -491,7 +496,7 @@ def gemma_sequential(model, dataloader, dev, pruner=None):
         print(f"layer {i}: propagate outs", flush=True)
         for j in range(args.nsamples):
             ple_j = None if ple is None else ple[j, :, i, :].to(dev).unsqueeze(0)
-            outs[j] = _run_layer(
+            out = _run_layer(
                 layer,
                 inps[j].unsqueeze(0).to(dev),
                 ple_j,
@@ -499,7 +504,9 @@ def gemma_sequential(model, dataloader, dev, pruner=None):
                 positions[layer_type],
                 masks[layer_type],
                 position_ids,
-            ).to("cpu")
+            )
+            write_bank(outs[j], out)
+            del out
             if (j + 1) % 32 == 0 or j + 1 == args.nsamples:
                 print(f"layer {i}: outs {j + 1}/{args.nsamples}", flush=True)
         layers[i] = layer.cpu()
@@ -565,9 +572,9 @@ def _eval_windows(model, testenc, dev, start, stop, dtype):
     for offset, index in enumerate(range(start, stop)):
         ids = _prefix_bos(testenc[:, index * model.seqlen : (index + 1) * model.seqlen], bos_id).to(dev)
         embeds, projected = _embed(text, ids)
-        inps[offset] = embeds[0]
+        write_bank(inps[offset], embeds[0])
         if projected is not None:
-            ple[offset] = projected[0].to("cpu")
+            write_bank(ple[offset], projected[0])
     _ple_to(text, "cpu")
     torch.cuda.empty_cache()
 
@@ -580,7 +587,7 @@ def _eval_windows(model, testenc, dev, start, stop, dtype):
         layer_type = text.config.layer_types[i]
         for j in range(count):
             ple_j = None if ple is None else ple[j, :, i, :].to(dev).unsqueeze(0)
-            outs[j] = _run_layer(
+            out = _run_layer(
                 layer,
                 inps[j].unsqueeze(0),
                 ple_j,
@@ -589,6 +596,8 @@ def _eval_windows(model, testenc, dev, start, stop, dtype):
                 masks[layer_type],
                 position_ids,
             )
+            write_bank(outs[j], out)
+            del out
         layers[i] = layer.cpu()
         del layer
         torch.cuda.empty_cache()

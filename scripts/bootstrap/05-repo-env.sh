@@ -208,11 +208,10 @@ driver_cuda_version() {
 }
 
 adapt_pixi_cuda_to_driver() {
-  # Workspace default is linux-aarch64 + torch cu130. Lambda GH200 images often
-  # ship driver max CUDA 12.8, which cannot load cu130 wheels. Downgrade the
-  # manifest to cu126 (torch 2.12 still published) and drop the lock so pixi
-  # re-resolves. Use argv + quoted heredoc (unquoted heredocs have been flaky
-  # under nohup/set -e on this image).
+  # Workspace default is linux-aarch64 + torch cu130 (GB10 / CUDA 13). Lambda
+  # GH200 images often ship driver max CUDA 12.8. Prefer the restored
+  # [environments.gh200] (torch 2.10+cu128 + Dao-AILab causal-conv1d wheel)
+  # instead of rewriting the default pins to cu126.
   local drv
   drv="$(driver_cuda_version || true)"
   log "driver max CUDA: ${drv:-unknown}"
@@ -224,6 +223,23 @@ adapt_pixi_cuda_to_driver() {
   local toml="${WORKDIR}/pixi.toml"
   [[ -f "$toml" ]] || die "missing $toml"
 
+  local maj minor
+  maj="$(echo "$drv" | cut -d. -f1)"
+  minor="$(echo "$drv" | cut -d. -f2)"
+  if [[ "$maj" -gt 12 ]] || { [[ "$maj" -eq 12 ]] && [[ "$minor" -ge 8 ]]; } && [[ "$maj" -lt 13 ]]; then
+    if grep -q '^\[environments\.gh200\]' "$toml"; then
+      log "driver CUDA $drv: use pixi -e gh200 (torch 2.10+cu128); leave default cu130 pins"
+      CUDA_TAG="gh200"
+      return 0
+    fi
+  fi
+  if [[ "$maj" -ge 13 ]]; then
+    log "keep_cu130 $drv"
+    CUDA_TAG="$drv"
+    return 0
+  fi
+
+  # Fallback when gh200 env is missing: rewrite default to cu126.
   local result
   result="$(
     python3 - "$toml" "$drv" <<'PY'
@@ -233,12 +249,6 @@ import sys
 
 toml = Path(sys.argv[1])
 drv = sys.argv[2]
-maj, minor = map(int, drv.split(".")[:2])
-if (maj, minor) >= (13, 0):
-    print(f"keep_cu130 {drv}")
-    raise SystemExit(0)
-
-# Prefer cu126: torch==2.12.0+cu126 exists for aarch64; cu128 stops at 2.11.
 target_cuda, target_tag = "12.6", "cu126"
 torch_ver = f"2.12.0+{target_tag}"
 bak = Path(str(toml) + ".bootstrap.bak")
@@ -265,19 +275,25 @@ PY
   )" || die "adapt_pixi_cuda_to_driver python failed: ${result:-}"
 
   log "$result"
-  if [[ "$result" == adapted_cu126* ]]; then
-    if [[ -f "${WORKDIR}/pixi.lock" ]]; then
-      mv -f "${WORKDIR}/pixi.lock" "${WORKDIR}/pixi.lock.cu130.bak"
-      log "moved pixi.lock aside for re-resolve (pixi.lock.cu130.bak)"
-    fi
-    CUDA_TAG="12.6"
-  else
-    CUDA_TAG="$drv"
+  if [[ -f "${WORKDIR}/pixi.lock" ]]; then
+    mv -f "${WORKDIR}/pixi.lock" "${WORKDIR}/pixi.lock.cu130.bak"
+    log "moved pixi.lock aside for re-resolve (pixi.lock.cu130.bak)"
   fi
+  CUDA_TAG="12.6"
 }
 
 pixi_install() {
   cd "$WORKDIR"
+  if [[ "${CUDA_TAG:-}" == "gh200" ]]; then
+    log "pixi install -e gh200 (platform=$(pixi_platform))"
+    pixi install -e gh200
+    log "pixi gh200 env ready"
+    pixi run -e gh200 cuda-check || true
+    if ! pixi run -e gh200 python -c "import torch; raise SystemExit(0 if torch.cuda.is_available() else 1)"; then
+      die "torch.cuda.is_available() is False in -e gh200; fix driver/torch CUDA pin before scheduling"
+    fi
+    return 0
+  fi
   log "pixi install (platform=$(pixi_platform), cuda=$CUDA_TAG)"
   pixi install
   log "pixi env ready"

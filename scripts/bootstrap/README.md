@@ -23,7 +23,9 @@ Or copy only `scripts/bootstrap/` first; phase 5 clones the repo into
 ```bash
 gflowd status
 ginfo
-pixi run cuda-check
+# On GH200 (driver CUDA 12.8), use the restored env:
+pixi run -e gh200 cuda-check
+# (default env stays locked to cu130 for GB10 / CUDA 13 hosts)
 
 # CPU synthetic tangent study (already run by verify)
 pixi run tangent-reference

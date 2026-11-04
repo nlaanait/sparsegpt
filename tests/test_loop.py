@@ -16,6 +16,7 @@ from sparsifier.models.loop import (
     hessian_hooks,
     leading_example,
     report_perplexity,
+    write_bank,
 )
 
 
@@ -28,6 +29,14 @@ def test_leading_example_slices_batch_not_mrope_axis():
     assert sin.shape == (1, 4, 16)
     assert leading_example(rope_batch4).shape == (1, 2048, 64)
     assert leading_example(ids).shape == (4, 1, 4)
+
+
+def test_write_bank_keeps_preallocated_storage():
+    bank = torch.zeros(2, 3, 4)
+    storage = bank.untyped_storage()
+    write_bank(bank[0], torch.ones(1, 3, 4))
+    assert bank.untyped_storage().data_ptr() == storage.data_ptr()
+    assert torch.equal(bank[0], torch.ones(3, 4))
 
 
 def test_catcher_stores_a_packed_batch():
