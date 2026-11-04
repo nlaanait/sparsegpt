@@ -23,7 +23,9 @@ from sparsifier.models.loop import (
     bind_selected,
     decoder_groups,
     eval_chunk_size,
+    hessian_hooks,
     likelihood_from_nlls,
+    prune_bound,
     run_model,
     write_bank,
 )
