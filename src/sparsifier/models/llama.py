@@ -3,7 +3,13 @@ import torch.nn as nn
 
 from sparsifier.metrics import Likelihood
 from sparsifier.models.layers import DEV, find_layers
-from sparsifier.models.loop import Catcher, capture_cache, likelihood_from_nlls, run_model
+from sparsifier.models.loop import (
+    Catcher,
+    capture_cache,
+    likelihood_from_nlls,
+    run_model,
+    write_bank,
+)
 
 args = None
 
@@ -76,7 +82,9 @@ def _forward_llama(layer, hidden, captured):
     outs = captured["outs"]
     attention_mask = captured["attention_mask"]
     for index in range(hidden.shape[0]):
-        outs[index] = layer(hidden[index].unsqueeze(0), attention_mask=attention_mask)[0]
+        out = layer(hidden[index].unsqueeze(0), attention_mask=attention_mask)[0]
+        write_bank(outs[index], out)
+        del out
     return outs
 
 
@@ -136,7 +144,9 @@ def llama_eval(model, testenc, dev,  dataset: str, log_wandb: bool = False):
                 W.data[torch.abs(W.data) <= thresh] = 0
 
         for j in range(nsamples):
-            outs[j] = layer(inps[j].unsqueeze(0), attention_mask=attention_mask)[0]
+            out = layer(inps[j].unsqueeze(0), attention_mask=attention_mask)[0]
+            write_bank(outs[j], out)
+            del out
         layers[i] = layer.cpu()
         del layer
         torch.cuda.empty_cache()

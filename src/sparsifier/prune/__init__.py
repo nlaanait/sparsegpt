@@ -12,15 +12,29 @@ torch.backends.cuda.matmul.allow_tf32 = False
 torch.backends.cudnn.allow_tf32 = False
 
 from sparsifier.prune.geometry import GeometrySparseGPT
-from sparsifier.prune.pruners import Geometry, Pruner, SparseGPT, bind_layer, get_pruner
+from sparsifier.prune.pruners import (
+    Geometry,
+    Pruner,
+    SparseGPT,
+    TangentAware,
+    bind_layer,
+    get_pruner,
+)
 from sparsifier.prune.sparsegpt import SparseGPT as SparseGPTSolver
+from sparsifier.prune.tangent import (
+    TangentAwareSparseGPT,
+    estimate_output_tangent_coupling,
+)
 
 __all__ = [
     "Geometry",
     "GeometrySparseGPT",
     "Pruner",
     "SparseGPT",
+    "TangentAware",
+    "TangentAwareSparseGPT",
     "SparseGPTSolver",
     "bind_layer",
+    "estimate_output_tangent_coupling",
     "get_pruner",
 ]

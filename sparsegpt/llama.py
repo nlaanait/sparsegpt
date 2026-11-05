@@ -16,6 +16,14 @@ except:
     has_wandb = False
 
 
+def _write_bank(dst: torch.Tensor, src: torch.Tensor) -> None:
+    """Copy into a preallocated bank; assignment can retain temps on GH200."""
+    value = src.detach()
+    if value.shape != dst.shape and value.ndim == dst.ndim + 1 and value.shape[0] == 1:
+        value = value[0]
+    dst.copy_(value)
+
+
 def get_llama(model):
     import torch
     def skip(*args, **kwargs):
@@ -117,7 +125,9 @@ def llama_sequential(model, dataloader, dev):
             for name in gpts:
                 handles.append(subset[name].register_forward_hook(add_batch(name)))
             for j in range(args.nsamples):
-                outs[j] = layer(inps[j].unsqueeze(0), attention_mask=attention_mask)[0]
+                out = layer(inps[j].unsqueeze(0), attention_mask=attention_mask)[0]
+                _write_bank(outs[j], out)
+                del out
             for h in handles:
                 h.remove()
 
@@ -136,7 +146,9 @@ def llama_sequential(model, dataloader, dev):
                 gpts[name].free()
 
         for j in range(args.nsamples):
-            outs[j] = layer(inps[j].unsqueeze(0), attention_mask=attention_mask)[0]
+            out = layer(inps[j].unsqueeze(0), attention_mask=attention_mask)[0]
+            _write_bank(outs[j], out)
+            del out
 
         layers[i] = layer.cpu()
         del layer
@@ -211,7 +223,9 @@ def llama_eval(model, testenc, dev,  dataset: str, log_wandb: bool = False):
                 W.data[torch.abs(W.data) <= thresh] = 0
 
         for j in range(nsamples):
-            outs[j] = layer(inps[j].unsqueeze(0), attention_mask=attention_mask)[0]
+            out = layer(inps[j].unsqueeze(0), attention_mask=attention_mask)[0]
+            _write_bank(outs[j], out)
+            del out
         layers[i] = layer.cpu()
         del layer
         torch.cuda.empty_cache()

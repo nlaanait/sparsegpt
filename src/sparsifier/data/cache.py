@@ -35,7 +35,7 @@ def _current_keys(config: dict) -> dict:
 def prune_config_from_args(args) -> dict:
     """Fields that change the pruned weights. Eval-only flags are omitted."""
     probes = args.geometry_probes
-    return {
+    config = {
         "model": args.model,
         "dataset": args.dataset,
         "seed": args.seed,
@@ -55,6 +55,17 @@ def prune_config_from_args(args) -> dict:
         "geometry_alpha": args.geometry_alpha,
         "geometry_probes": None if probes is None else str(probes),
     }
+    # Preserve cache identities for all pre-existing pruning modes. Tangent
+    # estimator settings change the mask only when the mode is enabled.
+    tangent_alpha = float(getattr(args, "tangent_alpha", 0.0))
+    if tangent_alpha > 0.0:
+        config.update(
+            tangent_alpha=tangent_alpha,
+            tangent_charts=int(args.tangent_charts),
+            tangent_rank=int(args.tangent_rank),
+            tangent_samples=int(args.tangent_samples),
+        )
+    return config
 
 
 def canonical_config(config: dict) -> dict:
@@ -131,6 +142,11 @@ def config_slug(config: dict) -> str:
         parts.append(f"w{config['wbits']}")
     if config["geometry_alpha"]:
         parts.append(f"geo{config['geometry_alpha']}")
+    if config.get("tangent_alpha", 0.0):
+        parts.append(
+            f"tan{config['tangent_alpha']}-c{config['tangent_charts']}"
+            f"-r{config['tangent_rank']}"
+        )
     if config["nsamples"] != 128:
         parts.append(f"n{config['nsamples']}")
     if config["maxlayer"] != 1000:

@@ -112,6 +112,14 @@ def _true_sequential_groups(layer):
     ]
 
 
+def _write_bank(dst: torch.Tensor, src: torch.Tensor) -> None:
+    """Copy into a preallocated bank; assignment can retain temps on GH200."""
+    value = src.detach()
+    if value.shape != dst.shape and value.ndim == dst.ndim + 1 and value.shape[0] == 1:
+        value = value[0]
+    dst.copy_(value)
+
+
 def _run_layer(layer, hidden, *, attention_mask, position_embeddings, position_ids):
     # Qwen3.5 decoder layers return a tensor (not a tuple).
     return layer(
@@ -186,13 +194,15 @@ def _run_layer_streams(
         for offset, stream in enumerate(streams):
             row = start + offset
             with torch.cuda.stream(stream):
-                outs[row : row + 1] = _run_layer(
+                out = _run_layer(
                     layer,
                     hidden[row : row + 1],
                     attention_mask=attention_mask,
                     position_embeddings=position_embeddings,
                     position_ids=position_ids,
                 )
+                _write_bank(outs[row : row + 1], out)
+                del out
         for stream in streams:
             current.wait_stream(stream)
 
@@ -232,13 +242,15 @@ def _run_layer_batched(
         step = 1
     for start in range(0, count, step):
         stop = min(start + step, count)
-        outs[start:stop] = _run_layer(
+        out = _run_layer(
             layer,
             hidden[start:stop],
             attention_mask=attention_mask,
             position_embeddings=position_embeddings,
             position_ids=position_ids,
         )
+        _write_bank(outs[start:stop], out)
+        del out
 
 
 def _leading_example(value):

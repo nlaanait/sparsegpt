@@ -45,6 +45,22 @@ from sparsifier.prune.quantize import apply_quantization
 @click.option("--forward-batch", type=int, default=0, show_default=True)
 @click.option("--geometry-alpha", type=float, default=0.0, show_default=True)
 @click.option("--geometry-probes", type=click.Path(path_type=Path), default=None)
+@click.option(
+    "--tangent-alpha",
+    type=float,
+    default=0.0,
+    show_default=True,
+    help="Enable output-tangent mask weighting; 0 keeps ambient SparseGPT.",
+)
+@click.option("--tangent-charts", type=int, default=8, show_default=True, help="Local output charts.")
+@click.option("--tangent-rank", type=int, default=2, show_default=True, help="PCA rank per chart.")
+@click.option(
+    "--tangent-samples",
+    type=int,
+    default=512,
+    show_default=True,
+    help="Paired input/output tokens retained per layer.",
+)
 def main(
     model: str,
     calibration: str,
@@ -70,6 +86,10 @@ def main(
     forward_batch: int,
     geometry_alpha: float,
     geometry_probes: Path | None,
+    tangent_alpha: float,
+    tangent_charts: int,
+    tangent_rank: int,
+    tangent_samples: int,
 ) -> None:
     """Prune one catalog model and, unless skipped, score it."""
     import torch
@@ -107,6 +127,10 @@ def main(
             forward_batch=forward_batch,
             geometry_alpha=geometry_alpha,
             geometry_probes=geometry_probes,
+            tangent_alpha=tangent_alpha,
+            tangent_charts=tangent_charts,
+            tangent_rank=tangent_rank,
+            tangent_samples=tangent_samples,
             family=record.family,
         )
     )

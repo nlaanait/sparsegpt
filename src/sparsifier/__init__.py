@@ -12,7 +12,7 @@ os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")
 
 from sparsifier.models import ModelRecord, resolve, stored_count
 from sparsifier.metrics import BitsPerByte, Likelihood, Perplexity, format_result
-from sparsifier.prune import Geometry, SparseGPT, get_pruner
+from sparsifier.prune import Geometry, SparseGPT, TangentAware, get_pruner
 from sparsifier.sweep import CheckedSweep, RunConfig, SweepRecord, SweepSpec, repo_root, validate
 
 __all__ = [
@@ -25,6 +25,7 @@ __all__ = [
     "RunConfig",
     "SparseGPT",
     "SweepRecord",
+    "TangentAware",
     "SweepSpec",
     "format_result",
     "get_pruner",

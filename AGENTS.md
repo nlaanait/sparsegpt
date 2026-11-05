@@ -114,6 +114,18 @@ raw WikiText2 and PTB (no chat template). Dense WikiText2 must clear
 `SMOKE_PPL_RANGE` in `experiments/olmo.py` before any prune. Results land
 under `results/olmo2/`. Driver: `drivers.olmo2_sparsity`.
 
+## Bare-metal GH200 bootstrap
+
+To stand up a fresh Ubuntu GH200 node (Pixi, gflow, `tangent-aware-pruning`
+env): `scripts/bootstrap/bootstrap.sh`. Details and env knobs are in
+`scripts/bootstrap/README.md`.
+
+`causal-conv1d` has no matching aarch64 wheel on PyPI for our torch pin — do
+**not** block on building it. Bootstrap strips the path pin, then phase 7
+submits `scripts/submit_causal_conv1d_build_gflow.sh`. Schedule immediately
+with `scripts/schedule_tangent_gh200.sh` (smoke via `--pytorch-attention`;
+full pair `--depends-on` the build, then `scripts/ensure_causal_conv1d.sh`).
+
 ## Scheduling (gflow)
 
 All GPU experiments on this machine go through **gflow**. Do not start

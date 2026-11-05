@@ -9,6 +9,7 @@ from sparsifier.models.loop import (
     eval_chunk_size,
     likelihood_from_nlls,
     run_model,
+    write_bank,
 )
 
 args = None
@@ -175,16 +176,20 @@ def _run_layer_streams(
         streams = [torch.cuda.Stream() for _ in range(stop - start)]
         for stream in streams:
             stream.wait_stream(current)
+        device = next(layer.parameters()).device
         for offset, stream in enumerate(streams):
             row = start + offset
             with torch.cuda.stream(stream):
-                outs[row : row + 1] = _run_layer(
+                chunk = hidden[row : row + 1].to(device, non_blocking=False)
+                out = _run_layer(
                     layer,
-                    hidden[row : row + 1],
+                    chunk,
                     attention_mask=attention_mask,
                     position_embeddings=position_embeddings,
                     position_ids=position_ids,
                 )
+                write_bank(outs[row : row + 1], out)
+                del out, chunk
         for stream in streams:
             current.wait_stream(stream)
 
@@ -222,15 +227,19 @@ def _run_layer_batched(
         return
     if _atlas_linear(layer):
         step = 1
+    device = next(layer.parameters()).device
     for start in range(0, count, step):
         stop = min(start + step, count)
-        outs[start:stop] = _run_layer(
+        chunk = hidden[start:stop].to(device, non_blocking=False)
+        out = _run_layer(
             layer,
-            hidden[start:stop],
+            chunk,
             attention_mask=attention_mask,
             position_embeddings=position_embeddings,
             position_ids=position_ids,
         )
+        write_bank(outs[start:stop], out)
+        del out, chunk
 
 
 def gdn_backend(model) -> str:
@@ -259,8 +268,10 @@ def _capture_qwen(model, dataloader, dev):
     layers[0] = layers[0].to(dev)
 
     dtype = next(iter(model.parameters())).dtype
+    # Host-side activation banks (same as OLMo/Gemma). GPU banks plus
+    # slice assignment retained tens of GiB on GH200 and OOM'd 0.8B.
     inps = torch.zeros(
-        (args.nsamples, model.seqlen, model.config.hidden_size), dtype=dtype, device=dev
+        (args.nsamples, model.seqlen, model.config.hidden_size), dtype=dtype, device="cpu"
     )
     cache = capture_cache()
 
@@ -293,23 +304,27 @@ def _capture_qwen(model, dataloader, dev):
     # Layer-0 mask is only valid for layer-0's mixer type; rebuild both kinds.
     from transformers.masking_utils import create_causal_mask, create_recurrent_attention_mask
 
+    sample = inps[:1].to(dev)
     mask_kwargs = {
         "config": model.model.config,
-        "inputs_embeds": inps[:1],
+        "inputs_embeds": sample,
         "attention_mask": None,
         "past_key_values": None,
         "position_ids": cache["position_ids"],
     }
+    masks = {
+        "full_attention": create_causal_mask(**mask_kwargs),
+        "linear_attention": create_recurrent_attention_mask(**mask_kwargs),
+    }
+    del sample
+    torch.cuda.empty_cache()
     return {
         "hidden": inps,
         "outs": torch.zeros_like(inps),
         "use_cache": use_cache,
         "propagate": False,
         "batch": capture_batch,
-        "attention_masks": {
-            "full_attention": create_causal_mask(**mask_kwargs),
-            "linear_attention": create_recurrent_attention_mask(**mask_kwargs),
-        },
+        "attention_masks": masks,
         "position_embeddings": cache["position_embeddings"],
         "position_ids": cache["position_ids"],
     }

@@ -21,8 +21,9 @@ class RunConfig:
     ``zeros_per_group`` / ``group_size`` are N:M sparsity: zero that many
     weights in every block of ``group_size`` consecutive columns. Both zero
     means unstructured ``sparsity``.
-    A geometry pruner copies ``geometry_alpha`` and ``geometry_probes`` into
-    ``pruner_options`` so ``get_pruner`` can take them as keyword arguments.
+    Geometry copies ``geometry_alpha``/``geometry_probes`` into
+    ``pruner_options``. Positive ``tangent_alpha`` selects the output-tangent
+    mask heuristic and copies its estimator settings into ``pruner_options``.
     """
 
     model: str
@@ -40,6 +41,10 @@ class RunConfig:
     blocksize: int = 128
     geometry_alpha: float = 0.0
     geometry_probes: Path | None = None
+    tangent_alpha: float = 0.0
+    tangent_charts: int = 8
+    tangent_rank: int = 2
+    tangent_samples: int = 512
     # Layer filter and true-sequential order. The Click namespace carries the
     # same fields; a bare RunConfig prunes every decoder linear in one group.
     minlayer: int = -1
@@ -59,7 +64,27 @@ class RunConfig:
         unknown = set(self.eval_datasets) - CORPORA
         if unknown:
             raise ValueError(f"unknown eval corpora: {sorted(unknown)}")
-        if self.pruner == "geometry":
+        if not 0.0 <= self.tangent_alpha <= 1.0:
+            raise ValueError("tangent alpha must be in [0, 1]")
+        if self.tangent_alpha > 0.0 and self.geometry_alpha > 0.0:
+            raise ValueError("input geometry and output tangent modes are mutually exclusive")
+        if self.tangent_alpha > 0.0:
+            if self.tangent_charts < 1 or self.tangent_rank < 1 or self.tangent_samples < 3:
+                raise ValueError("tangent charts/rank must be positive and samples >= 3")
+            if self.pruner not in {"sparsegpt", "tangent"}:
+                raise ValueError("tangent alpha requires the tangent pruner")
+            object.__setattr__(self, "pruner", "tangent")
+            options = {
+                "alpha": self.tangent_alpha,
+                "charts": self.tangent_charts,
+                "rank": self.tangent_rank,
+                "calibration_samples": self.tangent_samples,
+                **self.pruner_options,
+            }
+            object.__setattr__(self, "pruner_options", options)
+        elif self.pruner == "tangent":
+            raise ValueError("tangent pruner requires positive tangent_alpha")
+        elif self.pruner == "geometry":
             options = {
                 "alpha": self.geometry_alpha,
                 "probes": self.geometry_probes,

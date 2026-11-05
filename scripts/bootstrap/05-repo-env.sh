@@ -1,0 +1,321 @@
+#!/usr/bin/env bash
+# Checkout tangent-aware-pruning (or keep the current tree) and `pixi install`
+# for GH200 (linux-aarch64 + CUDA 13.0).
+#
+# The workspace pixi.toml pins linux-aarch64 / cu130 and optionally a local
+# causal-conv1d wheel under ~/.pixi/wheels/cu130. On a fresh GH200 that wheel
+# is usually missing; this script stages a copy from CAUSAL_CONV1D_WHEEL or
+# strips the path dep so `pixi install` can proceed (Qwen3.5 linear-attn
+# kernels degrade without it; tangent smokes and most families still run).
+set -euo pipefail
+# shellcheck source=lib.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/lib.sh"
+
+ensure_path_exports
+need_cmd pixi
+need_cmd git
+
+REPO_URL="${BOOTSTRAP_REPO_URL:-https://github.com/nlaanait/sparsegpt.git}"
+WORKDIR="${BOOTSTRAP_WORKDIR:-$REPO_ROOT}"
+CUDA_TAG="${BOOTSTRAP_CUDA_TAG:-13.0}"
+EXPECT_ARCH="${BOOTSTRAP_EXPECT_ARCH:-aarch64}"
+
+# Prefer an explicit BOOTSTRAP_BRANCH. Otherwise stay on the current checkout
+# (e.g. cursor/gpu-node-bootstrap-*) so a single-branch clone of the bootstrap
+# PR does not force-fetch tangent-aware-pruning and fail.
+if [[ -n "${BOOTSTRAP_BRANCH:-}" ]]; then
+  BRANCH="$BOOTSTRAP_BRANCH"
+elif [[ -d "${WORKDIR}/.git" ]]; then
+  BRANCH="$(git -C "$WORKDIR" rev-parse --abbrev-ref HEAD)"
+else
+  BRANCH="tangent-aware-pruning"
+fi
+
+arch="$(detect_arch)"
+if [[ "$arch" != "$EXPECT_ARCH" ]]; then
+  die "expected $EXPECT_ARCH (GH200 Grace) but uname -m resolved to $arch"
+fi
+if [[ "$(pixi_platform)" != "linux-aarch64" ]]; then
+  die "pixi platform is $(pixi_platform); GH200 bootstrap expects linux-aarch64"
+fi
+
+prepare_tree() {
+  if [[ -d "${WORKDIR}/.git" ]]; then
+    log "using existing git tree at $WORKDIR (want branch $BRANCH)"
+    cd "$WORKDIR"
+    # Single-branch clones do not create refs/remotes/origin/<other>; write the
+    # ref explicitly so checkout works for any BOOTSTRAP_BRANCH.
+    if ! git fetch origin "+refs/heads/${BRANCH}:refs/remotes/origin/${BRANCH}"; then
+      git fetch origin || die "git fetch origin failed"
+    fi
+    local cur
+    cur="$(git rev-parse --abbrev-ref HEAD)"
+    if [[ "$cur" != "$BRANCH" ]]; then
+      if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
+        git checkout "$BRANCH"
+      elif git show-ref --verify --quiet "refs/remotes/origin/$BRANCH"; then
+        git checkout -B "$BRANCH" "origin/$BRANCH"
+      else
+        die "branch $BRANCH not found locally or on origin after fetch"
+      fi
+    fi
+    git pull --ff-only origin "$BRANCH" 2>/dev/null || true
+  else
+    log "cloning $REPO_URL ($BRANCH) into $WORKDIR"
+    mkdir -p "$(dirname "$WORKDIR")"
+    git clone --branch "$BRANCH" --single-branch "$REPO_URL" "$WORKDIR"
+    cd "$WORKDIR"
+  fi
+  log "HEAD=$(git rev-parse --short HEAD) branch=$(git rev-parse --abbrev-ref HEAD)"
+}
+
+toml_causal_wheel_path() {
+  python3 - <<'PY' "${WORKDIR}/pixi.toml"
+from pathlib import Path
+import re, sys
+text = Path(sys.argv[1]).read_text()
+m = re.search(r'causal-conv1d\s*=\s*\{[^}]*path\s*=\s*"([^"]+)"', text)
+print(m.group(1) if m else "")
+PY
+}
+
+rewrite_toml_wheel_path() {
+  local new_path="$1"
+  local toml="${WORKDIR}/pixi.toml"
+  [[ -f "$toml" ]] || die "missing $toml"
+  if [[ ! -f "${toml}.bootstrap.bak" ]]; then
+    cp -f "$toml" "${toml}.bootstrap.bak"
+  fi
+  python3 - <<'PY' "$toml" "$new_path"
+from pathlib import Path
+import re, sys
+path, new = Path(sys.argv[1]), sys.argv[2]
+text = path.read_text()
+new_text, n = re.subn(
+    r'(causal-conv1d\s*=\s*\{[^}]*path\s*=\s*")([^"]+)(")',
+    lambda m: f"{m.group(1)}{new}{m.group(3)}",
+    text,
+    count=1,
+)
+if not n:
+    raise SystemExit("causal-conv1d path pin not found in pixi.toml")
+path.write_text(new_text)
+print(f"pointed causal-conv1d path at {new}")
+PY
+}
+
+stage_causal_conv1d_wheel() {
+  local pinned
+  pinned="$(toml_causal_wheel_path)"
+  local dest_dir="${HOME}/.pixi/wheels/cu130"
+  local dest_whl="${dest_dir}/causal_conv1d-1.7.0-cp312-cp312-linux_aarch64.whl"
+  local src="${CAUSAL_CONV1D_WHEEL:-}"
+
+  mkdir -p "$dest_dir"
+
+  # Prefer an explicit wheel, then whatever pixi.toml already points at.
+  if [[ -z "$src" && -n "$pinned" && -f "$pinned" ]]; then
+    src="$pinned"
+  fi
+  if [[ -z "$src" && -f /home/nlaanait/.pixi/wheels/cu130/causal_conv1d-1.7.0-cp312-cp312-linux_aarch64.whl ]]; then
+    src=/home/nlaanait/.pixi/wheels/cu130/causal_conv1d-1.7.0-cp312-cp312-linux_aarch64.whl
+  fi
+
+  if [[ -n "$src" && -f "$src" ]]; then
+    if [[ "$src" != "$dest_whl" ]]; then
+      log "staging causal-conv1d wheel from $src -> $dest_whl"
+      cp -f "$src" "$dest_whl"
+    else
+      log "causal-conv1d wheel already at $dest_whl"
+    fi
+    if [[ -n "$pinned" && "$pinned" != "$dest_whl" ]]; then
+      rewrite_toml_wheel_path "$dest_whl"
+    fi
+    return 0
+  fi
+
+  if [[ -f "$dest_whl" ]]; then
+    log "causal-conv1d wheel already at $dest_whl"
+    if [[ -n "$pinned" && "$pinned" != "$dest_whl" ]]; then
+      rewrite_toml_wheel_path "$dest_whl"
+    fi
+    return 0
+  fi
+
+  warn "no causal-conv1d aarch64 wheel found"
+  warn "set CAUSAL_CONV1D_WHEEL=/path/to/causal_conv1d-*-linux_aarch64.whl to keep Qwen3.5 CUDA kernels"
+  return 1
+}
+
+patch_pixi_for_missing_wheel() {
+  # Drop the absolute path dep and the flash-linear-attention `conv1d` extra
+  # (that extra re-pulls causal-conv1d from PyPI and compiles it during
+  # `pixi install`, which fails when system nvcc ≠ torch's CUDA).
+  # Backup once at pixi.toml.bootstrap.bak.
+  local toml="${WORKDIR}/pixi.toml"
+  [[ -f "$toml" ]] || die "missing $toml"
+  if [[ ! -f "${toml}.bootstrap.bak" ]]; then
+    cp -f "$toml" "${toml}.bootstrap.bak"
+  fi
+
+  python3 - <<'PY' "$toml"
+from pathlib import Path
+import re
+import sys
+path = Path(sys.argv[1])
+text = path.read_text()
+changed = []
+new, n = re.subn(
+    r'(?m)^causal-conv1d\s*=\s*\{[^}]*\}\s*\n',
+    '',
+    text,
+)
+if n:
+    changed.append(f"removed {n} causal-conv1d path pin(s)")
+    text = new
+# Keep fla, but do not pull/build causal-conv1d via the conv1d extra.
+def _drop_conv1d(m: re.Match[str]) -> str:
+    parts = [x.strip().strip("\"'") for x in m.group(2).split(",")]
+    parts = [p for p in parts if p and p != "conv1d"]
+    return m.group(1) + ", ".join(f'"{p}"' for p in parts) + m.group(3)
+
+new, n = re.subn(
+    r'(flash-linear-attention\s*=\s*\{[^}]*extras\s*=\s*\[)([^\]]*)(\])',
+    _drop_conv1d,
+    text,
+    count=1,
+)
+if n:
+    changed.append("dropped flash-linear-attention conv1d extra")
+    text = new
+path.write_text(text)
+print("; ".join(changed) if changed else f"no causal-conv1d / conv1d edits in {path}")
+PY
+}
+
+ensure_hf_cache() {
+  mkdir -p "${HOME}/.cache/huggingface/hub"
+  if [[ -n "${HF_TOKEN:-${HUGGING_FACE_HUB_TOKEN:-}}" ]]; then
+    log "HF token present in environment (gated models OK)"
+  else
+    warn "no HF_TOKEN / HUGGING_FACE_HUB_TOKEN; public models only until you export one"
+  fi
+}
+
+driver_cuda_version() {
+  # nvidia-smi "CUDA Version" is the max toolkit the driver supports (e.g. 12.8).
+  nvidia-smi 2>/dev/null | awk -F'CUDA Version: ' '/CUDA Version:/ {print $2; exit}' | awk '{print $1}'
+}
+
+adapt_pixi_cuda_to_driver() {
+  # Workspace default is linux-aarch64 + torch cu130 (GB10 / CUDA 13). Lambda
+  # GH200 images often ship driver max CUDA 12.8. Prefer the restored
+  # [environments.gh200] (torch 2.10+cu128 + Dao-AILab causal-conv1d wheel)
+  # instead of rewriting the default pins to cu126.
+  local drv
+  drv="$(driver_cuda_version || true)"
+  log "driver max CUDA: ${drv:-unknown}"
+  if [[ -z "$drv" ]]; then
+    warn "could not read driver CUDA version; leaving pixi.toml CUDA pins alone"
+    return 0
+  fi
+
+  local toml="${WORKDIR}/pixi.toml"
+  [[ -f "$toml" ]] || die "missing $toml"
+
+  local maj minor
+  maj="$(echo "$drv" | cut -d. -f1)"
+  minor="$(echo "$drv" | cut -d. -f2)"
+  if [[ "$maj" -gt 12 ]] || { [[ "$maj" -eq 12 ]] && [[ "$minor" -ge 8 ]]; } && [[ "$maj" -lt 13 ]]; then
+    if grep -q '^\[environments\.gh200\]' "$toml"; then
+      log "driver CUDA $drv: use pixi -e gh200 (torch 2.10+cu128); leave default cu130 pins"
+      CUDA_TAG="gh200"
+      return 0
+    fi
+  fi
+  if [[ "$maj" -ge 13 ]]; then
+    log "keep_cu130 $drv"
+    CUDA_TAG="$drv"
+    return 0
+  fi
+
+  # Fallback when gh200 env is missing: rewrite default to cu126.
+  local result
+  result="$(
+    python3 - "$toml" "$drv" <<'PY'
+from pathlib import Path
+import re
+import sys
+
+toml = Path(sys.argv[1])
+drv = sys.argv[2]
+target_cuda, target_tag = "12.6", "cu126"
+torch_ver = f"2.12.0+{target_tag}"
+bak = Path(str(toml) + ".bootstrap.bak")
+if not bak.exists():
+    bak.write_text(toml.read_text())
+text = toml.read_text()
+text, n1 = re.subn(
+    r'(platforms\s*=\s*\[\s*\{\s*platform\s*=\s*"linux-aarch64"\s*,\s*cuda\s*=\s*")[^"]+(")',
+    rf"\g<1>{target_cuda}\g<2>",
+    text,
+    count=1,
+)
+text, n2 = re.subn(
+    r'torch\s*=\s*\{\s*version\s*=\s*"==[^"]+"\s*,\s*index\s*=\s*"https://download\.pytorch\.org/whl/[^"]+"\s*\}',
+    f'torch = {{ version = "=={torch_ver}", index = "https://download.pytorch.org/whl/{target_tag}" }}',
+    text,
+    count=1,
+)
+if n1 != 1 or n2 != 1:
+    raise SystemExit(f"failed to rewrite CUDA pins (platform={n1}, torch={n2})")
+toml.write_text(text)
+print(f"adapted_cu126 {target_cuda} {torch_ver}")
+PY
+  )" || die "adapt_pixi_cuda_to_driver python failed: ${result:-}"
+
+  log "$result"
+  if [[ -f "${WORKDIR}/pixi.lock" ]]; then
+    mv -f "${WORKDIR}/pixi.lock" "${WORKDIR}/pixi.lock.cu130.bak"
+    log "moved pixi.lock aside for re-resolve (pixi.lock.cu130.bak)"
+  fi
+  CUDA_TAG="12.6"
+}
+
+pixi_install() {
+  cd "$WORKDIR"
+  if [[ "${CUDA_TAG:-}" == "gh200" ]]; then
+    log "pixi install -e gh200 (platform=$(pixi_platform))"
+    pixi install -e gh200
+    log "pixi gh200 env ready"
+    pixi run -e gh200 cuda-check || true
+    if ! pixi run -e gh200 python -c "import torch; raise SystemExit(0 if torch.cuda.is_available() else 1)"; then
+      die "torch.cuda.is_available() is False in -e gh200; fix driver/torch CUDA pin before scheduling"
+    fi
+    return 0
+  fi
+  log "pixi install (platform=$(pixi_platform), cuda=$CUDA_TAG)"
+  pixi install
+  log "pixi env ready"
+  pixi run cuda-check || true
+  if ! pixi run python -c "import torch; raise SystemExit(0 if torch.cuda.is_available() else 1)"; then
+    die "torch.cuda.is_available() is False; fix driver/torch CUDA pin before scheduling"
+  fi
+}
+
+prepare_tree
+ensure_hf_cache
+
+if stage_causal_conv1d_wheel; then
+  log "keeping causal-conv1d path dependency"
+else
+  if [[ "${BOOTSTRAP_ALLOW_STRIP_CONV1D:-1}" == "1" ]]; then
+    patch_pixi_for_missing_wheel
+  else
+    die "causal-conv1d wheel required (BOOTSTRAP_ALLOW_STRIP_CONV1D=0)"
+  fi
+fi
+
+adapt_pixi_cuda_to_driver
+pixi_install
+log "repo env ready at $WORKDIR"

@@ -55,6 +55,20 @@ def capture_cache(*, positions: bool = True) -> dict:
     return cache
 
 
+def write_bank(dst: torch.Tensor, src: torch.Tensor) -> None:
+    """Copy ``src`` into a preallocated activation bank without replacing storage.
+
+    Assigning ``bank[i] = x.to("cpu")`` (or a fresh GPU tensor) into a slot of
+    a preallocated bank can retain the source on some torch builds
+    (GH200 / 2.10+cu128) and OOM mid SparseGPT. ``copy_`` keeps the bank's
+    storage and drops the temporary.
+    """
+    value = src.detach()
+    if value.shape != dst.shape and value.ndim == dst.ndim + 1 and value.shape[0] == 1:
+        value = value[0]
+    dst.copy_(value)
+
+
 class Catcher(nn.Module):
     """Replace a layer, store its input, then abort the forward.
 
@@ -90,11 +104,11 @@ class Catcher(nn.Module):
     def forward(self, inp, **kwargs):
         if self.batched:
             n = inp.shape[0]
-            self.inps[self.cache["i"] : self.cache["i"] + n] = inp
+            write_bank(self.inps[self.cache["i"] : self.cache["i"] + n], inp)
             self.cache["i"] += n
         else:
             stored = inp[0] if self.squeeze and inp.ndim == 3 else inp
-            self.inps[self.cache["i"]] = stored
+            write_bank(self.inps[self.cache["i"]], stored)
             self.cache["i"] += 1
         for field in self.fields:
             value = kwargs[field] if field in self.required else kwargs.get(field)
@@ -133,7 +147,16 @@ def excluded(args, index: int, name: str) -> bool:
 
 
 def pruner_for(args):
-    """The pruner named by the run. Geometry carries its alpha and probes."""
+    """Select input-geometry or output-tangent mask weighting for this run."""
+    if args.tangent_alpha > 0:
+        return get_pruner(
+            "tangent",
+            alpha=args.tangent_alpha,
+            charts=args.tangent_charts,
+            rank=args.tangent_rank,
+            calibration_samples=args.tangent_samples,
+            seed=args.seed,
+        )
     if args.geometry_alpha > 0:
         return get_pruner("geometry", alpha=args.geometry_alpha, probes=args.geometry_probes)
     return get_pruner("sparsegpt")
@@ -188,6 +211,8 @@ def publish_likelihood(likelihood: Likelihood, dataset: str, log_wandb: bool) ->
     """Print perplexity from a likelihood and, when asked, send it to wandb."""
     value = Perplexity().score(likelihood).value
     print(f"Perplexity: {value:3f}")
+    print(f"Likelihood nats: {likelihood.nats:.6f}")
+    print(f"Tokens: {likelihood.tokens}")
     log_perplexity(dataset, value, log_wandb)
     return value
 
@@ -202,6 +227,13 @@ def check_geometry(args) -> None:
         raise ValueError("geometry alpha must be finite and nonnegative")
     if args.geometry_alpha > 0 and args.geometry_probes is None:
         raise ValueError("geometry probes are required when geometry alpha is positive")
+    if not math.isfinite(args.tangent_alpha) or not 0.0 <= args.tangent_alpha <= 1.0:
+        raise ValueError("tangent alpha must be finite and in [0, 1]")
+    if args.tangent_alpha > 0:
+        if args.geometry_alpha > 0:
+            raise ValueError("input geometry and output tangent modes are mutually exclusive")
+        if args.tangent_charts < 1 or args.tangent_rank < 1 or args.tangent_samples < 3:
+            raise ValueError("tangent charts/rank must be positive and samples >= 3")
 
 
 def open_checkpoint(args):
