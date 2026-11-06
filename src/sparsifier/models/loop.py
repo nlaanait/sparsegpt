@@ -21,7 +21,30 @@ from sparsifier.data.cache import (
 from sparsifier.metrics import Likelihood, Perplexity
 from sparsifier.models import log_perplexity
 from sparsifier.models.layers import DEV
-from sparsifier.prune import get_pruner
+from sparsifier.prune import get_pruner, list_pruners
+
+OUTPUT_TANGENT_PRUNERS = frozenset(
+    {
+        "tangent",
+        "tangent_factor_union",
+        "tangent_chart_obs",
+        "tangent_fixed_union",
+        "tangent_knockout",
+        "tangent_editability",
+        "tangent_exact_obs",
+    }
+)
+
+# Pruners that need paired outputs but are not output-tangent atlas techniques.
+OUTPUT_AWARE_PRUNERS = OUTPUT_TANGENT_PRUNERS | frozenset({"wanda"})
+
+
+def calibration_window_count(args) -> int:
+    """Total captured windows: prune-cal plus optional tangent-fit split."""
+    fit = int(getattr(args, "tangent_fit_nsamples", 0) or 0)
+    if fit < 0:
+        raise ValueError("tangent_fit_nsamples must be nonnegative")
+    return int(args.nsamples) + fit
 
 
 def leading_example(value):
@@ -146,20 +169,137 @@ def excluded(args, index: int, name: str) -> bool:
     return outside == (not args.invert)
 
 
+def resolve_pruner_name(args) -> str:
+    """Ablation registry name for this run (explicit ``--pruner`` wins)."""
+    explicit = getattr(args, "pruner", None) or ""
+    if explicit:
+        if explicit not in list_pruners():
+            raise ValueError(f"unknown pruner {explicit!r}; known: {', '.join(list_pruners())}")
+        return explicit
+    if float(getattr(args, "tangent_alpha", 0.0) or 0.0) > 0:
+        return "tangent"
+    if float(getattr(args, "geometry_alpha", 0.0) or 0.0) > 0:
+        return "geometry"
+    return "sparsegpt"
+
+
+def uses_output_tangents(args) -> bool:
+    """Whether the selected technique needs paired layer outputs."""
+    return resolve_pruner_name(args) in OUTPUT_TANGENT_PRUNERS
+
+
+def uses_paired_outputs(args) -> bool:
+    """Whether hooks must capture layer outputs (tangent atlas or Wanda)."""
+    return resolve_pruner_name(args) in OUTPUT_AWARE_PRUNERS
+
+
+def uses_separate_tangent_fit(args) -> bool:
+    """Whether tangent fitting uses a disjoint window prefix."""
+    return int(getattr(args, "tangent_fit_nsamples", 0) or 0) > 0 and uses_output_tangents(
+        args
+    )
+
+
 def pruner_for(args):
-    """Select input-geometry or output-tangent mask weighting for this run."""
-    if args.tangent_alpha > 0:
+    """Select ambient, geometry, or an output-tangent ablation technique."""
+    name = resolve_pruner_name(args)
+    bias_fold = bool(getattr(args, "bias_fold", False))
+    charts = int(getattr(args, "tangent_charts", 8))
+    rank = int(getattr(args, "tangent_rank", 2))
+    samples = int(getattr(args, "tangent_samples", 512))
+    seed = int(getattr(args, "seed", 0))
+    alpha = float(getattr(args, "tangent_alpha", 0.0) or 0.0)
+    anchor_eta = float(getattr(args, "tangent_anchor_eta", 0.0) or 0.0)
+    fit_seed = getattr(args, "tangent_fit_seed", None)
+    tangent_seed = int(seed if fit_seed is None else fit_seed)
+    if name == "sparsegpt":
+        return get_pruner("sparsegpt")
+    if name == "wanda":
+        return get_pruner(
+            "wanda",
+            calibration_samples=samples,
+            seed=seed,
+        )
+    if name == "geometry":
+        return get_pruner(
+            "geometry",
+            alpha=float(args.geometry_alpha),
+            probes=args.geometry_probes,
+        )
+    if name == "tangent":
         return get_pruner(
             "tangent",
-            alpha=args.tangent_alpha,
-            charts=args.tangent_charts,
-            rank=args.tangent_rank,
-            calibration_samples=args.tangent_samples,
-            seed=args.seed,
+            alpha=alpha if alpha > 0 else 1.0,
+            charts=charts,
+            rank=rank,
+            calibration_samples=samples,
+            seed=tangent_seed,
+            bias_fold=bias_fold,
+            anchor_eta=anchor_eta,
         )
-    if args.geometry_alpha > 0:
-        return get_pruner("geometry", alpha=args.geometry_alpha, probes=args.geometry_probes)
-    return get_pruner("sparsegpt")
+    if name == "tangent_factor_union":
+        return get_pruner(
+            "tangent_factor_union",
+            alpha=alpha if alpha > 0 else 1.0,
+            factors=int(getattr(args, "tangent_factors", charts)),
+            rank=rank,
+            calibration_samples=samples,
+            seed=tangent_seed,
+            bias_fold=bias_fold,
+            active_factors=int(getattr(args, "tangent_active_factors", 2)),
+            factor_source=str(getattr(args, "tangent_factor_source", "kmeans")),
+            block_width=int(getattr(args, "tangent_block_width", 3)),
+        )
+    if name == "tangent_chart_obs":
+        return get_pruner(
+            "tangent_chart_obs",
+            charts=charts,
+            rank=rank,
+            calibration_samples=samples,
+            seed=tangent_seed,
+            percdamp=float(getattr(args, "percdamp", 0.01)),
+            bias_fold=bias_fold,
+        )
+    if name == "tangent_fixed_union":
+        return get_pruner(
+            "tangent_fixed_union",
+            rank=rank,
+            calibration_samples=samples,
+            seed=tangent_seed,
+            bias_fold=bias_fold,
+        )
+    if name == "tangent_knockout":
+        return get_pruner(
+            "tangent_knockout",
+            charts=charts,
+            rank=rank,
+            calibration_samples=samples,
+            seed=tangent_seed,
+            bias_fold=bias_fold,
+        )
+    if name == "tangent_editability":
+        return get_pruner(
+            "tangent_editability",
+            charts=charts,
+            rank=rank,
+            calibration_samples=samples,
+            seed=tangent_seed,
+            bias_fold=bias_fold,
+        )
+    if name == "tangent_exact_obs":
+        return get_pruner(
+            "tangent_exact_obs",
+            charts=charts,
+            rank=rank,
+            calibration_samples=samples,
+            seed=tangent_seed,
+            percdamp=float(getattr(args, "percdamp", 0.01)),
+            bias_fold=bias_fold,
+            anchor_eta=anchor_eta,
+            mode=str(getattr(args, "tangent_exact_mode", "diag")),
+            max_full_params=int(getattr(args, "tangent_exact_max_params", 4096)),
+        )
+    raise ValueError(f"unhandled pruner {name!r}")
 
 
 def bind_selected(subset, args, index: int, pruner=None):
@@ -174,12 +314,39 @@ def bind_selected(subset, args, index: int, pruner=None):
     return bound
 
 
-def hessian_hooks(bound, modules):
-    """Forward hooks that fold each linear's activations into its pruner."""
+def hessian_hooks(bound, modules, *, mode: str = "both"):
+    """Forward hooks that fold each linear's activations into its pruner.
+
+    ``mode`` is ``both`` (default), ``tangent`` (reservoir / chart fit only),
+    or ``hessian`` (ambient SparseGPT Hessian only). Split calibration uses
+    the latter two sequentially when ``--tangent-fit-nsamples > 0``.
+    """
+    if mode not in {"both", "tangent", "hessian"}:
+        raise ValueError("hook mode must be both, tangent, or hessian")
 
     def add_batch(name):
         def tmp(_, inp, out):
-            bound[name].add_batch(inp[0].data, out.data)
+            wrapper = bound[name]
+            if mode == "both":
+                wrapper.add_batch(inp[0].data, out.data)
+                return
+            inner = getattr(wrapper, "solver", None)
+            if mode == "tangent":
+                if inner is not None and hasattr(inner, "add_tangent_batch"):
+                    inner.add_tangent_batch(inp[0].data, out.data)
+                else:
+                    wrapper.add_batch(inp[0].data, out.data)
+                return
+            # hessian-only
+            if inner is not None and hasattr(inner, "add_hessian_batch"):
+                inner.add_hessian_batch(inp[0].data, out.data)
+            else:
+                from sparsifier.prune.sparsegpt import SparseGPT as _SG
+
+                if inner is not None and isinstance(inner, _SG):
+                    _SG.add_batch(inner, inp[0].data, out.data)
+                else:
+                    wrapper.add_batch(inp[0].data, out.data)
 
         return tmp
 
@@ -229,11 +396,38 @@ def check_geometry(args) -> None:
         raise ValueError("geometry probes are required when geometry alpha is positive")
     if not math.isfinite(args.tangent_alpha) or not 0.0 <= args.tangent_alpha <= 1.0:
         raise ValueError("tangent alpha must be finite and in [0, 1]")
-    if args.tangent_alpha > 0:
-        if args.geometry_alpha > 0:
-            raise ValueError("input geometry and output tangent modes are mutually exclusive")
+    name = resolve_pruner_name(args)
+    if name in OUTPUT_TANGENT_PRUNERS and args.geometry_alpha > 0:
+        raise ValueError("input geometry and output tangent modes are mutually exclusive")
+    if name in OUTPUT_TANGENT_PRUNERS:
         if args.tangent_charts < 1 or args.tangent_rank < 1 or args.tangent_samples < 3:
             raise ValueError("tangent charts/rank must be positive and samples >= 3")
+    if name == "tangent_factor_union":
+        source = str(getattr(args, "tangent_factor_source", "kmeans"))
+        if source not in {"kmeans", "block_dictionary"}:
+            raise ValueError("tangent_factor_source must be kmeans or block_dictionary")
+        factors = int(getattr(args, "tangent_factors", args.tangent_charts))
+        active = int(getattr(args, "tangent_active_factors", 2))
+        if factors < 1 or not 1 <= active <= factors:
+            raise ValueError("tangent_factors/active_factors must satisfy 1 <= active <= factors")
+        if source == "block_dictionary":
+            width = int(getattr(args, "tangent_block_width", 3))
+            if width < 1 or args.tangent_rank > width:
+                raise ValueError("block_dictionary requires positive width and rank <= width")
+    if name == "geometry" and float(args.geometry_alpha) <= 0:
+        raise ValueError("geometry pruner requires positive geometry_alpha")
+    anchor_eta = float(getattr(args, "tangent_anchor_eta", 0.0) or 0.0)
+    if not math.isfinite(anchor_eta) or anchor_eta < 0.0:
+        raise ValueError("tangent_anchor_eta must be finite and nonnegative")
+    fit_n = int(getattr(args, "tangent_fit_nsamples", 0) or 0)
+    if fit_n < 0:
+        raise ValueError("tangent_fit_nsamples must be nonnegative")
+    if fit_n > 0 and name not in OUTPUT_TANGENT_PRUNERS:
+        raise ValueError("tangent_fit_nsamples requires an output-tangent pruner")
+    if name == "tangent_exact_obs":
+        mode = str(getattr(args, "tangent_exact_mode", "diag"))
+        if mode not in {"diag", "full", "auto"}:
+            raise ValueError("tangent_exact_mode must be diag, full, or auto")
 
 
 def open_checkpoint(args):
@@ -262,6 +456,18 @@ def prune_decoder(family, model, batches, dev, args) -> None:
     captured = family.capture(model, batches, args)
     hidden = captured["hidden"]
     print("Ready.")
+    fit_n = int(getattr(args, "tangent_fit_nsamples", 0) or 0)
+    split_fit = uses_separate_tangent_fit(args)
+    if split_fit:
+        if hidden.shape[0] < fit_n + int(args.nsamples):
+            raise ValueError(
+                "captured windows shorter than tangent_fit_nsamples + nsamples"
+            )
+        print(
+            f"Calibration split: tangent-fit={fit_n} windows, "
+            f"prune-cal={args.nsamples} windows",
+            flush=True,
+        )
     layers = model.model.layers
     for index in range(len(layers)):
         layer = layers[index].to(dev)
@@ -275,11 +481,30 @@ def prune_decoder(family, model, batches, dev, args) -> None:
             bound = bind_selected(subset, args, index)
             if not bound:
                 continue
-            handles = hessian_hooks(bound, subset)
             captured["propagate"] = False
-            family.forward_layer(layer, hidden, captured)
-            for handle in handles:
-                handle.remove()
+            if split_fit:
+                fit_hidden = hidden[:fit_n]
+                cal_hidden = hidden[fit_n : fit_n + int(args.nsamples)]
+                fit_caps = dict(captured)
+                fit_caps["outs"] = captured["outs"][:fit_n]
+                handles = hessian_hooks(bound, subset, mode="tangent")
+                family.forward_layer(layer, fit_hidden, fit_caps)
+                for handle in handles:
+                    handle.remove()
+                # Freeze tangent estimates before Hessian accumulation.
+                for wrapper in bound.values():
+                    wrapper.finalize()
+                cal_caps = dict(captured)
+                cal_caps["outs"] = captured["outs"][fit_n : fit_n + int(args.nsamples)]
+                handles = hessian_hooks(bound, subset, mode="hessian")
+                family.forward_layer(layer, cal_hidden, cal_caps)
+                for handle in handles:
+                    handle.remove()
+            else:
+                handles = hessian_hooks(bound, subset, mode="both")
+                family.forward_layer(layer, hidden, captured)
+                for handle in handles:
+                    handle.remove()
             prune_bound(bound, args, index, flush=bool(captured.get("flush")))
         captured["propagate"] = True
         previous = hidden
@@ -328,13 +553,40 @@ def run_prune(args, model, sequential, report) -> None:
     """Calibrate, prune, then let ``report`` print the sparsities."""
     from sparsifier.data.loaders import get_loaders
 
-    dataloader, _testloader = get_loaders(
-        args.dataset,
-        nsamples=args.nsamples,
-        seed=args.seed,
-        model=args.model,
-        seqlen=model.seqlen,
-    )
+    total = calibration_window_count(args)
+    fit_n = int(getattr(args, "tangent_fit_nsamples", 0) or 0)
+    fit_seed = getattr(args, "tangent_fit_seed", None)
+    if fit_n > 0 and uses_output_tangents(args):
+        # Disjoint windows: draw fit_n with tangent_fit_seed, then nsamples with seed.
+        fit_seed = int(args.seed + 1 if fit_seed is None else fit_seed)
+        fit_loader, _ = get_loaders(
+            args.dataset,
+            nsamples=fit_n,
+            seed=fit_seed,
+            model=args.model,
+            seqlen=model.seqlen,
+        )
+        cal_loader, _ = get_loaders(
+            args.dataset,
+            nsamples=args.nsamples,
+            seed=args.seed,
+            model=args.model,
+            seqlen=model.seqlen,
+        )
+        dataloader = list(fit_loader) + list(cal_loader)
+        print(
+            f"Loaded split calibration: fit_seed={fit_seed} fit_n={fit_n}, "
+            f"cal_seed={args.seed} cal_n={args.nsamples}",
+            flush=True,
+        )
+    else:
+        dataloader, _testloader = get_loaders(
+            args.dataset,
+            nsamples=total,
+            seed=args.seed,
+            model=args.model,
+            seqlen=model.seqlen,
+        )
     tick = time.time()
     sequential(model, dataloader, DEV)
     report(model)

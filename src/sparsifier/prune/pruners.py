@@ -1,7 +1,8 @@
 """Pruners bound to one linear layer.
 
-SparseGPT observes calibration activations and prunes. Geometry does that
-and then adds a tangent term to the Hessian before the same solve.
+SparseGPT observes calibration activations and prunes. Geometry adds an
+input-probe term to the Hessian. Output-tangent techniques reweight or rotate
+the SparseGPT solve; see ``list_pruners`` for the ablation registry.
 """
 
 from __future__ import annotations
@@ -9,14 +10,21 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Protocol
 
 import numpy as np
 import torch.nn as nn
 
+from sparsifier.prune.chart_obs import ChartObsSparseGPT
+from sparsifier.prune.exact_ltan import ExactLtanSparseGPT
+from sparsifier.prune.factor_union import FactorUnionSparseGPT
+from sparsifier.prune.fixed_union import FixedUnionSparseGPT
 from sparsifier.prune.geometry import GeometrySparseGPT
+from sparsifier.prune.editability import EditabilitySparseGPT
+from sparsifier.prune.knockout import KnockoutSparseGPT
 from sparsifier.prune.sparsegpt import SparseGPT as SparseGPTSolver
 from sparsifier.prune.tangent import TangentAwareSparseGPT
+from sparsifier.prune.wanda import WandaPruner
 
 
 class BoundPruner(Protocol):
@@ -36,11 +44,7 @@ class BoundPruner(Protocol):
         blocksize: int = 128,
         percdamp: float = 0.01,
     ) -> None:
-        """Write the pruned weights into the bound layer.
-
-        ``zeros_per_group`` / ``group_size`` select N:M sparsity (see ``SparseGPT.fasterprune``).
-        ``zeros_per_group == 0`` is unstructured at ``sparsity``.
-        """
+        """Write the pruned weights into the bound layer."""
 
     def free(self) -> None: ...
 
@@ -134,11 +138,67 @@ class _GeometryBound:
     def free(self) -> None:
         self.solver.free()
 
+
+@dataclass
+class _SolverBound:
+    """Generic bound wrapper for output-tangent technique solvers."""
+
+    solver: Any
+    block_index: int
+    module_name: str
+    label: str
+    finalize_attr: str
+    bias_fold: bool = False
+    _finalized: bool = False
+
+    def add_batch(self, inputs, outputs) -> None:
+        self.solver.add_batch(inputs, outputs)
+
+    def finalize(self) -> None:
+        if self._finalized:
+            return
+        getattr(self.solver, self.finalize_attr)()
+        diagnostics = getattr(self.solver, "tangent_diagnostics", None) or {}
+        sample_count = diagnostics.get("sample_count")
+        if sample_count is None:
+            reservoir = getattr(self.solver, "reservoir", None)
+            inputs = getattr(reservoir, "inputs", None)
+            sample_count = 0 if inputs is None else int(inputs.shape[0])
+        print(
+            f"{self.label} calibration "
+            f"{self.block_index}/{self.module_name}: samples={sample_count}",
+            flush=True,
+        )
+        self._finalized = True
+
+    def prune(
+        self,
+        *,
+        sparsity: float,
+        zeros_per_group: int = 0,
+        group_size: int = 0,
+        blocksize: int = 128,
+        percdamp: float = 0.01,
+    ) -> None:
+        self.finalize()
+        self.solver.fasterprune(
+            sparsity,
+            zeros_per_group=zeros_per_group,
+            group_size=group_size,
+            blocksize=blocksize,
+            percdamp=percdamp,
+        )
+
+    def free(self) -> None:
+        self.solver.free()
+
+
 @dataclass
 class _TangentBound:
     solver: TangentAwareSparseGPT
     block_index: int
     module_name: str
+    bias_fold: bool = False
     _finalized: bool = False
 
     def add_batch(self, inputs, outputs) -> None:
@@ -200,20 +260,25 @@ class SparseGPT:
         _ = (block_index, module_name)
         return _SparseGPTBound(SparseGPTSolver(layer))
 
+
 @dataclass(frozen=True)
 class TangentAware:
-    """Output-tangent mask weighting with ambient SparseGPT compensation."""
+    """Option 1: k-means chart G_pq mask weighting + ambient compensation."""
 
     alpha: float = 1.0
     charts: int = 8
     rank: int = 2
     calibration_samples: int = 512
     seed: int = 0
+    bias_fold: bool = False
+    anchor_eta: float = 0.0
     name: str = "tangent"
 
     def __post_init__(self) -> None:
         if not math.isfinite(self.alpha) or not 0.0 < self.alpha <= 1.0:
             raise ValueError("tangent alpha must be finite and in (0, 1]")
+        if not math.isfinite(self.anchor_eta) or self.anchor_eta < 0.0:
+            raise ValueError("anchor_eta must be finite and nonnegative")
         if self.charts < 1 or self.rank < 1 or self.calibration_samples < 3:
             raise ValueError("tangent charts/rank must be positive and samples >= 3")
 
@@ -227,15 +292,171 @@ class TangentAware:
                 rank=self.rank,
                 calibration_samples=self.calibration_samples,
                 seed=self.seed,
+                bias_fold=self.bias_fold,
+                anchor_eta=self.anchor_eta,
             ),
             block_index,
             module_name,
+            bias_fold=self.bias_fold,
+        )
+
+
+@dataclass(frozen=True)
+class TangentFactorUnion:
+    """Option 1 with concept-factor union projectors."""
+
+    alpha: float = 1.0
+    factors: int = 4
+    rank: int = 1
+    calibration_samples: int = 512
+    seed: int = 0
+    bias_fold: bool = False
+    active_factors: int = 2
+    factor_source: str = "kmeans"
+    block_width: int = 3
+    name: str = "tangent_factor_union"
+
+    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _SolverBound:
+        return _SolverBound(
+            FactorUnionSparseGPT(
+                layer,
+                alpha=self.alpha,
+                factors=self.factors,
+                rank=self.rank,
+                calibration_samples=self.calibration_samples,
+                seed=self.seed,
+                bias_fold=self.bias_fold,
+                active_factors=self.active_factors,
+                factor_source=self.factor_source,
+                block_width=self.block_width,
+            ),
+            block_index,
+            module_name,
+            label="Factor-union",
+            finalize_attr="finalize_tangents",
+            bias_fold=self.bias_fold,
+        )
+
+
+@dataclass(frozen=True)
+class TangentChartObs:
+    """Option 2: per-chart OBS mask scores + ambient compensation."""
+
+    charts: int = 8
+    rank: int = 1
+    calibration_samples: int = 512
+    seed: int = 0
+    percdamp: float = 0.01
+    bias_fold: bool = False
+    name: str = "tangent_chart_obs"
+
+    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _SolverBound:
+        return _SolverBound(
+            ChartObsSparseGPT(
+                layer,
+                charts=self.charts,
+                rank=self.rank,
+                calibration_samples=self.calibration_samples,
+                seed=self.seed,
+                percdamp=self.percdamp,
+                bias_fold=self.bias_fold,
+            ),
+            block_index,
+            module_name,
+            label="Chart-OBS",
+            finalize_attr="finalize_charts",
+            bias_fold=self.bias_fold,
+        )
+
+
+@dataclass(frozen=True)
+class TangentFixedUnion:
+    """Option 3: fixed-union subspace rotation."""
+
+    rank: int = 2
+    calibration_samples: int = 512
+    seed: int = 0
+    bias_fold: bool = False
+    name: str = "tangent_fixed_union"
+
+    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _SolverBound:
+        return _SolverBound(
+            FixedUnionSparseGPT(
+                layer,
+                rank=self.rank,
+                calibration_samples=self.calibration_samples,
+                seed=self.seed,
+                bias_fold=self.bias_fold,
+            ),
+            block_index,
+            module_name,
+            label="Fixed-union",
+            finalize_attr="finalize_union",
+            bias_fold=self.bias_fold,
+        )
+
+
+@dataclass(frozen=True)
+class TangentKnockout:
+    """§1 union-tangent knockout impact mask ranking."""
+
+    charts: int = 8
+    rank: int = 1
+    calibration_samples: int = 512
+    seed: int = 0
+    bias_fold: bool = False
+    name: str = "tangent_knockout"
+
+    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _SolverBound:
+        return _SolverBound(
+            KnockoutSparseGPT(
+                layer,
+                charts=self.charts,
+                rank=self.rank,
+                calibration_samples=self.calibration_samples,
+                seed=self.seed,
+                bias_fold=self.bias_fold,
+            ),
+            block_index,
+            module_name,
+            label="Knockout",
+            finalize_attr="finalize_scores",
+            bias_fold=self.bias_fold,
+        )
+
+
+@dataclass(frozen=True)
+class TangentEditability:
+    """§1 union-tangent editability mask ranking (no |W| factor)."""
+
+    charts: int = 8
+    rank: int = 1
+    calibration_samples: int = 512
+    seed: int = 0
+    bias_fold: bool = False
+    name: str = "tangent_editability"
+
+    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _SolverBound:
+        return _SolverBound(
+            EditabilitySparseGPT(
+                layer,
+                charts=self.charts,
+                rank=self.rank,
+                calibration_samples=self.calibration_samples,
+                seed=self.seed,
+                bias_fold=self.bias_fold,
+            ),
+            block_index,
+            module_name,
+            label="Editability",
+            finalize_attr="finalize_scores",
+            bias_fold=self.bias_fold,
         )
 
 
 @dataclass(frozen=True)
 class Geometry:
-    """Activation Hessian plus a tangent penalty."""
+    """Option 4: activation Hessian plus input-probe covariance."""
 
     alpha: float = 0.0
     probes: Path | None = None
@@ -255,6 +476,92 @@ class Geometry:
             block_index,
             module_name,
         )
+
+
+@dataclass(frozen=True)
+class Wanda:
+    """Ambient Wanda baseline: |W|·RMS(φ) mask, no OBS compensation."""
+
+    calibration_samples: int = 512
+    seed: int = 0
+    name: str = "wanda"
+
+    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _SolverBound:
+        return _SolverBound(
+            WandaPruner(
+                layer,
+                calibration_samples=self.calibration_samples,
+                seed=self.seed,
+            ),
+            block_index,
+            module_name,
+            label="Wanda",
+            finalize_attr="finalize_scores",
+        )
+
+
+@dataclass(frozen=True)
+class TangentExactObs:
+    """Exact ``L_tan`` OBS: diag-P row Hessians or small full Kronecker."""
+
+    charts: int = 8
+    rank: int = 1
+    calibration_samples: int = 512
+    seed: int = 0
+    percdamp: float = 0.01
+    bias_fold: bool = False
+    anchor_eta: float = 0.0
+    mode: str = "diag"
+    max_full_params: int = 4096
+    name: str = "tangent_exact_obs"
+
+    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _SolverBound:
+        return _SolverBound(
+            ExactLtanSparseGPT(
+                layer,
+                charts=self.charts,
+                rank=self.rank,
+                calibration_samples=self.calibration_samples,
+                seed=self.seed,
+                percdamp=self.percdamp,
+                bias_fold=self.bias_fold,
+                anchor_eta=self.anchor_eta,
+                mode=self.mode,
+                max_full_params=self.max_full_params,
+            ),
+            block_index,
+            module_name,
+            label="Exact-Ltan",
+            finalize_attr="finalize_charts",
+            bias_fold=self.bias_fold,
+        )
+
+
+_PRUNER_TYPES: dict[str, type] = {
+    SparseGPT.name: SparseGPT,
+    Wanda.name: Wanda,
+    Geometry.name: Geometry,
+    TangentAware.name: TangentAware,
+    TangentFactorUnion.name: TangentFactorUnion,
+    TangentChartObs.name: TangentChartObs,
+    TangentFixedUnion.name: TangentFixedUnion,
+    TangentKnockout.name: TangentKnockout,
+    TangentEditability.name: TangentEditability,
+    TangentExactObs.name: TangentExactObs,
+}
+
+
+def list_pruners() -> list[str]:
+    """Stable ablation registry names."""
+    return list(_PRUNER_TYPES)
+
+
+def _technique_names() -> list[str]:
+    return list(_PRUNER_TYPES)
+
+
+# Alias used by unit tests and external ablation drivers.
+TECHNIQUE_NAMES = _technique_names()
 
 
 def bind_layer(
@@ -292,13 +599,12 @@ def bind_layer(
 
 
 def get_pruner(name: str, **options) -> Pruner:
-    """Look up a pruner by name. Geometry accepts ``alpha`` and ``probes``."""
-    if name == SparseGPT.name:
-        if options:
-            raise TypeError(f"sparsegpt pruner takes no options, got {sorted(options)}")
-        return SparseGPT()
-    if name == Geometry.name:
-        return Geometry(**options)
-    if name == TangentAware.name:
-        return TangentAware(**options)
-    raise KeyError(f"unknown pruner {name!r}; known: sparsegpt, geometry, tangent")
+    """Look up a pruner by ablation registry name."""
+    if name not in _PRUNER_TYPES:
+        raise KeyError(
+            f"unknown pruner {name!r}; known: {', '.join(list_pruners())}"
+        )
+    cls = _PRUNER_TYPES[name]
+    if name == SparseGPT.name and options:
+        raise TypeError(f"sparsegpt pruner takes no options, got {sorted(options)}")
+    return cls(**options)

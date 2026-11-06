@@ -97,11 +97,15 @@ def _capture_olmo(model, dataloader, dev):
     layers[0] = layers[0].to(dev)
 
     dtype = next(iter(model.parameters())).dtype
+    from sparsifier.models.loop import calibration_window_count
+
     # Keep the calibration window bank on CPU. On GH200 (96 GiB HBM) holding
     # inps+outs on CUDA (~4 GiB) plus layer-wise SDPA workspace OOMs the prune
     # path; Gemma uses the same host-side pattern.
     inps = torch.zeros(
-        (args.nsamples, model.seqlen, model.config.hidden_size), dtype=dtype, device="cpu"
+        (calibration_window_count(args), model.seqlen, model.config.hidden_size),
+        dtype=dtype,
+        device="cpu",
     )
     cache = capture_cache()
     layers[0] = Catcher(layers[0], inps, cache, squeeze=True)

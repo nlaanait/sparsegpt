@@ -37,7 +37,18 @@ class RunRequest:
     tangent_charts: int
     tangent_rank: int
     tangent_samples: int
-    family: str
+    tangent_factors: int = 8
+    tangent_factor_source: str = "kmeans"
+    tangent_active_factors: int = 2
+    tangent_block_width: int = 3
+    tangent_anchor_eta: float = 0.0
+    tangent_fit_nsamples: int = 0
+    tangent_fit_seed: int | None = None
+    tangent_exact_mode: str = "diag"
+    tangent_exact_max_params: int = 4096
+    pruner: str | None = None
+    bias_fold: bool = False
+    family: str = ""
 
 
 def run_family(request: RunRequest) -> None:
@@ -73,6 +84,17 @@ def run_family(request: RunRequest) -> None:
         tangent_charts=request.tangent_charts,
         tangent_rank=request.tangent_rank,
         tangent_samples=request.tangent_samples,
+        tangent_factors=request.tangent_factors,
+        tangent_factor_source=request.tangent_factor_source,
+        tangent_active_factors=request.tangent_active_factors,
+        tangent_block_width=request.tangent_block_width,
+        tangent_anchor_eta=request.tangent_anchor_eta,
+        tangent_fit_nsamples=request.tangent_fit_nsamples,
+        tangent_fit_seed=request.tangent_fit_seed,
+        tangent_exact_mode=request.tangent_exact_mode,
+        tangent_exact_max_params=request.tangent_exact_max_params,
+        pruner=request.pruner,
+        bias_fold=request.bias_fold,
         gmp=False,
     )
     runners = {

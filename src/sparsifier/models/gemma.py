@@ -27,6 +27,7 @@ from sparsifier.models.loop import (
     likelihood_from_nlls,
     prune_bound,
     run_model,
+    uses_output_tangents,
     write_bank,
 )
 from sparsifier.prune import bind_layer
@@ -297,13 +298,13 @@ def _prune_moe_experts(layer, buckets: list[list[torch.Tensor]], layer_idx: int,
             )
             if name.endswith("gate_up_proj"):
                 with torch.no_grad():
-                    layer_outputs = gate_up(batch) if args.tangent_alpha > 0 else None
+                    layer_outputs = gate_up(batch) if uses_output_tangents(args) else None
                 gpt.add_batch(batch, layer_outputs)
             else:
                 with torch.no_grad():
                     gate, up = gate_up(tokens).chunk(2, dim=-1)
                     act = experts.act_fn(gate) * up
-                    layer_outputs = down(act) if args.tangent_alpha > 0 else None
+                    layer_outputs = down(act) if uses_output_tangents(args) else None
                 gpt.add_batch(act, layer_outputs)
             gpt.prune(
                 sparsity=config.sparsity,

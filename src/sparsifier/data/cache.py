@@ -65,6 +65,41 @@ def prune_config_from_args(args) -> dict:
             tangent_rank=int(args.tangent_rank),
             tangent_samples=int(args.tangent_samples),
         )
+    pruner = getattr(args, "pruner", None) or ""
+    if pruner:
+        config["pruner"] = pruner
+        config["tangent_charts"] = int(getattr(args, "tangent_charts", 8))
+        config["tangent_rank"] = int(getattr(args, "tangent_rank", 2))
+        config["tangent_samples"] = int(getattr(args, "tangent_samples", 512))
+        if pruner == "tangent_factor_union":
+            config["tangent_factors"] = int(getattr(args, "tangent_factors", 8))
+            config["tangent_factor_source"] = str(
+                getattr(args, "tangent_factor_source", "kmeans")
+            )
+            config["tangent_active_factors"] = int(
+                getattr(args, "tangent_active_factors", 2)
+            )
+            if config["tangent_factor_source"] == "block_dictionary":
+                config["tangent_block_width"] = int(
+                    getattr(args, "tangent_block_width", 3)
+                )
+    if bool(getattr(args, "bias_fold", False)):
+        config["bias_fold"] = True
+    anchor_eta = float(getattr(args, "tangent_anchor_eta", 0.0) or 0.0)
+    if anchor_eta > 0.0:
+        config["tangent_anchor_eta"] = anchor_eta
+    fit_n = int(getattr(args, "tangent_fit_nsamples", 0) or 0)
+    if fit_n > 0:
+        config["tangent_fit_nsamples"] = fit_n
+        fit_seed = getattr(args, "tangent_fit_seed", None)
+        config["tangent_fit_seed"] = int(
+            args.seed + 1 if fit_seed is None else fit_seed
+        )
+    if pruner == "tangent_exact_obs":
+        config["tangent_exact_mode"] = str(getattr(args, "tangent_exact_mode", "diag"))
+        config["tangent_exact_max_params"] = int(
+            getattr(args, "tangent_exact_max_params", 4096)
+        )
     return config
 
 
@@ -147,6 +182,10 @@ def config_slug(config: dict) -> str:
             f"tan{config['tangent_alpha']}-c{config['tangent_charts']}"
             f"-r{config['tangent_rank']}"
         )
+    if config.get("pruner"):
+        parts.append(f"pruner-{config['pruner']}")
+    if config.get("bias_fold"):
+        parts.append("biasfold")
     if config["nsamples"] != 128:
         parts.append(f"n{config['nsamples']}")
     if config["maxlayer"] != 1000:

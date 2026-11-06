@@ -268,10 +268,14 @@ def _capture_qwen(model, dataloader, dev):
     layers[0] = layers[0].to(dev)
 
     dtype = next(iter(model.parameters())).dtype
+    from sparsifier.models.loop import calibration_window_count
+
     # Host-side activation banks (same as OLMo/Gemma). GPU banks plus
     # slice assignment retained tens of GiB on GH200 and OOM'd 0.8B.
     inps = torch.zeros(
-        (args.nsamples, model.seqlen, model.config.hidden_size), dtype=dtype, device="cpu"
+        (calibration_window_count(args), model.seqlen, model.config.hidden_size),
+        dtype=dtype,
+        device="cpu",
     )
     cache = capture_cache()
 

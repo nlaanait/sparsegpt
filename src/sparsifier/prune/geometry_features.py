@@ -63,11 +63,69 @@ class BlockDictionary:
             block = self.dictionary[:, sl]
             block /= max(np.linalg.norm(block, 2), 1e-12)
 
+    def encode_support(self, h, steps=35):
+        """Boolean active-block mask ``[groups, samples]`` from sparse codes."""
+        z = self.encode(h, steps=steps).reshape(self.groups, self.width, -1)
+        return np.linalg.norm(z, axis=1) > 1e-8
+
+    def factor_state(self, h, neighbors=16, rank=1, seed=1, steps=35):
+        """Per-factor ambient tangent bases and per-sample encode support.
+
+        Unlike ``tangents()``, bases stay labeled by factor (not pooled probes).
+        Local PCA reuses the same block-code neighborhood chart construction;
+        degenerate blocks fall back to the leading dictionary columns.
+
+        Returns
+        -------
+        bases : ndarray, shape ``[d, groups, rank]``
+        active : ndarray, shape ``[groups, samples]``, bool
+        """
+        if not 1 <= rank <= self.width or neighbors < 2:
+            raise ValueError('invalid tangent estimation settings')
+        z = self.encode(h, steps=steps).reshape(self.groups, self.width, -1)
+        active = np.linalg.norm(z, axis=1) > 1e-8
+        bases = np.zeros((h.shape[0], self.groups, rank), dtype=np.float64)
+        rng = np.random.default_rng(seed)
+        for g in range(self.groups):
+            block = self.dictionary[:, g * self.width:(g + 1) * self.width]
+            codes = z[g][:, active[g]]
+            directions = None
+            if codes.shape[1] >= max(3, rank + 1):
+                ambient = block @ codes
+                # One neighborhood chart around a random active code (same local
+                # PCA as tangents(); keep a single labeled basis per factor).
+                anchor = int(rng.integers(codes.shape[1]))
+                dist = np.sum((ambient - ambient[:, anchor:anchor + 1]) ** 2, axis=0)
+                ix = np.argsort(dist)[:min(neighbors, codes.shape[1])]
+                local = codes[:, ix] - codes[:, ix].mean(axis=1, keepdims=True)
+                u, s, _ = np.linalg.svd(local, full_matrices=False)
+                keep = min(rank, int(np.sum(s > 1e-10)))
+                if keep:
+                    directions = block @ u[:, :keep]
+            if directions is None or directions.shape[1] == 0:
+                # Factor span fallback when the local chart is empty/degenerate.
+                q, _ = np.linalg.qr(block)
+                bases[:, g, :] = q[:, :rank]
+                continue
+            q, sv, _ = np.linalg.svd(directions, full_matrices=False)
+            keep = min(rank, int(np.sum(sv > 1e-10)))
+            if keep == 0:
+                q, _ = np.linalg.qr(block)
+                bases[:, g, :] = q[:, :rank]
+            else:
+                bases[:, g, :keep] = q[:, :keep]
+                if keep < rank:
+                    # Pad remaining columns from the dictionary block orthocomplement.
+                    q_block, _ = np.linalg.qr(block)
+                    bases[:, g, keep:] = q_block[:, keep:rank]
+        return bases, active
+
     def tangents(self, h, neighbors=16, anchors=10, rank=1, seed=1):
         """Local PCA in each active block, mapped back to ambient coordinates.
 
         Pooling concept-wise tangents approximates an additive manifold model.
         It does not model interactions, support transitions, or joint curvature.
+        Prefer ``factor_state`` when bases must stay labeled by concept factor.
         """
         if not 1 <= rank <= self.width or neighbors < 2 or anchors < 1:
             raise ValueError('invalid tangent estimation settings')
@@ -94,6 +152,63 @@ class BlockDictionary:
                     q, sv, _ = np.linalg.svd(directions, full_matrices=False)
                     probes.append(q[:, sv > 1e-10])
         return np.concatenate(probes, axis=1) if probes else np.empty((h.shape[0], 0))
+
+
+def block_dictionary_factor_state(
+    outputs,
+    *,
+    groups=12,
+    width=3,
+    active=2,
+    rank=1,
+    seed=0,
+    fit_iterations=20,
+    neighbors=16,
+    model=None,
+):
+    """Fit (or reuse) a BlockDictionary on layer outputs; return factor state.
+
+    Parameters
+    ----------
+    outputs :
+        Sample-major activations ``[N, d_out]`` (torch or NumPy).
+    model :
+        Optional already-fitted ``BlockDictionary``. When omitted, one is fit on
+        ``outputs``.
+
+    Returns
+    -------
+    bases : torch.Tensor
+        ``[M, d_out, r]`` orthonormal(ish) factor tangent bases.
+    active_mask : torch.Tensor
+        ``[N, M]`` boolean encode support (which factors are active per sample).
+    """
+    import torch
+
+    if isinstance(outputs, torch.Tensor):
+        y = outputs.detach().cpu().float().numpy()
+    else:
+        y = np.asarray(outputs, dtype=np.float64)
+    if y.ndim != 2 or y.shape[0] < 2:
+        raise ValueError('outputs must be [N, d] with N >= 2')
+    h = y.T
+    if model is None:
+        if not 1 <= active <= groups:
+            raise ValueError('active must lie in [1, groups]')
+        if rank > width:
+            raise ValueError('rank must be <= block width')
+        model = BlockDictionary(groups, width, active, seed=seed).fit(
+            h, iterations=fit_iterations
+        )
+    elif not isinstance(model, BlockDictionary):
+        raise TypeError('model must be a fitted BlockDictionary or None')
+    bases_np, active_np = model.factor_state(
+        h, neighbors=neighbors, rank=rank, seed=seed + 1
+    )
+    # [d, M, r] -> [M, d, r]; [M, N] -> [N, M]
+    bases = torch.from_numpy(np.ascontiguousarray(bases_np.transpose(1, 0, 2))).float()
+    active_mask = torch.from_numpy(np.ascontiguousarray(active_np.T)).bool()
+    return bases, active_mask
 
 
 

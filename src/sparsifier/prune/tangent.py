@@ -14,6 +14,7 @@ import torch.nn as nn
 import transformers
 
 from sparsifier.prune.sparsegpt import SparseGPT, _weight_matrix
+from sparsifier.prune.tangent_common import apply_bias_fold_from_samples
 
 
 @torch.no_grad()
@@ -26,6 +27,7 @@ def estimate_output_tangent_coupling(
     alpha: float = 1.0,
     seed: int = 0,
     iterations: int = 8,
+    anchor_eta: float = 0.0,
 ) -> tuple[torch.Tensor, dict]:
     """Estimate G[p,q] from paired layer inputs/outputs.
 
@@ -33,9 +35,14 @@ def estimate_output_tangent_coupling(
     is estimated in each chart. The basis projector diagonal is weighted by
     input-feature energy in that chart. The estimator represents one chart per
     sample and does not identify multiple overlapping concept factors.
+
+    When ``anchor_eta > 0``, sample diagonals use ``M_n = P_union + η P_anchor``
+    (note §3); report that arm separately from pure union metrics.
     """
     if not math.isfinite(alpha) or not 0.0 <= alpha <= 1.0:
         raise ValueError("tangent alpha must be finite and in [0, 1]")
+    if not math.isfinite(anchor_eta) or anchor_eta < 0.0:
+        raise ValueError("anchor_eta must be finite and nonnegative")
     if charts < 1 or rank < 1 or iterations < 1:
         raise ValueError("charts, rank, and iterations must be positive")
     if inputs.ndim != 2 or outputs.ndim != 2 or inputs.shape[0] != outputs.shape[0]:
@@ -89,6 +96,7 @@ def estimate_output_tangent_coupling(
                 alpha=alpha,
                 seed=seed,
                 iterations=iterations,
+                anchor_eta=anchor_eta,
             )
         raise ValueError(
             "k-means produced a chart with fewer than two samples; "
@@ -126,6 +134,22 @@ def estimate_output_tangent_coupling(
         chart_variance.append(float(eigenvalues[:keep].sum() / total.clamp_min(1e-12)))
 
     chart_diag = torch.stack(tangent_diagonals, dim=0)
+    # Per-sample projector diagonals (P_union,n)_pp for §3 union-metric bias fold.
+    sample_projector_diagonals = chart_diag[assignments].detach().cpu()
+    if float(anchor_eta) > 0.0:
+        from sparsifier.prune.metric import blend_anchor_into_diagonals
+
+        sample_projector_diagonals = blend_anchor_into_diagonals(
+            sample_projector_diagonals,
+            centers.detach().cpu(),
+            assignments.detach().cpu(),
+            float(anchor_eta),
+        )
+        # Rebuild chart_diag aggregates from blended sample diagonals for G_pq.
+        chart_diag = torch.zeros_like(chart_diag)
+        chart_diag.index_add_(0, assignments, sample_projector_diagonals.to(device=device))
+        counts_f = counts.clamp_min(1).to(dtype=chart_diag.dtype)
+        chart_diag = chart_diag / counts_f[:, None]
     chart_energy = torch.zeros((chart_count, input_dim), device=device, dtype=torch.float32)
     chart_energy.index_add_(0, assignments, x.square())
     denominator = x.square().sum(dim=0)
@@ -152,6 +176,8 @@ def estimate_output_tangent_coupling(
         "mean_tangent_coupling": coupling_sum / (output_dim * input_dim),
         "mean_score_weight": float(score_weight.mean()),
         "inactive_input_features": int((denominator <= 1e-12).sum().item()),
+        "sample_projector_diagonals": sample_projector_diagonals,
+        "anchor_eta": float(anchor_eta),
     }
     return score_weight, diagnostics
 
@@ -168,11 +194,15 @@ class TangentAwareSparseGPT(SparseGPT):
         rank: int = 2,
         calibration_samples: int = 512,
         seed: int = 0,
+        bias_fold: bool = False,
+        anchor_eta: float = 0.0,
     ) -> None:
         if not isinstance(layer, (nn.Linear, transformers.Conv1D)):
             raise TypeError("Output tangent calibration supports Linear and Conv1D")
         if not math.isfinite(alpha) or not 0.0 < alpha <= 1.0:
             raise ValueError("tangent alpha must be finite and in (0, 1]")
+        if not math.isfinite(anchor_eta) or anchor_eta < 0.0:
+            raise ValueError("anchor_eta must be finite and nonnegative")
         if charts < 1 or rank < 1 or calibration_samples < 3:
             raise ValueError("charts/rank must be positive and calibration_samples >= 3")
         super().__init__(layer)
@@ -181,28 +211,24 @@ class TangentAwareSparseGPT(SparseGPT):
         self.rank = rank
         self.calibration_samples = calibration_samples
         self.seed = seed
+        self.bias_fold = bias_fold
+        self.anchor_eta = float(anchor_eta)
         self._rng = torch.Generator(device="cpu").manual_seed(seed)
         self._sample_inputs: torch.Tensor | None = None
         self._sample_outputs: torch.Tensor | None = None
         self._sample_keys: torch.Tensor | None = None
         self.mask_weight: torch.Tensor | None = None
         self.tangent_diagnostics: dict | None = None
+        self.sample_projector_diagonals: torch.Tensor | None = None
+        self._dense_weight: torch.Tensor | None = None
         self.finalized = False
 
     @torch.no_grad()
-    def add_batch(self, inputs: torch.Tensor, out=None, blocksize: int = 1024) -> None:
-        if self.finalized:
-            raise RuntimeError("Cannot add calibration batches after tangent finalization")
-        if not isinstance(out, torch.Tensor):
-            raise TypeError("Output tangent pruning requires tensor layer outputs")
-        if inputs.ndim not in (2, 3) or out.ndim not in (2, 3):
-            raise ValueError("Expected rank-2 or rank-3 layer input/output batches")
+    def _update_reservoir(self, inputs: torch.Tensor, out: torch.Tensor) -> None:
         x = inputs.reshape(-1, inputs.shape[-1])
         y = out.reshape(-1, out.shape[-1])
         if x.shape[0] != y.shape[0] or x.shape[1] != self.columns:
             raise ValueError("Layer input/output samples do not align with this weight matrix")
-        super().add_batch(inputs, out, blocksize)
-
         old_count = 0 if self._sample_keys is None else self._sample_keys.shape[0]
         new_keys = torch.rand(x.shape[0], generator=self._rng, device="cpu")
         if self._sample_keys is None:
@@ -232,6 +258,28 @@ class TangentAwareSparseGPT(SparseGPT):
         self._sample_outputs = kept_y.contiguous()
 
     @torch.no_grad()
+    def add_tangent_batch(self, inputs: torch.Tensor, out=None, blocksize: int = 1024) -> None:
+        _ = blocksize
+        if self.finalized:
+            raise RuntimeError("Cannot add calibration batches after tangent finalization")
+        if not isinstance(out, torch.Tensor):
+            raise TypeError("Output tangent pruning requires tensor layer outputs")
+        if inputs.ndim not in (2, 3) or out.ndim not in (2, 3):
+            raise ValueError("Expected rank-2 or rank-3 layer input/output batches")
+        self._update_reservoir(inputs, out)
+
+    @torch.no_grad()
+    def add_batch(self, inputs: torch.Tensor, out=None, blocksize: int = 1024) -> None:
+        if self.finalized:
+            raise RuntimeError("Cannot add calibration batches after tangent finalization")
+        if not isinstance(out, torch.Tensor):
+            raise TypeError("Output tangent pruning requires tensor layer outputs")
+        if inputs.ndim not in (2, 3) or out.ndim not in (2, 3):
+            raise ValueError("Expected rank-2 or rank-3 layer input/output batches")
+        super().add_batch(inputs, out, blocksize)
+        self._update_reservoir(inputs, out)
+
+    @torch.no_grad()
     def finalize_tangents(self) -> None:
         if self.finalized:
             return
@@ -244,6 +292,7 @@ class TangentAwareSparseGPT(SparseGPT):
             rank=self.rank,
             alpha=self.alpha,
             seed=self.seed,
+            anchor_eta=self.anchor_eta,
         )
         expected = _weight_matrix(self.layer).shape
         if self.mask_weight.shape != expected:
@@ -251,18 +300,37 @@ class TangentAwareSparseGPT(SparseGPT):
                 self.mask_weight = self.mask_weight.T.contiguous()
             if self.mask_weight.shape != expected:
                 raise RuntimeError("Tangent score shape does not match SparseGPT weight layout")
+        self._dense_weight = _weight_matrix(self.layer).detach().cpu().clone()
+        diags = (self.tangent_diagnostics or {}).get("sample_projector_diagonals")
+        self.sample_projector_diagonals = (
+            None if diags is None else diags.detach().cpu().float()
+        )
         self.finalized = True
-        self._sample_inputs = None
-        self._sample_outputs = None
-        self._sample_keys = None
+        if not self.bias_fold:
+            self._sample_inputs = None
+            self._sample_outputs = None
+            self._sample_keys = None
 
     def fasterprune(self, *args, **kwargs) -> None:
         self.finalize_tangents()
         super().fasterprune(*args, mask_weight=self.mask_weight, **kwargs)
+        if self.bias_fold:
+            apply_bias_fold_from_samples(
+                self.layer,
+                dense_weight=self._dense_weight,
+                sample_inputs=self._sample_inputs,
+                sample_outputs=self._sample_outputs,
+                projector_diagonals=self.sample_projector_diagonals,
+            )
+            self._sample_inputs = None
+            self._sample_outputs = None
+            self._sample_keys = None
 
     def free(self) -> None:
         self._sample_inputs = None
         self._sample_outputs = None
         self._sample_keys = None
         self.mask_weight = None
+        self.sample_projector_diagonals = None
+        self._dense_weight = None
         super().free()

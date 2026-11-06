@@ -17,8 +17,16 @@ from sparsifier.prune.pruners import (
     Pruner,
     SparseGPT,
     TangentAware,
+    TangentChartObs,
+    TangentExactObs,
+    TangentFactorUnion,
+    TangentEditability,
+    TangentFixedUnion,
+    TangentKnockout,
+    Wanda,
     bind_layer,
     get_pruner,
+    list_pruners,
 )
 from sparsifier.prune.sparsegpt import SparseGPT as SparseGPTSolver
 from sparsifier.prune.tangent import (
@@ -33,8 +41,16 @@ __all__ = [
     "SparseGPT",
     "TangentAware",
     "TangentAwareSparseGPT",
+    "TangentChartObs",
+    "TangentEditability",
+    "TangentExactObs",
+    "TangentFactorUnion",
+    "TangentFixedUnion",
+    "TangentKnockout",
+    "Wanda",
     "SparseGPTSolver",
     "bind_layer",
     "estimate_output_tangent_coupling",
     "get_pruner",
+    "list_pruners",
 ]

@@ -46,8 +46,12 @@ def _capture_llama(model, dataloader, dev):
     layers[0] = layers[0].to(dev)
 
     dtype = next(iter(model.parameters())).dtype
+    from sparsifier.models.loop import calibration_window_count
+
     inps = torch.zeros(
-        (args.nsamples, model.seqlen, model.config.hidden_size), dtype=dtype, device=dev
+        (calibration_window_count(args), model.seqlen, model.config.hidden_size),
+        dtype=dtype,
+        device=dev,
     )
     cache = capture_cache(positions=False)
     layers[0] = Catcher(
