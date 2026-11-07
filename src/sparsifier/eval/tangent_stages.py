@@ -1,8 +1,9 @@
-"""Stage 1–4 held-out tangent / ranking / ablation harness (note §6).
+"""Stage 0–4 harness (revised note §6).
 
-Synthetic controlled concept sweep by default. Production CLI prune runs stay
-separate; this module validates score ranking and compensated methods on a
-small layer with disjoint train/held-out splits.
+``run_stages`` keeps the original synthetic circle sweep and attaches
+``revised_protocol``, which runs the note's diagnostics, the two concept
+families, the score comparisons, the Variant A–D order, and the bias arms.
+Production CLI prune runs stay separate.
 """
 
 from __future__ import annotations
@@ -16,6 +17,7 @@ import numpy as np
 import torch
 from torch import nn
 
+from sparsifier.eval.revised_protocol import run_revised_protocol
 from sparsifier.prune.exact_ltan import (
     diag_p_obs_prune,
     diag_p_row_hessians,
@@ -116,6 +118,17 @@ def stage2_score_ranking(weight, x_train, q_train, x_test, q_test) -> dict[str, 
     }
 
 
+def stage0_diagnostics(q_train) -> dict[str, float]:
+    """Stage 0 on the toy concept: leverage null and radial share."""
+    from sparsifier.prune.stage0 import leverage_concentration, radial_share
+
+    tangent = torch.tensor(q_train[0], dtype=torch.float32)
+    leverages = tangent.square()
+    summary = leverage_concentration(leverages, rank=1)
+    share = radial_share(torch.tensor(q_train[1], dtype=torch.float32), tangent)
+    return {"leverage_ks": summary["ks_statistic"], "radial_share": float(share)}
+
+
 def stage3_compensated_methods(
     weight, x_train, q_train, x_test, q_test, *, sparsity: float
 ) -> dict[str, Any]:
@@ -162,6 +175,11 @@ def stage3_compensated_methods(
     arms["option1_tangent"] = _eval_arm(
         weight, layer.weight.detach().cpu().numpy(), x_test, q_test
     )
+    from sparsifier.prune.revised_methods import sparse_plus_low_rank
+
+    basis = torch.tensor(q_train.mean(axis=0), dtype=torch.float32).reshape(-1, 1)
+    corrected = sparse_plus_low_rank(w_t, sparse, basis)
+    arms["variant_d"] = _eval_arm(weight, corrected.numpy(), x_test, q_test)
     return arms
 
 
@@ -231,6 +249,7 @@ def run_stages(
         "test_samples": n_test,
         "sparsity": sparsity,
         "anchor_eta": anchor_eta,
+        "stage0_diagnostics": stage0_diagnostics(q_train),
         "stage1_tangent_stability": stage1_tangent_stability(train, test, weight, basis),
         "stage2_score_ranking": stage2_score_ranking(weight, x_train, q_train, x_test, q_test),
         "stage3_compensated_methods": stage3_compensated_methods(
@@ -239,12 +258,26 @@ def run_stages(
         "stage4_bias_fold": stage4_bias_fold(
             weight, x_train, q_train, x_test, q_test, sparsity=sparsity
         ),
+        "revised_protocol": run_revised_protocol(
+            seed=seed,
+            n_train=n_train,
+            n_test=n_test,
+            sparsity=sparsity,
+            dim=8,
+        ),
     }
 
 
 def summarize_stages(reports: list[dict[str, Any]]) -> dict[str, Any]:
     """Mean/std across seeds for key Stage-2 Spearman metrics and Stage-3 MSEs."""
     summary: dict[str, Any] = {"seed_count": len(reports), "stage2_score_ranking": {}, "stage3": {}}
+    if "revised_protocol" in reports[0]:
+        summary["revised_protocol"] = {
+            "stage0_decisions": {
+                key: [run["revised_protocol"]["stage0"][key]["decision"] for run in reports]
+                for key in ("D1", "D2", "D3", "D4", "D5", "D6")
+            }
+        }
     keys = reports[0]["stage2_score_ranking"]
     for key in keys:
         values = np.array([r["stage2_score_ranking"][key] for r in reports], dtype=np.float64)
@@ -291,7 +324,7 @@ def main(argv: list[str] | None = None) -> None:
         for seed in args.seeds
     ]
     payload = {
-        "experiment": "tangent-stages-1-4",
+        "experiment": "tangent-stages-0-4",
         "summary": summarize_stages(reports),
         "runs": reports,
     }

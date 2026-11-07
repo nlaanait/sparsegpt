@@ -81,6 +81,7 @@ class SparseGPT:
         percdamp: float = 0.01,
         mask_weight: torch.Tensor | None = None,
         score_matrix: torch.Tensor | None = None,
+        protected_trailing: int = 0,
     ) -> None:
         """Prune ``self.layer`` in place from the accumulated Hessian.
 
@@ -105,10 +106,15 @@ class SparseGPT:
             Optional absolute ranking scores. When set, unstructured masks are
             taken from the lowest scores directly (Hessian used for compensation
             only). Mutually exclusive with ``mask_weight``.
+        protected_trailing:
+            Trailing columns excluded from mask selection and from N:M groups.
+            They are still processed last so earlier compensation can update them.
         """
         weights = _weight_matrix(self.layer).float()
         if mask_weight is not None and score_matrix is not None:
             raise ValueError("mask_weight and score_matrix are mutually exclusive")
+        if protected_trailing < 0 or protected_trailing >= self.columns:
+            raise ValueError("protected_trailing must be in [0, columns)")
         if mask_weight is not None:
             if mask_weight.shape != weights.shape:
                 raise ValueError("mask_weight must have shape " + str(tuple(weights.shape)))
@@ -158,6 +164,7 @@ class SparseGPT:
                 preset_mask=None
                 if global_score_mask is None
                 else global_score_mask[:, col_start:col_end],
+                protected_trailing=protected_trailing,
             )
 
         if isinstance(self.layer, transformers.Conv1D):
@@ -205,11 +212,14 @@ class SparseGPT:
         mask_weight: torch.Tensor | None = None,
         score_matrix: torch.Tensor | None = None,
         preset_mask: torch.Tensor | None = None,
+        protected_trailing: int = 0,
     ) -> None:
         weight_block = weights[:, col_start:col_end].clone()
         pruned_block = torch.zeros_like(weight_block)
         error_block = torch.zeros_like(weight_block)
         inverse_block = hessian_inverse[col_start:col_end, col_start:col_end]
+        maskable_end = self.columns - protected_trailing
+        local_maskable = max(0, min(col_end, maskable_end) - col_start)
 
         if zeros_per_group == 0:
             if preset_mask is not None:
@@ -218,25 +228,33 @@ class SparseGPT:
                 metric = score_matrix[:, col_start:col_end].to(
                     device=weight_block.device, dtype=weight_block.dtype
                 )
+                if local_maskable < metric.shape[1]:
+                    metric = metric[:, :local_maskable]
                 prune_count = int(metric.numel() * sparsity)
-                mask = torch.zeros_like(metric, dtype=torch.bool)
-                if prune_count:
+                mask = torch.zeros_like(weight_block, dtype=torch.bool)
+                if prune_count and metric.numel():
                     chosen = torch.topk(metric.flatten(), prune_count, largest=False).indices
-                    mask.flatten()[chosen] = True
+                    mask[:, : metric.shape[1]].flatten()[chosen] = True
             else:
                 metric = weight_block**2 / (torch.diag(inverse_block).reshape((1, -1))) ** 2
+                if local_maskable < metric.shape[1]:
+                    metric = metric[:, :local_maskable]
                 if mask_weight is None:
-                    threshold = torch.sort(metric.flatten())[0][int(metric.numel() * sparsity)]
-                    mask = metric <= threshold
+                    mask = torch.zeros_like(weight_block, dtype=torch.bool)
+                    if metric.numel():
+                        threshold = torch.sort(metric.flatten())[0][
+                            min(int(metric.numel() * sparsity), metric.numel() - 1)
+                        ]
+                        mask[:, : metric.shape[1]] = metric <= threshold
                 else:
-                    metric *= mask_weight[:, col_start:col_end].to(
+                    metric *= mask_weight[:, col_start : col_start + metric.shape[1]].to(
                         device=metric.device, dtype=metric.dtype
                     )
                     prune_count = int(metric.numel() * sparsity)
-                    mask = torch.zeros_like(metric, dtype=torch.bool)
+                    mask = torch.zeros_like(weight_block, dtype=torch.bool)
                     if prune_count:
                         chosen = torch.topk(metric.flatten(), prune_count, largest=False).indices
-                        mask.flatten()[chosen] = True
+                        mask[:, : metric.shape[1]].flatten()[chosen] = True
         else:
             mask = torch.zeros_like(weight_block, dtype=torch.bool)
 
@@ -245,20 +263,24 @@ class SparseGPT:
             diag = inverse_block[column, column]
 
             if zeros_per_group != 0 and column % group_size == 0:
+                group_end = min(column + group_size, local_maskable)
+                if group_end <= column:
+                    continue
                 if score_matrix is not None:
                     metric = score_matrix[
-                        :, col_start + column : col_start + column + group_size
+                        :, col_start + column : col_start + group_end
                     ].to(device=weight_block.device, dtype=weight_block.dtype)
                 else:
                     metric = (
-                        weight_block[:, column : (column + group_size)] ** 2
-                        / (torch.diag(inverse_block)[column : (column + group_size)].reshape((1, -1))) ** 2
+                        weight_block[:, column:group_end] ** 2
+                        / (torch.diag(inverse_block)[column:group_end].reshape((1, -1))) ** 2
                     )
                     if mask_weight is not None:
                         metric *= mask_weight[
-                            :, col_start + column : col_start + column + group_size
+                            :, col_start + column : col_start + group_end
                         ].to(device=metric.device, dtype=metric.dtype)
-                smallest = torch.topk(metric, zeros_per_group, dim=1, largest=False)[1]
+                n_zero = min(zeros_per_group, metric.shape[1])
+                smallest = torch.topk(metric, n_zero, dim=1, largest=False)[1]
                 mask.scatter_(1, column + smallest, True)
 
             pruned = column_weights.clone()

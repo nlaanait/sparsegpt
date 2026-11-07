@@ -34,3 +34,35 @@ def projected_bias_correction(
     rhs = torch.einsum("nij,nj->i", m, r)
     # Minimum-norm solution via pseudoinverse; null-space components stay 0.
     return (torch.linalg.pinv(lhs, rcond=1e-6) @ rhs).to(dtype=out_dtype)
+
+
+def centered_second_moment(phi: torch.Tensor) -> torch.Tensor:
+    """(1/N) Σ (φ_n - μ)(φ_n - μ)^T."""
+    x = phi.float()
+    if x.ndim != 2 or x.shape[0] < 1:
+        raise ValueError("phi must have shape [samples, input_dim]")
+    centered = x - x.mean(dim=0, keepdim=True)
+    return centered.T @ centered / x.shape[0]
+
+
+def ones_augmented_second_moment(phi: torch.Tensor) -> torch.Tensor:
+    """Second moment of [φ, 1], the ones-column Hessian of §3.4."""
+    x = phi.float()
+    if x.ndim != 2 or x.shape[0] < 1:
+        raise ValueError("phi must have shape [samples, input_dim]")
+    ones = torch.ones((x.shape[0], 1), dtype=x.dtype, device=x.device)
+    augmented = torch.cat((x, ones), dim=1)
+    return augmented.T @ augmented / x.shape[0]
+
+
+def schur_complement_last(matrix: torch.Tensor) -> torch.Tensor:
+    """Schur complement of the last diagonal entry: A - b b^T / c."""
+    m = matrix.float()
+    if m.ndim != 2 or m.shape[0] != m.shape[1] or m.shape[0] < 2:
+        raise ValueError("matrix must be square with size at least 2")
+    a = m[:-1, :-1]
+    b = m[:-1, -1]
+    c = m[-1, -1]
+    if not torch.isfinite(c) or float(c) == 0.0:
+        raise ValueError("ones-column variance must be nonzero")
+    return a - torch.outer(b, b) / c

@@ -48,6 +48,8 @@ class RunRequest:
     tangent_exact_max_params: int = 4096
     pruner: str | None = None
     bias_fold: bool = False
+    alpha_in: float = 0.0
+    pair_deltas: Path | None = None
     family: str = ""
 
 
@@ -95,6 +97,8 @@ def run_family(request: RunRequest) -> None:
         tangent_exact_max_params=request.tangent_exact_max_params,
         pruner=request.pruner,
         bias_fold=request.bias_fold,
+        alpha_in=request.alpha_in,
+        pair_deltas=request.pair_deltas,
         gmp=False,
     )
     runners = {

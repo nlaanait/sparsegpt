@@ -131,6 +131,19 @@ from sparsifier.prune.quantize import apply_quantization
     help="Ablation pruner registry name; overrides alpha-based selection when set.",
 )
 @click.option(
+    "--alpha-in",
+    type=float,
+    default=0.0,
+    show_default=True,
+    help="Variant A difference-curvature share (revised note §4.4).",
+)
+@click.option(
+    "--pair-deltas",
+    type=click.Path(path_type=Path),
+    default=None,
+    help="Directory of per-layer paired input differences {block}/{module}.npy.",
+)
+@click.option(
     "--bias-fold",
     is_flag=True,
     default=False,
@@ -176,6 +189,8 @@ def main(
     tangent_exact_max_params: int,
     pruner: str | None,
     bias_fold: bool,
+    alpha_in: float,
+    pair_deltas: Path | None,
 ) -> None:
     """Prune one catalog model and, unless skipped, score it."""
     import torch
@@ -228,6 +243,8 @@ def main(
             tangent_exact_max_params=tangent_exact_max_params,
             pruner=pruner,
             bias_fold=bias_fold,
+            alpha_in=alpha_in,
+            pair_deltas=pair_deltas,
             family=record.family,
         )
     )

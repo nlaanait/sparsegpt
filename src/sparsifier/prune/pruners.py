@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any, Protocol
 
 import numpy as np
+import torch
 import torch.nn as nn
 
 from sparsifier.prune.chart_obs import ChartObsSparseGPT
@@ -21,7 +22,10 @@ from sparsifier.prune.factor_union import FactorUnionSparseGPT
 from sparsifier.prune.fixed_union import FixedUnionSparseGPT
 from sparsifier.prune.geometry import GeometrySparseGPT
 from sparsifier.prune.editability import EditabilitySparseGPT
+from sparsifier.prune.input_side import InputSideSparseGPT
 from sparsifier.prune.knockout import KnockoutSparseGPT
+from sparsifier.prune.rescale import RescaleSparseGPT
+from sparsifier.prune.revised_methods import FisherScaleSparseGPT, SparseLowRankSparseGPT
 from sparsifier.prune.sparsegpt import SparseGPT as SparseGPTSolver
 from sparsifier.prune.tangent import TangentAwareSparseGPT
 from sparsifier.prune.wanda import WandaPruner
@@ -500,6 +504,214 @@ class Wanda:
         )
 
 
+@dataclass
+class _InputSideBound:
+    solver: InputSideSparseGPT
+    block_index: int
+    module_name: str
+    alpha_in: float
+    pairs: Path | None
+    _finalized: bool = False
+
+    def add_batch(self, inputs, outputs) -> None:
+        self.solver.add_batch(inputs, outputs)
+
+    def finalize(self) -> None:
+        if self._finalized:
+            return
+        if self.alpha_in > 0.0:
+            if self.pairs is None:
+                raise ValueError("tangent_input_side requires a pairs directory")
+            path = self.pairs / str(self.block_index) / f"{self.module_name}.npy"
+            if not path.is_file():
+                raise FileNotFoundError(
+                    f"missing input-side pairs for layer {self.block_index}/{self.module_name}: {path}"
+                )
+            import numpy as np
+
+            from sparsifier.data.pair_deltas import load_knob_ids
+
+            deltas = torch.as_tensor(np.load(path, allow_pickle=False))
+            self.solver.add_pairs(deltas, knob_ids=load_knob_ids(path))
+        self.solver.finalize_pairs(self.alpha_in)
+        print(
+            "Input-side calibration "
+            f"{self.block_index}/{self.module_name}: alpha_in={self.alpha_in}",
+            flush=True,
+        )
+        self._finalized = True
+
+    def prune(
+        self,
+        *,
+        sparsity: float,
+        zeros_per_group: int = 0,
+        group_size: int = 0,
+        blocksize: int = 128,
+        percdamp: float = 0.01,
+    ) -> None:
+        self.finalize()
+        self.solver.fasterprune(
+            sparsity,
+            zeros_per_group=zeros_per_group,
+            group_size=group_size,
+            blocksize=blocksize,
+            percdamp=percdamp,
+        )
+
+    def free(self) -> None:
+        self.solver.free()
+
+
+@dataclass(frozen=True)
+class TangentInputSide:
+    """Variant A: shared Hessian plus paired-input difference curvature."""
+
+    alpha_in: float = 1.0
+    pairs: Path | None = None
+    name: str = "tangent_input_side"
+
+    def __post_init__(self) -> None:
+        if not math.isfinite(self.alpha_in) or self.alpha_in < 0.0:
+            raise ValueError("alpha_in must be finite and nonnegative")
+        if self.alpha_in > 0.0 and self.pairs is None:
+            raise ValueError("alpha_in > 0 requires a pairs directory")
+
+    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _InputSideBound:
+        return _InputSideBound(
+            InputSideSparseGPT(layer),
+            block_index,
+            module_name,
+            alpha_in=self.alpha_in,
+            pairs=self.pairs,
+        )
+
+
+@dataclass(frozen=True)
+class TangentRescale:
+    """Variant B: rescaled SparseGPT with M_n = I + γ P_geo (unbounded α)."""
+
+    alpha: float = 1.0
+    charts: int = 8
+    rank: int = 2
+    calibration_samples: int = 512
+    seed: int = 0
+    bias_fold: bool = False
+    anchor_eta: float = 0.0
+    name: str = "tangent_rescale"
+
+    def __post_init__(self) -> None:
+        if not math.isfinite(self.alpha) or self.alpha < 0.0:
+            raise ValueError("rescale alpha must be finite and nonnegative")
+
+    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _SolverBound:
+        return _SolverBound(
+            RescaleSparseGPT(
+                layer,
+                alpha=self.alpha,
+                charts=self.charts,
+                rank=self.rank,
+                calibration_samples=self.calibration_samples,
+                seed=self.seed,
+                bias_fold=self.bias_fold,
+                heuristic=False,
+                anchor_eta=self.anchor_eta,
+            ),
+            block_index,
+            module_name,
+            label="Tangent-rescale",
+            finalize_attr="finalize_tangents",
+            bias_fold=self.bias_fold,
+        )
+
+
+@dataclass(frozen=True)
+class TangentHeuristic:
+    """Score-only 1+γG ablation: no matching rescaled compensation."""
+
+    alpha: float = 1.0
+    charts: int = 8
+    rank: int = 2
+    calibration_samples: int = 512
+    seed: int = 0
+    bias_fold: bool = False
+    anchor_eta: float = 0.0
+    name: str = "tangent_heuristic"
+
+    def __post_init__(self) -> None:
+        if not math.isfinite(self.alpha) or self.alpha < 0.0:
+            raise ValueError("heuristic alpha must be finite and nonnegative")
+
+    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _SolverBound:
+        return _SolverBound(
+            RescaleSparseGPT(
+                layer,
+                alpha=self.alpha,
+                charts=self.charts,
+                rank=self.rank,
+                calibration_samples=self.calibration_samples,
+                seed=self.seed,
+                bias_fold=self.bias_fold,
+                heuristic=True,
+                anchor_eta=self.anchor_eta,
+            ),
+            block_index,
+            module_name,
+            label="Tangent-heuristic",
+            finalize_attr="finalize_tangents",
+            bias_fold=self.bias_fold,
+        )
+
+
+@dataclass(frozen=True)
+class TangentFisher:
+    """Fisher rung of the output-metric ladder, through Variant B rescaling."""
+
+    alpha: float = 1.0
+    name: str = "tangent_fisher"
+
+    def __post_init__(self) -> None:
+        if not math.isfinite(self.alpha) or self.alpha < 0.0:
+            raise ValueError("fisher alpha must be finite and nonnegative")
+
+    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _SolverBound:
+        return _SolverBound(
+            FisherScaleSparseGPT(layer, alpha=self.alpha),
+            block_index,
+            module_name,
+            label="Fisher",
+            finalize_attr="finalize_fisher",
+            bias_fold=False,
+        )
+
+
+@dataclass(frozen=True)
+class TangentSparseLowRank:
+    """Variant D: ambient sparse weights plus a dense concept-block correction."""
+
+    rank: int = 2
+    calibration_samples: int = 512
+    seed: int = 0
+    bias_fold: bool = False
+    name: str = "tangent_sparse_lowrank"
+
+    def bind(self, layer: nn.Module, *, block_index: int, module_name: str) -> _SolverBound:
+        return _SolverBound(
+            SparseLowRankSparseGPT(
+                layer,
+                rank=self.rank,
+                calibration_samples=self.calibration_samples,
+                seed=self.seed,
+                bias_fold=self.bias_fold,
+            ),
+            block_index,
+            module_name,
+            label="Sparse-low-rank",
+            finalize_attr="finalize_union",
+            bias_fold=self.bias_fold,
+        )
+
+
 @dataclass(frozen=True)
 class TangentExactObs:
     """Exact ``L_tan`` OBS: diag-P row Hessians or small full Kronecker."""
@@ -548,6 +760,11 @@ _PRUNER_TYPES: dict[str, type] = {
     TangentKnockout.name: TangentKnockout,
     TangentEditability.name: TangentEditability,
     TangentExactObs.name: TangentExactObs,
+    TangentInputSide.name: TangentInputSide,
+    TangentRescale.name: TangentRescale,
+    TangentHeuristic.name: TangentHeuristic,
+    TangentFisher.name: TangentFisher,
+    TangentSparseLowRank.name: TangentSparseLowRank,
 }
 
 

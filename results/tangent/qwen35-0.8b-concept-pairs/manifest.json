@@ -1,0 +1,77 @@
+{
+  "model": "Qwen/Qwen3.5-0.8B",
+  "pairs": [
+    {
+      "knob": "ones_digit",
+      "domain": "math",
+      "knob_id": 0,
+      "edit_index": 5,
+      "left": "the value is 17.",
+      "right": "the value is 18."
+    },
+    {
+      "knob": "tens_digit",
+      "domain": "math",
+      "knob_id": 1,
+      "edit_index": 4,
+      "left": "the value is 17.",
+      "right": "the value is 27."
+    },
+    {
+      "knob": "add_sub",
+      "domain": "math",
+      "knob_id": 2,
+      "edit_index": 4,
+      "left": "x = 2 + 3",
+      "right": "x = 2 - 3"
+    },
+    {
+      "knob": "mul_div",
+      "domain": "math",
+      "knob_id": 3,
+      "edit_index": 4,
+      "left": "x = 2 * 3",
+      "right": "x = 2 / 3"
+    },
+    {
+      "knob": "and_or",
+      "domain": "logic",
+      "knob_id": 4,
+      "edit_index": 1,
+      "left": "p and q",
+      "right": "p or q"
+    },
+    {
+      "knob": "quantifier",
+      "domain": "logic",
+      "knob_id": 5,
+      "edit_index": 0,
+      "left": "all x are even",
+      "right": "some x are even"
+    },
+    {
+      "knob": "polarity",
+      "domain": "logic",
+      "knob_id": 6,
+      "edit_index": 1,
+      "left": "return True",
+      "right": "return False"
+    },
+    {
+      "knob": "equality",
+      "domain": "code",
+      "knob_id": 7,
+      "edit_index": 1,
+      "left": "x == y",
+      "right": "x != y"
+    },
+    {
+      "knob": "increment",
+      "domain": "code",
+      "knob_id": 8,
+      "edit_index": 2,
+      "left": "return a + b",
+      "right": "return a - b"
+    }
+  ]
+}

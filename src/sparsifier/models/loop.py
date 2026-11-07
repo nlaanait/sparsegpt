@@ -32,6 +32,9 @@ OUTPUT_TANGENT_PRUNERS = frozenset(
         "tangent_knockout",
         "tangent_editability",
         "tangent_exact_obs",
+        "tangent_rescale",
+        "tangent_heuristic",
+        "tangent_sparse_lowrank",
     }
 )
 
@@ -299,6 +302,45 @@ def pruner_for(args):
             mode=str(getattr(args, "tangent_exact_mode", "diag")),
             max_full_params=int(getattr(args, "tangent_exact_max_params", 4096)),
         )
+    if name == "tangent_rescale":
+        return get_pruner(
+            "tangent_rescale",
+            alpha=alpha,
+            charts=charts,
+            rank=rank,
+            calibration_samples=samples,
+            seed=tangent_seed,
+            bias_fold=bias_fold,
+            anchor_eta=anchor_eta,
+        )
+    if name == "tangent_heuristic":
+        return get_pruner(
+            "tangent_heuristic",
+            alpha=alpha if alpha > 0 else 1.0,
+            charts=charts,
+            rank=rank,
+            calibration_samples=samples,
+            seed=tangent_seed,
+            bias_fold=bias_fold,
+            anchor_eta=anchor_eta,
+        )
+    if name == "tangent_input_side":
+        pairs = getattr(args, "pair_deltas", None)
+        return get_pruner(
+            "tangent_input_side",
+            alpha_in=float(getattr(args, "alpha_in", 0.0) or 0.0),
+            pairs=pairs,
+        )
+    if name == "tangent_fisher":
+        return get_pruner("tangent_fisher", alpha=alpha if alpha > 0 else 1.0)
+    if name == "tangent_sparse_lowrank":
+        return get_pruner(
+            "tangent_sparse_lowrank",
+            rank=rank,
+            calibration_samples=samples,
+            seed=tangent_seed,
+            bias_fold=bias_fold,
+        )
     raise ValueError(f"unhandled pruner {name!r}")
 
 
@@ -394,9 +436,12 @@ def check_geometry(args) -> None:
         raise ValueError("geometry alpha must be finite and nonnegative")
     if args.geometry_alpha > 0 and args.geometry_probes is None:
         raise ValueError("geometry probes are required when geometry alpha is positive")
-    if not math.isfinite(args.tangent_alpha) or not 0.0 <= args.tangent_alpha <= 1.0:
-        raise ValueError("tangent alpha must be finite and in [0, 1]")
     name = resolve_pruner_name(args)
+    if name in {"tangent_rescale", "tangent_heuristic"}:
+        if not math.isfinite(args.tangent_alpha) or args.tangent_alpha < 0.0:
+            raise ValueError("tangent alpha must be finite and nonnegative")
+    elif not math.isfinite(args.tangent_alpha) or not 0.0 <= args.tangent_alpha <= 1.0:
+        raise ValueError("tangent alpha must be finite and in [0, 1]")
     if name in OUTPUT_TANGENT_PRUNERS and args.geometry_alpha > 0:
         raise ValueError("input geometry and output tangent modes are mutually exclusive")
     if name in OUTPUT_TANGENT_PRUNERS:
@@ -416,6 +461,12 @@ def check_geometry(args) -> None:
                 raise ValueError("block_dictionary requires positive width and rank <= width")
     if name == "geometry" and float(args.geometry_alpha) <= 0:
         raise ValueError("geometry pruner requires positive geometry_alpha")
+    if name == "tangent_input_side":
+        alpha_in = float(getattr(args, "alpha_in", 0.0) or 0.0)
+        if not math.isfinite(alpha_in) or alpha_in < 0.0:
+            raise ValueError("alpha_in must be finite and nonnegative")
+        if alpha_in > 0.0 and getattr(args, "pair_deltas", None) is None:
+            raise ValueError("pair_deltas are required when alpha_in is positive")
     anchor_eta = float(getattr(args, "tangent_anchor_eta", 0.0) or 0.0)
     if not math.isfinite(anchor_eta) or anchor_eta < 0.0:
         raise ValueError("tangent_anchor_eta must be finite and nonnegative")

@@ -1,0 +1,114 @@
+{
+  "model": "Qwen/Qwen3.5-0.8B",
+  "kind": "presence",
+  "pairs": [
+    {
+      "knob": "ones_digit",
+      "knob_id": 0,
+      "present": [
+        "the value is 17."
+      ],
+      "absent": "the value is 00.",
+      "positions": [
+        4,
+        5
+      ]
+    },
+    {
+      "knob": "tens_digit",
+      "knob_id": 1,
+      "present": [
+        "the value is 17."
+      ],
+      "absent": "the value is 00.",
+      "positions": [
+        4,
+        5
+      ]
+    },
+    {
+      "knob": "add_sub",
+      "knob_id": 2,
+      "present": [
+        "x = 2 + 3",
+        "x = 2 - 3"
+      ],
+      "absent": "x = 2 @ 3",
+      "positions": [
+        4
+      ]
+    },
+    {
+      "knob": "mul_div",
+      "knob_id": 3,
+      "present": [
+        "x = 2 * 3",
+        "x = 2 / 3"
+      ],
+      "absent": "x = 2 @ 3",
+      "positions": [
+        4
+      ]
+    },
+    {
+      "knob": "and_or",
+      "knob_id": 4,
+      "present": [
+        "p and q",
+        "p or q"
+      ],
+      "absent": "p @ q",
+      "positions": [
+        1
+      ]
+    },
+    {
+      "knob": "quantifier",
+      "knob_id": 5,
+      "present": [
+        "all x are even",
+        "some x are even"
+      ],
+      "absent": "the x are even",
+      "positions": [
+        0
+      ]
+    },
+    {
+      "knob": "polarity",
+      "knob_id": 6,
+      "present": [
+        "return True",
+        "return False"
+      ],
+      "absent": "return None",
+      "positions": [
+        1
+      ]
+    },
+    {
+      "knob": "equality",
+      "knob_id": 7,
+      "present": [
+        "x == y",
+        "x != y"
+      ],
+      "absent": "x @ y",
+      "positions": [
+        1
+      ]
+    },
+    {
+      "knob": "increment",
+      "knob_id": 8,
+      "present": [
+        "return a + b",
+        "return a - b"
+      ],
+      "absent": "return a @ b",
+      "positions": [
+        2
+      ]
+    }
+  ]
+}

@@ -11,6 +11,10 @@ def test_run_stages_produces_all_four_sections():
     assert "stage2_score_ranking" in report
     assert "stage3_compensated_methods" in report
     assert "stage4_bias_fold" in report
+    assert "stage0_diagnostics" in report
+    assert "D1" in report["revised_protocol"]["stage0"]
+    assert "variant_a" in report["revised_protocol"]["stage3"]
+    assert "variant_d" in report["stage3_compensated_methods"]
     assert "wanda" in report["stage3_compensated_methods"]
     assert "exact_diag_p" in report["stage3_compensated_methods"]
     summary = summarize_stages([report, run_stages(seed=1, n_train=64, n_test=32, sparsity=0.25)])

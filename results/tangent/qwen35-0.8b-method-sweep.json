@@ -1,0 +1,275 @@
+{
+  "model": "Qwen/Qwen3.5-0.8B",
+  "calibration": "c4",
+  "dataset": "wikitext2",
+  "sparsities": [
+    0.5,
+    0.6,
+    0.7,
+    0.8,
+    0.9,
+    0.99
+  ],
+  "methods": [
+    "sparsegpt",
+    "wanda",
+    "tangent_input_side",
+    "tangent_rescale",
+    "tangent_heuristic",
+    "tangent_sparse_lowrank"
+  ],
+  "points": [
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.5,
+      "perplexity": 35.376793
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.6,
+      "perplexity": 86.975372
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.7,
+      "perplexity": 380.459339
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.8,
+      "perplexity": 2350.267623
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.9,
+      "perplexity": 9265.487217
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "sparsegpt",
+      "sparsity": 0.99,
+      "perplexity": 478105.265001
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "wanda",
+      "sparsity": 0.5,
+      "perplexity": 34.151925
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "wanda",
+      "sparsity": 0.6,
+      "perplexity": 79.51692
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "wanda",
+      "sparsity": 0.7,
+      "perplexity": 289.422608
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "wanda",
+      "sparsity": 0.8,
+      "perplexity": 2465.980627
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "wanda",
+      "sparsity": 0.9,
+      "perplexity": 29274.811767
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "wanda",
+      "sparsity": 0.99,
+      "perplexity": 74274571023.26808
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_input_side",
+      "sparsity": 0.5,
+      "perplexity": 36.480112
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_input_side",
+      "sparsity": 0.6,
+      "perplexity": 107.695774
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_input_side",
+      "sparsity": 0.7,
+      "perplexity": 438.425393
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_input_side",
+      "sparsity": 0.8,
+      "perplexity": 2370.10528
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_input_side",
+      "sparsity": 0.9,
+      "perplexity": 11820.448175
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_input_side",
+      "sparsity": 0.99,
+      "perplexity": 995705.586067
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_rescale",
+      "sparsity": 0.5,
+      "perplexity": 40.035355
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_rescale",
+      "sparsity": 0.6,
+      "perplexity": 119.691044
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_rescale",
+      "sparsity": 0.7,
+      "perplexity": 565.259254
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_rescale",
+      "sparsity": 0.8,
+      "perplexity": 3301.575879
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_rescale",
+      "sparsity": 0.9,
+      "perplexity": 22428.852079
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_rescale",
+      "sparsity": 0.99,
+      "perplexity": 4748198.600446
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_heuristic",
+      "sparsity": 0.5,
+      "perplexity": 40.477826
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_heuristic",
+      "sparsity": 0.6,
+      "perplexity": 122.390876
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_heuristic",
+      "sparsity": 0.7,
+      "perplexity": 634.887791
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_heuristic",
+      "sparsity": 0.8,
+      "perplexity": 3134.470431
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_heuristic",
+      "sparsity": 0.9,
+      "perplexity": 17832.770865
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_heuristic",
+      "sparsity": 0.99,
+      "perplexity": 78183.221511
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_sparse_lowrank",
+      "sparsity": 0.5,
+      "perplexity": 35.327269
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_sparse_lowrank",
+      "sparsity": 0.6,
+      "perplexity": 86.573294
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_sparse_lowrank",
+      "sparsity": 0.7,
+      "perplexity": 369.947857
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_sparse_lowrank",
+      "sparsity": 0.8,
+      "perplexity": 2157.075441
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_sparse_lowrank",
+      "sparsity": 0.9,
+      "perplexity": 10447.257968
+    },
+    {
+      "model": "Qwen/Qwen3.5-0.8B",
+      "dataset": "wikitext2",
+      "method": "tangent_sparse_lowrank",
+      "sparsity": 0.99,
+      "perplexity": 147012.936026
+    }
+  ]
+}

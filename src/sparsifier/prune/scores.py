@@ -77,7 +77,12 @@ def union_ambient_ratio(delta_h: torch.Tensor, union_q: torch.Tensor) -> float:
 
 
 def participation_ratio(tau_squares: torch.Tensor) -> float:
-    """PR = (sum τ_i^2)^2 / sum τ_i^4 over the chosen concept set."""
+    """PR = (sum q_i)^2 / sum q_i^2 over the chosen concept set.
+
+    The revised note computes this on per-dimension energies
+    ``q_i = τ_i^{cond}^2 / r_i``. The original rank-normalized scores are
+    already per-dimension, so both notes share this aggregator.
+    """
     values = tau_squares.reshape(-1).to(dtype=torch.float64)
     if not torch.isfinite(values).all():
         raise ValueError("participation ratio requires finite scores")
@@ -86,3 +91,57 @@ def participation_ratio(tau_squares: torch.Tensor) -> float:
         raise ValueError("participation ratio requires a nonzero score vector")
     numer = float(torch.sum(values) ** 2)
     return numer / denom
+
+
+def tangent_energy(delta_h: torch.Tensor, basis: torch.Tensor) -> float:
+    """Raw per-factor tangent energy τ_i^2 = ||U^T δh||_2^2."""
+    u = _as_basis(basis)
+    delta = delta_h.reshape(-1).to(dtype=u.dtype)
+    if delta.numel() != u.shape[0]:
+        raise ValueError("delta length must match the basis ambient dimension")
+    return float(torch.linalg.norm(u.T @ delta) ** 2)
+
+
+def per_dimension_energy(delta_h: torch.Tensor, basis: torch.Tensor) -> float:
+    """τ_i^2 / r_i, the original note's rank-normalized energy."""
+    u = _as_basis(basis)
+    return tangent_energy(delta_h, basis) / u.shape[1]
+
+
+def enrichment(delta_h: torch.Tensor, basis: torch.Tensor) -> float:
+    """(d / r) τ^2 / ||δh||^2. Equals 1 on average for a random r-plane."""
+    u = _as_basis(basis)
+    ambient = ambient_knockout_energy(delta_h)
+    if ambient <= 0.0:
+        return 0.0
+    return (u.shape[0] / u.shape[1]) * tangent_energy(delta_h, basis) / ambient
+
+
+def editability_enrichment(jac_col: torch.Tensor, basis: torch.Tensor) -> float:
+    """ẽ^{edit} = (||U^T j|| / sqrt(r)) / (||j|| / sqrt(d))."""
+    u = _as_basis(basis)
+    jac = jac_col.reshape(-1)
+    isotropic = float(torch.linalg.norm(jac) / math.sqrt(u.shape[0]))
+    if isotropic <= 0.0:
+        return 0.0
+    return editability(jac_col, basis) / isotropic
+
+
+def presence_energy(delta_h: torch.Tensor, projector: torch.Tensor) -> float:
+    """τ_pres^2 = ||P^{pres} δh||_2^2."""
+    p = projector.float()
+    if p.ndim != 2 or p.shape[0] != p.shape[1]:
+        raise ValueError("presence projector must be square")
+    delta = delta_h.reshape(-1).to(dtype=p.dtype)
+    if delta.numel() != p.shape[0]:
+        raise ValueError("delta length must match the projector ambient dimension")
+    return float(torch.linalg.norm(p @ delta) ** 2)
+
+
+def unconditional_energy(conditional: float, presence_rate: float) -> float:
+    """τ^{uncond}^2 = P(i ∈ S) τ^{cond}^2."""
+    if not math.isfinite(conditional) or conditional < 0.0:
+        raise ValueError("conditional energy must be finite and nonnegative")
+    if not math.isfinite(presence_rate) or not 0.0 <= presence_rate <= 1.0:
+        raise ValueError("presence_rate must be finite and in [0, 1]")
+    return float(conditional) * float(presence_rate)

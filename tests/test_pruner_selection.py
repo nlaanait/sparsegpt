@@ -14,6 +14,7 @@ def test_list_pruners_is_stable_ablation_set():
     names = list_pruners()
     assert names == [
         "sparsegpt",
+        "wanda",
         "geometry",
         "tangent",
         "tangent_factor_union",
@@ -21,6 +22,12 @@ def test_list_pruners_is_stable_ablation_set():
         "tangent_fixed_union",
         "tangent_knockout",
         "tangent_editability",
+        "tangent_exact_obs",
+        "tangent_input_side",
+        "tangent_rescale",
+        "tangent_heuristic",
+        "tangent_fisher",
+        "tangent_sparse_lowrank",
     ]
 
 
