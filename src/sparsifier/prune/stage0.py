@@ -53,9 +53,8 @@ def leverage_concentration(leverages: torch.Tensor, rank: int) -> dict[str, floa
 def gradient_enrichment(
     gradients: torch.Tensor,
     projectors: torch.Tensor,
-    mean_geo_rank: float,
 ) -> float:
-    """D3 / H0: κ = (E ||P^{geo} g||^2 / E ||g||^2) / (r̄^{geo} / d)."""
+    """D3: gradient energy enrichment over a rank-matched random-subspace null."""
     g = gradients.float()
     if g.ndim != 2:
         raise ValueError("gradients must have shape [samples, dim]")
@@ -64,14 +63,19 @@ def gradient_enrichment(
         p = p.expand(g.shape[0], -1, -1)
     if p.ndim != 3 or p.shape[0] != g.shape[0] or p.shape[1] != g.shape[1]:
         raise ValueError("projectors must match the gradient batch and dimension")
-    if not math.isfinite(mean_geo_rank) or mean_geo_rank <= 0.0:
-        raise ValueError("mean_geo_rank must be positive")
     projected = torch.einsum("nij,nj->ni", p, g)
-    num = float(projected.square().sum(dim=1).mean())
-    den = float(g.square().sum(dim=1).mean())
+    grad_energy = g.square().sum(dim=1)
+    den = float(grad_energy.sum())
     if den <= 0.0:
         return 0.0
-    return (num / den) / (float(mean_geo_rank) / g.shape[1])
+    projected_energy = projected.square().sum(dim=1)
+    # For varying projector ranks, the null is the ratio of summed energies,
+    # weighted by each sample's gradient norm, rather than mean-rank / d.
+    ranks = torch.diagonal(p, dim1=1, dim2=2).sum(dim=1).clamp_min(0.0)
+    null_fraction = float((ranks * grad_energy).sum()) / (g.shape[1] * den)
+    if null_fraction <= 0.0:
+        return 0.0
+    return float(projected_energy.sum() / den) / null_fraction
 
 
 def mean_principal_angle(basis_a: torch.Tensor, basis_b: torch.Tensor) -> float:

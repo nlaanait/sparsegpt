@@ -25,7 +25,9 @@ def _weight_matrix(layer: nn.Module) -> torch.Tensor:
     if isinstance(layer, nn.Conv2d):
         weights = weights.flatten(1)
     if isinstance(layer, transformers.Conv1D):
-        weights = weights.t()
+        # Mask selection writes through flattened column-block views. A
+        # transposed Conv1D layout would make flatten() copy those views.
+        weights = weights.t().contiguous()
     return weights
 
 

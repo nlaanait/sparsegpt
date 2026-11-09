@@ -47,8 +47,18 @@ def test_gradient_enrichment_is_one_for_isotropic_gradients():
     q, _ = torch.linalg.qr(torch.randn(d, r), mode="reduced")
     projector = q @ q.T
     gradients = torch.randn(50, d)
-    kappa = gradient_enrichment(gradients, projector.expand(50, -1, -1), mean_geo_rank=r)
+    kappa = gradient_enrichment(gradients, projector.expand(50, -1, -1))
     assert kappa == pytest.approx(1.0, abs=0.35)
+
+
+def test_rank_null_weights_rank_by_gradient_energy():
+    # Each group is isotropic, while gradient energy correlates with rank.
+    # A mean-rank null incorrectly gives enrichment about 0.51 here.
+    gradients = torch.cat((10 * torch.eye(4), torch.eye(4)))
+    rank_one = torch.diag(torch.tensor([1., 0., 0., 0.]))
+    rank_three = torch.diag(torch.tensor([1., 1., 1., 0.]))
+    projectors = torch.cat((rank_one.expand(4, -1, -1), rank_three.expand(4, -1, -1)))
+    assert gradient_enrichment(gradients, projectors) == pytest.approx(1.)
 
 
 def test_identical_bases_have_zero_principal_angle():

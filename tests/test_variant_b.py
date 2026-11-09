@@ -14,6 +14,7 @@ from torch import nn
 
 from sparsifier.prune.regularizer import geometric_weight
 from sparsifier.prune.rescale import (
+    RescaleSparseGPT,
     heuristic_score_weight,
     prune_with_rescaling,
     row_scales,
@@ -34,8 +35,8 @@ def test_row_scales_use_h0_over_hprime_when_combined_with_variant_a():
     hprime = torch.tensor([4.0, 4.0])
     gamma = 2.0
     scale = row_scales(coupling, gamma, h0_diag=h0, hprime_diag=hprime)
-    adjusted = coupling * (h0 / hprime)[None, :]
-    torch.testing.assert_close(scale, torch.sqrt(1.0 + gamma * adjusted))
+    expected_squared = (h0 / hprime)[None, :] * (1.0 + gamma * coupling)
+    torch.testing.assert_close(scale, torch.sqrt(expected_squared))
 
 
 def test_row_scales_are_one_on_features_with_no_support():
@@ -125,3 +126,17 @@ def test_geometric_weight_feeds_rescaling_not_convex_alpha():
     coupling = torch.ones(2, 3) * 0.5
     scale = row_scales(coupling, gamma)
     torch.testing.assert_close(scale, torch.full((2, 3), math.sqrt(1.0 + 12.0 * 0.5)))
+
+
+def test_rescaling_adapter_normalizes_actual_shared_curvature_trace():
+    torch.manual_seed(71)
+    layer = nn.Linear(4, 3, bias=False)
+    x = torch.randn(40, 4) * torch.tensor([1., 3., .1, 7.])
+    pruner = RescaleSparseGPT(layer, alpha=.7, charts=2, rank=1, calibration_samples=24)
+    pruner.add_batch(x, layer(x))
+    hdiag = pruner.H.diag().clone()
+    pruner.finalize_tangents()
+    added = ((pruner.scale.square() - 1) * hdiag[None, :]).sum()
+    actual_ratio = float(added / (layer.out_features * hdiag.sum()))
+    assert actual_ratio == pytest.approx(.7, rel=1e-6)
+    assert pruner.tangent_diagnostics['added_curvature_trace_ratio'] == pytest.approx(.7)

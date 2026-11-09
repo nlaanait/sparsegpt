@@ -44,20 +44,16 @@ _D6_SHARE_LIMIT = 0.30
 
 
 def d1_decision(ks: float, n: int) -> str:
-    """Skip entrywise output-side scores when the KS statistic is inside the 5% band."""
+    """Describe leverage orientation relative to a random-subspace null."""
     if n < 1:
         raise ValueError("n must be positive")
     critical = 1.36 / math.sqrt(n)
-    if ks < critical:
-        return "skip_entrywise"
-    return "use_entrywise"
+    return "leverage_null_compatible" if ks < critical else "leverage_null_different"
 
 
 def d3_decision(kappa_tangent: float, kappa_presence: float) -> str:
-    """H0 holds when either concept family is enriched over the isotropic null."""
-    if kappa_tangent < _D3_NEAR_ONE and kappa_presence < _D3_NEAR_ONE:
-        return "concept_metrics_only"
-    return "h0_holds"
+    """Report gradient-energy screening; this is not a pruning decision rule."""
+    return "gradient_energy_screening_only"
 
 
 def h1_disconfirmed(*, unstable: bool, local_error: float, global_error: float) -> bool:
@@ -139,12 +135,12 @@ def _stage0(bundle: dict, stage1: dict, stage3: dict) -> dict:
     null_mask = stage3["cache"]["null_mask"]
     flip = mask_flip_rate(vanilla, variant_b)
     null_flip = mask_flip_rate(vanilla, null_mask)
-    d2_decision = "output_side_cannot_matter" if abs(flip - null_flip) < 0.05 else "output_side_moves_masks"
+    d2_decision = "descriptive_mask_sensitivity_only"
     d2 = {"flip_rate": flip, "null_flip_rate": null_flip, "decision": d2_decision}
 
     gradients = torch.tensor(train["gradient"], dtype=torch.float32)
-    kappa_t = gradient_enrichment(gradients, _outer(tangent), 1.0)
-    kappa_p = gradient_enrichment(gradients, _outer(presence), 1.0)
+    kappa_t = gradient_enrichment(gradients, _outer(tangent))
+    kappa_p = gradient_enrichment(gradients, _outer(presence))
     d3 = {
         "kappa_tangent": kappa_t,
         "kappa_presence": kappa_p,
@@ -205,13 +201,18 @@ def _evaluate_family(kind: str, n_train: int, n_test: int, dim: int, seed: int) 
     x_test = curve["x"][test]
     budget = curve["analytic_r"] + 1
     local_bases = []
+    local_centers = []
+    local_chart_ids = []
     for index in range(x_test.shape[0]):
         nearest = int(np.argmin(np.linalg.norm(x_train - x_test[index], axis=1)))
-        basis, _ = _local_basis(x_train, nearest, k=min(8, x_train.shape[0]))
+        neighbors = np.argsort(np.linalg.norm(x_train - x_train[nearest], axis=1))[: min(8, x_train.shape[0])]
+        basis, _ = _svd_basis(x_train[neighbors])
         local_bases.append(basis[:budget])
+        local_centers.append(x_train[neighbors].mean(axis=0))
+        local_chart_ids.append(nearest)
     global_basis, estimated_b = _svd_basis(x_train)
     mean = x_train.mean(axis=0)
-    local_error = _reconstruction_error(mean, x_test, local_bases)
+    local_error = _local_affine_reconstruction_error(mean, x_test, local_centers, local_bases)
     matched = [global_basis[:budget] for _ in range(x_test.shape[0])]
     global_error = _reconstruction_error(mean, x_test, matched)
     angle, null_angle = _stability(x_train, seed)
@@ -220,20 +221,39 @@ def _evaluate_family(kind: str, n_train: int, n_test: int, dim: int, seed: int) 
         _local_basis(x_train, i, k=min(8, x_train.shape[0]))[1]
         for i in range(0, x_train.shape[0], max(1, x_train.shape[0] // 8))
     ]
+    local_chart_count = len(set(local_chart_ids))
+    # Charge each local chart for its anchor and basis, plus a packed chart id
+    # per held-out point. The global model stores one mean and one basis.
+    local_storage = local_chart_count * dim * (1 + budget) + math.ceil(
+        x_test.shape[0] * math.log2(max(local_chart_count, 1)) / 8.0
+    )
+    global_storage = dim * (1 + budget)
+    storage_matched = local_storage <= global_storage
     return {
         "analytic_b": curve["analytic_b"],
         "analytic_r": curve["analytic_r"],
         "rank_reduction_possible": curve["rank_reduction_possible"],
         "estimated_b": estimated_b,
         "estimated_r": int(np.median(local_ranks)),
-        "matched_budget": budget,
+        "basis_rank_budget": budget,
+        "local_chart_count": local_chart_count,
+        "local_storage_units": int(local_storage),
+        "global_storage_units": int(global_storage),
+        "storage_matched": storage_matched,
         "heldout_local_error": local_error,
         "heldout_global_error": global_error,
         "mean_principal_angle": angle,
         "null_principal_angle": null_angle,
         "unstable": unstable,
-        "h1_disconfirmed": h1_disconfirmed(
-            unstable=unstable, local_error=local_error, global_error=global_error
+        "h1_disconfirmed": (
+            h1_disconfirmed(unstable=unstable, local_error=local_error, global_error=global_error)
+            if storage_matched
+            else None
+        ),
+        "h1_assessment": (
+            "matched_storage_result"
+            if storage_matched
+            else "inconclusive_unmatched_storage"
         ),
     }
 
@@ -470,12 +490,19 @@ def _variant_d(bundle: dict, evaluate) -> dict:
     hat = sparse_plus_low_rank(bundle["weight"], sparse, basis)
     stats = evaluate(hat)
     used = int((sparse != 0).sum()) + extra
+    sparse_nonzeros = int((sparse != 0).sum())
+    effective_nonzeros = int((hat != 0).sum())
     stats.update(
         {
             "rank": rank,
             "storage_budget": float(budget),
             "storage_used": float(used),
-            "sparse_nonzeros": int((sparse != 0).sum()),
+            "storage_unused": float(budget - used),
+            "storage_reduction_fraction": float(1.0 - used / (dim * dim)),
+            "sparse_nonzeros": sparse_nonzeros,
+            "sparse_component_sparsity": float(1.0 - sparse_nonzeros / sparse.numel()),
+            "effective_dense_sparsity": float(1.0 - effective_nonzeros / hat.numel()),
+            "low_rank_parameter_count": int(extra),
         }
     )
     return stats
@@ -989,6 +1016,22 @@ def _reconstruction_error(mean: np.ndarray, points: np.ndarray, bases: list[np.n
         coeff = basis @ delta
         recon = coeff @ basis
         errors.append(np.linalg.norm(delta - recon) / max(np.linalg.norm(delta), 1e-15))
+    return float(np.mean(errors))
+
+
+def _local_affine_reconstruction_error(
+    global_mean: np.ndarray,
+    points: np.ndarray,
+    centers: list[np.ndarray],
+    bases: list[np.ndarray],
+) -> float:
+    """Held-out residual using each chart's stored anchor and local basis."""
+    errors = []
+    for point, center, basis in zip(points, centers, bases):
+        local_delta = point - center
+        reconstruction = center + (basis @ local_delta) @ basis
+        denominator = max(float(np.linalg.norm(point - global_mean)), 1e-15)
+        errors.append(float(np.linalg.norm(point - reconstruction)) / denominator)
     return float(np.mean(errors))
 
 

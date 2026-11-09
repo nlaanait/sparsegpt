@@ -1,4 +1,7 @@
-"""Run revised-note Stages 0–4 on one Qwen 3.5-0.8B linear layer.
+"""Legacy random-token smoke harness for one Qwen 3.5-0.8B linear layer.
+
+Use ``sparsifier.eval.natural_layer`` for aligned natural-text Stage 2/3
+experiments and language metrics computed from final vocabulary logits.
 
 The checkpoint is loaded only long enough to record activations and a
 language-model gradient. Pruning then runs on CPU. Host memory is checked
@@ -251,14 +254,14 @@ def _stage0(weight, phi, knob_out, presence_out, tangent_basis, gradients, seed:
     d2 = {
         "flip_rate": flip,
         "null_flip_rate": null_flip,
-        "decision": "output_side_cannot_matter" if abs(flip - null_flip) < 0.05 else "output_side_moves_masks",
+        "decision": "descriptive_mask_sensitivity_only",
     }
     projector = tangent_basis @ tangent_basis.T
     presence_basis = _basis(_orthogonalize(presence_out, tangent_basis))
     geo = torch.cat((tangent_basis, presence_basis), dim=1)
-    kappa_t = gradient_enrichment(gradients, projector, float(tangent_basis.shape[1]))
+    kappa_t = gradient_enrichment(gradients, projector)
     kappa_p = gradient_enrichment(
-        gradients, presence_basis @ presence_basis.T, float(presence_basis.shape[1])
+        gradients, presence_basis @ presence_basis.T
     )
     d3 = {
         "kappa_tangent": kappa_t,

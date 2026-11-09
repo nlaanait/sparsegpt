@@ -12,13 +12,13 @@ from sparsifier.eval.revised_protocol import (
 
 
 def test_d1_decision_uses_the_kolmogorov_critical_value():
-    assert d1_decision(ks=0.01, n=400) == "skip_entrywise"
-    assert d1_decision(ks=0.5, n=400) == "use_entrywise"
+    assert d1_decision(ks=0.01, n=400) == "leverage_null_compatible"
+    assert d1_decision(ks=0.5, n=400) == "leverage_null_different"
 
 
-def test_d3_decision_requires_both_enrichments_near_one():
-    assert d3_decision(kappa_tangent=1.1, kappa_presence=1.0) == "concept_metrics_only"
-    assert d3_decision(kappa_tangent=4.0, kappa_presence=1.0) == "h0_holds"
+def test_d3_enrichment_is_screening_not_a_pruning_decision():
+    assert d3_decision(kappa_tangent=1.1, kappa_presence=1.0) == "gradient_energy_screening_only"
+    assert d3_decision(kappa_tangent=4.0, kappa_presence=1.0) == "gradient_energy_screening_only"
 
 
 def test_h1_is_disconfirmed_without_a_held_out_gain():
@@ -38,8 +38,8 @@ def test_revised_protocol_runs_stages_zero_through_four():
     stage0 = report["stage0"]
     for diagnostic in ("D1", "D2", "D3", "D4", "D5", "D6"):
         assert "decision" in stage0[diagnostic]
-    assert stage0["D1"]["decision"] in {"skip_entrywise", "use_entrywise"}
-    assert stage0["D3"]["decision"] in {"concept_metrics_only", "h0_holds"}
+    assert stage0["D1"]["decision"] in {"leverage_null_compatible", "leverage_null_different"}
+    assert stage0["D3"]["decision"] == "gradient_energy_screening_only"
     assert stage0["D3"]["kappa_tangent"] > 2.0
     assert stage0["D6"]["decision"] in {"presence_required", "tangent_only"}
 

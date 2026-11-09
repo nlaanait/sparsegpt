@@ -1,0 +1,32 @@
+{
+  "alphas": [
+    0.3,
+    1.0,
+    3.0
+  ],
+  "atlas": "results/tangent/gsm8k/geometry-seed0-v2/atlas.npz",
+  "atlas_sha256": "aa8f779d24126fd3621fca363a22c3206e4eb9bd51b3f54d12021530f623bd14",
+  "audit_source_sha256": "e9ca32bf8f2c5a5a9d0b3aff624ad2dbe72748d89ecfe760c821c702dc3bd006",
+  "audit_version": "controlled-local-v2",
+  "capture_sha256": "8670c8375bdfb417c849a2e84fef4e825f04f26c3e9d6e73e2f7e884cf304487",
+  "crop": [
+    8,
+    16
+  ],
+  "normalizations": [
+    "rank-v1",
+    "curvature-trace-v2"
+  ],
+  "scope": "principal_output_metric_and_input_coordinate_crop",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "sources": {
+    "gsm8k_pruning.py": "e96d9cf777c3da125522d5f82b7e12fe0ccd53c271f89a7c98a78fa0bcb67114",
+    "rescale.py": "41511da946f0c598c1cba75e8a0c38267cb8079c424507d8c8ac9e60ac11d8d0",
+    "sample_metric.py": "6928e8947ab11dbba538eff36a5849bc0cf58af588f9365cb24b186bb3fbef92",
+    "sparsegpt.py": "4f2363f0f9c2851d82033ca8ddd83d1f832fec3fecc350ceab2f19fa959bba4e"
+  }
+}

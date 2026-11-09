@@ -1,0 +1,30 @@
+{
+  "recorded_at_utc": "2026-11-09T03:41:35.340340+00:00",
+  "status": "invalid_for_corrected_local_comparisons",
+  "reason": "Rank normalization did not control actual added weight-curvature strength; local pruning now uses curvature-trace normalization unconditionally.",
+  "cancelled_job_ids": [
+    80,
+    84,
+    85,
+    101,
+    102,
+    105,
+    106,
+    109,
+    110
+  ],
+  "invalidated_local_artifacts": [
+    "results/tangent/gsm8k/qwen-9b-gsm8k-local-a1-s0-v1",
+    "results/tangent/gsm8k/qwen-9b-gsm8k-local-a1-s0-v1-budget2048",
+    "results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s10-seed0-v1",
+    "results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s30-seed0-v1-partial-default-before-gb10",
+    "results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s50-seed0-v1",
+    "results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s50-seed0-v1-original512",
+    "results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s70-seed0-v1",
+    "results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s70-seed0-v1-original512",
+    "results/tangent/gsm8k/qwen-9b-gsm8k-sequential-local-smoke-v1"
+  ],
+  "raw_artifacts_retained": true,
+  "replacement_jobs_submitted": false,
+  "corrected_local_pruning_version": "curvature-trace-v2"
+}
