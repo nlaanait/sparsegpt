@@ -286,3 +286,20 @@ Progress is saved after each knockout or arm, with source/config provenance
 checked on resume. The CPU checks cover gradient alignment, true vocabulary
 metrics, restoration after temporary weight changes, exact sparsity, and the
 rank-one knockout calculation.
+
+### GSM8K downstream tangent pullbacks (2026-11-08)
+
+The `downstream` arm joins the Qwen3.5-9B MLP retention study via
+`sparsifier.eval.gsm8k_downstream`. gflow 86 is a two-block/six-projection
+smoke test; jobs 87/89/91/93 prune all MLP projections at 10/30/50/70%
+eligible sparsity; jobs 88/90/92/94 run the matching original 512-problem
+validation. Full runs depend on the smoke artifacts; validations depend on
+their candidates and dense reference 64. All are exclusive guarded jobs.
+
+Next-block residual tangents are pulled back with eight probes on 32
+pruning-calibration problems. Ambient data remains the same 4096 C4 + 4096
+math tokens; backward prompts do not enlarge that budget. Alpha is 1,
+with diagonal output/token metrics and matched rescaled compensation.
+Existing jobs and immutable plans are preserved. See
+[the status note](docs/research/GSM8K-EXPERIMENT-STATUS.md) for limitations,
+the additive plan, journal, provenance checks, and CPU verification.

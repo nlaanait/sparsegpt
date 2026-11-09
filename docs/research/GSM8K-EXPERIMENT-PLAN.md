@@ -298,3 +298,17 @@ Do not modify the existing family sweeps or running processes as part of this ex
 | GSM8K transfer | Full per-problem outputs and paired comparisons | Assess T without retuning |
 
 The first scientific deliverables are the factor/local-geometry validation and a Stage 2 report connecting predicted weight importance to held-out mathematical behavior. Stage 3 must distinguish benefits from task calibration, pooled contrasts, factor selection, and location within factors. The factor-local output comparison is part of the main experiment; Stage 4 bias folding, invented presence references, and unrelated output-metric variants remain deferred.
+
+## 11. Downstream tangent pullback extension (2026-11-08)
+
+Add a `downstream` arm to the same all-MLP eligible-layer scope and sparsity ladder (0.1, 0.3, 0.5, 0.7), followed by the existing 512-problem original-GSM8K validation at a common 2,048-token budget. A separate immutable plan and submission journal preserve the already running experiment definitions. A two-block/six-projection smoke test gates all full candidates; candidate provenance gates their evaluations.
+
+For target linear output \(y_\ell=W_\ell\phi_\ell\), fit factor-local tangent projectors \(P_{k,n}\) on geometry-fit activations at the next block's residual output. The final block uses its own residual output after the MLP. Seed detached random tangent probes at the final prompt position and estimate the diagonal of
+
+\[ B_{\ell,n}=J_{k\leftarrow\ell,n}^{\top}P_{k,n}J_{k\leftarrow\ell,n} \]
+
+using backpropagation. The intervening Jacobian includes token mixing; the pruning approximation subsequently drops cross-token/output correlations. Pair each target-position sensitivity with its actual local input to accumulate additional row-curvature diagonals. Apply the Variant B rescale/solve/unscale method with matched compensation. This tests propagation of activation geometry rather than a task-loss/Fisher metric.
+
+Initial settings are alpha 1, seed 0, eight probes per prompt, and 32 seeded family-balanced pruning-calibration problems, held separate from the geometry-fit examples. The optional local input-tangent regularizer is disabled for this first arm. Refresh anchor geometry and all local activations from the current partially pruned model before each projection. Keep the same 4,096 C4 + 4,096 math-token ambient budget as task SparseGPT and the local arm; backward prompts contribute only to geometric statistics. Record all fitting/probe IDs, anchors, atlas and candidate hashes, raw traces, and precision settings. Extra gradient compute and geometry sample counts differ from the local-only arm and must be reported explicitly.
+
+Use exclusive guarded gflow allocations and stop the model forward at the selected anchor to bound the backward graph. Save per-site checkpoints in the existing upstream-hashed format so original validation and retention reporting can consume this arm. A successful smoke test validates integration only. Compare actual whole-model removal counts, held-out generated answers, answer NLL, language diagnostics, runtime and memory; preserving downstream tangent coordinates alone does not establish behavioral retention. The acceptable accuracy drop and final-test selection remain unset.

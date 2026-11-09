@@ -1,6 +1,6 @@
 # Research note: Tangent-aware pruning via local activation geometry (revised)
 
-**Created:** 2026-11-01; **revised:** 2026-11-05  
+**Created:** 2026-11-01; **revised:** 2026-11-08<br>
 **Status:** exploratory. Weight-level pruning and compression guided by local concept geometry measured in activations.  
 **Revision of:** [tangent-aware-pruning.md](tangent-aware-pruning.md), kept unchanged for history. The changes follow [tangent-aware-pruning-review.md](tangent-aware-pruning-review.md), which has the derivations and numerical checks behind them.  
 **Prerequisite:** validate local data tangents and their relationship to weight perturbations as described in [bsf-def1-beyond-global-subspaces.md](bsf-def1-beyond-global-subspaces.md).  
@@ -21,6 +21,7 @@
 8. The hypotheses are restated to remove circularity, and a premise hypothesis H0 is added.
 9. Bias correction is built into the pruning pass (centered covariance, or a constant input column processed last) instead of post-hoc folding (Sec. 3.4).
 10. Stage-0 diagnostics come before any pruning, and the experiment order is revised (Sec. 6).
+11. Downstream activation tangents can be pulled back through the network and coupled to local activations or local input tangents. Sec. 4.9 derives the objective, backward-probe calibration, and a Variant B solve with matching compensation. The diagonal calibration and congruence solve are implemented with CPU numerical checks; language-model benefits remain unvalidated.
 
 ---
 
@@ -338,6 +339,136 @@ Using \(\alpha\) directly in the Fisher rung matches the normalization of \(\gam
 \[ \kappa = \frac{\mathbb{E}_n \lVert P^{\mathrm{geo}}_n g_n \rVert_2^2 \,/\, \mathbb{E}_n \lVert g_n \rVert_2^2}{\bar r^{\mathrm{geo}} / d}. \]
 
 If \(\kappa \approx 1\), geometric emphasis is unlikely to improve average downstream loss over ambient SparseGPT. If \(\kappa \gg 1\), H0 holds. The corpus gives reasons to expect either outcome: ID 107 reports that Qwen2.5-7B compares numbers through linear structure despite curved number geometry, and ID 142 argues that output (Fisher-Rao) geometry is more consistent across models than coordinate-dependent activation geometry.
+
+---
+
+### 4.9 Downstream tangent pullbacks coupled to local geometry
+
+**Intent.** Reweight a local weight using both its local activation geometry and the tangent geometry observed at downstream activation sites. Backpropagation transports the downstream geometric metric through the intervening network. The calibration signal comes from activation tangents and presence directions; it requires no task-loss gradient or logit Fisher metric. This generalizes the upstream write-alignment pullback in Sec. 4.3 and connects to the transfer operators in Sec. 7.
+
+#### Geometric objective
+
+Fix a target linear output \(y_\ell = W_\ell\phi_\ell\), a downstream anchor \(h_k = F_{k\leftarrow\ell}(y_\ell)\), and the intervening Jacobian on calibration example \(n\):
+
+\[ J_{k\leftarrow\ell,n} = \frac{\partial h_{k,n}}{\partial y_{\ell,n}}. \]
+
+At each anchor, estimate a local tangent basis from activation neighborhoods. Use its union projector \(P_{k,n}\), or the tangent-plus-presence projector \(P^{\mathrm{geo}}_{k,n}\) when presence references are available. Freeze the bases and chart assignments during calibration. For nonnegative anchor weights \(\beta_k\), pull the geometric metrics back:
+
+\[ B_{\ell,n} = \beta_\ell P^{\mathrm{geo}}_{y_\ell,n} + \sum_{k>\ell}\beta_k J_{k\leftarrow\ell,n}^{\top}P^{\mathrm{geo}}_{k,n}J_{k\leftarrow\ell,n}. \]
+
+The local term is optional. Each downstream term measures
+
+\[ \delta y_\ell^\top J_{k\leftarrow\ell,n}^{\top}P^{\mathrm{geo}}_{k,n}J_{k\leftarrow\ell,n}\delta y_\ell = \lVert P^{\mathrm{geo}}_{k,n}J_{k\leftarrow\ell,n}\delta y_\ell\rVert_2^2. \]
+
+This is a metric pullback, not an inverse transport of tangent vectors. In general \(B_{\ell,n}\) is positive semidefinite but is not a projector: downstream amplification can make its eigenvalues exceed one. Its scale depends on the activation sites and intervening Jacobians. Declare anchor weights and any per-anchor normalization explicitly; do not apply the rank normalization \(d/\bar r\) as if the pullback were a local projector.
+
+With pruning residual \(A_\ell=W_\ell-\hat W_\ell\), the first objective uses actual local activations:
+
+\[ \mathcal L_\ell(A_\ell) = \mathbb E_n\lVert A_\ell\phi_{\ell,n}\rVert_2^2 + \gamma\,\mathbb E_n[(A_\ell\phi_{\ell,n})^\top B_{\ell,n}(A_\ell\phi_{\ell,n})]. \]
+
+The first term retains the ambient safeguard of Sec. 3.1. The geometric term measures the linearized downstream consequences of the local pruning error. The model, Jacobians, and geometry are frozen for this quadratic; a finite pruning perturbation can invalidate its downstream linearization.
+
+**Optional local input-tangent term.** Let \(U^{\mathrm{in}}_{\ell,n}\) be a local input tangent basis, and \(R_{\ell,n}=U^{\mathrm{in}}_{\ell,n}(U^{\mathrm{in}}_{\ell,n})^\top\). Add
+
+\[ \eta\,\mathbb E_n\operatorname{tr}(B_{\ell,n}A_\ell R_{\ell,n}A_\ell^\top). \]
+
+For a single downstream tangent basis \(V_{k,n}\), this term is
+
+\[ \eta\,\mathbb E_n\lVert V_{k,n}^\top J_{k\leftarrow\ell,n}A_\ell U^{\mathrm{in}}_{\ell,n}\rVert_F^2. \]
+
+It couples local input tangent directions to downstream tangent directions. It measures a frozen-Jacobian response to injected local tangent errors; it is not the full derivative of the network's tangent-transfer operator with respect to the weights, which would also differentiate the intervening Jacobian. Keep ambient reconstruction even when using this term. Paired input differences can replace the tangent probes with an explicitly stated covariance, connecting to Variant A.
+
+#### Backward probes instead of explicit Jacobians
+
+Write \(P^{\mathrm{geo}}_{k,n}=V_{k,n}V_{k,n}^\top\) with an orthonormal union basis. Draw \(r\) with \(\mathbb E[rr^\top]=I\), seed \(v=V_{k,n}r\) at the anchor, and compute the vector-Jacobian product
+
+\[ g^{(k)}_{\ell,n}=J_{k\leftarrow\ell,n}^\top v. \]
+
+Then
+
+\[ \mathbb E_r[g^{(k)}_{\ell,n}(g^{(k)}_{\ell,n})^\top] = J_{k\leftarrow\ell,n}^\top P^{\mathrm{geo}}_{k,n}J_{k\leftarrow\ell,n}. \]
+
+Compute this VJP by differentiating \(\langle\operatorname{stopgrad}(v),h_{k,n}\rangle\) with respect to target outputs. Parameters need no optimizer or accumulated gradients, but the forward graph must support activation gradients. Summing all basis-vector VJPs gives the pullback exactly; a few randomized probes estimate it. One anchor probe can supply sensitivities at multiple upstream targets. Process anchors separately and sum weighted squared sensitivities, or combine independent zero-mean probes with factors \(\sqrt{\beta_k}\); a deterministic sum introduces unwanted cross-anchor terms.
+
+For sequence models, the exact notation stacks all token positions: attention makes \(J\) couple positions, and the anchor projector may be block diagonal over token-local charts. Independent probes across positions estimate that stacked pullback. Treating the resulting metric as token diagonal is a further approximation, not a property of attention.
+
+#### Approximation that reuses the existing SparseGPT solve
+
+First omit cross-output-coordinate coupling and, for sequences, cross-token coupling. Let
+
+\[ b_{pn}=(B_{\ell,n})_{pp}\approx\sum_k\beta_k\,\mathbb E_r[(g^{(k)}_{\ell,n,p})^2], \]
+
+including the optional local term. Crucially, retain the pairing of \(b_{pn}\) and local activations from the same examples and positions. Averaging \(b_{pn}\) before coupling it to \(\phi_n\) discards this dependence and can reduce the result to constant row weights.
+
+Suppressing \(\ell\), row \(p\)'s undamped curvature becomes
+
+\[ H^{(p)}=H'+\gamma\,\mathbb E_n[b_{pn}\phi_n\phi_n^\top]+\eta\,\mathbb E_n[b_{pn}R_n], \]
+
+where \(H'\) is the shared ambient or Variant A curvature. Thus an isolated entry has geometric energy
+
+\[ W_{pq}^2\bigl(\gamma\,\mathbb E_n[b_{pn}\phi_{qn}^2]+\eta\,\mathbb E_n[b_{pn}(R_n)_{qq}]\bigr). \]
+
+This entry energy is not yet a compensated OBS score. Apply the congruence approximation of Sec. 4.5:
+
+\[ \lambda_{pq}^2=\frac{H^{(p)}_{qq}}{H'_{qq}}=1+\frac{\gamma\,\mathbb E_n[b_{pn}\phi_{qn}^2]+\eta\,\mathbb E_n[b_{pn}(R_n)_{qq}]}{H'_{qq}},\qquad H^{(p)}\approx\Lambda_pH'\Lambda_p. \]
+
+Compute ratios from undamped moments; unsupported coordinates use scale one and are reported. Optional input probes \(u=U^{\mathrm{in}}_n a\), with \(\mathbb E[aa^\top]=I\), estimate \((R_n)_{qq}\) by \(u_q^2\). With the same convention for damping as Variant B, run
+
+```python
+scale = sqrt(row_curvature_diagonal / shared_curvature_diagonal)
+W_scaled_hat = sparsegpt(W * scale, H_shared)
+W_hat = W_scaled_hat / scale
+```
+
+The score is \(\lambda_{pq}^2W_{pq}^2/C_{qq}^2\), and compensation includes the matching factor \(\lambda_{pq}/\lambda_{pj}\). Multiplying existing scores alone is a separately labeled heuristic. This solve approximates the objective twice: it drops output/token correlations, then replaces row curvatures by congruences of one shared curvature. Validate both approximations on a small problem against the full frozen-probe quadratic and a fixed-mask refit. Static row multipliers remain a no-op under row-local N:M selection; input-conditioned pullbacks or input-tangent coupling can change within-row rankings, but must demonstrate mask changes rather than assume them.
+
+#### Calibration and pruning algorithm
+
+1. Select target linears, downstream anchor sites and distances, concept neighborhoods, and tangent/presence ranks. Fit geometry separately from final evaluation data and specify how held-out calibration examples receive charts.
+2. On calibration forwards, collect local activations and shared input moments. At each anchor, seed detached tangent/presence probes and backpropagate them to target outputs. Stream \(b_{pn}\phi_{qn}^2\) statistics, and optionally \(b_{pn}(R_n)_{qq}\), instead of storing full Jacobians or all gradient tensors.
+3. Fix \(\gamma\), \(\eta\), and anchor weights from a declared scale convention. One option sets each added curvature's mean trace to a chosen fraction of \(\operatorname{tr}(H')\); report raw traces too, and disable zero-energy terms. Construct \(\Lambda\) from the resulting diagonal moments.
+4. Prune with Variant B's rescale/solve/unscale procedure and propagate the pruned activations forward. A first experiment freezes dense-reference pullbacks. A later sequential-refresh ablation recalibrates them on the partially pruned model while keeping reference chart geometry fixed; state which policy is used.
+5. Evaluate actual finite perturbations and held-out downstream geometric error, ambient error, task metrics, and mask flips. Compare predicted and observed compensated effects before claiming downstream preservation.
+
+Backward calibration has an activation-memory cost beyond layerwise forward-only SparseGPT. Use bounded anchor windows, checkpointing, or recomputation as needed, and report their cost. Anchor windows approximate the chosen full-network metric. Any GPU experiment follows the repository's gflow scheduling rules.
+
+**Experiments and controls.** Extend Stage 2 with small signed perturbations to verify VJP-based energy predictions and probe convergence, then finite knockouts with compensation. Extend Stage 3 with local-only geometry, downstream pullbacks, and downstream pullbacks plus input tangents at matched sparsity and compute. Include random subspaces of matched rank and normalized curvature strength, shuffled example pairings, several anchor distances, presence versus tangent-only geometry, ambient SparseGPT, and the Fisher rung. Report curvature congruence error (D5), cross-token/output approximation error, probe variance, sensitivity to dense versus refreshed calibration, and the held-out tradeoff front. Preservation of downstream tangent coordinates alone does not establish task preservation or preservation of the entire manifold.
+
+#### Implementation and API
+
+The calibration and rescaled solve are implemented in `src/sparsifier/prune/downstream.py`. The API is separate from the forward-only family runners: the caller supplies a grad-enabled network forward spanning targets and anchors. It uses frozen-reference geometry, diagonal output/token metrics, and congruence row-curvature approximation. Full coupled refits and automatic sequential refresh remain proposed experiments.
+
+```python
+from sparsifier.prune import (
+    ChartTangentBasis, DownstreamTangentCalibrator, TangentAnchor,
+)
+
+# Fit on a separate activation split, with all leading sample/token axes allowed.
+geometry = ChartTangentBasis.fit(anchor_fit_activations, charts=8, rank=2)
+calibration = DownstreamTangentCalibrator(
+    targets={"upstream": target_linear},
+    anchors={"downstream": TangentAnchor(anchor_module, geometry)},
+    alpha=1.0,
+    num_probes=8,
+    seed=0,
+)
+model.eval()
+for batch in calibration_batches:
+    calibration.run(lambda: model(**batch, use_cache=False))
+solver = calibration.solvers["upstream"]
+solver.fasterprune(0.5, blocksize=128)
+print(solver.tangent_diagnostics)
+```
+
+For tuple-valued anchors, set `select=lambda output: output[0]`. A supplied basis may be one `[channels, rank]` frame or per-position `[*activation.shape[:-1], channels, rank]` frames; zero padding supports variable ranks and empty charts. A basis callback receives detached activations and can assign an existing concept atlas rather than fitting PCA during the backward pass. Tangent-plus-presence union bases are supported by the same interface. Local input tangent coupling uses `input_bases={"upstream": input_geometry}` and a positive `input_alpha`.
+
+`alpha` and `input_alpha` set each additional diagonal curvature trace relative to ambient curvature, summed over weight coordinates; zero-energy terms are disabled. `TangentAnchor.weight` sets nonnegative relative anchor weights before that normalization. Unsupported local input coordinates keep unit scale and are reported. Statistics preserve sample/position pairing and accumulate across calls; all solvers must be calibrated before any is finalized or pruned. Target and anchor modules must each execute once per forward. Calibration restores hooks on failure and leaves parameter gradient buffers and `requires_grad` flags untouched; frozen target outputs become activation-gradient leaves. Ordinary `no_grad` callers are supported by explicitly enabling gradients, but `inference_mode` is rejected. Intervening kernels must support backward. Bounded anchor windows are an explicit choice of metric scope.
+
+`tangent_pullback_diagonal` exposes the VJP calculation independently. `num_probes=None` enumerates every anchor position and basis column for an exact small-problem reference; randomized probes use independent coefficients across positions, with a private reproducible generator. The result is the pullback diagonal, not its full correlation matrix. CPU tests compare it against explicit Jacobians including token mixing, check local-input coupling and model-state preservation, and verify matched SparseGPT compensation for unstructured and N:M masks.
+
+A complete synthetic CPU example with disjoint chart-fit, calibration, and held-out splits is `python -m examples.downstream_tangent_pruning --num-probes 16`; add `--input-alpha 1` for the local input-tangent term. It reports ambient and downstream tangent errors against an ambient SparseGPT baseline. No language-model benefit has been established by this example.
+
+For a matched ambient token budget with separately sampled backward sequences, call `solver.add_ambient_batch(inputs)` and use `calibration.run(forward, collect_ambient=False)`. This accumulates geometric moments without adding the backward prompts to the ambient Hessian; diagnostics report ambient and geometry position counts separately. The GSM8K integration is `sparsifier.eval.gsm8k_downstream`, with its setting and scheduling recorded in [GSM8K-EXPERIMENT-STATUS.md](GSM8K-EXPERIMENT-STATUS.md). It uses factor-local next-block anchor geometry and a separately journaled, smoke-gated sparsity ladder. GPU validation remains pending.
 
 ---
 

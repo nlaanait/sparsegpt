@@ -12,6 +12,13 @@ torch.backends.cuda.matmul.allow_tf32 = False
 torch.backends.cudnn.allow_tf32 = False
 
 from sparsifier.prune.geometry import GeometrySparseGPT
+from sparsifier.prune.downstream import (
+    ChartTangentBasis,
+    DownstreamTangentCalibrator,
+    DownstreamTangentSparseGPT,
+    TangentAnchor,
+    tangent_pullback_diagonal,
+)
 from sparsifier.prune.pruners import (
     Geometry,
     Pruner,
@@ -38,11 +45,15 @@ from sparsifier.prune.tangent import (
 )
 
 __all__ = [
+    "ChartTangentBasis",
+    "DownstreamTangentCalibrator",
+    "DownstreamTangentSparseGPT",
     "Geometry",
     "GeometrySparseGPT",
     "Pruner",
     "SparseGPT",
     "TangentAware",
+    "TangentAnchor",
     "TangentAwareSparseGPT",
     "TangentChartObs",
     "TangentEditability",
@@ -59,4 +70,5 @@ __all__ = [
     "estimate_output_tangent_coupling",
     "get_pruner",
     "list_pruners",
+    "tangent_pullback_diagonal",
 ]
