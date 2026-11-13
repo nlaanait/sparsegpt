@@ -101,6 +101,8 @@ def tangent_pullback_diagonal(
     generator: torch.Generator | None = None,
     retain_graph: bool = False,
     weight_inputs: Mapping[str, torch.Tensor] | None = None,
+    probe_inputs: Mapping[str, torch.Tensor] | None = None,
+    probe_consumer: Callable[[dict], None] | None = None,
 ) -> dict[str, torch.Tensor]:
     """Estimate diag(J.T P J) at targets by backpropagating tangent probes.
 
@@ -172,6 +174,20 @@ def tangent_pullback_diagonal(
         )
         for name, gradient in zip(targets, gradients):
             if gradient is not None:
+                contraction_inputs = weight_inputs if weight_inputs is not None else probe_inputs
+                if probe_consumer is not None:
+                    if contraction_inputs is None:
+                        raise ValueError("unsquared probe consumer requires matching local inputs")
+                    g_probe = gradient.detach().to(device="cpu", dtype=torch.float64)
+                    x_probe = contraction_inputs[name].detach().to(device="cpu", dtype=torch.float64)
+                    if g_probe.ndim == 2:
+                        g_probe, x_probe = g_probe.unsqueeze(0), x_probe.unsqueeze(0)
+                    for sequence, (gs, xs) in enumerate(zip(g_probe, x_probe)):
+                        probe_consumer({"target": name, "sequence": sequence, "probe": index,
+                            "exact_enumeration": num_probes is None, "probe_count": count,
+                            "seed": generator.initial_seed(),
+                            "coefficient": 1. if num_probes is None else 1./count,
+                            "contraction": gs.T @ xs})
                 if weight_inputs is None:
                     result[name].add_(gradient.detach().to(result[name].dtype).square())
                 else:
@@ -385,6 +401,7 @@ class DownstreamTangentCalibrator:
         num_probes: int | None = 8,
         seed: int = 0,
         metric: str = "activation_diagonal",
+        probe_consumer: Callable[[dict], None] | None = None,
     ):
         if not targets or not anchors:
             raise ValueError("at least one target and one anchor are required")
@@ -393,6 +410,7 @@ class DownstreamTangentCalibrator:
         if metric == "weight_diagonal" and (input_alpha or input_bases):
             raise ValueError("weight_diagonal does not support local input tangent coupling")
         self.metric = metric
+        self.probe_consumer = probe_consumer
         if len({id(module) for module in targets.values()}) != len(targets):
             raise ValueError("target modules must be unique")
         if num_probes is not None and (
@@ -474,6 +492,11 @@ class DownstreamTangentCalibrator:
                         num_probes=self.num_probes, generator=self.generator,
                         retain_graph=index + 1 < len(self.anchors),
                         weight_inputs=target_inputs if self.metric == "weight_diagonal" else None,
+                        probe_inputs=target_inputs,
+                        probe_consumer=(lambda event, anchor_name=name, weight=anchor.weight:
+                            self.probe_consumer(dict(event, anchor=anchor_name,
+                                anchor_weight=weight, coefficient=event["coefficient"]*weight)))
+                            if self.probe_consumer is not None else None,
                     )
                     for target in sensitivities:
                         sensitivities[target].add_(diagonal[target], alpha=anchor.weight)

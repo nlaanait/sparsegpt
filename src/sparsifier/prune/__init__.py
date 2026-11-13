@@ -12,6 +12,9 @@ torch.backends.cuda.matmul.allow_tf32 = False
 torch.backends.cudnn.allow_tf32 = False
 
 from sparsifier.prune.geometry import GeometrySparseGPT
+from sparsifier.prune.whole_neuron import (
+    SwiGLUTriplet, WholeNeuronConfig, WholeNeuronCandidate, prune_triplet,
+)
 from sparsifier.prune.downstream import (
     ChartTangentBasis,
     DownstreamTangentCalibrator,
@@ -45,6 +48,10 @@ from sparsifier.prune.tangent import (
 )
 
 __all__ = [
+    "SwiGLUTriplet",
+    "WholeNeuronConfig",
+    "WholeNeuronCandidate",
+    "prune_triplet",
     "ChartTangentBasis",
     "DownstreamTangentCalibrator",
     "DownstreamTangentSparseGPT",
