@@ -1,0 +1,128 @@
+{
+  "complete": true,
+  "completed_group_conditions": 32,
+  "config_sha256": "ccb8f8c4af7e828f263f2e50db733b155370b0efd269e5d32097cbb6187901f6",
+  "limitations": [
+    "exploratory, no multiplicity correction",
+    "few independent families and matched groups",
+    "bootstrap zero-width intervals do not establish equivalence",
+    "summed isolated scores describe selection only; behavioral contrasts use actual joint interventions"
+  ],
+  "matched_pairs": 8,
+  "no_op_max_nll_difference": 0.0,
+  "none": {
+    "high_minus_low_accuracy": {
+      "exploratory_crossed_ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "per_match_mean": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "high_minus_low_answer_nll": {
+      "exploratory_crossed_ci95": [
+        -0.011132810823619365,
+        0.011536710523068901
+      ],
+      "mean": 0.001326441764831543,
+      "per_match_mean": [
+        0.020346403121948242,
+        0.008477270603179932,
+        -0.0019292831420898438,
+        0.007642686367034912,
+        -0.009560704231262207,
+        -0.006172120571136475,
+        0.0036695003509521484,
+        -0.011862218379974365
+      ]
+    },
+    "per_match_ambient_mse_difference": [
+      5.2463934480329044e-05,
+      2.9777983399981167e-05,
+      1.4526409358950332e-05,
+      7.644222932867706e-06,
+      9.884481187327765e-05,
+      8.413922023464693e-05,
+      5.3684707381762564e-05,
+      6.495821253338363e-06
+    ],
+    "per_match_projected_mse_difference": [
+      1.1350480004068281e-08,
+      2.3890202945411846e-08,
+      1.7081889846263348e-09,
+      3.66996242208703e-08,
+      1.5979051432511307e-07,
+      9.514192259782572e-08,
+      6.297683124955807e-08,
+      1.3589729855244306e-08
+    ]
+  },
+  "obs": {
+    "high_minus_low_accuracy": {
+      "exploratory_crossed_ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0,
+      "per_match_mean": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "high_minus_low_answer_nll": {
+      "exploratory_crossed_ci95": [
+        -0.014517581835389138,
+        0.010903721861541267
+      ],
+      "mean": -0.0016097873449325562,
+      "per_match_mean": [
+        -0.008513033390045166,
+        -0.014660179615020752,
+        -0.013533949851989746,
+        0.010579586029052734,
+        0.007711827754974365,
+        0.007646143436431885,
+        0.00335615873336792,
+        -0.0054648518562316895
+      ]
+    },
+    "per_match_ambient_mse_difference": [
+      -8.685534567121067e-07,
+      1.3446078810375184e-06,
+      1.117813383189059e-06,
+      1.6568669707339723e-06,
+      2.881978275581787e-06,
+      2.8806516638724133e-07,
+      1.7102230458476697e-06,
+      -1.533902604933246e-07
+    ],
+    "per_match_projected_mse_difference": [
+      6.661577377757758e-10,
+      2.2236723748729794e-09,
+      3.461302219271752e-10,
+      7.65093298563157e-10,
+      1.643945359809053e-09,
+      8.619820103097171e-10,
+      2.7929084766790984e-09,
+      8.713945298110195e-10
+    ]
+  },
+  "problem_count": 8,
+  "scope": "development_matched_interventions",
+  "source_families": 4
+}

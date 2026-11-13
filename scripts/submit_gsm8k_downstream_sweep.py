@@ -16,14 +16,16 @@ from sparsifier.eval.gsm8k_downstream_sweep import PLAN
 def command(repo, task, dependencies, plan_hash):
     root = repo / "results/tangent/gsm8k"
     result = ["gbatch", "--gpus", "1", "--gpu-memory", "64G", "--memory", "80G",
-              "--name", task["name"], "--project", "qwen-gsm8k", "--time", "12:00:00", "--auto-close"]
+              "--name", task["name"], "--project", "qwen-gsm8k", "--time", "24:00:00", "--auto-close"]
     if dependencies:
         result += ["--depends-on-all", ",".join(map(str, dependencies))]
-    return result + ["--", "bash", str(repo / "scripts/run_gsm8k_guarded.sh"), task["name"],
+    argv = result + ["--", "bash", str(repo / "scripts/run_gsm8k_guarded.sh"), task["name"],
                      str(root / task["name"] / "memory.jsonl"),
                      str(repo / ".pixi/envs/default/bin/python"), "-u", "-m",
                      "sparsifier.eval.gsm8k_downstream_sweep", "--root", str(root),
                      "--task", task["name"], "--plan-sha256", plan_hash]
+    if task["phase"] == "original_validation": argv.append("--screen-128")
+    return argv
 
 
 def main():

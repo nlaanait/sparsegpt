@@ -1,5 +1,31 @@
 # GSM8K experiment status
 
+## Queue update (2026-11-12)
+
+Downstream 90% and 99% jobs 113–116 were cancelled at the user's request. Downstream 80% job 112 completed its screen with 0/128 correct versus dense 125/128, so it did not continue to all 512. Corrected local smoke job 117 was prioritized and started; local candidate and evaluation jobs 118–129 have priority 100 and remain gated by that smoke and their candidate dependencies. No corrected local outcome is available yet.
+
+## Sum-then-square downstream comparisons queued
+
+Jobs **136–142** add the versioned `downstream_weightdiag` arm. Job 136 is the two-block/six-projection smoke gate; 137/139/141 rerun completed 30/50/70% eligible-MLP candidates; 138/140/142 evaluate their candidates with dense reference 64. Historical 30/50% comparisons have 512-problem results; the 70% candidate has completed 32-problem development results. These comparison evaluations request the full 512-problem protocol, without the newer screen-128 early stop, to match completed comparisons. Existing jobs and historical artifacts are preserved.
+
+The new accumulator sums `g.T @ X` before squaring, separately for every sequence/probe, then averages probes and sums independent examples/weighted anchors. Anchor sites, factor-local atlas, eight probes, 32 calibration problems, alpha 1 and ambient budgets are retained. Its own supported trace controls normalization. The geometric-arm guard runs after support filtering and diagnostics report raw/excluded/supported mass and achieved ratio. Row-congruence compensation remains approximate.
+
+The plan and journal are `downstream-weightdiag-plan-v1.json` and `downstream-weightdiag-submissions-v1.json`; `scripts/submit_gsm8k_weightdiag.py` submits idempotently with GB10 Python, exclusive 64G GPU/80G host allocations, existing memory guards, 24-hour limits and smoke/candidate/dense dependencies. Original comparison config/report hashes are recorded in the plan.
+
+GB10 CPU verification: **46 passed, 1 expected failure**, including cancellation, reinforcement, ranking reversal, sequence independence, nonlinear weight-Jacobian diagonals and a full-quadratic fixed-mask reference. The expected failure is the existing optional-backend dispatch defect. Backend helper policy is retained and its source hash/package versions are recorded; these are not verified reference-only PyTorch runs. GPU smoke and behavioral results are pending.
+
+## 128-problem screening (2026-11-11 Central)
+
+The user selected an exploratory promotion rule: evaluate the first 128 problems of the immutable original-validation manifest and continue to all 512 only if observed accuracy is at most 15 percentage points below dense on those same 128. Dense answered 125/128 correctly, so a candidate needs at least 106/128 to proceed. The 128 results are saved in the same `answers.jsonl` used by the full evaluation; a passing run continues in the same process and skips completed answers. A rejected screen writes `screen.json`, retains all answers, and does not claim a completed 512-problem report. This is a computational triage rule, not a confirmatory retention criterion; selected and completed 512-problem results remain validation results.
+
+Existing saved answers already show failed screens for task SparseGPT 70%, 80%, and 90% (0/128 each) and downstream 70% (8/128). Their queued full-set retries 131–134 were cancelled after recording the screen decisions; all earlier partial answers remain on disk. The task-SparseGPT 99% continuation is job 135, replacing job 130 and reusing its saved answers. The queued downstream evaluations 112, 114, 116 and corrected local evaluations 119, 121, 123, 125, 127, 129 have screening enabled. Submission journals document original commands; inspect gflow for the updated commands. The existing dense reference used the default environment, while new candidates use GB10, so a cross-environment comparison limitation remains.
+
+## Runtime update (2026-11-11 Central)
+
+All currently queued GSM8K jobs now have 24-hour gflow limits. The guarded worker systemd cap and GSM8K submission defaults were also raised to 24 hours. The 99% task-SparseGPT evaluation was initially requeued as job 130 with 24-hour gflow and systemd limits; it has since been replaced by screened job 135. Timed-out validations were initially resubmitted as jobs 131–134, then cancelled after their saved answers failed the 128-problem screen above. Their original job IDs and submission journals remain historical records. Progress is saved per answer; retries reload the model, candidate chain, and language diagnostics.
+
+Runtime audit: dense and task-SparseGPT 30% validation averaged 33 seconds per answer (about 364–369 generated tokens), while task-SparseGPT 70% and 80% averaged 183 seconds per answer and all saved outputs exhausted the 2,048-token budget. Pruned site weights are already checkpointed; generation is the major bottleneck at high sparsity. At roughly 183 seconds each, 512 such answers would take about 26 hours plus setup, so even a 24-hour allocation may need another resume. Batching and a predeclared screening subset are candidates for faster feedback; shorter generation budgets change the measurement protocol and require separate results.
+
 Correction after this snapshot: the rank-normalized local measurements below
 are invalid for assessing corrected local pruning. All nine remaining legacy
 local jobs (80, 84, 85, 101, 102, 105, 106, 109, 110) were cancelled. Local
@@ -8,6 +34,17 @@ fresh corrected smoke and candidates. See [verification](LOCAL-PRUNING-VERIFICAT
 and the [invalidation record](../../results/tangent/gsm8k/local-legacy-invalidated-v1.json).
 The tables below preserve the earlier operational snapshot, not current local
 results or queue state.
+
+Corrected local jobs have now been submitted in fresh v2 directories at the
+matching 30%, 50%, 70%, 80%, 90%, and 99% eligible MLP sparsities. Smoke job
+117 gates pruning jobs 118, 120, 122, 124, 126, and 128; their respective
+512-problem original-validation jobs are 119, 121, 123, 125, 127, and 129.
+The runs use alpha 1, seed 0, the GB10 environment, all gate/up/down MLP
+projections, and the same 2,048-token generation budget. Ten percent remains
+skipped, matching the cancelled SparseGPT/downstream experiments. See the
+[corrected plan](../../results/tangent/gsm8k/local-retention-sweep-plan-v2.json)
+and [submission journal](../../results/tangent/gsm8k/local-retention-submissions-v2.json)
+for exact commands, hashes, resource caps, and scheduler dependencies.
 
 Snapshot: 2026-11-08, approximately 4:43 p.m. Central. Scheduler states are a snapshot, not live status; use `gqueue` and `gjob show <id>` to refresh. The [experiment plan](GSM8K-EXPERIMENT-PLAN.md) describes the intended design.
 

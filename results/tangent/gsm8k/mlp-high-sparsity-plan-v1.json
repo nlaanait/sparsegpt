@@ -1,0 +1,139 @@
+{
+  "allowed_accuracy_drop": null,
+  "alpha": 1.0,
+  "blocks": "all",
+  "calibration_manifest_sha256": "36de89acdda5d71de79a5de63a2268ed4a01476d5a5bb5c3fe3e285ac35547ac",
+  "dense_reference": "qwen-9b-gsm8k-original-dense-512-v1",
+  "eligible_sparsities": [
+    0.8,
+    0.9,
+    0.99
+  ],
+  "limitations": [
+    "MLP only; attention and embeddings remain dense",
+    "actual whole-model removed fraction must be measured",
+    "alpha/seed are initial development settings, not frozen final selections",
+    "validate smoke reports before prune submission; validate source completion before evaluation submission",
+    "submit each task once and record gflow IDs; this file itself launches no jobs"
+  ],
+  "max_new_tokens": 2048,
+  "memory_policy": "exclusive gflow; CUDA cap <=56 GiB; cgroup 80 GiB; host watchdog 96 GiB",
+  "modules": [
+    "mlp.gate_proj",
+    "mlp.up_proj",
+    "mlp.down_proj"
+  ],
+  "purpose": "development_high_sparsity_MLP_retention_not_confirmatory",
+  "seed": 0,
+  "tasks": [
+    {
+      "arm": "sparsegpt_task",
+      "blocks": "all",
+      "depends_on": [],
+      "eligible_sparsity": 0.8,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-sparsegpt-task-s80-seed0-v1",
+      "phase": "prune",
+      "requires_smoke_arm": "sparsegpt_task"
+    },
+    {
+      "arm": "sparsegpt_task",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-sparsegpt-task-s80-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-sparsegpt-task-s80-seed0-v1-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "local",
+      "blocks": "all",
+      "depends_on": [],
+      "eligible_sparsity": 0.8,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-local-s80-seed0-v1",
+      "phase": "prune",
+      "requires_smoke_arm": "local"
+    },
+    {
+      "arm": "local",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-local-s80-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-local-s80-seed0-v1-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "sparsegpt_task",
+      "blocks": "all",
+      "depends_on": [],
+      "eligible_sparsity": 0.9,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-sparsegpt-task-s90-seed0-v1",
+      "phase": "prune",
+      "requires_smoke_arm": "sparsegpt_task"
+    },
+    {
+      "arm": "sparsegpt_task",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-sparsegpt-task-s90-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-sparsegpt-task-s90-seed0-v1-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "local",
+      "blocks": "all",
+      "depends_on": [],
+      "eligible_sparsity": 0.9,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-local-s90-seed0-v1",
+      "phase": "prune",
+      "requires_smoke_arm": "local"
+    },
+    {
+      "arm": "local",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-local-s90-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-local-s90-seed0-v1-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "sparsegpt_task",
+      "blocks": "all",
+      "depends_on": [],
+      "eligible_sparsity": 0.99,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-sparsegpt-task-s99-seed0-v1",
+      "phase": "prune",
+      "requires_smoke_arm": "sparsegpt_task"
+    },
+    {
+      "arm": "sparsegpt_task",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-sparsegpt-task-s99-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-sparsegpt-task-s99-seed0-v1-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "local",
+      "blocks": "all",
+      "depends_on": [],
+      "eligible_sparsity": 0.99,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-local-s99-seed0-v1",
+      "phase": "prune",
+      "requires_smoke_arm": "local"
+    },
+    {
+      "arm": "local",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-local-s99-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-local-s99-seed0-v1-original512",
+      "phase": "original_validation"
+    }
+  ],
+  "validation_manifest_sha256": "0359aa7586c1948157ad9ffbb388cb84a1854d2be7f20ed4ecfeed8c65049ef3"
+}

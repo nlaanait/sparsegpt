@@ -1,0 +1,1717 @@
+{
+  "config_sha256": "ccb8f8c4af7e828f263f2e50db733b155370b0efd269e5d32097cbb6187901f6",
+  "interventions": [
+    {
+      "entries": [
+        33058338
+      ],
+      "id": "single-0",
+      "kind": "representative",
+      "pool_indices": [
+        2483
+      ]
+    },
+    {
+      "entries": [
+        33883253
+      ],
+      "id": "single-1",
+      "kind": "representative",
+      "pool_indices": [
+        4900
+      ]
+    },
+    {
+      "entries": [
+        11621081
+      ],
+      "id": "single-2",
+      "kind": "representative",
+      "pool_indices": [
+        4111
+      ]
+    },
+    {
+      "entries": [
+        21667697
+      ],
+      "id": "single-3",
+      "kind": "representative",
+      "pool_indices": [
+        6276
+      ]
+    },
+    {
+      "entries": [
+        43466268
+      ],
+      "id": "single-4",
+      "kind": "representative",
+      "pool_indices": [
+        5850
+      ]
+    },
+    {
+      "entries": [
+        40010412
+      ],
+      "id": "single-5",
+      "kind": "representative",
+      "pool_indices": [
+        133
+      ]
+    },
+    {
+      "entries": [
+        29685414
+      ],
+      "id": "single-6",
+      "kind": "representative",
+      "pool_indices": [
+        43
+      ]
+    },
+    {
+      "entries": [
+        11892971
+      ],
+      "id": "single-7",
+      "kind": "representative",
+      "pool_indices": [
+        6427
+      ]
+    },
+    {
+      "entries": [
+        24841094
+      ],
+      "id": "single-8",
+      "kind": "representative",
+      "pool_indices": [
+        396
+      ]
+    },
+    {
+      "entries": [
+        34788561
+      ],
+      "id": "single-9",
+      "kind": "representative",
+      "pool_indices": [
+        5109
+      ]
+    },
+    {
+      "entries": [
+        33459129
+      ],
+      "id": "single-10",
+      "kind": "representative",
+      "pool_indices": [
+        6990
+      ]
+    },
+    {
+      "entries": [
+        17199056
+      ],
+      "id": "single-11",
+      "kind": "representative",
+      "pool_indices": [
+        4525
+      ]
+    },
+    {
+      "entries": [
+        45923122
+      ],
+      "id": "single-12",
+      "kind": "representative",
+      "pool_indices": [
+        2913
+      ]
+    },
+    {
+      "entries": [
+        23215162
+      ],
+      "id": "single-13",
+      "kind": "representative",
+      "pool_indices": [
+        6936
+      ]
+    },
+    {
+      "entries": [
+        25813034
+      ],
+      "id": "single-14",
+      "kind": "representative",
+      "pool_indices": [
+        5104
+      ]
+    },
+    {
+      "entries": [
+        7809896
+      ],
+      "id": "single-15",
+      "kind": "representative",
+      "pool_indices": [
+        7604
+      ]
+    },
+    {
+      "entries": [
+        39009982
+      ],
+      "id": "single-16",
+      "kind": "representative",
+      "pool_indices": [
+        4707
+      ]
+    },
+    {
+      "entries": [
+        5131835
+      ],
+      "id": "single-17",
+      "kind": "representative",
+      "pool_indices": [
+        7371
+      ]
+    },
+    {
+      "entries": [
+        3355693
+      ],
+      "id": "single-18",
+      "kind": "representative",
+      "pool_indices": [
+        5894
+      ]
+    },
+    {
+      "entries": [
+        2384036
+      ],
+      "id": "single-19",
+      "kind": "representative",
+      "pool_indices": [
+        1422
+      ]
+    },
+    {
+      "entries": [
+        10787396
+      ],
+      "id": "single-20",
+      "kind": "representative",
+      "pool_indices": [
+        6200
+      ]
+    },
+    {
+      "entries": [
+        33955283
+      ],
+      "id": "single-21",
+      "kind": "representative",
+      "pool_indices": [
+        5867
+      ]
+    },
+    {
+      "entries": [
+        19399625
+      ],
+      "id": "single-22",
+      "kind": "representative",
+      "pool_indices": [
+        2584
+      ]
+    },
+    {
+      "entries": [
+        47042686
+      ],
+      "id": "single-23",
+      "kind": "representative",
+      "pool_indices": [
+        179
+      ]
+    },
+    {
+      "entries": [
+        41304171
+      ],
+      "id": "single-24",
+      "kind": "representative",
+      "pool_indices": [
+        5250
+      ]
+    },
+    {
+      "entries": [
+        45751983
+      ],
+      "id": "single-25",
+      "kind": "representative",
+      "pool_indices": [
+        2176
+      ]
+    },
+    {
+      "entries": [
+        48092144
+      ],
+      "id": "single-26",
+      "kind": "representative",
+      "pool_indices": [
+        3193
+      ]
+    },
+    {
+      "entries": [
+        12502860
+      ],
+      "id": "single-27",
+      "kind": "representative",
+      "pool_indices": [
+        4123
+      ]
+    },
+    {
+      "entries": [
+        28898693
+      ],
+      "id": "single-28",
+      "kind": "representative",
+      "pool_indices": [
+        5594
+      ]
+    },
+    {
+      "entries": [
+        32103895
+      ],
+      "id": "single-29",
+      "kind": "representative",
+      "pool_indices": [
+        7114
+      ]
+    },
+    {
+      "entries": [
+        26629590
+      ],
+      "id": "single-30",
+      "kind": "representative",
+      "pool_indices": [
+        5567
+      ]
+    },
+    {
+      "entries": [
+        23510817
+      ],
+      "id": "single-31",
+      "kind": "representative",
+      "pool_indices": [
+        5905
+      ]
+    },
+    {
+      "entries": [
+        46521695
+      ],
+      "id": "single-32",
+      "kind": "representative",
+      "pool_indices": [
+        6860
+      ]
+    },
+    {
+      "entries": [
+        9979468
+      ],
+      "id": "single-33",
+      "kind": "representative",
+      "pool_indices": [
+        647
+      ]
+    },
+    {
+      "entries": [
+        25752437
+      ],
+      "id": "single-34",
+      "kind": "representative",
+      "pool_indices": [
+        478
+      ]
+    },
+    {
+      "entries": [
+        18189729
+      ],
+      "id": "single-35",
+      "kind": "representative",
+      "pool_indices": [
+        229
+      ]
+    },
+    {
+      "entries": [
+        4576862
+      ],
+      "id": "single-36",
+      "kind": "representative",
+      "pool_indices": [
+        3425
+      ]
+    },
+    {
+      "entries": [
+        1490528
+      ],
+      "id": "single-37",
+      "kind": "representative",
+      "pool_indices": [
+        6853
+      ]
+    },
+    {
+      "entries": [
+        20093128
+      ],
+      "id": "single-38",
+      "kind": "representative",
+      "pool_indices": [
+        7320
+      ]
+    },
+    {
+      "entries": [
+        6838421
+      ],
+      "id": "single-39",
+      "kind": "representative",
+      "pool_indices": [
+        271
+      ]
+    },
+    {
+      "entries": [
+        8629981
+      ],
+      "id": "single-40",
+      "kind": "representative",
+      "pool_indices": [
+        7261
+      ]
+    },
+    {
+      "entries": [
+        47571580
+      ],
+      "id": "single-41",
+      "kind": "representative",
+      "pool_indices": [
+        5085
+      ]
+    },
+    {
+      "entries": [
+        43801150
+      ],
+      "id": "single-42",
+      "kind": "representative",
+      "pool_indices": [
+        2676
+      ]
+    },
+    {
+      "entries": [
+        31545554
+      ],
+      "id": "single-43",
+      "kind": "representative",
+      "pool_indices": [
+        6190
+      ]
+    },
+    {
+      "entries": [
+        1897777
+      ],
+      "id": "single-44",
+      "kind": "representative",
+      "pool_indices": [
+        4843
+      ]
+    },
+    {
+      "entries": [
+        26846770
+      ],
+      "id": "single-45",
+      "kind": "representative",
+      "pool_indices": [
+        7559
+      ]
+    },
+    {
+      "entries": [
+        28686373
+      ],
+      "id": "single-46",
+      "kind": "representative",
+      "pool_indices": [
+        7717
+      ]
+    },
+    {
+      "entries": [
+        11069710
+      ],
+      "id": "single-47",
+      "kind": "representative",
+      "pool_indices": [
+        3113
+      ]
+    },
+    {
+      "entries": [
+        25462762
+      ],
+      "id": "single-48",
+      "kind": "representative",
+      "pool_indices": [
+        1228
+      ]
+    },
+    {
+      "entries": [
+        44875260
+      ],
+      "id": "single-49",
+      "kind": "representative",
+      "pool_indices": [
+        4666
+      ]
+    },
+    {
+      "entries": [
+        15846814
+      ],
+      "id": "single-50",
+      "kind": "representative",
+      "pool_indices": [
+        3268
+      ]
+    },
+    {
+      "entries": [
+        8275532
+      ],
+      "id": "single-51",
+      "kind": "representative",
+      "pool_indices": [
+        593
+      ]
+    },
+    {
+      "entries": [
+        41145637
+      ],
+      "id": "single-52",
+      "kind": "representative",
+      "pool_indices": [
+        7964
+      ]
+    },
+    {
+      "entries": [
+        14923652
+      ],
+      "id": "single-53",
+      "kind": "representative",
+      "pool_indices": [
+        4393
+      ]
+    },
+    {
+      "entries": [
+        36888976
+      ],
+      "id": "single-54",
+      "kind": "representative",
+      "pool_indices": [
+        4484
+      ]
+    },
+    {
+      "entries": [
+        29815390
+      ],
+      "id": "single-55",
+      "kind": "representative",
+      "pool_indices": [
+        5770
+      ]
+    },
+    {
+      "entries": [
+        30907158
+      ],
+      "id": "single-56",
+      "kind": "representative",
+      "pool_indices": [
+        3311
+      ]
+    },
+    {
+      "entries": [
+        14514430
+      ],
+      "id": "single-57",
+      "kind": "representative",
+      "pool_indices": [
+        6797
+      ]
+    },
+    {
+      "entries": [
+        17172428
+      ],
+      "id": "single-58",
+      "kind": "representative",
+      "pool_indices": [
+        2747
+      ]
+    },
+    {
+      "entries": [
+        19077293
+      ],
+      "id": "single-59",
+      "kind": "representative",
+      "pool_indices": [
+        5425
+      ]
+    },
+    {
+      "entries": [
+        32860497
+      ],
+      "id": "single-60",
+      "kind": "representative",
+      "pool_indices": [
+        6876
+      ]
+    },
+    {
+      "entries": [
+        41390405
+      ],
+      "id": "single-61",
+      "kind": "representative",
+      "pool_indices": [
+        722
+      ]
+    },
+    {
+      "entries": [
+        8361718
+      ],
+      "id": "single-62",
+      "kind": "representative",
+      "pool_indices": [
+        4326
+      ]
+    },
+    {
+      "entries": [
+        39763511
+      ],
+      "id": "single-63",
+      "kind": "representative",
+      "pool_indices": [
+        22
+      ]
+    },
+    {
+      "entries": [
+        2795081
+      ],
+      "id": "single-64",
+      "kind": "representative",
+      "pool_indices": [
+        5826
+      ]
+    },
+    {
+      "entries": [
+        41936005
+      ],
+      "id": "single-65",
+      "kind": "representative",
+      "pool_indices": [
+        6535
+      ]
+    },
+    {
+      "entries": [
+        30527342
+      ],
+      "id": "single-66",
+      "kind": "representative",
+      "pool_indices": [
+        1098
+      ]
+    },
+    {
+      "entries": [
+        17501673
+      ],
+      "id": "single-67",
+      "kind": "representative",
+      "pool_indices": [
+        7160
+      ]
+    },
+    {
+      "entries": [
+        21881096
+      ],
+      "id": "single-68",
+      "kind": "representative",
+      "pool_indices": [
+        2074
+      ]
+    },
+    {
+      "entries": [
+        14045708
+      ],
+      "id": "single-69",
+      "kind": "representative",
+      "pool_indices": [
+        1414
+      ]
+    },
+    {
+      "entries": [
+        3545670
+      ],
+      "id": "single-70",
+      "kind": "representative",
+      "pool_indices": [
+        685
+      ]
+    },
+    {
+      "entries": [
+        3326985
+      ],
+      "id": "single-71",
+      "kind": "representative",
+      "pool_indices": [
+        7751
+      ]
+    },
+    {
+      "entries": [
+        30417148
+      ],
+      "id": "single-72",
+      "kind": "representative",
+      "pool_indices": [
+        3054
+      ]
+    },
+    {
+      "entries": [
+        13957646
+      ],
+      "id": "single-73",
+      "kind": "representative",
+      "pool_indices": [
+        4993
+      ]
+    },
+    {
+      "entries": [
+        24413849
+      ],
+      "id": "single-74",
+      "kind": "representative",
+      "pool_indices": [
+        6201
+      ]
+    },
+    {
+      "entries": [
+        37367007
+      ],
+      "id": "single-75",
+      "kind": "representative",
+      "pool_indices": [
+        3953
+      ]
+    },
+    {
+      "entries": [
+        28490557
+      ],
+      "id": "single-76",
+      "kind": "representative",
+      "pool_indices": [
+        3082
+      ]
+    },
+    {
+      "entries": [
+        4091937
+      ],
+      "id": "single-77",
+      "kind": "representative",
+      "pool_indices": [
+        5244
+      ]
+    },
+    {
+      "entries": [
+        30983141
+      ],
+      "id": "single-78",
+      "kind": "representative",
+      "pool_indices": [
+        6566
+      ]
+    },
+    {
+      "entries": [
+        39008806
+      ],
+      "id": "single-79",
+      "kind": "representative",
+      "pool_indices": [
+        7842
+      ]
+    },
+    {
+      "entries": [
+        46820223
+      ],
+      "id": "single-80",
+      "kind": "representative",
+      "pool_indices": [
+        4655
+      ]
+    },
+    {
+      "entries": [
+        50167789
+      ],
+      "id": "single-81",
+      "kind": "representative",
+      "pool_indices": [
+        1887
+      ]
+    },
+    {
+      "entries": [
+        2603848
+      ],
+      "id": "single-82",
+      "kind": "representative",
+      "pool_indices": [
+        4754
+      ]
+    },
+    {
+      "entries": [
+        14018976
+      ],
+      "id": "single-83",
+      "kind": "representative",
+      "pool_indices": [
+        5863
+      ]
+    },
+    {
+      "entries": [
+        43107103
+      ],
+      "id": "single-84",
+      "kind": "representative",
+      "pool_indices": [
+        5721
+      ]
+    },
+    {
+      "entries": [
+        5467931
+      ],
+      "id": "single-85",
+      "kind": "representative",
+      "pool_indices": [
+        8159
+      ]
+    },
+    {
+      "entries": [
+        48560623
+      ],
+      "id": "single-86",
+      "kind": "representative",
+      "pool_indices": [
+        651
+      ]
+    },
+    {
+      "entries": [
+        30608700
+      ],
+      "id": "single-87",
+      "kind": "representative",
+      "pool_indices": [
+        607
+      ]
+    },
+    {
+      "entries": [
+        3214312
+      ],
+      "id": "single-88",
+      "kind": "representative",
+      "pool_indices": [
+        4273
+      ]
+    },
+    {
+      "entries": [
+        21320233
+      ],
+      "id": "single-89",
+      "kind": "representative",
+      "pool_indices": [
+        2242
+      ]
+    },
+    {
+      "entries": [
+        37342079
+      ],
+      "id": "single-90",
+      "kind": "representative",
+      "pool_indices": [
+        1625
+      ]
+    },
+    {
+      "entries": [
+        6853702
+      ],
+      "id": "single-91",
+      "kind": "representative",
+      "pool_indices": [
+        1955
+      ]
+    },
+    {
+      "entries": [
+        1615914
+      ],
+      "id": "single-92",
+      "kind": "representative",
+      "pool_indices": [
+        4263
+      ]
+    },
+    {
+      "entries": [
+        37415782
+      ],
+      "id": "single-93",
+      "kind": "representative",
+      "pool_indices": [
+        3898
+      ]
+    },
+    {
+      "entries": [
+        17944877
+      ],
+      "id": "single-94",
+      "kind": "representative",
+      "pool_indices": [
+        2524
+      ]
+    },
+    {
+      "entries": [
+        47365335
+      ],
+      "id": "single-95",
+      "kind": "representative",
+      "pool_indices": [
+        5479
+      ]
+    },
+    {
+      "entries": [
+        24049109
+      ],
+      "id": "single-96",
+      "kind": "representative",
+      "pool_indices": [
+        5486
+      ]
+    },
+    {
+      "entries": [
+        32778247
+      ],
+      "id": "single-97",
+      "kind": "representative",
+      "pool_indices": [
+        5137
+      ]
+    },
+    {
+      "entries": [
+        45992447
+      ],
+      "id": "single-98",
+      "kind": "representative",
+      "pool_indices": [
+        1853
+      ]
+    },
+    {
+      "entries": [
+        22250920
+      ],
+      "id": "single-99",
+      "kind": "representative",
+      "pool_indices": [
+        6827
+      ]
+    },
+    {
+      "entries": [
+        3734296
+      ],
+      "id": "single-100",
+      "kind": "representative",
+      "pool_indices": [
+        3272
+      ]
+    },
+    {
+      "entries": [
+        8873493
+      ],
+      "id": "single-101",
+      "kind": "representative",
+      "pool_indices": [
+        4385
+      ]
+    },
+    {
+      "entries": [
+        46585488
+      ],
+      "id": "single-102",
+      "kind": "representative",
+      "pool_indices": [
+        3161
+      ]
+    },
+    {
+      "entries": [
+        46613821
+      ],
+      "id": "single-103",
+      "kind": "representative",
+      "pool_indices": [
+        3078
+      ]
+    },
+    {
+      "entries": [
+        41906366
+      ],
+      "id": "single-104",
+      "kind": "representative",
+      "pool_indices": [
+        67
+      ]
+    },
+    {
+      "entries": [
+        5350322
+      ],
+      "id": "single-105",
+      "kind": "representative",
+      "pool_indices": [
+        425
+      ]
+    },
+    {
+      "entries": [
+        32391065
+      ],
+      "id": "single-106",
+      "kind": "representative",
+      "pool_indices": [
+        8095
+      ]
+    },
+    {
+      "entries": [
+        36262522
+      ],
+      "id": "single-107",
+      "kind": "representative",
+      "pool_indices": [
+        6596
+      ]
+    },
+    {
+      "entries": [
+        47354898
+      ],
+      "id": "single-108",
+      "kind": "representative",
+      "pool_indices": [
+        7032
+      ]
+    },
+    {
+      "entries": [
+        36953765
+      ],
+      "id": "single-109",
+      "kind": "representative",
+      "pool_indices": [
+        3741
+      ]
+    },
+    {
+      "entries": [
+        16483855
+      ],
+      "id": "single-110",
+      "kind": "representative",
+      "pool_indices": [
+        2087
+      ]
+    },
+    {
+      "entries": [
+        43792597
+      ],
+      "id": "single-111",
+      "kind": "representative",
+      "pool_indices": [
+        5438
+      ]
+    },
+    {
+      "entries": [
+        33306675
+      ],
+      "id": "single-112",
+      "kind": "representative",
+      "pool_indices": [
+        6467
+      ]
+    },
+    {
+      "entries": [
+        4092570
+      ],
+      "id": "single-113",
+      "kind": "representative",
+      "pool_indices": [
+        2754
+      ]
+    },
+    {
+      "entries": [
+        21802493
+      ],
+      "id": "single-114",
+      "kind": "representative",
+      "pool_indices": [
+        3441
+      ]
+    },
+    {
+      "entries": [
+        14709109
+      ],
+      "id": "single-115",
+      "kind": "representative",
+      "pool_indices": [
+        5284
+      ]
+    },
+    {
+      "entries": [
+        50072957
+      ],
+      "id": "single-116",
+      "kind": "representative",
+      "pool_indices": [
+        4067
+      ]
+    },
+    {
+      "entries": [
+        12490555
+      ],
+      "id": "single-117",
+      "kind": "representative",
+      "pool_indices": [
+        7240
+      ]
+    },
+    {
+      "entries": [
+        9858705
+      ],
+      "id": "single-118",
+      "kind": "representative",
+      "pool_indices": [
+        1007
+      ]
+    },
+    {
+      "entries": [
+        20480449
+      ],
+      "id": "single-119",
+      "kind": "representative",
+      "pool_indices": [
+        330
+      ]
+    },
+    {
+      "entries": [
+        19186642
+      ],
+      "id": "single-120",
+      "kind": "representative",
+      "pool_indices": [
+        743
+      ]
+    },
+    {
+      "entries": [
+        20410997
+      ],
+      "id": "single-121",
+      "kind": "representative",
+      "pool_indices": [
+        2152
+      ]
+    },
+    {
+      "entries": [
+        37885776
+      ],
+      "id": "single-122",
+      "kind": "representative",
+      "pool_indices": [
+        3188
+      ]
+    },
+    {
+      "entries": [
+        3524621
+      ],
+      "id": "single-123",
+      "kind": "representative",
+      "pool_indices": [
+        4689
+      ]
+    },
+    {
+      "entries": [
+        2173860
+      ],
+      "id": "single-124",
+      "kind": "representative",
+      "pool_indices": [
+        2622
+      ]
+    },
+    {
+      "entries": [
+        33116336
+      ],
+      "id": "single-125",
+      "kind": "representative",
+      "pool_indices": [
+        3682
+      ]
+    },
+    {
+      "entries": [
+        7511785
+      ],
+      "id": "single-126",
+      "kind": "representative",
+      "pool_indices": [
+        2428
+      ]
+    },
+    {
+      "entries": [
+        20336903
+      ],
+      "id": "single-127",
+      "kind": "representative",
+      "pool_indices": [
+        6513
+      ]
+    },
+    {
+      "ambient_cost_sum": 1.8803946488787915e-07,
+      "entries": [
+        40264262,
+        7360108,
+        14897561,
+        20866985,
+        36541503,
+        46369975,
+        49169624,
+        41466554
+      ],
+      "geometric_cost_sum": 7.82628475914926e-12,
+      "id": "group-0-high_geometry",
+      "kind": "high_geometry",
+      "match_id": 0,
+      "pool_indices": [
+        7456,
+        5875,
+        8182,
+        2347,
+        558,
+        3750,
+        1781,
+        2012
+      ]
+    },
+    {
+      "ambient_cost_sum": 1.8553915026586765e-07,
+      "entries": [
+        30339241,
+        34915349,
+        10361832,
+        40652698,
+        28261986,
+        12242500,
+        11990203,
+        24428296
+      ],
+      "geometric_cost_sum": 8.166770753582908e-13,
+      "id": "group-0-low_geometry",
+      "kind": "low_geometry",
+      "match_id": 0,
+      "pool_indices": [
+        2353,
+        7575,
+        3053,
+        3273,
+        3620,
+        7069,
+        66,
+        6623
+      ]
+    },
+    {
+      "ambient_cost_sum": 2.2152885037485248e-07,
+      "entries": [
+        36397484,
+        46062667,
+        42433329,
+        29006270,
+        27657511,
+        3217972,
+        37536327,
+        43200798
+      ],
+      "geometric_cost_sum": 5.753931359153697e-11,
+      "id": "group-1-high_geometry",
+      "kind": "high_geometry",
+      "match_id": 1,
+      "pool_indices": [
+        2433,
+        7619,
+        5828,
+        3381,
+        6813,
+        7880,
+        1072,
+        843
+      ]
+    },
+    {
+      "ambient_cost_sum": 2.2061934146222484e-07,
+      "entries": [
+        50173617,
+        39129361,
+        6411416,
+        38286772,
+        16643140,
+        2473042,
+        12779458,
+        35580789
+      ],
+      "geometric_cost_sum": 1.70509255586343e-12,
+      "id": "group-1-low_geometry",
+      "kind": "low_geometry",
+      "match_id": 1,
+      "pool_indices": [
+        2961,
+        1698,
+        2370,
+        4788,
+        15,
+        1427,
+        368,
+        8017
+      ]
+    },
+    {
+      "ambient_cost_sum": 1.7964688936444873e-07,
+      "entries": [
+        47976225,
+        39449585,
+        10251210,
+        16677571,
+        36345411,
+        18185086,
+        2714413,
+        14115849
+      ],
+      "geometric_cost_sum": 1.0220953423900614e-11,
+      "id": "group-2-high_geometry",
+      "kind": "high_geometry",
+      "match_id": 2,
+      "pool_indices": [
+        3970,
+        5907,
+        6770,
+        2888,
+        2140,
+        6292,
+        4351,
+        6742
+      ]
+    },
+    {
+      "ambient_cost_sum": 1.801392244260569e-07,
+      "entries": [
+        44907271,
+        9795712,
+        14282522,
+        38279076,
+        41527795,
+        8889314,
+        15415118,
+        31698349
+      ],
+      "geometric_cost_sum": 1.5856415572917948e-12,
+      "id": "group-2-low_geometry",
+      "kind": "low_geometry",
+      "match_id": 2,
+      "pool_indices": [
+        6039,
+        6944,
+        4751,
+        2412,
+        1776,
+        5431,
+        4141,
+        430
+      ]
+    },
+    {
+      "ambient_cost_sum": 1.7361267623527965e-07,
+      "entries": [
+        44505380,
+        16081885,
+        40571445,
+        50326820,
+        19842921,
+        4268185,
+        43298726,
+        11349977
+      ],
+      "geometric_cost_sum": 1.0440910289122307e-11,
+      "id": "group-3-high_geometry",
+      "kind": "high_geometry",
+      "match_id": 3,
+      "pool_indices": [
+        1978,
+        7820,
+        5490,
+        1041,
+        345,
+        5028,
+        370,
+        7535
+      ]
+    },
+    {
+      "ambient_cost_sum": 1.7104680694046692e-07,
+      "entries": [
+        37595416,
+        6639082,
+        3781007,
+        18468024,
+        43166399,
+        45823497,
+        29032030,
+        32367180
+      ],
+      "geometric_cost_sum": 1.0416093985596286e-12,
+      "id": "group-3-low_geometry",
+      "kind": "low_geometry",
+      "match_id": 3,
+      "pool_indices": [
+        3023,
+        2141,
+        7615,
+        3964,
+        605,
+        2607,
+        1794,
+        3782
+      ]
+    },
+    {
+      "ambient_cost_sum": 3.8102331245681853e-07,
+      "entries": [
+        20778823,
+        50301830,
+        11459903,
+        34838193,
+        11292348,
+        47547374,
+        18898540,
+        44107808
+      ],
+      "geometric_cost_sum": 3.400671411135647e-11,
+      "id": "group-4-high_geometry",
+      "kind": "high_geometry",
+      "match_id": 4,
+      "pool_indices": [
+        6347,
+        8088,
+        7054,
+        8103,
+        7235,
+        1731,
+        1367,
+        47
+      ]
+    },
+    {
+      "ambient_cost_sum": 3.834018684756302e-07,
+      "entries": [
+        43608462,
+        14747695,
+        16533083,
+        33978818,
+        41668932,
+        15048899,
+        13701010,
+        8101770
+      ],
+      "geometric_cost_sum": 3.263160575084356e-12,
+      "id": "group-4-low_geometry",
+      "kind": "low_geometry",
+      "match_id": 4,
+      "pool_indices": [
+        4934,
+        3658,
+        7425,
+        3618,
+        2424,
+        121,
+        1879,
+        244
+      ]
+    },
+    {
+      "ambient_cost_sum": 1.7752267922332976e-07,
+      "entries": [
+        36041875,
+        21863093,
+        41820536,
+        34768304,
+        38958604,
+        12540769,
+        47495645,
+        29132460
+      ],
+      "geometric_cost_sum": 1.076601047894643e-11,
+      "id": "group-5-high_geometry",
+      "kind": "high_geometry",
+      "match_id": 5,
+      "pool_indices": [
+        3918,
+        7668,
+        1320,
+        1528,
+        1395,
+        3864,
+        4905,
+        5083
+      ]
+    },
+    {
+      "ambient_cost_sum": 1.754935397002555e-07,
+      "entries": [
+        11909201,
+        26800412,
+        49744299,
+        27998732,
+        39167206,
+        28658738,
+        2023944,
+        40073881
+      ],
+      "geometric_cost_sum": 1.1848087615173863e-12,
+      "id": "group-5-low_geometry",
+      "kind": "low_geometry",
+      "match_id": 5,
+      "pool_indices": [
+        4223,
+        4214,
+        7461,
+        4456,
+        916,
+        5229,
+        2505,
+        7867
+      ]
+    },
+    {
+      "ambient_cost_sum": 1.621432659248967e-07,
+      "entries": [
+        44494124,
+        41327738,
+        5367402,
+        12410250,
+        23527555,
+        35786141,
+        15640258,
+        11255374
+      ],
+      "geometric_cost_sum": 9.576820239609596e-12,
+      "id": "group-6-high_geometry",
+      "kind": "high_geometry",
+      "match_id": 6,
+      "pool_indices": [
+        6658,
+        342,
+        1677,
+        4601,
+        6197,
+        3076,
+        3011,
+        2992
+      ]
+    },
+    {
+      "ambient_cost_sum": 1.628884973570166e-07,
+      "entries": [
+        25915958,
+        18087001,
+        33591203,
+        38895580,
+        12173698,
+        27273211,
+        3757353,
+        33513530
+      ],
+      "geometric_cost_sum": 8.635555378416759e-13,
+      "id": "group-6-low_geometry",
+      "kind": "low_geometry",
+      "match_id": 6,
+      "pool_indices": [
+        5704,
+        4879,
+        6269,
+        7599,
+        5942,
+        3423,
+        5878,
+        3704
+      ]
+    },
+    {
+      "ambient_cost_sum": 1.5931169627947384e-07,
+      "entries": [
+        20171872,
+        43232144,
+        33402654,
+        27554275,
+        12501609,
+        45926687,
+        34368889,
+        35749672
+      ],
+      "geometric_cost_sum": 1.6541667341440913e-11,
+      "id": "group-7-high_geometry",
+      "kind": "high_geometry",
+      "match_id": 7,
+      "pool_indices": [
+        2866,
+        6726,
+        6103,
+        2594,
+        2714,
+        5470,
+        6108,
+        2479
+      ]
+    },
+    {
+      "ambient_cost_sum": 1.587501259336932e-07,
+      "entries": [
+        44717305,
+        23000419,
+        3919859,
+        44923548,
+        43435481,
+        9242280,
+        45452640,
+        24671342
+      ],
+      "geometric_cost_sum": 1.2170291900995278e-12,
+      "id": "group-7-low_geometry",
+      "kind": "low_geometry",
+      "match_id": 7,
+      "pool_indices": [
+        2688,
+        7193,
+        4159,
+        1999,
+        7161,
+        1839,
+        870,
+        5451
+      ]
+    }
+  ]
+}

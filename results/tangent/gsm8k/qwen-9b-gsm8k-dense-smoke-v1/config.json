@@ -1,0 +1,27 @@
+{
+  "attention": "sdpa_with_pytorch_delta",
+  "do_sample": false,
+  "dtype": "bfloat16",
+  "enable_thinking": false,
+  "gpu_cap_gib": 56.0,
+  "ids": [
+    "gsm8k/train/0",
+    "gsm8k/train/1",
+    "gsm8k/train/2",
+    "gsm8k/train/3"
+  ],
+  "instruction": "Solve the following problem. You may show your working. End with a line containing only 'Final answer: <number>', with no units after the number.\n\n",
+  "manifest_sha256": "1a2795117739c52537267ba574faf43f8324b1ea507d0d5c95afc79b317bb2c0",
+  "max_new_tokens": 512,
+  "model": "Qwen/Qwen3.5-9B",
+  "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "schema": 1,
+  "seed": 0,
+  "sources": {
+    "data/gsm8k.py": "55b2346da6bd750f18a087c2acc14875514906e1d46d4ce5f979db2cde9db814",
+    "eval/gsm8k.py": "6d1900079857ae9825b32dba930fd980085e7b520466cc34b1ee77e3baf189a0",
+    "eval/memory_guard.py": "0266bc22c90aa181447ac1fc05f7fb838709b5984075f356d17866bc258f4e0b"
+  },
+  "torch": "2.12.0+cu130",
+  "transformers": "5.20.0"
+}

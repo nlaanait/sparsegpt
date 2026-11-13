@@ -1,0 +1,104 @@
+{
+  "behavior": {
+    "accuracy": 0.90625,
+    "answer_nll": 4.747937299311161,
+    "count": 32,
+    "truncated": 3
+  },
+  "complete": true,
+  "config_sha256": "00adadce8a6d78b67b5c4d4cfac76077ea9c9c934fd47a02eb30ebf5b810f7d8",
+  "dense_nll": 2.910124897956848,
+  "host_after": {
+    "available_gib": 94.69620513916016,
+    "total_gib": 121.69016647338867,
+    "used_gib": 26.993961334228516
+  },
+  "language": {
+    "delta_nll": {
+      "ci95": [
+        -0.008455668389797211,
+        0.0007265008985996242
+      ],
+      "mean": -0.0036369264125823975
+    },
+    "nll": {
+      "ci95": [
+        2.7076405748724937,
+        3.0841659754514694
+      ],
+      "mean": 2.9064879715442657
+    },
+    "vocabulary_kl": {
+      "ci95": [
+        0.0019324200118717271,
+        0.002496189597150078
+      ],
+      "mean": 0.002176756228436716
+    },
+    "windows": [
+      {
+        "delta_nll": -0.009608745574951172,
+        "nll": 2.3977017402648926,
+        "vocabulary_kl": 0.00197997922077775
+      },
+      {
+        "delta_nll": 0.0020570755004882812,
+        "nll": 2.7461154460906982,
+        "vocabulary_kl": 0.001635114778764546
+      },
+      {
+        "delta_nll": 0.003427743911743164,
+        "nll": 2.5947766304016113,
+        "vocabulary_kl": 0.00209126272238791
+      },
+      {
+        "delta_nll": 0.0016527175903320312,
+        "nll": 2.8630971908569336,
+        "vocabulary_kl": 0.0023104711435735226
+      },
+      {
+        "delta_nll": -0.016528844833374023,
+        "nll": 3.0727038383483887,
+        "vocabulary_kl": 0.0031478453893214464
+      },
+      {
+        "delta_nll": -0.00451350212097168,
+        "nll": 3.1746296882629395,
+        "vocabulary_kl": 0.002127033658325672
+      },
+      {
+        "delta_nll": 0.0006978511810302734,
+        "nll": 3.2149510383605957,
+        "vocabulary_kl": 0.0021204871591180563
+      },
+      {
+        "delta_nll": -0.006279706954956055,
+        "nll": 3.1879281997680664,
+        "vocabulary_kl": 0.002001855755224824
+      }
+    ]
+  },
+  "local": {
+    "actual_sparsity": 0.5,
+    "ambient_readout_mse": 1.2433154582977295,
+    "calibration_tokens": 8192,
+    "solver": {
+      "blocksize": 128,
+      "damping": 0.01,
+      "gamma": 39475.80235294117,
+      "mean_readout_rank": 2.0,
+      "solver": "row_diagonal_congruence_approximation"
+    }
+  },
+  "memory": {
+    "allocator_cap_gib": 40.30505447387696,
+    "cuda_total_gib": 121.69016647338867,
+    "host_before": {
+      "available_gib": 116.32573318481445,
+      "total_gib": 121.69016647338867,
+      "used_gib": 5.364433288574219
+    },
+    "requested_cap_gib": 56.0
+  },
+  "peak_cuda_reserved_gib": 17.625
+}

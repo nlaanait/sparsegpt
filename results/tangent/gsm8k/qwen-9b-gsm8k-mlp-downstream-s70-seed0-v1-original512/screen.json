@@ -1,0 +1,14 @@
+{
+  "accuracy_drop_pp": 91.40625,
+  "candidate_config_sha256": "e394bae1021b4491f2bca5dd1f6956018ef169a012af8fd2d3fd026c7a1cf176",
+  "candidate_correct": 8,
+  "dense_config_sha256": "20f307423bd46b88640e477c049b267d0e610b43ea804a6eca37e4dbf5315ffe",
+  "dense_correct": 125,
+  "max_accuracy_drop_pp": 15,
+  "passed": false,
+  "purpose": "exploratory_screen_not_retention_claim",
+  "schema": 1,
+  "screen_count": 128,
+  "screen_decision_complete": true,
+  "screen_ids_sha256": "e52cb5eecf72d102b610e3e192a132f61e94cc2fdab237b87ad4dc7e2125cd2e"
+}

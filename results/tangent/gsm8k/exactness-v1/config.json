@@ -1,0 +1,19 @@
+{
+  "alphas": [
+    0.3,
+    1.0,
+    3.0
+  ],
+  "atlas": "results/tangent/gsm8k/geometry-seed0-v2/atlas.npz",
+  "capture_sha256": "8670c8375bdfb417c849a2e84fef4e825f04f26c3e9d6e73e2f7e884cf304487",
+  "crop": [
+    8,
+    16
+  ],
+  "scope": "principal_output_metric_and_input_coordinate_crop",
+  "seeds": [
+    0,
+    1,
+    2
+  ]
+}

@@ -96,7 +96,7 @@ def readout_basis(atlas, output):
 
 
 def prune_site(model, tokenizer, target, anchor, rows, c4_tokens, output, stage_index,
-               *, seed=0, sparsity=.5, alpha=1., num_probes=8, probe_count=32):
+               *, seed=0, sparsity=.5, alpha=1., num_probes=8, probe_count=32, metric="activation_diagonal"):
     """Refresh ambient/anchor activations and calibrate one current-model site."""
     if any(row["split"] not in ("geometry_fit", "pruning_calibration") for row in rows):
         raise ValueError("geometry and pruning must exclude held-out examples")
@@ -130,7 +130,7 @@ def prune_site(model, tokenizer, target, anchor, rows, c4_tokens, output, stage_
         {"target": target},
         {"downstream": TangentAnchor(anchor, lambda value: readout_basis(atlas, value),
                                       select=lambda value: value[0] if isinstance(value, tuple) else value)},
-        alpha=alpha, num_probes=num_probes, seed=seed,
+        alpha=alpha, num_probes=num_probes, seed=seed, metric=metric,
     )
     solver = calibration.solvers["target"]
     solver.add_ambient_batch(inputs)
@@ -145,7 +145,8 @@ def prune_site(model, tokenizer, target, anchor, rows, c4_tokens, output, stage_
                         collect_ambient=False)
         print(json.dumps({"pullback_problem": index + 1, "pullback_total": len(selected),
                           "stage_index": stage_index}), flush=True)
-    if float(solver.geometry_energy.sum()) <= 0:
+    solver.finalize_tangents()
+    if alpha > 0 and solver.tangent_diagnostics["geometry_trace"] <= 0:
         raise ValueError("no supported downstream geometry; refuse geometric pruning arm")
     # Match the existing experiment's float32 compensation and bf16 output cast.
     # Do not mutate the real model until its complete stage checkpoint is saved.
@@ -157,6 +158,7 @@ def prune_site(model, tokenizer, target, anchor, rows, c4_tokens, output, stage_
     solver.fasterprune(sparsity, blocksize=128, percdamp=.01)
     candidate = temporary.weight.detach().cpu().clone()
     diagnostics = dict(solver.tangent_diagnostics,
+                       metric=metric,
                        solver="downstream_tangent_row_diagonal_congruence",
                        probe_ids=[row["id"] for row in selected],
                        geometry_fit_ids=[row["id"] for row in rows if row["split"] == "geometry_fit"],
@@ -187,6 +189,7 @@ def main():
     parser.add_argument("--max-new-tokens", type=int, default=2048)
     parser.add_argument("--num-probes", type=int, default=PULLBACK["num_probes"])
     parser.add_argument("--probe-count", type=int, default=PULLBACK["probe_count"])
+    parser.add_argument("--metric", choices=("activation_diagonal", "weight_diagonal"), default="activation_diagonal")
     args = parser.parse_args()
     if not 0 <= args.sparsity < 1 or not np.isfinite(args.alpha) or args.alpha < 0:
         parser.error("invalid sparsity or alpha")
@@ -205,7 +208,7 @@ def main():
     modules = (gsm8k_capture, gsm8k_sequential, gsm8k_pruning, downstream, factor_atlas,
                gram_dictionary, geometry_features, rescale, sparsegpt)
     sources = [Path(__file__)] + [Path(module.__file__) for module in modules]
-    config = {"model": MODEL, "revision": REVISION, "arm": ARM,
+    config = {"model": MODEL, "revision": REVISION, "arm": ARM if args.metric == "activation_diagonal" else "downstream_weightdiag",
               "manifest_sha256": manifest["manifest_sha256"], "pilot_report_sha256": pilot_hash,
               "c4_config_sha256": digest(c4_config), "blocks": args.blocks, "modules": args.modules,
               "sparsity": args.sparsity, "alpha": args.alpha, "seed": args.seed,
@@ -216,6 +219,19 @@ def main():
               "atlas": {"groups": 8, "width": 4, "active": 2, "charts": 4, "rank": 1},
               "purpose": "development_sequential_MLP_retention",
               "sources": {path.name: hashlib.sha256(path.read_bytes()).hexdigest() for path in sources}}
+    if args.metric != "activation_diagonal":
+        from importlib.metadata import version, PackageNotFoundError
+        from sparsifier.models import qwen
+        config["sources"]["qwen.py"] = hashlib.sha256(Path(qwen.__file__).read_bytes()).hexdigest()
+        config["runtime_versions"] = {}
+        for package in ("torch", "transformers", "kernels", "flash-linear-attention"):
+            try:
+                config["runtime_versions"][package] = version(package)
+            except PackageNotFoundError:
+                config["runtime_versions"][package] = None
+        config["backend_policy"] = "unchanged historical helper; optional dispatch not proven disabled (see implementation review)"
+        config["pullback"]["metric"] = args.metric
+        config["pullback"]["approximation"] = "shared_weight_diagonal_then_row_congruence"
     args.output.mkdir(parents=True, exist_ok=True)
     write_immutable(args.output / "config.json", config)
     config_hash = digest(config)
@@ -255,7 +271,7 @@ def main():
             candidate, diagnostics = prune_site(
                 model, tokenizer, target, anchor, rows, c4_tokens, args.output, index,
                 seed=args.seed, sparsity=args.sparsity, alpha=args.alpha,
-                num_probes=args.num_probes, probe_count=args.probe_count)
+                num_probes=args.num_probes, probe_count=args.probe_count, metric=args.metric)
             candidate = candidate.to(torch.bfloat16).float()
             diagnostics["anchor_block"] = anchor_index
             stored = {"config_sha256": config_hash, "upstream": upstream, "site": list(site),

@@ -1,0 +1,68 @@
+{
+  "allowed_drop": 0.02,
+  "dense": "results/tangent/gsm8k/qwen-9b-gsm8k-dense-a0-s0-v1",
+  "frontiers": {
+    "local": {
+      "largest_observed_within_tolerance": null,
+      "largest_statistically_supported": null
+    },
+    "sparsegpt_task": {
+      "largest_observed_within_tolerance": null,
+      "largest_statistically_supported": null
+    }
+  },
+  "limitations": [
+    "candidate list must include all candidates used for selection",
+    "bounds rely on representative independent sampling units",
+    "unreported whole-model counts excluded from frontier",
+    "same model weights with different generation protocols cannot be pooled"
+  ],
+  "multiplicity": "Bonferroni across supplied candidates; includes both binomial tails",
+  "points": [
+    {
+      "arm": "sparsegpt_task",
+      "retention": {
+        "accuracy_drop": -0.03125,
+        "allowed_drop": 0.02,
+        "assumptions": "independent representative families; fixed candidate and family weights",
+        "bound_method": "weighted_family_Hoeffding",
+        "candidate_accuracy": 0.90625,
+        "confidence": 0.975,
+        "dense_accuracy": 0.875,
+        "dense_correct_lost": 3,
+        "dense_correct_retained": 25,
+        "dense_wrong_recovered": 4,
+        "drop_upper_bound": 1.0,
+        "families": 4,
+        "point_estimate_within_tolerance": true,
+        "problems": 32,
+        "retention_established_under_assumptions": false
+      },
+      "run": "results/tangent/gsm8k/qwen-9b-gsm8k-sparsegpt-task-a0-s0-v1",
+      "whole_model_removed_fraction": null
+    },
+    {
+      "arm": "local",
+      "retention": {
+        "accuracy_drop": 0.03125,
+        "allowed_drop": 0.02,
+        "assumptions": "independent representative families; fixed candidate and family weights",
+        "bound_method": "weighted_family_Hoeffding",
+        "candidate_accuracy": 0.84375,
+        "confidence": 0.975,
+        "dense_accuracy": 0.875,
+        "dense_correct_lost": 4,
+        "dense_correct_retained": 24,
+        "dense_wrong_recovered": 3,
+        "drop_upper_bound": 1.0,
+        "families": 4,
+        "point_estimate_within_tolerance": false,
+        "problems": 32,
+        "retention_established_under_assumptions": false
+      },
+      "run": "results/tangent/gsm8k/qwen-9b-gsm8k-local-a1-s0-v1",
+      "whole_model_removed_fraction": null
+    }
+  ],
+  "scope": "development_selection_only_not_test_confirmation"
+}

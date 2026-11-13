@@ -1,0 +1,106 @@
+{
+  "behavior": {
+    "accuracy": 1.0,
+    "answer_nll": 5.485299348831177,
+    "count": 4,
+    "truncated": 0
+  },
+  "complete": true,
+  "config_sha256": "7c4e34dc6fae5767199a48cc3facd727c83ea15d94b64b3db1bf53b507337d01",
+  "eligible_parameters": 301989888,
+  "eligible_removed_fraction": 0.5,
+  "memory": {
+    "allocator_cap_gib": 38.751838302612306,
+    "cuda_total_gib": 121.69016647338867,
+    "host_before": {
+      "available_gib": 116.49261093139648,
+      "total_gib": 121.69016647338867,
+      "used_gib": 5.1975555419921875
+    },
+    "requested_cap_gib": 56.0
+  },
+  "peak_cuda_reserved_gib": 20.8671875,
+  "removed_weights": 150994944,
+  "stages": [
+    {
+      "candidate_sha256": "b72631ee6247a4e6da1b13cc81804d65072966a5b36e7ce304f345905dc99438",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 25165824,
+      "site": [
+        15,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "73c69b3bcf39107a31f4276080a405c4d094ecc7ab4cd9853133deb22b7ef255",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 25165824,
+      "site": [
+        15,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "1a61c6bc62c36229151e4fad86392db22d9bf402bc7db0ac5813bfab8247f38c",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 25165824,
+      "site": [
+        15,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "12e1811eb3fe76752f80e1fee872e1034ec0acc9cfdbbf06f65ee624c49f67f8",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 25165824,
+      "site": [
+        16,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "a63b20076c76f0c299ec60a3d37fdd1a7af3b649715cfa83921eb30537a102dc",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 25165824,
+      "site": [
+        16,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "486f13287e2fb5f69bd1506c98b357247fda87af38303fa6fd7e28c5852f093a",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 25165824,
+      "site": [
+        16,
+        "mlp.down_proj"
+      ]
+    }
+  ],
+  "total_parameters": 8953803264,
+  "whole_model_removed_fraction": 0.01686377727407704
+}

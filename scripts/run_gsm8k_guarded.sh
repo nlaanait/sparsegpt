@@ -19,7 +19,7 @@ trap 'exit 143' TERM
 trap 'exit 130' INT
 systemd-run --user --wait --pipe --collect --unit="$NAME" \
   -p MemoryMax=80G -p MemorySwapMax=0 -p MemoryAccounting=yes \
-  -p KillMode=control-group -p RuntimeMaxSec=43000 \
+  -p KillMode=control-group -p RuntimeMaxSec=86400 \
   --working-directory="$ROOT" --setenv="PYTHONPATH=$ROOT/src:$ROOT" \
   --setenv="CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES" \
   --setenv=OMP_NUM_THREADS=8 --setenv=OPENBLAS_NUM_THREADS=8 --setenv=MKL_NUM_THREADS=8 \

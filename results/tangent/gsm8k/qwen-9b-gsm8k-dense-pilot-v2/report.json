@@ -1,0 +1,23 @@
+{
+  "accuracy": 0.905,
+  "competence_floor_passed": true,
+  "complete": true,
+  "config_sha256": "de57752ddf5f8fc90f3b94e7b889a15633b44d193ab848349e29cdf264bdd3de",
+  "correct": 181,
+  "count": 200,
+  "dense_correct_families": 181,
+  "generated_tokens": 66589,
+  "generation_seconds": 6082.418080472387,
+  "memory": {
+    "allocator_cap_gib": 44.03498840332031,
+    "cuda_total_gib": 121.69016647338867,
+    "host_before": {
+      "available_gib": 115.44279861450195,
+      "total_gib": 121.69016647338867,
+      "used_gib": 6.247367858886719
+    },
+    "requested_cap_gib": 56.0
+  },
+  "parse_failures": 16,
+  "truncated": 16
+}

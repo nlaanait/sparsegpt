@@ -1,0 +1,39 @@
+{
+  "complete": false,
+  "config_sha256": "eda5a07bcae6d0cb219bf46b5da746276391878a45edea6646de5d809d7bf79b",
+  "eligible_parameters": 4831838208,
+  "removed_weights": 30198976,
+  "stages": [
+    {
+      "candidate_sha256": "1f8997be3c21067eba46c3ff474e3bf509a34b47578c423faacaceb7d999aa97",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "gamma": 118427.40705882353,
+        "mean_readout_rank": 2.0,
+        "solver": "row_diagonal_congruence_approximation"
+      },
+      "removed": 15099488,
+      "site": [
+        0,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "829c823cd2751ee3778e29e72da416f8d031b2561f83dbe56fd1ad2e7422e9f2",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "gamma": 118427.40705882353,
+        "mean_readout_rank": 2.0,
+        "solver": "row_diagonal_congruence_approximation"
+      },
+      "removed": 15099488,
+      "site": [
+        0,
+        "mlp.up_proj"
+      ]
+    }
+  ],
+  "total_parameters": 8953803264
+}

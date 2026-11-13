@@ -1,0 +1,131 @@
+{
+  "allowed_accuracy_drop": null,
+  "alpha": 1.0,
+  "arm": "downstream_weightdiag",
+  "blocks": "all",
+  "calibration_manifest_sha256": "36de89acdda5d71de79a5de63a2268ed4a01476d5a5bb5c3fe3e285ac35547ac",
+  "comparison_sources": {
+    "qwen-9b-gsm8k-mlp-downstream-s30-seed0-weightdiag-v1": {
+      "config_sha256": "8e085c40c9094619db172124e459b3777da33ec4325452bcfcd7b76347771b5e",
+      "report_sha256": "3841cfbd2d4f742da9857e2c5683f8b138d7de546571bd5f282eeaef3eb6c7bc",
+      "run": "qwen-9b-gsm8k-mlp-downstream-s30-seed0-v1"
+    },
+    "qwen-9b-gsm8k-mlp-downstream-s50-seed0-weightdiag-v1": {
+      "config_sha256": "378ebe4087d251c0de6079d07626065dafcb1f267b75a16180d36cb182f1d87b",
+      "report_sha256": "7080223d2f451f2f0d3c2cb64f5f218de8e6fe47bb7103dba2b0cc26cb422696",
+      "run": "qwen-9b-gsm8k-mlp-downstream-s50-seed0-v1"
+    },
+    "qwen-9b-gsm8k-mlp-downstream-s70-seed0-weightdiag-v1": {
+      "config_sha256": "1c67c0de650eb86782638619da6e0db70130ee059c9cca847bd8f1988cc5d4e4",
+      "report_sha256": "6224b0e1d4f54d3c38b4ac2accb10fee539e7416064a69eb37a3d339e5ba1767",
+      "run": "qwen-9b-gsm8k-mlp-downstream-s70-seed0-v1"
+    }
+  },
+  "dense_reference": "qwen-9b-gsm8k-original-dense-512-v1",
+  "eligible_sparsities": [
+    0.3,
+    0.5,
+    0.7
+  ],
+  "limitations": [
+    "Sum tokens before squaring per sequence and probe; independent sequences/anchors are summed after squaring",
+    "Exact shared-weight geometric diagonal, approximate row-congruence compensation",
+    "Historical backend policy retained; reference-only dispatch remains unverified",
+    "Full 512-problem validation without the newer 128-problem early screen, matching completed 30/50% results"
+  ],
+  "max_new_tokens": 2048,
+  "memory_policy": "exclusive gflow; CUDA cap <=56 GiB; cgroup 80 GiB; host watchdog 96 GiB",
+  "modules": [
+    "mlp.gate_proj",
+    "mlp.up_proj",
+    "mlp.down_proj"
+  ],
+  "pullback": {
+    "ambient_tokens": {
+      "c4": 4096,
+      "math": 4096
+    },
+    "anchor_offset": 1,
+    "anchor_positions": "last_prompt_token",
+    "anchor_site": "block_output_residual",
+    "approximation": "shared_weight_diagonal_then_row_congruence",
+    "geometry": "factor_local_tangents",
+    "input_alpha": 0.0,
+    "metric": "weight_diagonal",
+    "num_probes": 8,
+    "probe_count": 32,
+    "target_positions": "all_causal_prefix_tokens"
+  },
+  "purpose": "development_MLP_retention_frontier_not_confirmatory",
+  "seed": 0,
+  "smoke_name": "qwen-9b-gsm8k-sequential-downstream-weightdiag-smoke-v1",
+  "tasks": [
+    {
+      "arm": "downstream_weightdiag",
+      "blocks": "15,16",
+      "depends_on": [],
+      "eligible_sparsity": 0.5,
+      "eval_count": 4,
+      "name": "qwen-9b-gsm8k-sequential-downstream-weightdiag-smoke-v1",
+      "phase": "smoke"
+    },
+    {
+      "arm": "downstream_weightdiag",
+      "blocks": "all",
+      "depends_on": [
+        "qwen-9b-gsm8k-sequential-downstream-weightdiag-smoke-v1"
+      ],
+      "eligible_sparsity": 0.3,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-downstream-s30-seed0-weightdiag-v1",
+      "phase": "prune"
+    },
+    {
+      "arm": "downstream_weightdiag",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-downstream-s30-seed0-weightdiag-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-downstream-s30-seed0-weightdiag-v1-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "downstream_weightdiag",
+      "blocks": "all",
+      "depends_on": [
+        "qwen-9b-gsm8k-sequential-downstream-weightdiag-smoke-v1"
+      ],
+      "eligible_sparsity": 0.5,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-downstream-s50-seed0-weightdiag-v1",
+      "phase": "prune"
+    },
+    {
+      "arm": "downstream_weightdiag",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-downstream-s50-seed0-weightdiag-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-downstream-s50-seed0-weightdiag-v1-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "downstream_weightdiag",
+      "blocks": "all",
+      "depends_on": [
+        "qwen-9b-gsm8k-sequential-downstream-weightdiag-smoke-v1"
+      ],
+      "eligible_sparsity": 0.7,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-downstream-s70-seed0-weightdiag-v1",
+      "phase": "prune"
+    },
+    {
+      "arm": "downstream_weightdiag",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-downstream-s70-seed0-weightdiag-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-downstream-s70-seed0-weightdiag-v1-original512",
+      "phase": "original_validation"
+    }
+  ],
+  "validation_manifest_sha256": "0359aa7586c1948157ad9ffbb388cb84a1854d2be7f20ed4ecfeed8c65049ef3"
+}

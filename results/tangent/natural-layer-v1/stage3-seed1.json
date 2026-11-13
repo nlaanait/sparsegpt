@@ -1,0 +1,1400 @@
+{
+  "config": {
+    "phase": "stage3",
+    "seed": 1,
+    "block": 12,
+    "module": "mlp.down_proj",
+    "model": "Qwen/Qwen3.5-0.8B",
+    "seqlen": 128,
+    "calibration_windows": 16,
+    "eval_windows": 8,
+    "knockouts": 256,
+    "max_gib": 8.0,
+    "output_dir": "results/tangent/natural-layer-v1",
+    "source_sha256": "368e44adee3852cf07782c416a305c9334648b72fe7d4f842c29d8adfd8b201b"
+  },
+  "nll_tolerance": 0.02,
+  "layer_shape": [
+    1024,
+    3584
+  ],
+  "calibration_tokens": 2032,
+  "evaluation_tokens": 1016,
+  "calibration": "c4/train",
+  "evaluation": "wikitext2/test",
+  "dense_nll": {
+    "mean": 3.6759234070777893,
+    "ci95": [
+      3.4163340903818606,
+      3.983293801546097
+    ]
+  },
+  "cap_gib": 8.0,
+  "concept_manifest": {
+    "fit": [
+      {
+        "knob": "ones_digit",
+        "left": "Example:\nthe value is 17.",
+        "right": "Example:\nthe value is 18.",
+        "absent": "Example:\nthe value is 00.",
+        "edit_index": 8
+      },
+      {
+        "knob": "tens_digit",
+        "left": "Example:\nthe value is 17.",
+        "right": "Example:\nthe value is 27.",
+        "absent": "Example:\nthe value is 00.",
+        "edit_index": 7
+      },
+      {
+        "knob": "add_sub",
+        "left": "Example:\nx = 2 + 3",
+        "right": "Example:\nx = 2 - 3",
+        "absent": "Example:\nx = 2 @ 3",
+        "edit_index": 7
+      },
+      {
+        "knob": "mul_div",
+        "left": "Example:\nx = 2 * 3",
+        "right": "Example:\nx = 2 / 3",
+        "absent": "Example:\nx = 2 @ 3",
+        "edit_index": 7
+      },
+      {
+        "knob": "and_or",
+        "left": "Example:\np and q",
+        "right": "Example:\np or q",
+        "absent": "Example:\np @ q",
+        "edit_index": 4
+      },
+      {
+        "knob": "quantifier",
+        "left": "Example:\nall x are even",
+        "right": "Example:\nsome x are even",
+        "absent": "Example:\nthe x are even",
+        "edit_index": 3
+      },
+      {
+        "knob": "polarity",
+        "left": "Example:\nreturn True",
+        "right": "Example:\nreturn False",
+        "absent": "Example:\nreturn None",
+        "edit_index": 4
+      },
+      {
+        "knob": "equality",
+        "left": "Example:\nx == y",
+        "right": "Example:\nx != y",
+        "absent": "Example:\nx @ y",
+        "edit_index": 4
+      },
+      {
+        "knob": "increment",
+        "left": "Example:\nreturn a + b",
+        "right": "Example:\nreturn a - b",
+        "absent": "Example:\nreturn a @ b",
+        "edit_index": 5
+      },
+      {
+        "knob": "ones_digit",
+        "left": "Exercise:\nthe value is 17.",
+        "right": "Exercise:\nthe value is 18.",
+        "absent": "Exercise:\nthe value is 00.",
+        "edit_index": 8
+      },
+      {
+        "knob": "tens_digit",
+        "left": "Exercise:\nthe value is 17.",
+        "right": "Exercise:\nthe value is 27.",
+        "absent": "Exercise:\nthe value is 00.",
+        "edit_index": 7
+      },
+      {
+        "knob": "add_sub",
+        "left": "Exercise:\nx = 2 + 3",
+        "right": "Exercise:\nx = 2 - 3",
+        "absent": "Exercise:\nx = 2 @ 3",
+        "edit_index": 7
+      },
+      {
+        "knob": "mul_div",
+        "left": "Exercise:\nx = 2 * 3",
+        "right": "Exercise:\nx = 2 / 3",
+        "absent": "Exercise:\nx = 2 @ 3",
+        "edit_index": 7
+      },
+      {
+        "knob": "and_or",
+        "left": "Exercise:\np and q",
+        "right": "Exercise:\np or q",
+        "absent": "Exercise:\np @ q",
+        "edit_index": 4
+      },
+      {
+        "knob": "quantifier",
+        "left": "Exercise:\nall x are even",
+        "right": "Exercise:\nsome x are even",
+        "absent": "Exercise:\nthe x are even",
+        "edit_index": 3
+      },
+      {
+        "knob": "polarity",
+        "left": "Exercise:\nreturn True",
+        "right": "Exercise:\nreturn False",
+        "absent": "Exercise:\nreturn None",
+        "edit_index": 4
+      },
+      {
+        "knob": "equality",
+        "left": "Exercise:\nx == y",
+        "right": "Exercise:\nx != y",
+        "absent": "Exercise:\nx @ y",
+        "edit_index": 4
+      },
+      {
+        "knob": "increment",
+        "left": "Exercise:\nreturn a + b",
+        "right": "Exercise:\nreturn a - b",
+        "absent": "Exercise:\nreturn a @ b",
+        "edit_index": 5
+      }
+    ],
+    "heldout": [
+      {
+        "knob": "ones_digit",
+        "left": "For reference:\nthe value is 17.",
+        "right": "For reference:\nthe value is 18.",
+        "absent": "For reference:\nthe value is 00.",
+        "edit_index": 9
+      },
+      {
+        "knob": "tens_digit",
+        "left": "For reference:\nthe value is 17.",
+        "right": "For reference:\nthe value is 27.",
+        "absent": "For reference:\nthe value is 00.",
+        "edit_index": 8
+      },
+      {
+        "knob": "add_sub",
+        "left": "For reference:\nx = 2 + 3",
+        "right": "For reference:\nx = 2 - 3",
+        "absent": "For reference:\nx = 2 @ 3",
+        "edit_index": 8
+      },
+      {
+        "knob": "mul_div",
+        "left": "For reference:\nx = 2 * 3",
+        "right": "For reference:\nx = 2 / 3",
+        "absent": "For reference:\nx = 2 @ 3",
+        "edit_index": 8
+      },
+      {
+        "knob": "and_or",
+        "left": "For reference:\np and q",
+        "right": "For reference:\np or q",
+        "absent": "For reference:\np @ q",
+        "edit_index": 5
+      },
+      {
+        "knob": "quantifier",
+        "left": "For reference:\nall x are even",
+        "right": "For reference:\nsome x are even",
+        "absent": "For reference:\nthe x are even",
+        "edit_index": 4
+      },
+      {
+        "knob": "polarity",
+        "left": "For reference:\nreturn True",
+        "right": "For reference:\nreturn False",
+        "absent": "For reference:\nreturn None",
+        "edit_index": 5
+      },
+      {
+        "knob": "equality",
+        "left": "For reference:\nx == y",
+        "right": "For reference:\nx != y",
+        "absent": "For reference:\nx @ y",
+        "edit_index": 5
+      },
+      {
+        "knob": "increment",
+        "left": "For reference:\nreturn a + b",
+        "right": "For reference:\nreturn a - b",
+        "absent": "For reference:\nreturn a @ b",
+        "edit_index": 6
+      },
+      {
+        "knob": "ones_digit",
+        "left": "Check this statement:\nthe value is 17.",
+        "right": "Check this statement:\nthe value is 18.",
+        "absent": "Check this statement:\nthe value is 00.",
+        "edit_index": 10
+      },
+      {
+        "knob": "tens_digit",
+        "left": "Check this statement:\nthe value is 17.",
+        "right": "Check this statement:\nthe value is 27.",
+        "absent": "Check this statement:\nthe value is 00.",
+        "edit_index": 9
+      },
+      {
+        "knob": "add_sub",
+        "left": "Check this statement:\nx = 2 + 3",
+        "right": "Check this statement:\nx = 2 - 3",
+        "absent": "Check this statement:\nx = 2 @ 3",
+        "edit_index": 9
+      },
+      {
+        "knob": "mul_div",
+        "left": "Check this statement:\nx = 2 * 3",
+        "right": "Check this statement:\nx = 2 / 3",
+        "absent": "Check this statement:\nx = 2 @ 3",
+        "edit_index": 9
+      },
+      {
+        "knob": "and_or",
+        "left": "Check this statement:\np and q",
+        "right": "Check this statement:\np or q",
+        "absent": "Check this statement:\np @ q",
+        "edit_index": 6
+      },
+      {
+        "knob": "quantifier",
+        "left": "Check this statement:\nall x are even",
+        "right": "Check this statement:\nsome x are even",
+        "absent": "Check this statement:\nthe x are even",
+        "edit_index": 5
+      },
+      {
+        "knob": "polarity",
+        "left": "Check this statement:\nreturn True",
+        "right": "Check this statement:\nreturn False",
+        "absent": "Check this statement:\nreturn None",
+        "edit_index": 6
+      },
+      {
+        "knob": "equality",
+        "left": "Check this statement:\nx == y",
+        "right": "Check this statement:\nx != y",
+        "absent": "Check this statement:\nx @ y",
+        "edit_index": 6
+      },
+      {
+        "knob": "increment",
+        "left": "Check this statement:\nreturn a + b",
+        "right": "Check this statement:\nreturn a - b",
+        "absent": "Check this statement:\nreturn a @ b",
+        "edit_index": 7
+      }
+    ]
+  },
+  "limitations": [
+    "concept holdout changes prompt context; knob values are shared",
+    "fixed-span and local linear-output metrics; no local-chart claim",
+    "confidence intervals resample windows or sampled knockout entries"
+  ],
+  "arms": {
+    "sparsegpt": {
+      "local": {
+        "ambient_mse": 0.03397529572248459,
+        "heldout_span_mse": 0.0006172950961627066,
+        "deltas": {
+          "mse": 0.018411198630928993,
+          "relative_energy": 0.12197987735271454,
+          "per_knob": {
+            "ones_digit": 0.0023750602267682552,
+            "tens_digit": 0.004162282682955265,
+            "add_sub": 0.019090786576271057,
+            "mul_div": 0.04046120122075081,
+            "and_or": 0.02322153002023697,
+            "quantifier": 0.019307438284158707,
+            "polarity": 0.01614689826965332,
+            "equality": 0.014809219166636467,
+            "increment": 0.02612636238336563
+          }
+        },
+        "presence": {
+          "mse": 0.02660762146115303,
+          "relative_energy": 0.09701245278120041,
+          "per_knob": {
+            "ones_digit": 0.012247527949512005,
+            "tens_digit": 0.012247527949512005,
+            "add_sub": 0.04599619656801224,
+            "mul_div": 0.029822684824466705,
+            "and_or": 0.029951652511954308,
+            "quantifier": 0.013433901593089104,
+            "polarity": 0.028482483699917793,
+            "equality": 0.030508121475577354,
+            "increment": 0.036778490990400314
+          }
+        }
+      },
+      "language": {
+        "windows": [
+          {
+            "nll": 4.670910358428955,
+            "delta_nll": 0.0004029273986816406,
+            "vocabulary_kl": 0.0031695764046162367
+          },
+          {
+            "nll": 3.383464813232422,
+            "delta_nll": 0.01539468765258789,
+            "vocabulary_kl": 0.0030789219308644533
+          },
+          {
+            "nll": 3.2934186458587646,
+            "delta_nll": 0.0031671524047851562,
+            "vocabulary_kl": 0.0036343829706311226
+          },
+          {
+            "nll": 3.3555524349212646,
+            "delta_nll": -0.0031311511993408203,
+            "vocabulary_kl": 0.003176033264026046
+          },
+          {
+            "nll": 3.9619808197021484,
+            "delta_nll": 0.009246110916137695,
+            "vocabulary_kl": 0.0029356323648244143
+          },
+          {
+            "nll": 3.8520095348358154,
+            "delta_nll": 0.013596057891845703,
+            "vocabulary_kl": 0.004081915598362684
+          },
+          {
+            "nll": 3.5708632469177246,
+            "delta_nll": -0.004105806350708008,
+            "vocabulary_kl": 0.003065812634304166
+          },
+          {
+            "nll": 3.3598783016204834,
+            "delta_nll": 0.006120920181274414,
+            "vocabulary_kl": 0.0027964955661445856
+          }
+        ],
+        "nll": {
+          "mean": 3.6810097694396973,
+          "ci95": [
+            3.4227955847978593,
+            3.987295652925968
+          ]
+        },
+        "delta_nll": {
+          "mean": 0.005086362361907959,
+          "ci95": [
+            0.000582072138786316,
+            0.009925920516252518
+          ]
+        },
+        "vocabulary_kl": {
+          "mean": 0.0032423463417217135,
+          "ci95": [
+            0.003011384475394152,
+            0.0035248738960945046
+          ]
+        }
+      },
+      "elementwise_sparsity": 0.5,
+      "paired_delta_nll_vs_sparsegpt": {
+        "mean": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "within_nll_tolerance": true
+    },
+    "wanda": {
+      "local": {
+        "ambient_mse": 0.031674355268478394,
+        "heldout_span_mse": 0.0006804263102822006,
+        "deltas": {
+          "mse": 0.012261469848453999,
+          "relative_energy": 0.08123602718114853,
+          "per_knob": {
+            "ones_digit": 0.0014090779004618526,
+            "tens_digit": 0.0032515539787709713,
+            "add_sub": 0.01179553009569645,
+            "mul_div": 0.028134755790233612,
+            "and_or": 0.01544411201030016,
+            "quantifier": 0.01354622095823288,
+            "polarity": 0.011567564681172371,
+            "equality": 0.010033925995230675,
+            "increment": 0.015170484781265259
+          }
+        },
+        "presence": {
+          "mse": 0.01875065267086029,
+          "relative_energy": 0.06836563348770142,
+          "per_knob": {
+            "ones_digit": 0.009519761428236961,
+            "tens_digit": 0.009519761428236961,
+            "add_sub": 0.03175200894474983,
+            "mul_div": 0.020253024995326996,
+            "and_or": 0.021457631140947342,
+            "quantifier": 0.011137130670249462,
+            "polarity": 0.018778791651129723,
+            "equality": 0.01915266551077366,
+            "increment": 0.0271851047873497
+          }
+        }
+      },
+      "language": {
+        "windows": [
+          {
+            "nll": 4.66770076751709,
+            "delta_nll": -0.0028066635131835938,
+            "vocabulary_kl": 0.0027045917231589556
+          },
+          {
+            "nll": 3.376054048538208,
+            "delta_nll": 0.007983922958374023,
+            "vocabulary_kl": 0.0025610325392335653
+          },
+          {
+            "nll": 3.2903692722320557,
+            "delta_nll": 0.00011777877807617188,
+            "vocabulary_kl": 0.002698521828278899
+          },
+          {
+            "nll": 3.3585493564605713,
+            "delta_nll": -0.0001342296600341797,
+            "vocabulary_kl": 0.0026243161410093307
+          },
+          {
+            "nll": 3.9676613807678223,
+            "delta_nll": 0.014926671981811523,
+            "vocabulary_kl": 0.0025432342663407326
+          },
+          {
+            "nll": 3.8465850353240967,
+            "delta_nll": 0.008171558380126953,
+            "vocabulary_kl": 0.0032735965214669704
+          },
+          {
+            "nll": 3.5770394802093506,
+            "delta_nll": 0.0020704269409179688,
+            "vocabulary_kl": 0.002546477597206831
+          },
+          {
+            "nll": 3.3548800945281982,
+            "delta_nll": 0.0011227130889892578,
+            "vocabulary_kl": 0.0026079656090587378
+          }
+        ],
+        "nll": {
+          "mean": 3.679854929447174,
+          "ci95": [
+            3.419371572881937,
+            3.9862206429243088
+          ]
+        },
+        "delta_nll": {
+          "mean": 0.003931522369384766,
+          "ci95": [
+            0.0005423694849014283,
+            0.007780973613262175
+          ]
+        },
+        "vocabulary_kl": {
+          "mean": 0.002694967028219253,
+          "ci95": [
+            0.0025850457517663018,
+            0.0028632841509534045
+          ]
+        }
+      },
+      "elementwise_sparsity": 0.5,
+      "paired_delta_nll_vs_sparsegpt": {
+        "mean": -0.0011548399925231934,
+        "ci95": [
+          -0.004221820831298828,
+          0.0022287733852863305
+        ]
+      },
+      "within_nll_tolerance": true
+    },
+    "input_side_alpha_0.3": {
+      "local": {
+        "ambient_mse": 0.03277096897363663,
+        "heldout_span_mse": 0.0005736302118748426,
+        "deltas": {
+          "mse": 0.004925635177642107,
+          "relative_energy": 0.03263385221362114,
+          "per_knob": {
+            "ones_digit": 0.0003177161852363497,
+            "tens_digit": 0.0011893021874129772,
+            "add_sub": 0.0020790002308785915,
+            "mul_div": 0.0037489577662199736,
+            "and_or": 0.01168611366301775,
+            "quantifier": 0.010559910908341408,
+            "polarity": 0.006586577743291855,
+            "equality": 0.00398431159555912,
+            "increment": 0.004178823437541723
+          }
+        },
+        "presence": {
+          "mse": 0.022982854396104813,
+          "relative_energy": 0.08379640430212021,
+          "per_knob": {
+            "ones_digit": 0.010479623451828957,
+            "tens_digit": 0.010479623451828957,
+            "add_sub": 0.038756828755140305,
+            "mul_div": 0.024421507492661476,
+            "and_or": 0.025973957031965256,
+            "quantifier": 0.013476286083459854,
+            "polarity": 0.025166817009449005,
+            "equality": 0.027158565819263458,
+            "increment": 0.030932476744055748
+          }
+        }
+      },
+      "language": {
+        "windows": [
+          {
+            "nll": 4.6722612380981445,
+            "delta_nll": 0.0017538070678710938,
+            "vocabulary_kl": 0.0030789098236709833
+          },
+          {
+            "nll": 3.387571096420288,
+            "delta_nll": 0.0195009708404541,
+            "vocabulary_kl": 0.0029318206943571568
+          },
+          {
+            "nll": 3.289865732192993,
+            "delta_nll": -0.0003857612609863281,
+            "vocabulary_kl": 0.0036680791527032852
+          },
+          {
+            "nll": 3.3616342544555664,
+            "delta_nll": 0.0029506683349609375,
+            "vocabulary_kl": 0.0032794359140098095
+          },
+          {
+            "nll": 3.9610798358917236,
+            "delta_nll": 0.00834512710571289,
+            "vocabulary_kl": 0.0027530170045793056
+          },
+          {
+            "nll": 3.8384456634521484,
+            "delta_nll": 3.218650817871094e-05,
+            "vocabulary_kl": 0.0038373712450265884
+          },
+          {
+            "nll": 3.574896812438965,
+            "delta_nll": -7.224082946777344e-05,
+            "vocabulary_kl": 0.0033259589690715075
+          },
+          {
+            "nll": 3.357656240463257,
+            "delta_nll": 0.0038988590240478516,
+            "vocabulary_kl": 0.002865208312869072
+          }
+        ],
+        "nll": {
+          "mean": 3.6804263591766357,
+          "ci95": [
+            3.421490529179573,
+            3.98718176856637
+          ]
+        },
+        "delta_nll": {
+          "mean": 0.0045029520988464355,
+          "ci95": [
+            0.0011134281754493715,
+            0.009154277294874192
+          ]
+        },
+        "vocabulary_kl": {
+          "mean": 0.0032174751395359635,
+          "ci95": [
+            0.0029851966421119867,
+            0.0034711520238488447
+          ]
+        }
+      },
+      "elementwise_sparsity": 0.5,
+      "paired_delta_nll_vs_sparsegpt": {
+        "mean": -0.0005834102630615234,
+        "ci95": [
+          -0.004899501800537109,
+          0.003004202991724014
+        ]
+      },
+      "within_nll_tolerance": true
+    },
+    "input_side_alpha_1": {
+      "local": {
+        "ambient_mse": 0.030397655442357063,
+        "heldout_span_mse": 0.0005272422567941248,
+        "deltas": {
+          "mse": 0.0045242393389344215,
+          "relative_energy": 0.029974481090903282,
+          "per_knob": {
+            "ones_digit": 0.0002922089770436287,
+            "tens_digit": 0.0010601093526929617,
+            "add_sub": 0.0019118002383038402,
+            "mul_div": 0.0033592479303479195,
+            "and_or": 0.010677222162485123,
+            "quantifier": 0.009985347278416157,
+            "polarity": 0.005943853408098221,
+            "equality": 0.003529749810695648,
+            "increment": 0.003958618268370628
+          }
+        },
+        "presence": {
+          "mse": 0.021296370774507523,
+          "relative_energy": 0.07764741778373718,
+          "per_knob": {
+            "ones_digit": 0.009837036952376366,
+            "tens_digit": 0.009837036952376366,
+            "add_sub": 0.035113781690597534,
+            "mul_div": 0.02184775285422802,
+            "and_or": 0.024205660447478294,
+            "quantifier": 0.011948722414672375,
+            "polarity": 0.02347341924905777,
+            "equality": 0.02611592411994934,
+            "increment": 0.029288001358509064
+          }
+        }
+      },
+      "language": {
+        "windows": [
+          {
+            "nll": 4.671504974365234,
+            "delta_nll": 0.0009975433349609375,
+            "vocabulary_kl": 0.0030051497742533684
+          },
+          {
+            "nll": 3.391439199447632,
+            "delta_nll": 0.02336907386779785,
+            "vocabulary_kl": 0.0028439888264983892
+          },
+          {
+            "nll": 3.286834239959717,
+            "delta_nll": -0.0034172534942626953,
+            "vocabulary_kl": 0.0031827485654503107
+          },
+          {
+            "nll": 3.3712069988250732,
+            "delta_nll": 0.012523412704467773,
+            "vocabulary_kl": 0.0030408380553126335
+          },
+          {
+            "nll": 3.961543560028076,
+            "delta_nll": 0.00880885124206543,
+            "vocabulary_kl": 0.0025335296522825956
+          },
+          {
+            "nll": 3.8443708419799805,
+            "delta_nll": 0.005957365036010742,
+            "vocabulary_kl": 0.0037453812547028065
+          },
+          {
+            "nll": 3.5810153484344482,
+            "delta_nll": 0.006046295166015625,
+            "vocabulary_kl": 0.0030219033360481262
+          },
+          {
+            "nll": 3.362368106842041,
+            "delta_nll": 0.008610725402832031,
+            "vocabulary_kl": 0.002477218396961689
+          }
+        ],
+        "nll": {
+          "mean": 3.6837854087352753,
+          "ci95": [
+            3.4262641467154027,
+            3.9906579345464706
+          ]
+        },
+        "delta_nll": {
+          "mean": 0.007862001657485962,
+          "ci95": [
+            0.0031588375568389893,
+            0.013229356706142423
+          ]
+        },
+        "vocabulary_kl": {
+          "mean": 0.00298134473268874,
+          "ci95": [
+            0.002753152939112624,
+            0.0032367144274758172
+          ]
+        }
+      },
+      "elementwise_sparsity": 0.5,
+      "paired_delta_nll_vs_sparsegpt": {
+        "mean": 0.002775639295578003,
+        "ci95": [
+          -0.0020969226956367494,
+          0.008315205574035645
+        ]
+      },
+      "within_nll_tolerance": true
+    },
+    "input_side_alpha_3": {
+      "local": {
+        "ambient_mse": 0.027050215750932693,
+        "heldout_span_mse": 0.0004758377908729017,
+        "deltas": {
+          "mse": 0.003999053034931421,
+          "relative_energy": 0.026494961231946945,
+          "per_knob": {
+            "ones_digit": 0.000271008291747421,
+            "tens_digit": 0.0009142325725406408,
+            "add_sub": 0.0017309231916442513,
+            "mul_div": 0.0029527873266488314,
+            "and_or": 0.009466223418712616,
+            "quantifier": 0.008595258928835392,
+            "polarity": 0.005282457917928696,
+            "equality": 0.0032092405017465353,
+            "increment": 0.003569346386939287
+          }
+        },
+        "presence": {
+          "mse": 0.019570598378777504,
+          "relative_energy": 0.0713551864027977,
+          "per_knob": {
+            "ones_digit": 0.009342491626739502,
+            "tens_digit": 0.009342491626739502,
+            "add_sub": 0.03157540038228035,
+            "mul_div": 0.02007639780640602,
+            "and_or": 0.022681253030896187,
+            "quantifier": 0.010750743560492992,
+            "polarity": 0.022134162485599518,
+            "equality": 0.024272602051496506,
+            "increment": 0.025959845632314682
+          }
+        }
+      },
+      "language": {
+        "windows": [
+          {
+            "nll": 4.680773735046387,
+            "delta_nll": 0.010266304016113281,
+            "vocabulary_kl": 0.0029282639734447002
+          },
+          {
+            "nll": 3.381319046020508,
+            "delta_nll": 0.013248920440673828,
+            "vocabulary_kl": 0.0024833036586642265
+          },
+          {
+            "nll": 3.2861790657043457,
+            "delta_nll": -0.004072427749633789,
+            "vocabulary_kl": 0.003437111619859934
+          },
+          {
+            "nll": 3.363584041595459,
+            "delta_nll": 0.004900455474853516,
+            "vocabulary_kl": 0.0029454564210027456
+          },
+          {
+            "nll": 3.973971128463745,
+            "delta_nll": 0.021236419677734375,
+            "vocabulary_kl": 0.002624020678922534
+          },
+          {
+            "nll": 3.836560010910034,
+            "delta_nll": -0.0018534660339355469,
+            "vocabulary_kl": 0.0032735078129917383
+          },
+          {
+            "nll": 3.573542594909668,
+            "delta_nll": -0.0014264583587646484,
+            "vocabulary_kl": 0.0024823418352752924
+          },
+          {
+            "nll": 3.3590774536132812,
+            "delta_nll": 0.005320072174072266,
+            "vocabulary_kl": 0.0025470382533967495
+          }
+        ],
+        "nll": {
+          "mean": 3.6818758845329285,
+          "ci95": [
+            3.4212791725993155,
+            3.9917901396751403
+          ]
+        },
+        "delta_nll": {
+          "mean": 0.00595247745513916,
+          "ci95": [
+            0.0008194118738174439,
+            0.011531852930784224
+          ]
+        },
+        "vocabulary_kl": {
+          "mean": 0.00284013053169474,
+          "ci95": [
+            0.0026299278986698484,
+            0.0030913550494005904
+          ]
+        }
+      },
+      "elementwise_sparsity": 0.5,
+      "paired_delta_nll_vs_sparsegpt": {
+        "mean": 0.0008661150932312012,
+        "ci95": [
+          -0.0048960231244564055,
+          0.006757789850234984
+        ]
+      },
+      "within_nll_tolerance": true
+    },
+    "fixed_tangent": {
+      "local": {
+        "ambient_mse": 0.03440941870212555,
+        "heldout_span_mse": 0.0005832633469253778,
+        "deltas": {
+          "mse": 0.018633441999554634,
+          "relative_energy": 0.12345230579376221,
+          "per_knob": {
+            "ones_digit": 0.002484827535226941,
+            "tens_digit": 0.004310380667448044,
+            "add_sub": 0.01923881098628044,
+            "mul_div": 0.04012894630432129,
+            "and_or": 0.023353472352027893,
+            "quantifier": 0.01920395717024803,
+            "polarity": 0.01690845750272274,
+            "equality": 0.015583766624331474,
+            "increment": 0.02648836188018322
+          }
+        },
+        "presence": {
+          "mse": 0.027136368677020073,
+          "relative_energy": 0.09894029051065445,
+          "per_knob": {
+            "ones_digit": 0.012336626648902893,
+            "tens_digit": 0.012336626648902893,
+            "add_sub": 0.047257594764232635,
+            "mul_div": 0.03058086521923542,
+            "and_or": 0.02908632904291153,
+            "quantifier": 0.014078741893172264,
+            "polarity": 0.028075169771909714,
+            "equality": 0.03207174688577652,
+            "increment": 0.03840361908078194
+          }
+        }
+      },
+      "language": {
+        "windows": [
+          {
+            "nll": 4.6728105545043945,
+            "delta_nll": 0.0023031234741210938,
+            "vocabulary_kl": 0.0032440032809972763
+          },
+          {
+            "nll": 3.393862247467041,
+            "delta_nll": 0.02579212188720703,
+            "vocabulary_kl": 0.003460822394117713
+          },
+          {
+            "nll": 3.289773941040039,
+            "delta_nll": -0.0004775524139404297,
+            "vocabulary_kl": 0.0035335998982191086
+          },
+          {
+            "nll": 3.3671138286590576,
+            "delta_nll": 0.008430242538452148,
+            "vocabulary_kl": 0.0035117899533361197
+          },
+          {
+            "nll": 3.9559519290924072,
+            "delta_nll": 0.0032172203063964844,
+            "vocabulary_kl": 0.0030497482512146235
+          },
+          {
+            "nll": 3.8430421352386475,
+            "delta_nll": 0.004628658294677734,
+            "vocabulary_kl": 0.004147994332015514
+          },
+          {
+            "nll": 3.5756995677948,
+            "delta_nll": 0.0007305145263671875,
+            "vocabulary_kl": 0.0031742125283926725
+          },
+          {
+            "nll": 3.3604202270507812,
+            "delta_nll": 0.006662845611572266,
+            "vocabulary_kl": 0.0030543820466846228
+          }
+        ],
+        "nll": {
+          "mean": 3.682334303855896,
+          "ci95": [
+            3.4260753162205217,
+            3.9890126310288907
+          ]
+        },
+        "delta_nll": {
+          "mean": 0.0064108967781066895,
+          "ci95": [
+            0.0021528542041778565,
+            0.012574201077222824
+          ]
+        },
+        "vocabulary_kl": {
+          "mean": 0.0033970690856222063,
+          "ci95": [
+            0.003184269127814332,
+            0.0036290991294663398
+          ]
+        }
+      },
+      "elementwise_sparsity": 0.5,
+      "paired_delta_nll_vs_sparsegpt": {
+        "mean": 0.0013245344161987305,
+        "ci95": [
+          -0.003423882275819778,
+          0.006100441515445709
+        ]
+      },
+      "within_nll_tolerance": true
+    },
+    "fisher": {
+      "local": {
+        "ambient_mse": 0.035288937389850616,
+        "heldout_span_mse": 0.000656265823636204,
+        "deltas": {
+          "mse": 0.018692754209041595,
+          "relative_energy": 0.12384527176618576,
+          "per_knob": {
+            "ones_digit": 0.002404528670012951,
+            "tens_digit": 0.004273570142686367,
+            "add_sub": 0.020499255508184433,
+            "mul_div": 0.03895201161503792,
+            "and_or": 0.022859837859869003,
+            "quantifier": 0.01997057907283306,
+            "polarity": 0.016343746334314346,
+            "equality": 0.014668943360447884,
+            "increment": 0.02826232835650444
+          }
+        },
+        "presence": {
+          "mse": 0.027376724407076836,
+          "relative_energy": 0.09981663525104523,
+          "per_knob": {
+            "ones_digit": 0.01290561817586422,
+            "tens_digit": 0.01290561817586422,
+            "add_sub": 0.045867662876844406,
+            "mul_div": 0.030334750190377235,
+            "and_or": 0.029315823689103127,
+            "quantifier": 0.014123250730335712,
+            "polarity": 0.029230233281850815,
+            "equality": 0.032173752784729004,
+            "increment": 0.03953380882740021
+          }
+        }
+      },
+      "language": {
+        "windows": [
+          {
+            "nll": 4.666088581085205,
+            "delta_nll": -0.004418849945068359,
+            "vocabulary_kl": 0.002794470638036728
+          },
+          {
+            "nll": 3.3811025619506836,
+            "delta_nll": 0.01303243637084961,
+            "vocabulary_kl": 0.0030259883496910334
+          },
+          {
+            "nll": 3.2893171310424805,
+            "delta_nll": -0.0009343624114990234,
+            "vocabulary_kl": 0.0032186286989599466
+          },
+          {
+            "nll": 3.3671276569366455,
+            "delta_nll": 0.008444070816040039,
+            "vocabulary_kl": 0.003435705555602908
+          },
+          {
+            "nll": 3.963226556777954,
+            "delta_nll": 0.01049184799194336,
+            "vocabulary_kl": 0.0026638596318662167
+          },
+          {
+            "nll": 3.8458032608032227,
+            "delta_nll": 0.00738978385925293,
+            "vocabulary_kl": 0.0036535600665956736
+          },
+          {
+            "nll": 3.5767171382904053,
+            "delta_nll": 0.0017480850219726562,
+            "vocabulary_kl": 0.0029749111272394657
+          },
+          {
+            "nll": 3.3537654876708984,
+            "delta_nll": 8.106231689453125e-06,
+            "vocabulary_kl": 0.002523892093449831
+          }
+        ],
+        "nll": {
+          "mean": 3.680393546819687,
+          "ci95": [
+            3.42222753316164,
+            3.9869543582201006
+          ]
+        },
+        "delta_nll": {
+          "mean": 0.004470139741897583,
+          "ci95": [
+            0.0004581622779369355,
+            0.008380111306905746
+          ]
+        },
+        "vocabulary_kl": {
+          "mean": 0.0030363770201802254,
+          "ci95": [
+            0.0027826361612824256,
+            0.0032675260270480064
+          ]
+        }
+      },
+      "elementwise_sparsity": 0.5,
+      "paired_delta_nll_vs_sparsegpt": {
+        "mean": -0.000616222620010376,
+        "ci95": [
+          -0.004396013915538788,
+          0.0036797836422920215
+        ]
+      },
+      "within_nll_tolerance": true
+    },
+    "random_tangent_0": {
+      "local": {
+        "ambient_mse": 0.03459775820374489,
+        "heldout_span_mse": 0.0006197261391207576,
+        "deltas": {
+          "mse": 0.01842515915632248,
+          "relative_energy": 0.12207236140966415,
+          "per_knob": {
+            "ones_digit": 0.0025052926503121853,
+            "tens_digit": 0.004229872953146696,
+            "add_sub": 0.019129779189825058,
+            "mul_div": 0.03857492655515671,
+            "and_or": 0.022733990103006363,
+            "quantifier": 0.020320914685726166,
+            "polarity": 0.01740225963294506,
+            "equality": 0.014918217435479164,
+            "increment": 0.026011178269982338
+          }
+        },
+        "presence": {
+          "mse": 0.026420090347528458,
+          "relative_energy": 0.09632870554924011,
+          "per_knob": {
+            "ones_digit": 0.013007109984755516,
+            "tens_digit": 0.013007109984755516,
+            "add_sub": 0.043411772698163986,
+            "mul_div": 0.029087930917739868,
+            "and_or": 0.02900199592113495,
+            "quantifier": 0.01340895239263773,
+            "polarity": 0.02819684147834778,
+            "equality": 0.031778864562511444,
+            "increment": 0.036880236119031906
+          }
+        }
+      },
+      "language": {
+        "windows": [
+          {
+            "nll": 4.676930904388428,
+            "delta_nll": 0.006423473358154297,
+            "vocabulary_kl": 0.003004343481734395
+          },
+          {
+            "nll": 3.379689931869507,
+            "delta_nll": 0.011619806289672852,
+            "vocabulary_kl": 0.0032230892684310675
+          },
+          {
+            "nll": 3.291490077972412,
+            "delta_nll": 0.0012385845184326172,
+            "vocabulary_kl": 0.003710480872541666
+          },
+          {
+            "nll": 3.365175724029541,
+            "delta_nll": 0.006492137908935547,
+            "vocabulary_kl": 0.0037336533423513174
+          },
+          {
+            "nll": 3.9664292335510254,
+            "delta_nll": 0.013694524765014648,
+            "vocabulary_kl": 0.00291587901301682
+          },
+          {
+            "nll": 3.8401832580566406,
+            "delta_nll": 0.0017697811126708984,
+            "vocabulary_kl": 0.0038144581485539675
+          },
+          {
+            "nll": 3.5793561935424805,
+            "delta_nll": 0.0043871402740478516,
+            "vocabulary_kl": 0.0031912541016936302
+          },
+          {
+            "nll": 3.356175661087036,
+            "delta_nll": 0.0024182796478271484,
+            "vocabulary_kl": 0.0029647466726601124
+          }
+        ],
+        "nll": {
+          "mean": 3.681928873062134,
+          "ci95": [
+            3.4214441567659377,
+            3.9904984161257744
+          ]
+        },
+        "delta_nll": {
+          "mean": 0.006005465984344482,
+          "ci95": [
+            0.0033553041517734527,
+            0.008968886733055114
+          ]
+        },
+        "vocabulary_kl": {
+          "mean": 0.003319738112622872,
+          "ci95": [
+            0.003071929925499717,
+            0.00354873615942779
+          ]
+        }
+      },
+      "elementwise_sparsity": 0.5,
+      "paired_delta_nll_vs_sparsegpt": {
+        "mean": 0.0009191036224365234,
+        "ci95": [
+          -0.003785374015569687,
+          0.005471811443567276
+        ]
+      },
+      "within_nll_tolerance": true
+    },
+    "random_tangent_1": {
+      "local": {
+        "ambient_mse": 0.03448992595076561,
+        "heldout_span_mse": 0.0006093868869356811,
+        "deltas": {
+          "mse": 0.018666038289666176,
+          "relative_energy": 0.12366826832294464,
+          "per_knob": {
+            "ones_digit": 0.0024983983021229506,
+            "tens_digit": 0.004366897977888584,
+            "add_sub": 0.0196374524384737,
+            "mul_div": 0.038580719381570816,
+            "and_or": 0.023343447595834732,
+            "quantifier": 0.02046150341629982,
+            "polarity": 0.016776621341705322,
+            "equality": 0.015652446076273918,
+            "increment": 0.026676878333091736
+          }
+        },
+        "presence": {
+          "mse": 0.02680114470422268,
+          "relative_energy": 0.09771804511547089,
+          "per_knob": {
+            "ones_digit": 0.012390063144266605,
+            "tens_digit": 0.012390063144266605,
+            "add_sub": 0.04511711001396179,
+            "mul_div": 0.029668014496564865,
+            "and_or": 0.030064323917031288,
+            "quantifier": 0.013721968978643417,
+            "polarity": 0.02816486917436123,
+            "equality": 0.031026918441057205,
+            "increment": 0.0386669859290123
+          }
+        }
+      },
+      "language": {
+        "windows": [
+          {
+            "nll": 4.670190811157227,
+            "delta_nll": -0.000316619873046875,
+            "vocabulary_kl": 0.0030711658764630556
+          },
+          {
+            "nll": 3.3750197887420654,
+            "delta_nll": 0.006949663162231445,
+            "vocabulary_kl": 0.0031120749190449715
+          },
+          {
+            "nll": 3.293950080871582,
+            "delta_nll": 0.003698587417602539,
+            "vocabulary_kl": 0.00359731400385499
+          },
+          {
+            "nll": 3.368466377258301,
+            "delta_nll": 0.009782791137695312,
+            "vocabulary_kl": 0.0033413167111575603
+          },
+          {
+            "nll": 3.957658052444458,
+            "delta_nll": 0.004923343658447266,
+            "vocabulary_kl": 0.002884967951104045
+          },
+          {
+            "nll": 3.8373308181762695,
+            "delta_nll": -0.0010826587677001953,
+            "vocabulary_kl": 0.00396190769970417
+          },
+          {
+            "nll": 3.5754776000976562,
+            "delta_nll": 0.0005085468292236328,
+            "vocabulary_kl": 0.0032043438404798508
+          },
+          {
+            "nll": 3.3611652851104736,
+            "delta_nll": 0.0074079036712646484,
+            "vocabulary_kl": 0.0028972793370485306
+          }
+        ],
+        "nll": {
+          "mean": 3.679907351732254,
+          "ci95": [
+            3.4222156807780264,
+            3.9851070940494537
+          ]
+        },
+        "delta_nll": {
+          "mean": 0.003983944654464722,
+          "ci95": [
+            0.0016955457627773286,
+            0.006464336067438125
+          ]
+        },
+        "vocabulary_kl": {
+          "mean": 0.0032587962923571467,
+          "ci95": [
+            0.0030368860192538706,
+            0.0034999325856915676
+          ]
+        }
+      },
+      "elementwise_sparsity": 0.5,
+      "paired_delta_nll_vs_sparsegpt": {
+        "mean": -0.0011024177074432373,
+        "ci95": [
+          -0.006445533782243729,
+          0.004324614256620407
+        ]
+      },
+      "within_nll_tolerance": true
+    },
+    "random_tangent_2": {
+      "local": {
+        "ambient_mse": 0.034412313252687454,
+        "heldout_span_mse": 0.0006075153942219913,
+        "deltas": {
+          "mse": 0.01848633959889412,
+          "relative_energy": 0.1224777027964592,
+          "per_knob": {
+            "ones_digit": 0.002492339350283146,
+            "tens_digit": 0.00452300813049078,
+            "add_sub": 0.019155900925397873,
+            "mul_div": 0.038102976977825165,
+            "and_or": 0.023757081478834152,
+            "quantifier": 0.019681468605995178,
+            "polarity": 0.017356717959046364,
+            "equality": 0.014883870258927345,
+            "increment": 0.026423688977956772
+          }
+        },
+        "presence": {
+          "mse": 0.02678760327398777,
+          "relative_energy": 0.09766867756843567,
+          "per_knob": {
+            "ones_digit": 0.013140374794602394,
+            "tens_digit": 0.013140374794602394,
+            "add_sub": 0.04464150220155716,
+            "mul_div": 0.028601638972759247,
+            "and_or": 0.02941330522298813,
+            "quantifier": 0.013282695785164833,
+            "polarity": 0.02831440418958664,
+            "equality": 0.0308480616658926,
+            "increment": 0.03970607742667198
+          }
+        }
+      },
+      "language": {
+        "windows": [
+          {
+            "nll": 4.670570373535156,
+            "delta_nll": 6.29425048828125e-05,
+            "vocabulary_kl": 0.003203266765922308
+          },
+          {
+            "nll": 3.3856914043426514,
+            "delta_nll": 0.017621278762817383,
+            "vocabulary_kl": 0.0033248516265302896
+          },
+          {
+            "nll": 3.2943308353424072,
+            "delta_nll": 0.004079341888427734,
+            "vocabulary_kl": 0.003505012718960643
+          },
+          {
+            "nll": 3.360222578048706,
+            "delta_nll": 0.001538991928100586,
+            "vocabulary_kl": 0.003185196314007044
+          },
+          {
+            "nll": 3.962019205093384,
+            "delta_nll": 0.009284496307373047,
+            "vocabulary_kl": 0.0031099847983568907
+          },
+          {
+            "nll": 3.8403892517089844,
+            "delta_nll": 0.0019757747650146484,
+            "vocabulary_kl": 0.004149207845330238
+          },
+          {
+            "nll": 3.569943904876709,
+            "delta_nll": -0.005025148391723633,
+            "vocabulary_kl": 0.003252840368077159
+          },
+          {
+            "nll": 3.3481075763702393,
+            "delta_nll": -0.0056498050689697266,
+            "vocabulary_kl": 0.0027678627520799637
+          }
+        ],
+        "nll": {
+          "mean": 3.6789093911647797,
+          "ci95": [
+            3.420628447085619,
+            3.985393165796995
+          ]
+        },
+        "delta_nll": {
+          "mean": 0.0029859840869903564,
+          "ci95": [
+            -0.0013798050582408904,
+            0.008015751838684082
+          ]
+        },
+        "vocabulary_kl": {
+          "mean": 0.003312277898658067,
+          "ci95": [
+            0.0030897527940396685,
+            0.003571652738173725
+          ]
+        }
+      },
+      "elementwise_sparsity": 0.5,
+      "paired_delta_nll_vs_sparsegpt": {
+        "mean": -0.0021003782749176025,
+        "ci95": [
+          -0.006006378680467606,
+          0.001521289348602295
+        ]
+      },
+      "within_nll_tolerance": true
+    }
+  },
+  "complete": true,
+  "peak_gib": 2.1756982803344727
+}

@@ -1,0 +1,23 @@
+{
+  "atlas_sha256": "aa8f779d24126fd3621fca363a22c3206e4eb9bd51b3f54d12021530f623bd14",
+  "capture_sha256": "8670c8375bdfb417c849a2e84fef4e825f04f26c3e9d6e73e2f7e884cf304487",
+  "evaluation_ids": [
+    "controlled/227/2ff7ab1ad50f8955",
+    "controlled/223/b1d1228824297cd8",
+    "controlled/213/2357152e5a3fb786",
+    "controlled/200/61d549d9b0e5c112",
+    "controlled/227/1104105fb6f4fc9f",
+    "controlled/223/c477c02c0a3fa703",
+    "controlled/213/91c1053b26674cff",
+    "controlled/200/267d06396904454d"
+  ],
+  "group_pairs": 8,
+  "group_size": 8,
+  "manifest_sha256": "36de89acdda5d71de79a5de63a2268ed4a01476d5a5bb5c3fe3e285ac35547ac",
+  "purpose": "development_stage2_not_confirmatory",
+  "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "seed": 0,
+  "sensitivity_sha256": "6526edcc24e18b636db90e723590362d07b9b79c8f4dec65c564fadfbcf66532",
+  "singles": 128,
+  "source_sha256": "bb145ad8ad8b76df07bf1950646b95cee3a967e2d8c23b21f4da91f58d2db7d4"
+}

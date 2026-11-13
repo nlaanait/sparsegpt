@@ -1,8 +1,8 @@
 """Downstream tangent metric calibration (revised research note, section 4.9).
 
 Anchor bases are fitted separately and held fixed during VJPs. Calibration
-retains the diagonal of J.T P J, including attention's token mixing, then
-couples it to the matching local inputs. Pruning uses Variant B's matched
+supports an activation-diagonal ablation and a shared-weight diagonal
+that sums token contributions before squaring. Pruning uses Variant B's matched
 rescaling and compensation; it is an approximation to the full pullback.
 """
 
@@ -100,6 +100,7 @@ def tangent_pullback_diagonal(
     num_probes: int | None = 8,
     generator: torch.Generator | None = None,
     retain_graph: bool = False,
+    weight_inputs: Mapping[str, torch.Tensor] | None = None,
 ) -> dict[str, torch.Tensor]:
     """Estimate diag(J.T P J) at targets by backpropagating tangent probes.
 
@@ -114,6 +115,12 @@ def tangent_pullback_diagonal(
     a generator, a private generator seeded with zero is used.
     Disconnected targets get zero sensitivity; existing parameter .grad
     buffers are never changed. The graph is consumed unless retained.
+
+    With ``weight_inputs``, return shared-weight diagonals instead: sum
+    gradient/input outer products over tokens BEFORE squaring, separately
+    for each independent sequence, then sum sequences and average probes.
+    Two-dimensional targets represent one sequence; three-dimensional
+    targets have an independent leading batch axis.
     """
     if num_probes is not None and (
         isinstance(num_probes, bool) or not isinstance(num_probes, int) or num_probes < 1
@@ -127,8 +134,20 @@ def tangent_pullback_diagonal(
         generator = torch.Generator(device="cpu").manual_seed(0)
     frames = _frames(basis, output)
     positions, _, rank = frames.shape
+    if weight_inputs is not None:
+        if weight_inputs.keys() != targets.keys():
+            raise ValueError("weight inputs must match target names")
+        for name, target in targets.items():
+            x = weight_inputs[name]
+            if target.ndim not in (2, 3) or x.shape[:-1] != target.shape[:-1]:
+                raise ValueError("weight inputs must match target sequence axes")
+            if not torch.isfinite(x).all():
+                raise ValueError("weight inputs must be finite")
     result = {
         name: torch.zeros_like(value, dtype=torch.float64 if value.dtype == torch.float64 else torch.float32)
+        for name, value in targets.items()
+    } if weight_inputs is None else {
+        name: torch.zeros(value.shape[-1], weight_inputs[name].shape[-1], dtype=torch.float64)
         for name, value in targets.items()
     }
     if rank == 0 or not frames.any():
@@ -153,7 +172,16 @@ def tangent_pullback_diagonal(
         )
         for name, gradient in zip(targets, gradients):
             if gradient is not None:
-                result[name].add_(gradient.detach().to(result[name].dtype).square())
+                if weight_inputs is None:
+                    result[name].add_(gradient.detach().to(result[name].dtype).square())
+                else:
+                    g = gradient.detach().to(device="cpu", dtype=torch.float64)
+                    x = weight_inputs[name].detach().to(device="cpu", dtype=torch.float64)
+                    if g.ndim == 2:
+                        g, x = g.unsqueeze(0), x.unsqueeze(0)
+                    # Shared weights aggregate tokens, never independent examples.
+                    for sequence_g, sequence_x in zip(g, x):
+                        result[name].add_((sequence_g.T @ sequence_x).square())
     if num_probes is not None:
         for diagonal in result.values():
             diagonal.div_(count)
@@ -206,6 +234,7 @@ class DownstreamTangentSparseGPT(SparseGPT):
         self.input_geometry_energy = torch.zeros_like(self.geometry_energy)
         self.vector_count = 0
         self.geometry_vector_count = 0
+        self.metric = "activation_diagonal"
         self.scale: torch.Tensor | None = None
         self.tangent_diagnostics: dict = {}
 
@@ -255,6 +284,22 @@ class DownstreamTangentSparseGPT(SparseGPT):
         self.input_energy.add_(x.square().sum(0))
         self.vector_count += len(x)
 
+    @torch.no_grad()
+    def add_weight_diagonal_batch(self, inputs, diagonal, *, collect_ambient=True):
+        """Accumulate an already probe-averaged, sequence-summed weight metric."""
+        if self.scale is not None or self.H is None:
+            raise RuntimeError("cannot add calibration after finalization or pruning")
+        if self.input_alpha:
+            raise ValueError("weight-diagonal calibration does not support input_alpha")
+        value = diagonal.detach().to(device="cpu", dtype=torch.float64)
+        if value.shape != self.geometry_energy.shape or not torch.isfinite(value).all() or (value < 0).any():
+            raise ValueError("weight diagonal must be finite, nonnegative and match layer weights")
+        if collect_ambient:
+            self.add_ambient_batch(inputs)
+        self.geometry_energy.add_(value)
+        self.metric = "weight_diagonal"
+        self.geometry_vector_count += inputs.numel() // self.columns
+
     def finalize_tangents(self) -> None:
         if self.scale is not None:
             return
@@ -270,6 +315,7 @@ class DownstreamTangentSparseGPT(SparseGPT):
         geo[:, ~support] = 0
         inp[:, ~support] = 0
         geo_trace, input_trace = float(geo.sum()), float(inp.sum())
+        raw_trace = float(self.geometry_energy.sum())
         gamma = self.alpha * ambient_trace / geo_trace if geo_trace > 0 else 0.0
         eta = self.input_alpha * ambient_trace / input_trace if input_trace > 0 else 0.0
         extra = gamma * geo + eta * inp
@@ -288,9 +334,14 @@ class DownstreamTangentSparseGPT(SparseGPT):
             "eta": eta,
             "ambient_trace": ambient_trace / self.vector_count,
             "geometry_trace": geo_trace / self.vector_count,
+            "raw_geometry_trace": raw_trace / self.vector_count,
+            "excluded_geometry_trace": (raw_trace - geo_trace) / self.vector_count,
+            "achieved_geometry_to_ambient_ratio": gamma * geo_trace / ambient_trace if ambient_trace else 0.,
             "input_geometry_trace": input_trace / self.vector_count,
             "unsupported_inputs": int((~support).sum()),
-            "diagonal_output_and_token_approximation": True,
+            "metric": self.metric,
+            "diagonal_output_and_token_approximation": self.metric == "activation_diagonal",
+            "shared_weight_diagonal_approximation": self.metric == "weight_diagonal",
             "congruence_approximation": True,
         }
 
@@ -333,9 +384,15 @@ class DownstreamTangentCalibrator:
         input_bases: Mapping[str, Basis] | None = None,
         num_probes: int | None = 8,
         seed: int = 0,
+        metric: str = "activation_diagonal",
     ):
         if not targets or not anchors:
             raise ValueError("at least one target and one anchor are required")
+        if metric not in ("activation_diagonal", "weight_diagonal"):
+            raise ValueError("unknown downstream metric")
+        if metric == "weight_diagonal" and (input_alpha or input_bases):
+            raise ValueError("weight_diagonal does not support local input tangent coupling")
+        self.metric = metric
         if len({id(module) for module in targets.values()}) != len(targets):
             raise ValueError("target modules must be unique")
         if num_probes is not None and (
@@ -404,6 +461,8 @@ class DownstreamTangentCalibrator:
                         out, dtype=torch.float64 if out.dtype == torch.float64 else torch.float32,
                     )
                     for name, out in target_outputs.items()
+                } if self.metric == "activation_diagonal" else {
+                    name: torch.zeros_like(solver.geometry_energy) for name, solver in self.solvers.items()
                 }
                 for index, (name, anchor) in enumerate(self.anchors.items()):
                     if anchor.weight == 0:
@@ -414,6 +473,7 @@ class DownstreamTangentCalibrator:
                         output, basis, target_outputs,
                         num_probes=self.num_probes, generator=self.generator,
                         retain_graph=index + 1 < len(self.anchors),
+                        weight_inputs=target_inputs if self.metric == "weight_diagonal" else None,
                     )
                     for target in sensitivities:
                         sensitivities[target].add_(diagonal[target], alpha=anchor.weight)
@@ -422,10 +482,14 @@ class DownstreamTangentCalibrator:
                     inputs = target_inputs[name]
                     input_frames[name] = basis(inputs) if callable(basis) else basis
                 for name, solver in self.solvers.items():
-                    solver.add_pullback_batch(
-                        target_inputs[name], sensitivities[name], input_basis=input_frames.get(name),
-                        collect_ambient=collect_ambient,
-                    )
+                    if self.metric == "weight_diagonal":
+                        solver.add_weight_diagonal_batch(target_inputs[name], sensitivities[name],
+                                                        collect_ambient=collect_ambient)
+                    else:
+                        solver.add_pullback_batch(
+                            target_inputs[name], sensitivities[name], input_basis=input_frames.get(name),
+                            collect_ambient=collect_ambient,
+                        )
                 self.batch_count += 1
         finally:
             for handle in handles:

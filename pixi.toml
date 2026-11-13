@@ -149,8 +149,17 @@ description = "Redraw the Qwen3.5 size page from saved JSON"
 depends-on = [{ task = "_qwen-figure2", args = ["--plot-only"] }]
 
 # The default environment stays on the CUDA 13.0 platform it was locked with.
-# This machine's driver only exposes CUDA 12.8, so it is not host-runnable here.
+# A GH200 host with a CUDA 12.8 driver needs the separate gh200 environment.
 [environments.default]
+platforms = ["linux-aarch64-cuda-13-0"]
+
+# GB10 / CUDA 13: keep the local extension separate from the default env.
+# Build or stage this wheel with scripts/build_causal_conv1d_wheel.sh.
+[feature.gb10.pypi-dependencies]
+causal-conv1d = { path = "/home/nlaanait/.pixi/wheels/cu130/causal_conv1d-1.7.0-cp312-cp312-linux_aarch64.whl" }
+
+[environments.gb10]
+features = ["gb10"]
 platforms = ["linux-aarch64-cuda-13-0"]
 
 # Newest pair this driver can load that has an aarch64 causal-conv1d wheel:

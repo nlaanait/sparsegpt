@@ -1,0 +1,388 @@
+{
+  "arms": {
+    "qwen-9b-gsm8k-dense-a0-s0-v1": {
+      "accuracy": 0.875,
+      "alpha": 0.0,
+      "answer_nll": 4.6641775369644165,
+      "arm": "dense",
+      "complete": true,
+      "delta_language_nll": {
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "mean": 0.0
+      },
+      "dense_correct_retained": 28,
+      "dense_correct_total": 28,
+      "paired_vs_task_sparsegpt": {
+        "accuracy_difference": -0.03125,
+        "clustered_ci95": [
+          -0.21875,
+          0.125
+        ],
+        "interpretation": "exploratory_validation_interval_not_confirmatory",
+        "problems": 32,
+        "source_groups": 4
+      },
+      "seed": 0,
+      "sparsity": 0.0,
+      "truncated": 4
+    },
+    "qwen-9b-gsm8k-factor-a1-s0-v1": {
+      "accuracy": 0.9375,
+      "alpha": 1.0,
+      "answer_nll": 4.5586690083146095,
+      "arm": "factor",
+      "complete": true,
+      "delta_language_nll": {
+        "ci95": [
+          -0.006623200327157974,
+          0.0021880500018596647
+        ],
+        "mean": -0.002310633659362793
+      },
+      "dense_correct_retained": 27,
+      "dense_correct_total": 28,
+      "paired_vs_task_sparsegpt": {
+        "accuracy_difference": 0.03125,
+        "clustered_ci95": [
+          -0.09375,
+          0.15625
+        ],
+        "interpretation": "exploratory_validation_interval_not_confirmatory",
+        "problems": 32,
+        "source_groups": 4
+      },
+      "seed": 0,
+      "sparsity": 0.5,
+      "truncated": 2
+    },
+    "qwen-9b-gsm8k-global-a1-s0-v1": {
+      "accuracy": 0.8125,
+      "alpha": 1.0,
+      "answer_nll": 4.628447130322456,
+      "arm": "global",
+      "complete": true,
+      "delta_language_nll": {
+        "ci95": [
+          -0.009415184706449508,
+          -0.0009485572576522833
+        ],
+        "mean": -0.0051544904708862305
+      },
+      "dense_correct_retained": 24,
+      "dense_correct_total": 28,
+      "paired_vs_task_sparsegpt": {
+        "accuracy_difference": -0.09375,
+        "clustered_ci95": [
+          -0.375,
+          0.09375
+        ],
+        "interpretation": "exploratory_validation_interval_not_confirmatory",
+        "problems": 32,
+        "source_groups": 4
+      },
+      "seed": 0,
+      "sparsity": 0.5,
+      "truncated": 6
+    },
+    "qwen-9b-gsm8k-input-repaired-a1-s0-v1": {
+      "accuracy": 0.84375,
+      "alpha": 1.0,
+      "answer_nll": 4.68395771086216,
+      "arm": "input_repaired",
+      "complete": true,
+      "delta_language_nll": {
+        "ci95": [
+          -0.004957878589630127,
+          0.002034512907266617
+        ],
+        "mean": -0.0012653768062591553
+      },
+      "dense_correct_retained": 24,
+      "dense_correct_total": 28,
+      "paired_vs_task_sparsegpt": {
+        "accuracy_difference": -0.0625,
+        "clustered_ci95": [
+          -0.28125,
+          0.09375
+        ],
+        "interpretation": "exploratory_validation_interval_not_confirmatory",
+        "problems": 32,
+        "source_groups": 4
+      },
+      "seed": 0,
+      "sparsity": 0.5,
+      "truncated": 5
+    },
+    "qwen-9b-gsm8k-input-rotated-a1-s0-v1": {
+      "accuracy": 0.8125,
+      "alpha": 1.0,
+      "answer_nll": 4.634390965104103,
+      "arm": "input_rotated",
+      "complete": true,
+      "delta_language_nll": {
+        "ci95": [
+          -0.006453696638345718,
+          -0.0011003658175468445
+        ],
+        "mean": -0.003631025552749634
+      },
+      "dense_correct_retained": 24,
+      "dense_correct_total": 28,
+      "paired_vs_task_sparsegpt": {
+        "accuracy_difference": -0.09375,
+        "clustered_ci95": [
+          -0.3125,
+          0.0
+        ],
+        "interpretation": "exploratory_validation_interval_not_confirmatory",
+        "problems": 32,
+        "source_groups": 4
+      },
+      "seed": 0,
+      "sparsity": 0.5,
+      "truncated": 6
+    },
+    "qwen-9b-gsm8k-input-side-a0p3-s0-v1": {
+      "accuracy": 0.90625,
+      "alpha": 0.3,
+      "answer_nll": 4.708811044692993,
+      "arm": "input_side",
+      "complete": true,
+      "delta_language_nll": {
+        "ci95": [
+          -0.004147081822156906,
+          0.004232990741729736
+        ],
+        "mean": 0.00047320127487182617
+      },
+      "dense_correct_retained": 26,
+      "dense_correct_total": 28,
+      "paired_vs_task_sparsegpt": {
+        "accuracy_difference": 0.0,
+        "clustered_ci95": [
+          -0.15625,
+          0.15625
+        ],
+        "interpretation": "exploratory_validation_interval_not_confirmatory",
+        "problems": 32,
+        "source_groups": 4
+      },
+      "seed": 0,
+      "sparsity": 0.5,
+      "truncated": 3
+    },
+    "qwen-9b-gsm8k-input-side-a1-s0-v1": {
+      "accuracy": 0.875,
+      "alpha": 1.0,
+      "answer_nll": 4.680889330804348,
+      "arm": "input_side",
+      "complete": true,
+      "delta_language_nll": {
+        "ci95": [
+          -0.007065445184707642,
+          0.001876980066299437
+        ],
+        "mean": -0.0019752085208892822
+      },
+      "dense_correct_retained": 26,
+      "dense_correct_total": 28,
+      "paired_vs_task_sparsegpt": {
+        "accuracy_difference": -0.03125,
+        "clustered_ci95": [
+          -0.1875,
+          0.09375
+        ],
+        "interpretation": "exploratory_validation_interval_not_confirmatory",
+        "problems": 32,
+        "source_groups": 4
+      },
+      "seed": 0,
+      "sparsity": 0.5,
+      "truncated": 4
+    },
+    "qwen-9b-gsm8k-input-side-a3-s0-v1": {
+      "accuracy": 0.90625,
+      "alpha": 3.0,
+      "answer_nll": 4.5478963404893875,
+      "arm": "input_side",
+      "complete": true,
+      "delta_language_nll": {
+        "ci95": [
+          -0.004500696063041687,
+          0.00030541419982910156
+        ],
+        "mean": -0.0016709864139556885
+      },
+      "dense_correct_retained": 26,
+      "dense_correct_total": 28,
+      "paired_vs_task_sparsegpt": {
+        "accuracy_difference": 0.0,
+        "clustered_ci95": [
+          -0.15703124999999996,
+          0.1875
+        ],
+        "interpretation": "exploratory_validation_interval_not_confirmatory",
+        "problems": 32,
+        "source_groups": 4
+      },
+      "seed": 0,
+      "sparsity": 0.5,
+      "truncated": 3
+    },
+    "qwen-9b-gsm8k-local-a1-s0-v1": {
+      "accuracy": 0.84375,
+      "alpha": 1.0,
+      "answer_nll": 4.75340685993433,
+      "arm": "local",
+      "complete": true,
+      "delta_language_nll": {
+        "ci95": [
+          -0.0067133836448192595,
+          0.0018055140972137451
+        ],
+        "mean": -0.002524763345718384
+      },
+      "dense_correct_retained": 24,
+      "dense_correct_total": 28,
+      "paired_vs_task_sparsegpt": {
+        "accuracy_difference": -0.0625,
+        "clustered_ci95": [
+          -0.25,
+          0.09375
+        ],
+        "interpretation": "exploratory_validation_interval_not_confirmatory",
+        "problems": 32,
+        "source_groups": 4
+      },
+      "seed": 0,
+      "sparsity": 0.5,
+      "truncated": 5
+    },
+    "qwen-9b-gsm8k-rank-matched-a1-s0-v1": {
+      "accuracy": 0.90625,
+      "alpha": 1.0,
+      "answer_nll": 4.620841883122921,
+      "arm": "rank_matched",
+      "complete": true,
+      "delta_language_nll": {
+        "ci95": [
+          -0.0065630912780761715,
+          -0.0001256480813026429
+        ],
+        "mean": -0.0030969083309173584
+      },
+      "dense_correct_retained": 26,
+      "dense_correct_total": 28,
+      "paired_vs_task_sparsegpt": {
+        "accuracy_difference": 0.0,
+        "clustered_ci95": [
+          -0.15625,
+          0.15625
+        ],
+        "interpretation": "exploratory_validation_interval_not_confirmatory",
+        "problems": 32,
+        "source_groups": 4
+      },
+      "seed": 0,
+      "sparsity": 0.5,
+      "truncated": 3
+    },
+    "qwen-9b-gsm8k-shuffled-a1-s0-v1": {
+      "accuracy": 0.90625,
+      "alpha": 1.0,
+      "answer_nll": 4.747937299311161,
+      "arm": "shuffled",
+      "complete": true,
+      "delta_language_nll": {
+        "ci95": [
+          -0.008455668389797211,
+          0.0007265008985996242
+        ],
+        "mean": -0.0036369264125823975
+      },
+      "dense_correct_retained": 26,
+      "dense_correct_total": 28,
+      "paired_vs_task_sparsegpt": {
+        "accuracy_difference": 0.0,
+        "clustered_ci95": [
+          -0.15625,
+          0.125
+        ],
+        "interpretation": "exploratory_validation_interval_not_confirmatory",
+        "problems": 32,
+        "source_groups": 4
+      },
+      "seed": 0,
+      "sparsity": 0.5,
+      "truncated": 3
+    },
+    "qwen-9b-gsm8k-sparsegpt-c4-a0-s0-v1": {
+      "accuracy": 0.90625,
+      "alpha": 0.0,
+      "answer_nll": 4.575747936964035,
+      "arm": "sparsegpt_c4",
+      "complete": true,
+      "delta_language_nll": {
+        "ci95": [
+          -4.662945866584778e-05,
+          0.007194553315639495
+        ],
+        "mean": 0.003720313310623169
+      },
+      "dense_correct_retained": 26,
+      "dense_correct_total": 28,
+      "paired_vs_task_sparsegpt": {
+        "accuracy_difference": 0.0,
+        "clustered_ci95": [
+          -0.15625,
+          0.125
+        ],
+        "interpretation": "exploratory_validation_interval_not_confirmatory",
+        "problems": 32,
+        "source_groups": 4
+      },
+      "seed": 0,
+      "sparsity": 0.5,
+      "truncated": 3
+    },
+    "qwen-9b-gsm8k-sparsegpt-task-a0-s0-v1": {
+      "accuracy": 0.90625,
+      "alpha": 0.0,
+      "answer_nll": 4.642431817948818,
+      "arm": "sparsegpt_task",
+      "complete": true,
+      "delta_language_nll": {
+        "ci95": [
+          -0.005087018013000488,
+          0.001087049394845961
+        ],
+        "mean": -0.001879662275314331
+      },
+      "dense_correct_retained": 25,
+      "dense_correct_total": 28,
+      "paired_vs_task_sparsegpt": {
+        "accuracy_difference": 0.0,
+        "clustered_ci95": [
+          0.0,
+          0.0
+        ],
+        "interpretation": "exploratory_validation_interval_not_confirmatory",
+        "problems": 32,
+        "source_groups": 4
+      },
+      "seed": 0,
+      "sparsity": 0.5,
+      "truncated": 3
+    }
+  },
+  "limitations": [
+    "not GSM8K official test",
+    "not multi-layer pruning",
+    "few independent template groups",
+    "output-metric solver is a row-diagonal congruence approximation"
+  ],
+  "scope": "one_layer_development_validation"
+}

@@ -41,13 +41,13 @@ def build_plan(calibration, validation):
 
 
 def smoke_gate(root: Path, plan: dict):
-    source = root / SMOKE
+    source = root / plan.get("smoke_name", SMOKE)
     if not (source / "report.json").exists():
         raise RuntimeError("downstream smoke report missing")
     from sparsifier.eval.gsm8k_original import frozen_stages
     config, report = frozen_stages(source)
     expected = [[block, module] for block in (15, 16) for module in MODULES.split(",")]
-    if config["arm"] != ARM or config["pullback"] != plan["pullback"]:
+    if config["arm"] != plan.get("arm", ARM) or config["pullback"] != plan["pullback"]:
         raise ValueError("downstream smoke method mismatch")
     if config["manifest_sha256"] != plan["calibration_manifest_sha256"]:
         raise ValueError("downstream smoke manifest mismatch")
@@ -68,7 +68,7 @@ def smoke_gate(root: Path, plan: dict):
     return config, report
 
 
-def worker(root: Path, task_name: str, expected_hash: str, plan_name: str = PLAN):
+def worker(root: Path, task_name: str, expected_hash: str, plan_name: str = PLAN, screen_128: bool = False):
     plan = json.loads((root / plan_name).read_text())
     if digest(plan) != expected_hash:
         raise ValueError("downstream sweep plan drift")
@@ -84,12 +84,14 @@ def worker(root: Path, task_name: str, expected_hash: str, plan_name: str = PLAN
     if task["phase"] == "original_validation":
         from sparsifier.eval.gsm8k_original import frozen_stages
         config, report = frozen_stages(root / task["depends_on"][0])
-        if config["arm"] != ARM or config["blocks"] != "all" or config["modules"].split(",") != plan["modules"]:
+        if config["arm"] != plan.get("arm", ARM) or config["blocks"] != "all" or config["modules"].split(",") != plan["modules"]:
             raise ValueError("downstream source candidate scope mismatch")
-        module = "sparsifier.eval.gsm8k_original"
+        module = "sparsifier.eval.gsm8k_screened" if screen_128 else "sparsifier.eval.gsm8k_original"
         argv = ["--manifest", str(root / "data/original-validation-v1.json"),
                 "--source", str(root / task["depends_on"][0]), "--output", str(output),
                 "--max-new-tokens", str(plan["max_new_tokens"])]
+        if screen_128:
+            argv += ["--screen-reference", str(root / plan["dense_reference"])]
     else:
         if task["phase"] == "prune":
             smoke_gate(root, plan)
@@ -103,6 +105,8 @@ def worker(root: Path, task_name: str, expected_hash: str, plan_name: str = PLAN
                 "--max-new-tokens", str(plan["max_new_tokens"]),
                 "--num-probes", str(plan["pullback"]["num_probes"]),
                 "--probe-count", str(plan["pullback"]["probe_count"])]
+        if "metric" in plan["pullback"]:
+            argv += ["--metric", plan["pullback"]["metric"]]
     sys.argv = [module, *argv]
     runpy.run_module(module, run_name="__main__")
 
@@ -113,11 +117,12 @@ def main():
     parser.add_argument("--task")
     parser.add_argument("--plan-sha256")
     parser.add_argument("--plan", default=PLAN)
+    parser.add_argument("--screen-128", action="store_true")
     args = parser.parse_args()
     if args.task:
         if not args.plan_sha256:
             parser.error("worker requires --plan-sha256")
-        worker(args.root, args.task, args.plan_sha256, args.plan)
+        worker(args.root, args.task, args.plan_sha256, args.plan, args.screen_128)
     else:
         plan = build_plan(load_manifest(args.root / "data/controlled-v1.json"),
                           load_manifest(args.root / "data/original-validation-v1.json"))

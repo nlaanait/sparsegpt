@@ -1,0 +1,1134 @@
+{
+  "claim": "development_diagnostics_only_no_semantic_factor_recovery_asserted",
+  "complete": true,
+  "config": {
+    "active": 2,
+    "capture_sha256": "8670c8375bdfb417c849a2e84fef4e825f04f26c3e9d6e73e2f7e884cf304487",
+    "charts": 4,
+    "estimator_sources": {
+      "sparsifier.prune.factor_atlas": "4e5c37fc40b8aeae8468e68400f9c3cb2f5b2c2797512a9d2b00d69e78cddfbb",
+      "sparsifier.prune.geometry_features": "70d3d8d68b32849dbcf03c31bcef29d242ff5fb18a135687be5b9c9f72d45680"
+    },
+    "groups": 8,
+    "manifest_sha256": "36de89acdda5d71de79a5de63a2268ed4a01476d5a5bb5c3fe3e285ac35547ac",
+    "rank": 1,
+    "seed": 0,
+    "source_sha256": "f525ccb90688f479a1c9a7fef62d5e58149aaf8783f2508ea5bd10c7fba55f19",
+    "width": 4
+  },
+  "fit": {
+    "active_factor_chart_coverage": 1.0,
+    "chart_eval_counts": [
+      [
+        64,
+        63,
+        41,
+        21
+      ],
+      [],
+      [],
+      [],
+      [],
+      [
+        9,
+        16
+      ],
+      [
+        108,
+        16,
+        18,
+        46
+      ],
+      []
+    ],
+    "chart_fit_counts": [
+      [
+        64,
+        63,
+        41,
+        21
+      ],
+      [],
+      [],
+      [],
+      [],
+      [
+        9,
+        16
+      ],
+      [
+        108,
+        16,
+        18,
+        46
+      ],
+      []
+    ],
+    "estimator": "approximate_block_dictionary_with_within_factor_charts",
+    "mean_active_factors": 2.0,
+    "relative_reconstruction_error": 0.0003729162814731767,
+    "storage_scalars": 217128,
+    "unsupported_factors": [
+      1,
+      2,
+      3,
+      4,
+      7
+    ]
+  },
+  "splits": {
+    "geometry_fit": {
+      "paired": {
+        "factor": {
+          "mean_rank": 8.0,
+          "relative_difference_residual": 0.6919150923963495
+        },
+        "factor_changes": {
+          "fraction_remaining/a": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              1.154168780146817,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              3.2428855886305676,
+              0.0
+            ],
+            "effective_participating_blocks": 1.6317871359658833,
+            "largest_block_share": 0.7375131887514648
+          },
+          "fraction_remaining/b": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              0.3626340120433569,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.7665971834791996,
+              0.0
+            ],
+            "effective_participating_blocks": 1.773092336194855,
+            "largest_block_share": 0.678866459338695
+          },
+          "fraction_remaining/c": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              1.4397053282389551,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.0334847286929885,
+              0.0
+            ],
+            "effective_participating_blocks": 1.9474614866429352,
+            "largest_block_share": 0.5821248246586221
+          },
+          "percent_difference/a": {
+            "activity_change_rate": 0.16666666666666666,
+            "code_energy_by_block": [
+              2.537140535905371,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              6.875013573595752,
+              3.1473167613190545,
+              0.0
+            ],
+            "effective_participating_blocks": 2.479862237826641,
+            "largest_block_share": 0.5473967529610417
+          },
+          "percent_difference/b": {
+            "activity_change_rate": 0.0625,
+            "code_energy_by_block": [
+              0.9974689183330849,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              2.385684695711121,
+              1.2572733545552703,
+              0.0
+            ],
+            "effective_participating_blocks": 2.6047072027656184,
+            "largest_block_share": 0.5141088765870919
+          },
+          "percent_increase/a": {
+            "activity_change_rate": 0.041666666666666664,
+            "code_energy_by_block": [
+              1.8012624316970047,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              3.5297504388070013,
+              0.7138745937655243,
+              0.0
+            ],
+            "effective_participating_blocks": 2.2537460727854977,
+            "largest_block_share": 0.5839232673347277
+          },
+          "percent_increase/b": {
+            "activity_change_rate": 0.041666666666666664,
+            "code_energy_by_block": [
+              1.6393039634302835,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              3.558568480993079,
+              0.6828645295040595,
+              0.0
+            ],
+            "effective_participating_blocks": 2.186444925893991,
+            "largest_block_share": 0.6051228777566813
+          },
+          "product_minus/a": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              2.795741009250522,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              3.664470952794471,
+              0.0
+            ],
+            "effective_participating_blocks": 1.964475926642005,
+            "largest_block_share": 0.5672369535742717
+          },
+          "product_minus/b": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              3.624080413280802,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              8.241353100082264,
+              0.0
+            ],
+            "effective_participating_blocks": 1.736974807531185,
+            "largest_block_share": 0.6945682254930426
+          },
+          "product_minus/c": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              3.25425706587894,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              3.338536111264403,
+              0.0
+            ],
+            "effective_participating_blocks": 1.9996732170853235,
+            "largest_block_share": 0.5063917555974341
+          }
+        },
+        "global": {
+          "mean_rank": 12.0,
+          "relative_difference_residual": 0.6420589027317194
+        },
+        "local": {
+          "mean_rank": 2.0,
+          "relative_difference_residual": 0.8794946233921996
+        },
+        "pair_count": 393,
+        "rank_matched": {
+          "mean_rank": 2.0,
+          "relative_difference_residual": 0.9544470536647007
+        },
+        "shuffled": {
+          "mean_rank": 2.0,
+          "relative_difference_residual": 0.8997429929724734
+        }
+      },
+      "reconstruction": {
+        "active_factor_chart_coverage": 1.0,
+        "chart_eval_counts": [
+          [
+            64,
+            63,
+            41,
+            21
+          ],
+          [],
+          [],
+          [],
+          [],
+          [
+            9,
+            16
+          ],
+          [
+            108,
+            16,
+            18,
+            46
+          ],
+          []
+        ],
+        "chart_fit_counts": [
+          [
+            64,
+            63,
+            41,
+            21
+          ],
+          [],
+          [],
+          [],
+          [],
+          [
+            9,
+            16
+          ],
+          [
+            108,
+            16,
+            18,
+            46
+          ],
+          []
+        ],
+        "estimator": "approximate_block_dictionary_with_within_factor_charts",
+        "mean_active_factors": 2.0,
+        "relative_reconstruction_error": 0.0003729162814731767,
+        "storage_scalars": 217128,
+        "unsupported_factors": [
+          1,
+          2,
+          3,
+          4,
+          7
+        ]
+      }
+    },
+    "pruning_calibration": {
+      "paired": {
+        "factor": {
+          "mean_rank": 8.0,
+          "relative_difference_residual": 0.8110827429390458
+        },
+        "factor_changes": {
+          "half_plus_product/a": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              0.4019028078440892,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.45232369937685774,
+              0.0
+            ],
+            "effective_participating_blocks": 1.993056243097432,
+            "largest_block_share": 0.5295126006431261
+          },
+          "half_plus_product/b": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              0.6272072763051955,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.47994672576559166,
+              0.0
+            ],
+            "effective_participating_blocks": 1.965232716686882,
+            "largest_block_share": 0.5665040953038928
+          },
+          "practice_rate/a": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              2.644399391486382,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              2.908196336473166,
+              0.0
+            ],
+            "effective_participating_blocks": 1.9954960010977794,
+            "largest_block_share": 0.5237543806456556
+          },
+          "practice_rate/b": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              0.9346091506348552,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.7688272118761031,
+              0.0
+            ],
+            "effective_participating_blocks": 1.9812345709482548,
+            "largest_block_share": 0.5486610308454318
+          },
+          "practice_rate/c": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              0.8585170572152221,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.6648710053943818,
+              0.0
+            ],
+            "effective_participating_blocks": 1.9681972397190273,
+            "largest_block_share": 0.563557689788221
+          },
+          "practice_rate/d": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              0.9109277197271233,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.8190405922786395,
+              0.0
+            ],
+            "effective_participating_blocks": 1.9943734841716998,
+            "largest_block_share": 0.5265574596976137
+          },
+          "product_division/a": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              2.1776197367731362,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              2.403574522388727,
+              0.0,
+              0.0
+            ],
+            "effective_participating_blocks": 1.995146439475808,
+            "largest_block_share": 0.5246611224970111
+          },
+          "product_division/b": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              1.499910599394796,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              2.024733481647317,
+              0.0,
+              0.0
+            ],
+            "effective_participating_blocks": 1.9566188343956594,
+            "largest_block_share": 0.5744504792803575
+          },
+          "product_division/c": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              2.865071345988365,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              2.698591751319207,
+              0.0,
+              0.0
+            ],
+            "effective_participating_blocks": 1.998210870859415,
+            "largest_block_share": 0.5149613295914451
+          },
+          "table_partition/a": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.5165462119021428,
+              0.7750668276417388,
+              0.0
+            ],
+            "effective_participating_blocks": 1.9229634967021099,
+            "largest_block_share": 0.6000766513749697
+          },
+          "table_partition/b": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.2958552110153785,
+              0.24087939935748992,
+              0.0
+            ],
+            "effective_participating_blocks": 1.9792354956401514,
+            "largest_block_share": 0.5512132165463458
+          }
+        },
+        "global": {
+          "mean_rank": 12.0,
+          "relative_difference_residual": 0.7548781992036591
+        },
+        "local": {
+          "mean_rank": 2.0,
+          "relative_difference_residual": 0.9454898659930571
+        },
+        "pair_count": 371,
+        "rank_matched": {
+          "mean_rank": 2.0,
+          "relative_difference_residual": 0.9743437060023683
+        },
+        "shuffled": {
+          "mean_rank": 2.0,
+          "relative_difference_residual": 0.9492491659990558
+        }
+      },
+      "reconstruction": {
+        "active_factor_chart_coverage": 1.0,
+        "chart_eval_counts": [
+          [
+            128,
+            78,
+            2,
+            0
+          ],
+          [],
+          [],
+          [],
+          [],
+          [
+            80,
+            0
+          ],
+          [
+            144,
+            0,
+            0,
+            16
+          ],
+          []
+        ],
+        "chart_fit_counts": [
+          [
+            64,
+            63,
+            41,
+            21
+          ],
+          [],
+          [],
+          [],
+          [],
+          [
+            9,
+            16
+          ],
+          [
+            108,
+            16,
+            18,
+            46
+          ],
+          []
+        ],
+        "estimator": "approximate_block_dictionary_with_within_factor_charts",
+        "mean_active_factors": 2.0,
+        "relative_reconstruction_error": 0.018800514812229545,
+        "storage_scalars": 217128,
+        "unsupported_factors": [
+          1,
+          2,
+          3,
+          4,
+          7
+        ]
+      }
+    },
+    "stage2_holdout": {
+      "paired": {
+        "factor": {
+          "mean_rank": 8.0,
+          "relative_difference_residual": 0.7963700610055986
+        },
+        "factor_changes": {
+          "debt_sum/a": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              0.6674143415931078,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.4142189392299311,
+              0.0
+            ],
+            "effective_participating_blocks": 1.7719374817729239,
+            "largest_block_share": 0.6793794816110816
+          },
+          "debt_sum/b": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              0.24191605650447456,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.3762896847632795,
+              0.0
+            ],
+            "effective_participating_blocks": 1.9097715614922741,
+            "largest_block_share": 0.6086803464355127
+          },
+          "equal_spending/a": {
+            "activity_change_rate": 0.109375,
+            "code_energy_by_block": [
+              5.1728211123742245,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              7.694035755513254,
+              4.423805061685259,
+              0.0
+            ],
+            "effective_participating_blocks": 2.8331036481619885,
+            "largest_block_share": 0.44498214046704104
+          },
+          "equal_spending/b": {
+            "activity_change_rate": 0.0625,
+            "code_energy_by_block": [
+              3.0069717635764124,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              4.403441199357715,
+              3.109936104863571,
+              0.0
+            ],
+            "effective_participating_blocks": 2.9046321703618556,
+            "largest_block_share": 0.41856417225132236
+          },
+          "equal_spending/c": {
+            "activity_change_rate": 0.036458333333333336,
+            "code_energy_by_block": [
+              2.1253396791434027,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              2.9687273086431767,
+              3.3771044128444623,
+              0.0
+            ],
+            "effective_participating_blocks": 2.9011536161809484,
+            "largest_block_share": 0.3986584916217009
+          },
+          "two_period_sum/a": {
+            "activity_change_rate": 0.016304347826086956,
+            "code_energy_by_block": [
+              4.6936120088459825,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.7733574985422454,
+              2.278341025181858,
+              0.0
+            ],
+            "effective_participating_blocks": 2.156440638743593,
+            "largest_block_share": 0.6059940384712407
+          },
+          "two_period_sum/b": {
+            "activity_change_rate": 0.011627906976744186,
+            "code_energy_by_block": [
+              3.8943060504038716,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.1233993256094736,
+              2.3810672291106925,
+              0.0
+            ],
+            "effective_participating_blocks": 2.4773282307990034,
+            "largest_block_share": 0.5263448761361933
+          },
+          "two_period_sum/c": {
+            "activity_change_rate": 0.049019607843137254,
+            "code_energy_by_block": [
+              13.111589633894967,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              2.3378391091688435,
+              4.465800881588134,
+              0.0
+            ],
+            "effective_participating_blocks": 2.0099890564980054,
+            "largest_block_share": 0.658369995275619
+          },
+          "two_period_sum/d": {
+            "activity_change_rate": 0.022222222222222223,
+            "code_energy_by_block": [
+              4.229994066785755,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.3257724709558256,
+              2.8225812541598194,
+              0.0
+            ],
+            "effective_participating_blocks": 2.5417486660040964,
+            "largest_block_share": 0.504872102692432
+          },
+          "weighted_sales/a": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              1.0718303856696945,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.9507052735934968,
+              0.0,
+              0.0
+            ],
+            "effective_participating_blocks": 1.9928525491831903,
+            "largest_block_share": 0.5299438755310558
+          },
+          "weighted_sales/b": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              2.385531457966378,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.6288375850480175,
+              0.0,
+              0.0
+            ],
+            "effective_participating_blocks": 1.9313765117046566,
+            "largest_block_share": 0.5942481701122024
+          },
+          "weighted_sales/c": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              1.9124022218087402,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.2486557529076767,
+              0.0,
+              0.0
+            ],
+            "effective_participating_blocks": 1.915543785999387,
+            "largest_block_share": 0.6049880252450304
+          },
+          "weighted_sales/d": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              2.0606805902066956,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.2403584762078974,
+              0.0,
+              0.0
+            ],
+            "effective_participating_blocks": 1.8836748932502732,
+            "largest_block_share": 0.6242521063056953
+          }
+        },
+        "global": {
+          "mean_rank": 12.0,
+          "relative_difference_residual": 0.7532818574049359
+        },
+        "local": {
+          "mean_rank": 2.0,
+          "relative_difference_residual": 0.947754054874167
+        },
+        "pair_count": 541,
+        "rank_matched": {
+          "mean_rank": 2.0,
+          "relative_difference_residual": 0.9595668973922603
+        },
+        "shuffled": {
+          "mean_rank": 2.0,
+          "relative_difference_residual": 0.940492546307341
+        }
+      },
+      "reconstruction": {
+        "active_factor_chart_coverage": 1.0,
+        "chart_eval_counts": [
+          [
+            0,
+            68,
+            0,
+            215
+          ],
+          [],
+          [],
+          [],
+          [],
+          [
+            182,
+            0
+          ],
+          [
+            80,
+            0,
+            0,
+            127
+          ],
+          []
+        ],
+        "chart_fit_counts": [
+          [
+            64,
+            63,
+            41,
+            21
+          ],
+          [],
+          [],
+          [],
+          [],
+          [
+            9,
+            16
+          ],
+          [
+            108,
+            16,
+            18,
+            46
+          ],
+          []
+        ],
+        "estimator": "approximate_block_dictionary_with_within_factor_charts",
+        "mean_active_factors": 2.0,
+        "relative_reconstruction_error": 0.016064324768562253,
+        "storage_scalars": 217128,
+        "unsupported_factors": [
+          1,
+          2,
+          3,
+          4,
+          7
+        ]
+      }
+    },
+    "validation": {
+      "paired": {
+        "factor": {
+          "mean_rank": 8.0,
+          "relative_difference_residual": 0.7164685180336938
+        },
+        "factor_changes": {
+          "anniversary/a": {
+            "activity_change_rate": 0.045454545454545456,
+            "code_energy_by_block": [
+              6.469889038197674,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              25.836350867590934,
+              3.4611359771130426,
+              0.0
+            ],
+            "effective_participating_blocks": 1.7734728229351095,
+            "largest_block_share": 0.7223440420168433
+          },
+          "anniversary/b": {
+            "activity_change_rate": 0.08522727272727272,
+            "code_energy_by_block": [
+              14.614060097241563,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              49.87719265393697,
+              6.901150582024535,
+              0.0
+            ],
+            "effective_participating_blocks": 1.8541299482514162,
+            "largest_block_share": 0.6986344530404702
+          },
+          "anniversary/c": {
+            "activity_change_rate": 0.07222222222222222,
+            "code_energy_by_block": [
+              11.438086188310896,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              42.179725974069676,
+              6.758678752521829,
+              0.0
+            ],
+            "effective_participating_blocks": 1.8640050430188562,
+            "largest_block_share": 0.6986117499528063
+          },
+          "pure_product/a": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              2.4951730320052268,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              2.955276008951035,
+              0.0
+            ],
+            "effective_participating_blocks": 1.9858488508206507,
+            "largest_block_share": 0.5422078046678779
+          },
+          "pure_product/b": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              1.9052376643621285,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              2.7050624595535293,
+              0.0
+            ],
+            "effective_participating_blocks": 1.941563665495475,
+            "largest_block_share": 0.5867432459594504
+          },
+          "pure_product/c": {
+            "activity_change_rate": 0.0,
+            "code_energy_by_block": [
+              1.0404965510197655,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              1.1523228862238601,
+              0.0
+            ],
+            "effective_participating_blocks": 1.994812185331009,
+            "largest_block_share": 0.5254982998838839
+          },
+          "remaining_per_item/a": {
+            "activity_change_rate": 0.03720238095238095,
+            "code_energy_by_block": [
+              12.216160194273861,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              23.428676772525424,
+              39.78500845634801,
+              0.0
+            ],
+            "effective_participating_blocks": 2.494388682651407,
+            "largest_block_share": 0.5274438550571271
+          },
+          "remaining_per_item/b": {
+            "activity_change_rate": 0.03900709219858156,
+            "code_energy_by_block": [
+              11.953275477053309,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              25.341856437069893,
+              33.629445542871295,
+              0.0
+            ],
+            "effective_participating_blocks": 2.625374055531616,
+            "largest_block_share": 0.4741578554100332
+          },
+          "remaining_per_item/c": {
+            "activity_change_rate": 0.026515151515151516,
+            "code_energy_by_block": [
+              6.026583248821073,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              10.283330973056076,
+              14.250173313598033,
+              0.0
+            ],
+            "effective_participating_blocks": 2.7059601174230523,
+            "largest_block_share": 0.46630014711364787
+          },
+          "remaining_per_item/d": {
+            "activity_change_rate": 0.022222222222222223,
+            "code_energy_by_block": [
+              3.18927230891139,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              8.89086993959988,
+              6.706927400427972,
+              0.0
+            ],
+            "effective_participating_blocks": 2.630022246932699,
+            "largest_block_share": 0.47324410382977833
+          },
+          "weighted_sum/a": {
+            "activity_change_rate": 0.052083333333333336,
+            "code_energy_by_block": [
+              6.389912677449183,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              8.305109739901892,
+              5.931580501821255,
+              0.0
+            ],
+            "effective_participating_blocks": 2.9343973833378416,
+            "largest_block_share": 0.40264069524421453
+          },
+          "weighted_sum/b": {
+            "activity_change_rate": 0.057291666666666664,
+            "code_energy_by_block": [
+              7.151781434804475,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              8.30475409213702,
+              5.820478621468674,
+              0.0
+            ],
+            "effective_participating_blocks": 2.9397815228329987,
+            "largest_block_share": 0.3903157667805357
+          },
+          "weighted_sum/c": {
+            "activity_change_rate": 0.046875,
+            "code_energy_by_block": [
+              5.942444105390564,
+              0.0,
+              0.0,
+              0.0,
+              0.0,
+              6.641589651279666,
+              4.680635820773701,
+              0.0
+            ],
+            "effective_participating_blocks": 2.9415157924584707,
+            "largest_block_share": 0.38469254343314035
+          }
+        },
+        "global": {
+          "mean_rank": 12.0,
+          "relative_difference_residual": 0.6754677551519598
+        },
+        "local": {
+          "mean_rank": 2.0,
+          "relative_difference_residual": 0.8737114000860793
+        },
+        "pair_count": 931,
+        "rank_matched": {
+          "mean_rank": 2.0,
+          "relative_difference_residual": 0.9474489908823134
+        },
+        "shuffled": {
+          "mean_rank": 2.0,
+          "relative_difference_residual": 0.8868180865956288
+        }
+      },
+      "reconstruction": {
+        "active_factor_chart_coverage": 1.0,
+        "chart_eval_counts": [
+          [
+            0,
+            125,
+            64,
+            168
+          ],
+          [],
+          [],
+          [],
+          [],
+          [
+            102,
+            0
+          ],
+          [
+            140,
+            236,
+            35,
+            0
+          ],
+          []
+        ],
+        "chart_fit_counts": [
+          [
+            64,
+            63,
+            41,
+            21
+          ],
+          [],
+          [],
+          [],
+          [],
+          [
+            9,
+            16
+          ],
+          [
+            108,
+            16,
+            18,
+            46
+          ],
+          []
+        ],
+        "estimator": "approximate_block_dictionary_with_within_factor_charts",
+        "mean_active_factors": 2.0,
+        "relative_reconstruction_error": 0.023537371251911705,
+        "storage_scalars": 217128,
+        "unsupported_factors": [
+          1,
+          2,
+          3,
+          4,
+          7
+        ]
+      }
+    }
+  }
+}

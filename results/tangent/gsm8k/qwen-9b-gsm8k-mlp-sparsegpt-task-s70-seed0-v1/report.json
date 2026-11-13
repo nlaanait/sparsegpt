@@ -1,0 +1,1277 @@
+{
+  "behavior": {
+    "accuracy": 0.0,
+    "answer_nll": 6.558248147368431,
+    "count": 32,
+    "truncated": 32
+  },
+  "complete": true,
+  "config_sha256": "e2bd8366d6c94be4cc9d8eb7cc6dd1b28739f0e260fa927a24fd56ee3126fe0b",
+  "eligible_parameters": 4831838208,
+  "eligible_removed_fraction": 0.6999992794460721,
+  "memory": {
+    "allocator_cap_gib": 56.0,
+    "cuda_free_gib": 30.455947875976562,
+    "cuda_total_gib": 121.69016647338867,
+    "host_before": {
+      "available_gib": 116.30590438842773,
+      "total_gib": 121.69016647338867,
+      "used_gib": 5.3842620849609375
+    },
+    "requested_cap_gib": 56.0
+  },
+  "peak_cuda_reserved_gib": 20.8671875,
+  "removed_weights": 3382283264,
+  "stages": [
+    {
+      "candidate_sha256": "5944eb1a4687777a839c2dd4caf3829f67eea8d9f00f55b028d2520ba9436b62",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        0,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "38caf3f3a0ab84384d61d6f98661154b249e534ad5b98fb809a7f96d73f91c52",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        0,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "ebaba88644cdf88331b0977bcf2f5427e7d9e4800c343e02fe9e277f83f3d234",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        0,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "02c49e96f78a7ccdceec1d1d44fac742af6771aca2bb96720e29c04a17c0c7b1",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        1,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "3e324096bfcd9cefcfadf291ebf9795d52cd9bf5cb3f15b3b4c1081b3a0e5c9f",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        1,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "f8661cdf11df899007e8215f4fa21add71b73219304d4cb7875b5a28ad48d594",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        1,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "d09343e3e609f3d6c1b56bfdbb3a10507001b1d9945ffbf77a02c2af2eee3263",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        2,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "e2ab6bcab5f5ad1c7fc33d559be0903758f61c4c394042b99d7355cacc0a370a",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        2,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "04f37080099be4644aff00d11840a46aa5205d9c63fa2bad3f2f6bc40e2d8f80",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        2,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "17705065f546df7907f6d09a09a2b87ea3083237e32ccf27ce22d28e161e624b",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        3,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "05dd43596e7051ae4d2d64214e82cf68e6ac036f574d61e694a451c56a656699",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        3,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "4736b849e18b324bb5a2e397b07ce56d63329511e7b62254efd5a94143e8fd5b",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        3,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "ef0820203193b94b5744d6f3beadef63f6e42f86ee7bd96070d15eb330dfdc01",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        4,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "3bf5c73db8ee68c6995209f3405da0789807dbb9f424dcc47fa58f1700d39610",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        4,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "74f541a0cd6088dd308c3bb1e8644d5bcaf8383d0c2433f88a44f49f7dbde92d",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        4,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "87c58e0c91125702646893eb445957fdd84175ea1550fd39634f4ce7aa3b1245",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        5,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "2762110e4da647905fff5582017405761a963ed2b12f2cd6c818edd4756d339b",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        5,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "19c14ee4f9304d2658b8f1fb8c00bc762aaa6886e209322b80a41113aeeb0566",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        5,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "4d899dcf3cbf1f7d836713bf5ad3c4434c0cae755bde2bcc93c76afea87cb77f",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        6,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "5928412d63cccd14a2a1e0986b0af0c9c476376d4063984460e81c8288bb64a4",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        6,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "49f429b95035c30c70081fab9c8bb549c9a9e5f71b60cdaf9198a660e396a275",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        6,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "8730af11675988146182b39dc0d14219e24be176f639244782b700c57528b990",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        7,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "b9b724631818e58286c3c4326ca84df2570d1a9a1c6df68f3f4d24f633719c44",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        7,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "213e2b3b6015549901c1a610f987129cd68c30ce293ff59de6fa23d219b1b77d",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        7,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "6081f14d5f672f35465f1d9e9f7f1be7e010c1ae6fca44fa53a21d59799838bd",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        8,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "b003300143e8786b8981ca3a812423031fb6714af6166e1d22a6dcb53c11e136",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        8,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "d02052c8b868b8244bcc6d39e376f95b230870498dff3025a91870aa733006de",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        8,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "4de7812feb1c51ab8d2d03ea0882db73154ee0431d8f40a512bbbfab6942da28",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        9,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "d39ef361f08627c727aefdeb1d475f55aeb9110bf01f8efc156fa97f6e7288e1",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        9,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "807ab9a96c58eada1846b8b51abf46bf551d5f8df99a97570ae7cdd5c00c074a",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        9,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "aa0a43d3831118e036552206ed174934b5cd78eb743d96698278ca00fdb99e07",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        10,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "18d2b49b1dad21f01107aa80519f1b3cea30fe3a85dcc111192242c0b1c6a729",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        10,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "ed316ec66622a56dbb31840c9ba6eb99ae99f92dda92cb6917f268e00d193da7",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        10,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "f6ff012a90b34ef1494318e1b3efa6a84d7cb9435c3c4f8edf9dd755a58709ab",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        11,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "f404c377a031fd4b490c73e2a9606364a3195c1959ac3bf88129ee3fbd6e39a3",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        11,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "a568ad9423f4bea1eafdda98337bc846d7c613cb4b19196cba44190adb1449d8",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        11,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "3a60e1a2702be70b79b56b4383e26e9c951373eaad3100fc525941cf4a1fdd39",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        12,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "6e74a2c950dee3357bc300b1b685800340ec89ac476f04e105594c6052cec8e8",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        12,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "4bb1a9311511f42f578f27793de5cb82e7f860d3ca6c2437d1308553706c5cfa",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        12,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "382e66d67126e7882122b9aae536071874f0354e854d60a860d3f242ff49d78b",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        13,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "a3eb12fa306184d54e1a4fd1a1d779414f3577bb7d647498262d404562a29114",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        13,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "a6741473eab2b994789e6509628222deb3e672d1d6b1ba5fe88d8bba0b1dbef8",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        13,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "9ec44f155073a7356f9328a5a9468f372cfff53b4ffaeee8682e76eb3df56651",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        14,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "1e659be1b79817dc29116864cd835f7d657fe1871c598a8d1cd82a70b6fe0998",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        14,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "acb02529d4600ffca7802394595976c810be21564cbaad8cea4b7905e7f3fffc",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        14,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "50c7a597899b105584eec635e67e16b30d0d2a7bc7ffc7f69e3ae5e6c9e72264",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        15,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "3ba0bffa515e97958e535781aca2f953beb1f0a42b726d8dad86ee6ada39de55",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        15,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "c18ea5361e2dca6011a09fb8c55c65187f92fc30d70080f7e8811a3b24867152",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        15,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "3b99cd5e4100d7a02e4be8c529e696e08be01d9eee9bb7b4e724372530e4eaeb",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        16,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "ca3afa205c5f014e827673b0be6fdb278d6eed3820afd3ceef33ec5d5a2f6ad1",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        16,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "d586e9c5fb532a3d63ca9fa92dffabeb560e1a67a3f1e00594a43385122424b7",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        16,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "65cfc08f5ace0f21805ab411833d5e8b786b1dbd6b66ac1aecf65987b759c92d",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        17,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "fb43b96808802af412748ad5a7e2c65775c57eda4c5760e7c1d9da15f9ba6ed1",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        17,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "7a1e652749b095890b860610726e415c1102279d7db8e5056b5a4e588f8d3662",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        17,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "f11b7afa975130bb2cdc7c5a937cae52415ba863b695cfaf3747b159908a79f9",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        18,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "f31f160d87fc0431d8f17f882dd8801bb407f59103d9dfac10c663241bd9da6b",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        18,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "bcdbecdb043d57ac885690aaa77729714ddb81b52265f0c0307c013be8dfdc8a",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        18,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "078a40200948780f6c5e132da22f1ced3f410221c426514664a7719cd59f0058",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        19,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "797203cc3999ab07df6291fa58c5b0728aaa71e5d08ea8516e41393f35cc2f82",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        19,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "7dd24d6323d3a46dee4f825251fd735928e1683933a6c491f192d4fcc939e117",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        19,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "bec1d79e4855c71aa0f40d5a023b0e2a36a2a65851a48f1373c152997df90302",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        20,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "94783b422557633dd0e154b031c854bf2d23d3c41ee6d8af3a5621c1c9a36336",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        20,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "80b163d6d65f84fec722464b74e615e9416940a75936d9101f6c18582dcfcc03",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        20,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "2a448fb39028f9cace74912bdc633ce843f50343b7a7989cad85060d3667416e",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        21,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "c09a86813abaa6141fa617ff4294606ebbab8b5694e5a6d657987371dc0a4a63",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        21,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "1fa6cabd3b5d9e2c4dabdfaa25613f21e7ed66921fc20a84e5c37a0a6bbef62e",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        21,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "a0720e3efa26164a6702e9d8acee790071465a8b34a0590fc148a8c73370e6a0",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        22,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "04d888a9c33a6aef64c6cfe06f48747cafdc6e573e281ee5ac111cddd94ef990",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        22,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "0c09230a8e3dda458040bb3c28089ebdc835a3d870d114ab29a503a3e51e26f1",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        22,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "e11420a300458c133ae3301a819d7caa90c6000cfa0fbc0502a0a10b3b41b4bc",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        23,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "5419b58362933a2165ea7b7c1ae387f376e66e6eaf037e408f487d2c8f0079f0",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        23,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "545a7aedb3bd34856eab1033894e697a0d4d8f7a795a29880ab122c17e140093",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        23,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "c50a90ba3498fc156d6a69b663f5f4fd9f573168b192262c277732164f6918fa",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        24,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "289dece6251ef57dc237ac8925b9036e3e9aa415e89a0dbb38dfeb53d7590c7d",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        24,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "dd2a59222adcc68352449a3afe50cae7af619a0d5077b9ce9e3e5abdebea8393",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        24,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "d8d3dac105dccf01d13ff599dc537cf2a5f71e60d6ccb5ac3b3fd8be7dfc3e66",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        25,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "e13670199cc3a06b93f756e74188bef85dda285cec778ec3b3cb9c1ffa42c857",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        25,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "f522b46c99e8078227f1f92aa186b1ada55fe4ac01b31d15488b27ace4c89211",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        25,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "7c424e16a307e90ec62938ae4d5ba07b41cf05245dab8bea6aa1d36ded58f6c4",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        26,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "00ad6ef1fdf0674761631ad0f7d80f3b53f4c5ec120140f7ef121f84871fe184",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        26,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "e0a6e5b33e016a5ffa00ac75d14a3768685074e63ca167c6159a422deec9703d",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        26,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "4597b42b53505ef2f53cbbff1e1fafc6666da4f955695bc7451cdb08bc56688a",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        27,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "06341aca6bcbb1ea5fd9a60ba42f4b520dafb796555ee1a151158886282e78c7",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        27,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "0c45c2cc73b34e8adb21dc56f5ad81469ca63f13643b6a47f1ca8bdea5a9fac9",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        27,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "01a2640b2f840224cdae0ffb5e3b1a1762b24ef2f6d35ef19e61d16230ab4f6b",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        28,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "471ff85c0391b7cdd0a1cefee0197e270fc7bb0ac037612b492b4503ec878e59",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        28,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "9c4ffcf2889a3cd52223eb604a23359fa5696790f9b77299381ef0a75fdd8060",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        28,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "99d5129080d97e13e472823fda7e51ff51298db8c8cd7e6bea80bf32ad2b4770",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        29,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "519f7690de8c101b01f255578c976c8560227abc9246ec4a9760a132c8ed8bab",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        29,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "58bf20351482c283bc18bd5641b40f2c0cd15f9a65ca4e35651e97dbb47b5625",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        29,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "17bcbd4ea62244b4c8ff86b20ef1bee7b0346646d7236363c5aa46f9809a60e8",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        30,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "2990cdaf411fa8b45af4bdae37cd33c33138e99b34b4258ba6d56ca012e208e9",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        30,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "d5a100bd81bf21cc422f5976f0e9b72f0f41e44c7a43a89f2824e9f1afabe5d7",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        30,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "a849b2d84fb45d146829f9f41350e748da37eb89343d810ed2796a0b112a59c7",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        31,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "183b526e9cb9fd26742278edf1e4a067c71f542ae77ef0549664d4b8e5badda9",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        31,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "dd0d827aa1da57e47f4697367040703346ab0e016416cba1e7694563b2c0359a",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        31,
+        "mlp.down_proj"
+      ]
+    }
+  ],
+  "total_parameters": 8953803264,
+  "whole_model_removed_fraction": 0.3777482220989751
+}

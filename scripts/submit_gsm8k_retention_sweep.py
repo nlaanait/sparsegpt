@@ -12,12 +12,14 @@ from sparsifier.eval.gsm8k import atomic_json
 
 def command(repo,task,dependencies):
     root = repo/'results/tangent/gsm8k'
-    return ['gbatch','--gpus','1','--gpu-memory','64G','--memory','80G',
-            '--name',task['name'],'--project','qwen-gsm8k','--time','12:00:00','--auto-close',
+    argv = ['gbatch','--gpus','1','--gpu-memory','64G','--memory','80G',
+            '--name',task['name'],'--project','qwen-gsm8k','--time','24:00:00','--auto-close',
             '--depends-on-all',','.join(map(str,dependencies)),'--',
             'bash',str(repo/'scripts/run_gsm8k_guarded.sh'),task['name'],
             str(root/task['name']/'memory.jsonl'),str(repo/'.pixi/envs/default/bin/python'),
             '-u','-m','sparsifier.eval.gsm8k_sweep_worker','--root',str(root),'--task',task['name']]
+    if task.get('phase') == 'original_validation': argv.append('--screen-128')
+    return argv
 
 
 def main():

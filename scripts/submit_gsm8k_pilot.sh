@@ -21,7 +21,7 @@ ginfo
 # 80 GiB cgroup memory ceiling + 56 GiB CUDA allocator ceiling (overlapping
 # unified-memory accounting, not additive). Watchdog stops at 96 GiB host use.
 gbatch --gpus 1 --gpu-memory 64G --memory 80G "${DEPENDENCY_ARGS[@]}" \
-  --name "$NAME" --project qwen-gsm8k --time 12:00:00 --auto-close -- \
+  --name "$NAME" --project qwen-gsm8k --time 24:00:00 --auto-close -- \
   bash "$ROOT/scripts/run_gsm8k_guarded.sh" "$NAME" "$OUT/memory.jsonl" \
   "$ROOT/.pixi/envs/default/bin/python" -u -m sparsifier.eval.gsm8k \
   --manifest "$ROOT/results/tangent/gsm8k/data/development.json" \

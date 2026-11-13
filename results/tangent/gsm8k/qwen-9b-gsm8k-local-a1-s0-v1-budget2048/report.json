@@ -1,0 +1,31 @@
+{
+  "behavior": {
+    "accuracy": 1.0,
+    "answer_nll": 4.75340685993433,
+    "count": 32,
+    "truncated": 0
+  },
+  "complete": true,
+  "config_sha256": "1c2655720202853ac41e20dd21430f00162e0e24d7b80cb3ab63788e1f6b31d9",
+  "eligible_parameters": 50331648,
+  "eligible_removed_fraction": 0.5,
+  "host_after": {
+    "available_gib": 97.47299575805664,
+    "total_gib": 121.69016647338867,
+    "used_gib": 24.21717071533203
+  },
+  "memory": {
+    "allocator_cap_gib": 37.9706829071045,
+    "cuda_total_gib": 121.69016647338867,
+    "host_before": {
+      "available_gib": 115.62327575683594,
+      "total_gib": 121.69016647338867,
+      "used_gib": 6.066890716552734
+    },
+    "requested_cap_gib": 56.0
+  },
+  "peak_cuda_reserved_gib": 16.921875,
+  "removed_weights": 25165824,
+  "total_parameters": 8953803264,
+  "whole_model_removed_fraction": 0.002810629545679506
+}

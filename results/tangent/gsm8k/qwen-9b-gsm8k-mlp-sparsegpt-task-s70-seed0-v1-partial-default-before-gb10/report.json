@@ -1,0 +1,48 @@
+{
+  "complete": false,
+  "config_sha256": "10f6e033a2fb2f7cd20ec405fa2fecc91de5d69302b83e7814dd6867b65aa4a6",
+  "eligible_parameters": 4831838208,
+  "removed_weights": 105696352,
+  "stages": [
+    {
+      "candidate_sha256": "d428f805979c532b60b7840224072259d00766f60d7b523a23761f68ff3bf5e9",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        0,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "28de9070b61833347c32bdb4fbb71e4a793cbb247fecf42a996782ce7a42d9fa",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232128,
+      "site": [
+        0,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "25ba156205c948c1353704950c9ef2cc5003ecee74b92319139207545761e7ff",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "removed": 35232096,
+      "site": [
+        0,
+        "mlp.down_proj"
+      ]
+    }
+  ],
+  "total_parameters": 8953803264
+}

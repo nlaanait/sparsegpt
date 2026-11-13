@@ -1,0 +1,100 @@
+{
+  "behavior": {
+    "accuracy": 0.875,
+    "answer_nll": 4.6641775369644165,
+    "count": 32,
+    "truncated": 4
+  },
+  "complete": true,
+  "config_sha256": "7b7cd51cd0f2b7ae0ddad174664bc8bfe571f8e2b6a86ee922a8f30755a5f28a",
+  "dense_nll": 2.910124897956848,
+  "host_after": {
+    "available_gib": 95.29474258422852,
+    "total_gib": 121.69016647338867,
+    "used_gib": 26.395423889160156
+  },
+  "language": {
+    "delta_nll": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0
+    },
+    "nll": {
+      "ci95": [
+        2.713263577222824,
+        3.088874442130327
+      ],
+      "mean": 2.910124897956848
+    },
+    "vocabulary_kl": {
+      "ci95": [
+        0.0,
+        0.0
+      ],
+      "mean": 0.0
+    },
+    "windows": [
+      {
+        "delta_nll": 0.0,
+        "nll": 2.4073104858398438,
+        "vocabulary_kl": 0.0
+      },
+      {
+        "delta_nll": 0.0,
+        "nll": 2.74405837059021,
+        "vocabulary_kl": 0.0
+      },
+      {
+        "delta_nll": 0.0,
+        "nll": 2.591348886489868,
+        "vocabulary_kl": 0.0
+      },
+      {
+        "delta_nll": 0.0,
+        "nll": 2.8614444732666016,
+        "vocabulary_kl": 0.0
+      },
+      {
+        "delta_nll": 0.0,
+        "nll": 3.0892326831817627,
+        "vocabulary_kl": 0.0
+      },
+      {
+        "delta_nll": 0.0,
+        "nll": 3.179143190383911,
+        "vocabulary_kl": 0.0
+      },
+      {
+        "delta_nll": 0.0,
+        "nll": 3.2142531871795654,
+        "vocabulary_kl": 0.0
+      },
+      {
+        "delta_nll": 0.0,
+        "nll": 3.1942079067230225,
+        "vocabulary_kl": 0.0
+      }
+    ]
+  },
+  "local": {
+    "actual_sparsity": 0.0,
+    "ambient_readout_mse": 0.0,
+    "calibration_tokens": 8192,
+    "solver": {
+      "solver": "dense"
+    }
+  },
+  "memory": {
+    "allocator_cap_gib": 42.09645080566406,
+    "cuda_total_gib": 121.69016647338867,
+    "host_before": {
+      "available_gib": 116.32386779785156,
+      "total_gib": 121.69016647338867,
+      "used_gib": 5.366298675537109
+    },
+    "requested_cap_gib": 56.0
+  },
+  "peak_cuda_reserved_gib": 17.603515625
+}

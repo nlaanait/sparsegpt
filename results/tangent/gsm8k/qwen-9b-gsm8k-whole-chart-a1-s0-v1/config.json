@@ -1,0 +1,63 @@
+{
+  "alpha": 1.0,
+  "arm": "whole_chart",
+  "capture_sha256": "8670c8375bdfb417c849a2e84fef4e825f04f26c3e9d6e73e2f7e884cf304487",
+  "evaluation_ids": [
+    "controlled/214/1cd98ab0d01d4445",
+    "controlled/217/fa60fed58b7a4b1c",
+    "controlled/203/38322ee3c260ac91",
+    "controlled/225/5ec231aa71fd35b8",
+    "controlled/214/dece21ee88d12d87",
+    "controlled/217/729fb9fabac6c1a0",
+    "controlled/222/80f4ad92a25df354",
+    "controlled/225/786bb33030be03e1",
+    "controlled/214/8a5753ddf100aab7",
+    "controlled/217/de1c3b5fb2ab01d9",
+    "controlled/203/411aee56b92b9750",
+    "controlled/225/58ca4598a5446f69",
+    "controlled/214/729fb9fabac6c1a0",
+    "controlled/217/43c3af265c71967c",
+    "controlled/222/1a3b0c3e6629abbf",
+    "controlled/225/7bdbbe23dce98f2b",
+    "controlled/214/ab4d6bf6a4b20621",
+    "controlled/217/06381dea7e168354",
+    "controlled/222/db740468bc6ec123",
+    "controlled/225/7e3a2abd2fbaedc5",
+    "controlled/214/7b7d053443cce071",
+    "controlled/207/dfeac8bb3b177464",
+    "controlled/203/5a1fa8a441a4b486",
+    "controlled/225/642c2d31832a19bc",
+    "controlled/214/649bdef543e8b348",
+    "controlled/217/eeb3fb3c315888e2",
+    "controlled/222/328916a80c1e5051",
+    "controlled/225/027836265cdcfa2d",
+    "controlled/214/faa1c64d9cd1a58f",
+    "controlled/217/52a19184b152cdc5",
+    "controlled/203/2b7aad9129453843",
+    "controlled/225/629a7a10c0b3eb47"
+  ],
+  "evaluation_split": "validation",
+  "manifest_sha256": "36de89acdda5d71de79a5de63a2268ed4a01476d5a5bb5c3fe3e285ac35547ac",
+  "metric": {
+    "chart_counts": [
+      171,
+      80,
+      160,
+      14
+    ],
+    "chart_ranks": [
+      2,
+      2,
+      2,
+      2
+    ],
+    "scope": "whole_activation_clustering_not_factor_decomposition",
+    "storage_scalars": 49152
+  },
+  "model": "Qwen/Qwen3.5-9B",
+  "purpose": "development_single_layer_not_confirmatory",
+  "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "seed": 0,
+  "source_sha256": "a4c31c1b9bd5a682e4bbff614ff46533d17ae00faaf2558396d18efa0021b7b1",
+  "sparsity": 0.5
+}

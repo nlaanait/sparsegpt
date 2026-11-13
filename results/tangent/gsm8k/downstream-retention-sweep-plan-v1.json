@@ -1,0 +1,134 @@
+{
+  "allowed_accuracy_drop": null,
+  "alpha": 1.0,
+  "arm": "downstream",
+  "blocks": "all",
+  "calibration_manifest_sha256": "36de89acdda5d71de79a5de63a2268ed4a01476d5a5bb5c3fe3e285ac35547ac",
+  "dense_reference": "qwen-9b-gsm8k-original-dense-512-v1",
+  "eligible_sparsities": [
+    0.1,
+    0.3,
+    0.5,
+    0.7
+  ],
+  "limitations": [
+    "MLP-only sparsity; measure whole-model removed fraction separately",
+    "32 family-balanced pruning-calibration problems for backward probes; extra compute is recorded",
+    "fit all anchor charts using geometry_fit only; refresh activations/geometry at every site",
+    "next-block residual anchor; final block uses its own post-MLP residual",
+    "diagonal output/token metric and row congruence approximations",
+    "new arm is exploratory; no retention tolerance or final-test configuration selected"
+  ],
+  "max_new_tokens": 2048,
+  "memory_policy": "exclusive gflow; CUDA cap <=56 GiB; cgroup 80 GiB; host watchdog 96 GiB",
+  "modules": [
+    "mlp.gate_proj",
+    "mlp.up_proj",
+    "mlp.down_proj"
+  ],
+  "pullback": {
+    "ambient_tokens": {
+      "c4": 4096,
+      "math": 4096
+    },
+    "anchor_offset": 1,
+    "anchor_positions": "last_prompt_token",
+    "anchor_site": "block_output_residual",
+    "approximation": "diagonal_output_and_token_then_row_congruence",
+    "geometry": "factor_local_tangents",
+    "input_alpha": 0.0,
+    "num_probes": 8,
+    "probe_count": 32,
+    "target_positions": "all_causal_prefix_tokens"
+  },
+  "purpose": "development_MLP_retention_frontier_not_confirmatory",
+  "seed": 0,
+  "tasks": [
+    {
+      "arm": "downstream",
+      "blocks": "15,16",
+      "depends_on": [],
+      "eligible_sparsity": 0.5,
+      "eval_count": 4,
+      "name": "qwen-9b-gsm8k-sequential-downstream-smoke-v1",
+      "phase": "smoke"
+    },
+    {
+      "arm": "downstream",
+      "blocks": "all",
+      "depends_on": [
+        "qwen-9b-gsm8k-sequential-downstream-smoke-v1"
+      ],
+      "eligible_sparsity": 0.1,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-downstream-s10-seed0-v1",
+      "phase": "prune"
+    },
+    {
+      "arm": "downstream",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-downstream-s10-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-downstream-s10-seed0-v1-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "downstream",
+      "blocks": "all",
+      "depends_on": [
+        "qwen-9b-gsm8k-sequential-downstream-smoke-v1"
+      ],
+      "eligible_sparsity": 0.3,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-downstream-s30-seed0-v1",
+      "phase": "prune"
+    },
+    {
+      "arm": "downstream",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-downstream-s30-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-downstream-s30-seed0-v1-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "downstream",
+      "blocks": "all",
+      "depends_on": [
+        "qwen-9b-gsm8k-sequential-downstream-smoke-v1"
+      ],
+      "eligible_sparsity": 0.5,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-downstream-s50-seed0-v1",
+      "phase": "prune"
+    },
+    {
+      "arm": "downstream",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-downstream-s50-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-downstream-s50-seed0-v1-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "downstream",
+      "blocks": "all",
+      "depends_on": [
+        "qwen-9b-gsm8k-sequential-downstream-smoke-v1"
+      ],
+      "eligible_sparsity": 0.7,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-downstream-s70-seed0-v1",
+      "phase": "prune"
+    },
+    {
+      "arm": "downstream",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-downstream-s70-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-downstream-s70-seed0-v1-original512",
+      "phase": "original_validation"
+    }
+  ],
+  "validation_manifest_sha256": "0359aa7586c1948157ad9ffbb388cb84a1854d2be7f20ed4ecfeed8c65049ef3"
+}

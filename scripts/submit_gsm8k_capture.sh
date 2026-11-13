@@ -7,7 +7,7 @@ DEPENDENCY="${1:?pass the dense pilot gflow job ID}"
 NAME="qwen-9b-gsm8k-capture-v1"
 OUT="$ROOT/results/tangent/gsm8k/capture-v1"
 gbatch --gpus 1 --gpu-memory 64G --memory 80G --depends-on "$DEPENDENCY" \
-  --name "$NAME" --project qwen-gsm8k --time 12:00:00 --auto-close -- \
+  --name "$NAME" --project qwen-gsm8k --time 24:00:00 --auto-close -- \
   bash "$ROOT/scripts/run_gsm8k_guarded.sh" "$NAME" "$OUT/memory.jsonl" \
   "$ROOT/.pixi/envs/default/bin/python" -u -m sparsifier.eval.gsm8k_capture \
   --manifest "$ROOT/results/tangent/gsm8k/data/controlled-v1.json" \

@@ -63,10 +63,11 @@ def main():
                 gpu_cap = '80G' if arm == 'local' and phase == 'prune' else '64G'
                 module = 'sparsifier.eval.gsm8k_downstream_sweep' if kind == 'downstream' else 'sparsifier.eval.gsm8k_sweep_worker'
                 argv = ['gbatch', '--gpus','1','--gpu-memory',gpu_cap,'--memory','80G','--name',name,
-                        '--project','qwen-gsm8k','--time','12:00:00','--auto-close','--depends-on-all',
+                        '--project','qwen-gsm8k','--time','24:00:00','--auto-close','--depends-on-all',
                         ','.join(map(str,deps)),'--','bash',str(ROOT/'scripts/run_gsm8k_guarded.sh'),name,
                         str(RESULTS/name/'memory.jsonl'),str(ROOT/'.pixi/envs/gb10/bin/python'),'-u','-m',module,
                         '--root',str(RESULTS),'--task',name,'--plan',plan_name,'--plan-sha256',plan_hash]
+                if phase == 'original_validation': argv.append('--screen-128')
                 if not args.submit:
                     print(json.dumps({'name':name,'dependencies':deps,'argv':argv})); continue
                 journal['tasks'][name] = {'state':'submitting','argv':argv}

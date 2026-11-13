@@ -27,7 +27,7 @@ case "$PHASE" in
 esac
 NAME="qwen-9b-gsm8k-${PHASE}-v1"
 gbatch --gpus 1 --gpu-memory 64G --memory 80G "${EXTRA[@]}" \
-  --name "$NAME" --project qwen-gsm8k --time 12:00:00 --auto-close -- \
+  --name "$NAME" --project qwen-gsm8k --time 24:00:00 --auto-close -- \
   bash "$ROOT/scripts/run_gsm8k_guarded.sh" "$NAME" "$OUT/memory.jsonl" \
   "$ROOT/.pixi/envs/default/bin/python" -u -m "$MODULE" \
   --manifest "$ROOT/results/tangent/gsm8k/data/controlled-v1.json" \

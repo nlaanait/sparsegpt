@@ -1,0 +1,17 @@
+{
+  "complete": true,
+  "config_sha256": "6526edcc24e18b636db90e723590362d07b9b79c8f4dec65c564fadfbcf66532",
+  "count": 32,
+  "mean_answer_nll": 4.1609078869223595,
+  "memory": {
+    "allocator_cap_gib": 39.75403175354004,
+    "cuda_total_gib": 121.69016647338867,
+    "host_before": {
+      "available_gib": 116.47943878173828,
+      "total_gib": 121.69016647338867,
+      "used_gib": 5.210727691650391
+    },
+    "requested_cap_gib": 56.0
+  },
+  "peak_cuda_reserved_gib": 17.3125
+}

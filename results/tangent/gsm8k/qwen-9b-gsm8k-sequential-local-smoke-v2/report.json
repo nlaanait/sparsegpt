@@ -1,0 +1,657 @@
+{
+  "behavior": {
+    "accuracy": 0.75,
+    "answer_nll": 5.729445576667786,
+    "count": 4,
+    "truncated": 0
+  },
+  "complete": true,
+  "config_sha256": "39048d7af473a96ca8eefb3f3154d3a6ca81dc0352d482b53a16ae211e7f555a",
+  "eligible_parameters": 301989888,
+  "eligible_removed_fraction": 0.5,
+  "memory": {
+    "allocator_cap_gib": 80.0,
+    "cuda_free_gib": 30.870792388916016,
+    "cuda_total_gib": 121.69016647338867,
+    "host_before": {
+      "available_gib": 117.00778198242188,
+      "total_gib": 121.69016647338867,
+      "used_gib": 4.682384490966797
+    },
+    "requested_cap_gib": 80.0
+  },
+  "peak_cuda_reserved_gib": 21.08203125,
+  "removed_weights": 150994944,
+  "stages": [
+    {
+      "candidate_sha256": "cd8fd0ff4e32038d977c657ee1a8ffc1fc6be5276a1a24c1089dbf7cffc8d597",
+      "diagnostics": {
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 227344465920.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [],
+            [],
+            [],
+            [
+              64,
+              32,
+              185,
+              144
+            ],
+            [],
+            [],
+            [
+              80,
+              41,
+              208,
+              96
+            ],
+            []
+          ],
+          "chart_fit_counts": [
+            [],
+            [],
+            [],
+            [
+              64,
+              32,
+              41,
+              64
+            ],
+            [],
+            [],
+            [
+              16,
+              41,
+              64,
+              80
+            ],
+            []
+          ],
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "mean_active_factors": 2.0,
+          "relative_reconstruction_error": 0.00412253298604248,
+          "storage_scalars": 602144,
+          "unsupported_factors": [
+            0,
+            1,
+            2,
+            4,
+            5,
+            7
+          ]
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "damping": 0.01,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 91468.14611964553,
+        "geometric_curvature_trace_sum": 2485504.25,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "output_metric_trace_ratio": 0.7723562340110411,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 2.0,
+        "readout_tokens": 425,
+        "scale_max": 11.011941909790039,
+        "scale_min": 1.000003695487976,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0188443660736084,
+          1.1177334785461426,
+          1.4549589157104492,
+          1.9060885906219482,
+          2.9534378051757812
+        ],
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 0.9999999403953552,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 25165824,
+      "site": [
+        15,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "abfbc037e490b037e8f9dd506ee85b36ca79c73e201f68fa1badcb1bec196687",
+      "diagnostics": {
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 227344465920.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              183,
+              160,
+              66,
+              16
+            ],
+            [],
+            [],
+            [
+              38,
+              186,
+              73,
+              128
+            ],
+            [],
+            [],
+            [],
+            []
+          ],
+          "chart_fit_counts": [
+            [
+              64,
+              80,
+              41,
+              16
+            ],
+            [],
+            [],
+            [
+              32,
+              41,
+              64,
+              64
+            ],
+            [],
+            [],
+            [],
+            []
+          ],
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "mean_active_factors": 2.0,
+          "relative_reconstruction_error": 0.006545925196369046,
+          "storage_scalars": 602144,
+          "unsupported_factors": [
+            1,
+            2,
+            4,
+            5,
+            6,
+            7
+          ]
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "damping": 0.01,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 91468.14611964553,
+        "geometric_curvature_trace_sum": 2485504.25,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "output_metric_trace_ratio": 0.7723562340110411,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 2.0,
+        "readout_tokens": 425,
+        "scale_max": 10.285468101501465,
+        "scale_min": 1.0000056028366089,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0194053649902344,
+          1.1257786750793457,
+          1.469148874282837,
+          1.909170150756836,
+          2.8704192638397217
+        ],
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 0.9999999403953552,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 25165824,
+      "site": [
+        15,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "6556b1e5bce15d1d4adf344a0eca6302c81c3486aaa85bf69ff6b9461140c00a",
+      "diagnostics": {
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 4482316800.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              64,
+              16,
+              185,
+              144
+            ],
+            [],
+            [],
+            [],
+            [],
+            [
+              4,
+              16,
+              4
+            ],
+            [
+              97,
+              78,
+              208,
+              34
+            ],
+            []
+          ],
+          "chart_fit_counts": [
+            [
+              64,
+              16,
+              41,
+              64
+            ],
+            [],
+            [],
+            [],
+            [],
+            [
+              4,
+              8,
+              4
+            ],
+            [
+              80,
+              41,
+              64,
+              16
+            ],
+            []
+          ],
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "mean_active_factors": 2.0,
+          "relative_reconstruction_error": 0.010066805703351217,
+          "storage_scalars": 225324,
+          "unsupported_factors": [
+            1,
+            2,
+            3,
+            4,
+            7
+          ]
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "damping": 0.01,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 14217.872786866526,
+        "geometric_curvature_trace_sum": 315259.3125,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "output_metric_trace_ratio": 0.3601667841922208,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 2.0,
+        "readout_tokens": 425,
+        "scale_max": 40.598663330078125,
+        "scale_min": 1.0,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.018824577331543,
+          1.115880012512207,
+          1.322217345237732,
+          1.5859698057174683,
+          2.1761698722839355
+        ],
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 0.9999999403953552,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 25165824,
+      "site": [
+        15,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "df69253b426fda3ec9c60fae0762208b6e805691b774606aab72aec901060968",
+      "diagnostics": {
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 234640146432.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [],
+            [],
+            [
+              64,
+              32,
+              185,
+              98
+            ],
+            [],
+            [
+              9,
+              60,
+              18,
+              4
+            ],
+            [
+              41,
+              231,
+              64,
+              44
+            ],
+            [],
+            []
+          ],
+          "chart_fit_counts": [
+            [],
+            [],
+            [
+              64,
+              32,
+              41,
+              64
+            ],
+            [],
+            [
+              9,
+              7,
+              7,
+              4
+            ],
+            [
+              40,
+              41,
+              64,
+              29
+            ],
+            [],
+            []
+          ],
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "mean_active_factors": 2.0,
+          "relative_reconstruction_error": 0.0049443182589428165,
+          "storage_scalars": 700464,
+          "unsupported_factors": [
+            0,
+            1,
+            3,
+            6,
+            7
+          ]
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "damping": 0.01,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 88087.37494493135,
+        "geometric_curvature_trace_sum": 2663720.5,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "output_metric_trace_ratio": 0.7438090314784809,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 425,
+        "scale_max": 11.870688438415527,
+        "scale_min": 1.000014305114746,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0381600856781006,
+          1.1455250978469849,
+          1.519598364830017,
+          2.029860019683838,
+          3.266914129257202
+        ],
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 0.9999999403953552,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 25165824,
+      "site": [
+        16,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "4b9fb03a60b133dc006b14f7d03cfa27d6292e828e01601e3ee77eeb1d122d89",
+      "diagnostics": {
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 234640146432.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [],
+            [],
+            [],
+            [
+              64,
+              79,
+              185,
+              97
+            ],
+            [],
+            [
+              16,
+              185,
+              69,
+              155
+            ],
+            [],
+            []
+          ],
+          "chart_fit_counts": [
+            [],
+            [],
+            [],
+            [
+              64,
+              64,
+              41,
+              32
+            ],
+            [],
+            [
+              16,
+              41,
+              64,
+              80
+            ],
+            [],
+            []
+          ],
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "mean_active_factors": 2.0,
+          "relative_reconstruction_error": 0.008427190692941133,
+          "storage_scalars": 602144,
+          "unsupported_factors": [
+            0,
+            1,
+            2,
+            4,
+            6,
+            7
+          ]
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "damping": 0.01,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 88087.37494493135,
+        "geometric_curvature_trace_sum": 2663720.5,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "output_metric_trace_ratio": 0.7438090314784809,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 425,
+        "scale_max": 10.785924911499023,
+        "scale_min": 1.000006079673767,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0362741947174072,
+          1.1394307613372803,
+          1.5077770948410034,
+          2.02544903755188,
+          3.346346139907837
+        ],
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 0.9999999403953552,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 25165824,
+      "site": [
+        16,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "4b76f2e6e253861f897afdbf65cdc69eb21be0b2b51ce6e9b847af3d3c652f89",
+      "diagnostics": {
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 5836141568.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [],
+            [],
+            [],
+            [],
+            [
+              102,
+              100,
+              185,
+              38
+            ],
+            [],
+            [],
+            [
+              16,
+              199,
+              101,
+              109
+            ]
+          ],
+          "chart_fit_counts": [
+            [],
+            [],
+            [],
+            [],
+            [
+              80,
+              64,
+              41,
+              16
+            ],
+            [],
+            [],
+            [
+              16,
+              48,
+              64,
+              73
+            ]
+          ],
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "mean_active_factors": 2.0,
+          "relative_reconstruction_error": 0.014202352257882309,
+          "storage_scalars": 200736,
+          "unsupported_factors": [
+            0,
+            1,
+            2,
+            3,
+            5,
+            6
+          ]
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "damping": 0.01,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 15026.807545148848,
+        "geometric_curvature_trace_sum": 388382.0,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "output_metric_trace_ratio": 0.3806586984806216,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 425,
+        "scale_max": 9.059392929077148,
+        "scale_min": 1.0,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0350983142852783,
+          1.1209571361541748,
+          1.287353277206421,
+          1.5380744934082031,
+          2.2105185985565186
+        ],
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 0.9999999403953552,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 25165824,
+      "site": [
+        16,
+        "mlp.down_proj"
+      ]
+    }
+  ],
+  "total_parameters": 8953803264,
+  "whole_model_removed_fraction": 0.01686377727407704
+}

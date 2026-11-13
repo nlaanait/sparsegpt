@@ -1,0 +1,15 @@
+{
+  "active": 2,
+  "capture_sha256": "8670c8375bdfb417c849a2e84fef4e825f04f26c3e9d6e73e2f7e884cf304487",
+  "charts": 4,
+  "estimator_sources": {
+    "sparsifier.prune.factor_atlas": "4e5c37fc40b8aeae8468e68400f9c3cb2f5b2c2797512a9d2b00d69e78cddfbb",
+    "sparsifier.prune.geometry_features": "70d3d8d68b32849dbcf03c31bcef29d242ff5fb18a135687be5b9c9f72d45680"
+  },
+  "groups": 8,
+  "manifest_sha256": "36de89acdda5d71de79a5de63a2268ed4a01476d5a5bb5c3fe3e285ac35547ac",
+  "rank": 1,
+  "seed": 1,
+  "source_sha256": "f525ccb90688f479a1c9a7fef62d5e58149aaf8783f2508ea5bd10c7fba55f19",
+  "width": 4
+}

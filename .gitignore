@@ -11,3 +11,11 @@ results/**/logs/
 **/gpu_monitor.csv
 wandb/
 *.log
+
+# Local GSM8K pruning checkpoints and activation caches (too large for Git).
+results/tangent/gsm8k/**/*.pt
+results/tangent/gsm8k/**/*.npz
+results/tangent/gsm8k/**/*.npy
+results/tangent/natural-layer-v1/**/*.npy
+results/tangent/natural-layer-v1/**/*.pt
+results/tangent/**/*.lock

@@ -1,0 +1,183 @@
+{
+  "allowed_accuracy_drop": null,
+  "alpha": 1.0,
+  "blocks": "all",
+  "calibration_manifest_sha256": "36de89acdda5d71de79a5de63a2268ed4a01476d5a5bb5c3fe3e285ac35547ac",
+  "calibration_tokens": {
+    "c4": 4096,
+    "math": 4096
+  },
+  "dense_reference": "qwen-9b-gsm8k-original-dense-512-v1",
+  "eligible_sparsities": [
+    0.3,
+    0.5,
+    0.7,
+    0.8,
+    0.9,
+    0.99
+  ],
+  "environment": "gb10",
+  "git_commit": "1cad6d9db0a1636fa36ff75522e2fa349ac1c1fa",
+  "limitations": [
+    "MLP-only; measure whole-model removal separately",
+    "row-diagonal congruence approximation; curvature-trace strength before scaled-coordinate damping",
+    "old local outputs are invalid; all candidates use fresh v2 directories",
+    "GB10 evaluation environment differs from the original default-environment dense reference"
+  ],
+  "local_pruning_version": "curvature-trace-v2",
+  "max_new_tokens": 2048,
+  "memory_policy": "exclusive gflow; local GPU 80G; eval GPU 64G; cgroup 80G; host watchdog 96 GiB",
+  "modules": [
+    "mlp.gate_proj",
+    "mlp.up_proj",
+    "mlp.down_proj"
+  ],
+  "purpose": "corrected_local_MLP_retention_frontier_development_not_confirmatory",
+  "seed": 0,
+  "skipped_sparsities": {
+    "0.1": "previously cancelled for SparseGPT and downstream"
+  },
+  "sources": {
+    "scripts/run_gsm8k_guarded.sh": "4e1126ce45f2b8c2846bea5007f07358a4bff584d3b3f20fc653fbf33692f019",
+    "src/sparsifier/eval/gsm8k_pruning.py": "a1aa254843cfead9a9e4e1c3a9e527ec9ebd75c084fbe866ab8b46db4598d435",
+    "src/sparsifier/eval/gsm8k_sequential.py": "4f27922a3ae8d8f24dc291c39fd5b571cb89a4c430abc6ec45b0c90fd98d7d59",
+    "src/sparsifier/eval/gsm8k_sweep.py": "08c6f875939614dea3db5601fe5f46f6f715bf20aedfc4816e4a0a4db7f58409",
+    "src/sparsifier/eval/gsm8k_sweep_worker.py": "97dd4502d9b8ea6aa53c91f38c7c7151c6d7fc448c2b92d27491fb3ee7f2c4d0",
+    "src/sparsifier/prune/factor_atlas.py": "4e5c37fc40b8aeae8468e68400f9c3cb2f5b2c2797512a9d2b00d69e78cddfbb",
+    "src/sparsifier/prune/rescale.py": "e420e53619e223ca234dee06bf5e659429a22ca6dfcc2621b0dd8d82dc7f1ad1",
+    "src/sparsifier/prune/sparsegpt.py": "4f2363f0f9c2851d82033ca8ddd83d1f832fec3fecc350ceab2f19fa959bba4e"
+  },
+  "tasks": [
+    {
+      "arm": "local",
+      "blocks": "15,16",
+      "depends_on": [],
+      "eligible_sparsity": 0.5,
+      "eval_count": 4,
+      "name": "qwen-9b-gsm8k-sequential-local-smoke-v2",
+      "phase": "smoke"
+    },
+    {
+      "arm": "local",
+      "blocks": "all",
+      "depends_on": [
+        "qwen-9b-gsm8k-sequential-local-smoke-v2"
+      ],
+      "eligible_sparsity": 0.3,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-local-s30-seed0-v2",
+      "phase": "prune",
+      "requires_smoke_arm": "local"
+    },
+    {
+      "arm": "local",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-local-s30-seed0-v2"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-local-s30-seed0-v2-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "local",
+      "blocks": "all",
+      "depends_on": [
+        "qwen-9b-gsm8k-sequential-local-smoke-v2"
+      ],
+      "eligible_sparsity": 0.5,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-local-s50-seed0-v2",
+      "phase": "prune",
+      "requires_smoke_arm": "local"
+    },
+    {
+      "arm": "local",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-local-s50-seed0-v2"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-local-s50-seed0-v2-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "local",
+      "blocks": "all",
+      "depends_on": [
+        "qwen-9b-gsm8k-sequential-local-smoke-v2"
+      ],
+      "eligible_sparsity": 0.7,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-local-s70-seed0-v2",
+      "phase": "prune",
+      "requires_smoke_arm": "local"
+    },
+    {
+      "arm": "local",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-local-s70-seed0-v2"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-local-s70-seed0-v2-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "local",
+      "blocks": "all",
+      "depends_on": [
+        "qwen-9b-gsm8k-sequential-local-smoke-v2"
+      ],
+      "eligible_sparsity": 0.8,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-local-s80-seed0-v2",
+      "phase": "prune",
+      "requires_smoke_arm": "local"
+    },
+    {
+      "arm": "local",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-local-s80-seed0-v2"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-local-s80-seed0-v2-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "local",
+      "blocks": "all",
+      "depends_on": [
+        "qwen-9b-gsm8k-sequential-local-smoke-v2"
+      ],
+      "eligible_sparsity": 0.9,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-local-s90-seed0-v2",
+      "phase": "prune",
+      "requires_smoke_arm": "local"
+    },
+    {
+      "arm": "local",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-local-s90-seed0-v2"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-local-s90-seed0-v2-original512",
+      "phase": "original_validation"
+    },
+    {
+      "arm": "local",
+      "blocks": "all",
+      "depends_on": [
+        "qwen-9b-gsm8k-sequential-local-smoke-v2"
+      ],
+      "eligible_sparsity": 0.99,
+      "eval_count": 32,
+      "name": "qwen-9b-gsm8k-mlp-local-s99-seed0-v2",
+      "phase": "prune",
+      "requires_smoke_arm": "local"
+    },
+    {
+      "arm": "local",
+      "depends_on": [
+        "qwen-9b-gsm8k-mlp-local-s99-seed0-v2"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-local-s99-seed0-v2-original512",
+      "phase": "original_validation"
+    }
+  ],
+  "validation_count": 512,
+  "validation_manifest_sha256": "0359aa7586c1948157ad9ffbb388cb84a1854d2be7f20ed4ecfeed8c65049ef3"
+}

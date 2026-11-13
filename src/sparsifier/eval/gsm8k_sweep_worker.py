@@ -16,6 +16,7 @@ def main():
     p.add_argument('--task',required=True)
     p.add_argument('--plan',default='mlp-retention-sweep-plan-v1.json')
     p.add_argument('--plan-sha256')
+    p.add_argument('--screen-128', action='store_true')
     args = p.parse_args()
     root = args.root
     plan = json.loads((root/args.plan).read_text())
@@ -52,10 +53,12 @@ def main():
             raise ValueError('source candidate scope mismatch')
         if task['arm'] == 'local' and source_config.get('local_pruning_version') != LOCAL_PRUNING_VERSION:
             raise ValueError('legacy local candidate must be regenerated with corrected pruning')
-        module = 'sparsifier.eval.gsm8k_original'
+        module = 'sparsifier.eval.gsm8k_screened' if args.screen_128 else 'sparsifier.eval.gsm8k_original'
         argv = ['--manifest',str(root/'data/original-validation-v1.json'),
                 '--source',str(source),'--output',str(output),
                 '--max-new-tokens',str(plan['max_new_tokens'])]
+        if args.screen_128:
+            argv += ['--screen-reference',str(root/plan['dense_reference'])]
     sys.argv = [module,*argv]
     runpy.run_module(module,run_name='__main__')
 
