@@ -1,0 +1,21 @@
+{
+  "answers_snapshot_sha256": "66222177be04a378feb1850d8c689197430c341ae62fa6f8320b1ff6e0bd3742",
+  "audited_records_sha256": "e6ca5f1c59502c7ce868bfb53ef419b022cc0c203a927bc1c6f2ee1c0f76e6d9",
+  "auditor_sha256": "aaed4e2bd6fda968f9846219388cb90cdedf5777fdf76e4c442a685785fdf80b",
+  "common128_complete": true,
+  "config_sha256": "37ee2b2613a7dddc593a07cdebbb7f41c2a7f37557a91774e1406dc4c0f4e87a",
+  "count": 128,
+  "evaluation": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/local-s60",
+  "evaluation_report_present": true,
+  "manifest_sha256": "ad504f83614c1f0ee27a761bbbfcfc7c1842414bb91def1863ebde5267e7d362",
+  "packed_input_and_prompt_mismatches": 0,
+  "raw_files_sha256": {
+    "0185a7824cbc0b6acb3d6812b44774b363e9e8d800276ec78778b1d1db1ee582.json": "ac5320731761abf87431a6985bd052c51670440e082a1aa5ae4f9169b25ba32e",
+    "1a2ca9d4f53236c6fb1792355d220e644d6598fa0576dc3c185f4a3158950a05.json": "fa4825847d00bbce529667cb62416678365a25776cce1669013aede9d4e58ab0",
+    "86bcd37f3492bc438fc810e171af7389a473116baee0bbe25f15c357d7bf4c9e.json": "080ec7e676c154f4ef5151b5e92b242c6841bb9e20381fdb5bba66b936a595d9",
+    "dc222d2275ad2afc079276fca7b86345e18f54cfa7898fc29d7f128ff08e063b.json": "9deed0f44bf760403c390397ed29188174aa363ce0a69210bd9cac3507c39a0c"
+  },
+  "renderer_sha256": "b34c60d3659e5072aef6f09beea62d11dad900f4741f76fb9311f0bd0d8428c9",
+  "scope": "generation_input_provenance_only",
+  "verified_batches": 4
+}

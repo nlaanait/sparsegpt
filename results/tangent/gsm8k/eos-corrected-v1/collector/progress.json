@@ -1,0 +1,319 @@
+{
+  "all_evaluations_verified": false,
+  "collector_sha256": "0aff005356432c70c341146be6b49e55ca9cc05a9cad92942629d5f2516154d6",
+  "expected_evaluations": 16,
+  "failed_jobs": [
+    {
+      "job_id": 273,
+      "label": "control-prompt-high-s70",
+      "state": "CA"
+    },
+    {
+      "job_id": 274,
+      "label": "control-reasoning-high-s70",
+      "state": "CA"
+    },
+    {
+      "job_id": 275,
+      "label": "control-fp64-s70",
+      "state": "CA"
+    },
+    {
+      "job_id": 277,
+      "label": "sparsegpt-task-s70",
+      "state": "CA"
+    },
+    {
+      "job_id": 263,
+      "label": "local-s65",
+      "state": "CA"
+    },
+    {
+      "job_id": 265,
+      "label": "downstream-weightdiag-s65",
+      "state": "CA"
+    }
+  ],
+  "pending_labels": [
+    "control-prompt-high-s70",
+    "control-reasoning-high-s70",
+    "control-fp64-s70",
+    "sparsegpt-task-s70",
+    "local-s65",
+    "downstream-weightdiag-s65"
+  ],
+  "pid": 2173779,
+  "scope": "independent_collection_not_goal_completion",
+  "updated_at": "2026-11-17T02:59:59.343267+00:00",
+  "verified": [
+    {
+      "common128": {
+        "correct": 123,
+        "count": 128,
+        "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+        "strict_marker_correct_ignoring_truncation": 123,
+        "truncated": 1,
+        "truncated_correct_with_complete_marker_line": 0
+      },
+      "cpu_audit": null,
+      "full512_complete": false,
+      "full_evaluation_count": 128,
+      "input_signature": [
+        "2301e2cf40c75a1c1084f7d6fcac365583c1285d3009cbabce5b73c62608f6be",
+        "e9e4add9b683f1385f9d39ff467c8393aeedeb853ee48ac9ddeaaa291ee93b5d",
+        "3209845f6e77979af16da0ee7ae2ad7a9750c4c5f46181e4846319d69ca10ca5",
+        "859429daac6f5057a4f1b736291754b61019c3575d35b1f748416687db63d78e"
+      ],
+      "job_id": 266,
+      "label": "dense",
+      "raw_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/dense.json",
+      "raw_audit_sha256": "67a55acc36f8f2a647588574a70ffd9cb10e7629f94c8f62645d9a9f6d3a4bee",
+      "screen_rejected": false,
+      "state": "verified"
+    },
+    {
+      "common128": {
+        "correct": 96,
+        "count": 128,
+        "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+        "strict_marker_correct_ignoring_truncation": 96,
+        "truncated": 3,
+        "truncated_correct_with_complete_marker_line": 0
+      },
+      "cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/sparsity-bracket-repcal-v1/audits/sparsegpt-task-s55-cpu.json",
+      "full512_complete": false,
+      "full_evaluation_count": 128,
+      "input_signature": [
+        "449a3b3c95e6426edc01ec98a484dac29ea2b820e133ae2e30e02c0aca296144",
+        "dd813442d4da2deb71e32244bd1d4581ab0b19d3b736cd5d20f59189e0d20509",
+        "3e595e49ea638d81ada37291f7a5a2b03360b610443d416926560dabee415030",
+        "39b0ced255a381677f031fc518919d1526fdc92520b63c0ed5f3287557275d42",
+        "8a9825ddcb592042b1bab36f4f5fe50cdfb7f505f6cee5c52fa33209ed64e28e",
+        "b0292da2aaa6b84177c8c0604240c4b64cd7fe3b3e61f8a953837407e8323e8a"
+      ],
+      "job_id": 267,
+      "label": "sparsegpt-task-s55",
+      "raw_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/sparsegpt-task-s55.json",
+      "raw_audit_sha256": "f2a66778dbd23410ca48d62aab14aa2616b1c07b1c31c03dde564973fe6b24c1",
+      "screen_rejected": true,
+      "state": "verified"
+    },
+    {
+      "common128": {
+        "correct": 89,
+        "count": 128,
+        "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+        "strict_marker_correct_ignoring_truncation": 89,
+        "truncated": 7,
+        "truncated_correct_with_complete_marker_line": 0
+      },
+      "cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/sparsity-bracket-repcal-v1/audits/local-s55-cpu.json",
+      "full512_complete": false,
+      "full_evaluation_count": 128,
+      "input_signature": [
+        "6177269db92821fb849bcd489230108c8f0dcc2684191dfff035006f0407d45f",
+        "381cbdc1f4045937d2e247d9ad98c329be45b5865222316317f6258200a404e8",
+        "9df3a87312cb856d9242d0237b7ab20ac84dd3bc1a550bb8ae5e6eb920f450ae",
+        "c548acd70bdbb5be8bc048267365646b5586a264ce84bee3d06c691f48e06d66",
+        "d3a0b77ace92e05267166b16f6a3d4080d2d5f84ee2a4045cb6eff6f7521f858",
+        "e2cfb7f0decc179bd94b77a27759fc61e30a1e90746db981f4d44bd486335be3"
+      ],
+      "job_id": 268,
+      "label": "local-s55",
+      "raw_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/local-s55.json",
+      "raw_audit_sha256": "e7f45692369719a021f96de755f8b6c987cde9b0910e7a111d6abaf70dc3ad8c",
+      "screen_rejected": true,
+      "state": "verified"
+    },
+    {
+      "common128": {
+        "correct": 98,
+        "count": 128,
+        "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+        "strict_marker_correct_ignoring_truncation": 98,
+        "truncated": 4,
+        "truncated_correct_with_complete_marker_line": 0
+      },
+      "cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/sparsity-bracket-repcal-v1/audits/downstream-weightdiag-s55-cpu.json",
+      "full512_complete": false,
+      "full_evaluation_count": 128,
+      "input_signature": [
+        "36bdcf5b7652a4aba7cd606d81a8252fbb44e70bdd1b0178942cc66d9125896d",
+        "940b39c2453b4c791a96d26a9db39cb1da7d3f509b7bf00089c0f4c217d91406",
+        "8b73fdf146d0f154db5f1a0df4f6f8cd2ba396493ced68c643f6bb86d9d106d4",
+        "9cdd396bf88370e7bf2927c9b19b12b393bd1199864a92a579667d88b599917f",
+        "a0ba0cf15c1a43702002c95e1ec57c28f632b258f6a0db7cbc7e77d4a319a6b2",
+        "d5183b34fd612c9dd9486c3e01af637f938457d758ae70e8e334e03d48a6dafd"
+      ],
+      "job_id": 269,
+      "label": "downstream-weightdiag-s55",
+      "raw_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/downstream-weightdiag-s55.json",
+      "raw_audit_sha256": "bd9d9d8eff04fdea663132003173d736c31c5e32b86f4ff1c434237c5fff584f",
+      "screen_rejected": true,
+      "state": "verified"
+    },
+    {
+      "common128": {
+        "correct": 95,
+        "count": 128,
+        "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+        "strict_marker_correct_ignoring_truncation": 95,
+        "truncated": 5,
+        "truncated_correct_with_complete_marker_line": 0
+      },
+      "cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/sparsity-bracket-repcal-v1/audits/sparsegpt-task-s60-cpu.json",
+      "full512_complete": false,
+      "full_evaluation_count": 128,
+      "input_signature": [
+        "348d6f87ff37d8e99fc6524339dffa17f36821d8403339b966168d5fa36146af",
+        "e0729f4bfe2c6e0f76ac012f2d598843ed961435f0360883d842c3371d7981cc",
+        "459a1e4b448bb4830f1ae4eb47b2aca908e02f23f68eb3ed40ad729f9a97317a",
+        "eb69ae88750ff17fd219a92a43c6e74db54017d67f504418fd28e54841b3c67b",
+        "ff6eadcd8d8f46263cc589a0196003b05ef33f8b7f4f574c002ebfb941572d0b",
+        "4d2d25034a02a4ea421cd6510cb4ed92e92db04e0179da2811f6a9daf02cf6cc"
+      ],
+      "job_id": 270,
+      "label": "sparsegpt-task-s60",
+      "raw_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/sparsegpt-task-s60.json",
+      "raw_audit_sha256": "38d1e155164c6035e76f49293f8c2c1c41e64104a8632b22d1e8c7cf1b2a5dfa",
+      "screen_rejected": true,
+      "state": "verified"
+    },
+    {
+      "common128": {
+        "correct": 13,
+        "count": 128,
+        "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+        "strict_marker_correct_ignoring_truncation": 14,
+        "truncated": 95,
+        "truncated_correct_with_complete_marker_line": 1
+      },
+      "cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/cpu-report.json",
+      "full512_complete": false,
+      "full_evaluation_count": 128,
+      "input_signature": [
+        "780d810d55908b4b614fe8d5310c9c01fb235d03c680735af52f8078d1514206",
+        "49779e09b3e307775d3f86149a2fcfcd926cfff87a483661eeea563ffdbe7967",
+        "a3d59967cae94f600af3a800bfc6618baa2b7434b6d0ff843c0d8988db7b3585",
+        "c718686ec4d061280e725b0e9620a0d46cea8446cae4b2bf7aa4144890d0f228",
+        "e9acde78e8b53df36ee0f89bfaf15b53e722196b1fd93efc0f93a83d67f7a8af",
+        "76538bb161b2acb664986d8c2c6b1ecbc4d1aa0871dbefef59fca8a0d688f743"
+      ],
+      "job_id": 271,
+      "label": "local-s70",
+      "raw_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/local-s70.json",
+      "raw_audit_sha256": "ee5c90f853fb02684aa63cbeffb47842fd1c4c0f16efc9da68c1d56713e42e8b",
+      "screen_rejected": true,
+      "state": "verified"
+    },
+    {
+      "common128": {
+        "correct": 12,
+        "count": 128,
+        "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+        "strict_marker_correct_ignoring_truncation": 12,
+        "truncated": 80,
+        "truncated_correct_with_complete_marker_line": 0
+      },
+      "cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/repcal-downstream-cpu-report.json",
+      "full512_complete": false,
+      "full_evaluation_count": 128,
+      "input_signature": [
+        "5af83ebfd86382f643f7dee4f5958d4b61e9cd6d366c9937e5f7b723899ed52d",
+        "9fe59a2aebe2bf1e6c940593c9d6eacc68fa24f5aa447659fec0553c46264636",
+        "594722dda2e68efbb0b53bb0ae3f16666dac51f6b2ca09d511f3b3fe1be940f9",
+        "c1a5239d3377fe93d3d70edb390a59722bf338fbb023fe2d64d699a83109432b",
+        "ce1652318865b50f0aba9bbef33a62083fa0a375808d823d5a8eac1a9ae52af8",
+        "c24771323d91c31b0a420306f4e31e129b02d834fdefe0523da0c569f05460bb"
+      ],
+      "job_id": 272,
+      "label": "downstream-weightdiag-s70",
+      "raw_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/downstream-weightdiag-s70.json",
+      "raw_audit_sha256": "01effe4d134c48682f3be155804a945d704327d096db782c9d5256a20c82051b",
+      "screen_rejected": true,
+      "state": "verified"
+    },
+    {
+      "common128": {
+        "correct": 72,
+        "count": 128,
+        "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+        "strict_marker_correct_ignoring_truncation": 72,
+        "truncated": 16,
+        "truncated_correct_with_complete_marker_line": 0
+      },
+      "cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/local-s60-cpu.json",
+      "full512_complete": false,
+      "full_evaluation_count": 128,
+      "input_signature": [
+        "671621601669cb1a1147641dc814986b2ce7c3521b824e2e388b0f68d48f0fcd",
+        "66222177be04a378feb1850d8c689197430c341ae62fa6f8320b1ff6e0bd3742",
+        "b6633f5f958a87574149269eae2133cd4fbd69936c0896a84710c3ca6731058c",
+        "6aecc3ec0b6fe75aa769a88127f1009de87ef0f8c2dd536ba6186f4a93d70e39",
+        "faa4baa1c5321e0357c70a3c8e24b40c849f27254df4a7eee425801fbeef58b5",
+        "c6c668dd72f469da1bc3bbaa7d5492032a7bd21edc182ae1d32056eac67d4528"
+      ],
+      "job_id": 257,
+      "label": "local-s60",
+      "raw_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/local-s60.json",
+      "raw_audit_sha256": "a2c589efdee39fd76df5df02877baf465fae43fac6cac2fff6129eeccb47c0c0",
+      "screen_rejected": true,
+      "state": "verified"
+    },
+    {
+      "common128": {
+        "correct": 77,
+        "count": 128,
+        "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+        "strict_marker_correct_ignoring_truncation": 77,
+        "truncated": 10,
+        "truncated_correct_with_complete_marker_line": 0
+      },
+      "cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/downstream-weightdiag-s60-cpu.json",
+      "full512_complete": false,
+      "full_evaluation_count": 128,
+      "input_signature": [
+        "232044de695325a256772fd04b78daacfe70c58a2528af5e46e013e5b1fc8027",
+        "31b6510e9380150b192105b407d575db9cdef3d33dd23df023320b8c5d3c5c7a",
+        "f6b511a5e77d6b3d9cea6690178283fde0e324cb243f2c6e49c929b02372918f",
+        "9f6dad175df79328d6faec3a1be74e06af1188465cdb3314ed90401855e9966f",
+        "9610ee19dcbaaa3decdaf7b4484d9bb34bf394c9995080a23bb68d96dba4c554",
+        "31ed26be8dc8613ea8432d4878049e3c722e8c2bd6ca2588df0022014f663017"
+      ],
+      "job_id": 259,
+      "label": "downstream-weightdiag-s60",
+      "raw_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/downstream-weightdiag-s60.json",
+      "raw_audit_sha256": "65368cc985a22b8eaad6e44f0ead8dbf057944fd966c8376ba9e0974180eafba",
+      "screen_rejected": true,
+      "state": "verified"
+    },
+    {
+      "common128": {
+        "correct": 54,
+        "count": 128,
+        "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+        "strict_marker_correct_ignoring_truncation": 54,
+        "truncated": 27,
+        "truncated_correct_with_complete_marker_line": 0
+      },
+      "cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/sparsegpt-task-s65-cpu.json",
+      "full512_complete": false,
+      "full_evaluation_count": 128,
+      "input_signature": [
+        "98cb717a4d28be6f7d3146edcccc2af935436badb1ab24650caced6da6bb5526",
+        "5a95c5f55fa07b5801050944585518f57dd5b066a0d4039d098fe73c6b2a3d19",
+        "083d9451743c521a9546b2dffbcfb955e0255aeb94f28a94796c8bb9c37dda17",
+        "6cac91d6014ac9811f6c4eb2d0f2aed2e630a16745a9a2ceb801ebb5efca89aa",
+        "744000ee6697175e9187ef9e2c2928692ef946bde349e111b0c581243215b6b0",
+        "1fe47a70aa558d89c65cdeeb1955a2b46871cd14970f2ca46ccf363d21d727de"
+      ],
+      "job_id": 261,
+      "label": "sparsegpt-task-s65",
+      "raw_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/sparsegpt-task-s65.json",
+      "raw_audit_sha256": "ff071d48d57c73bfa51b7ee0175eb18b6828d8c378fd3b3c08a8149a086bee58",
+      "screen_rejected": true,
+      "state": "verified"
+    }
+  ],
+  "verified_count": 10
+}

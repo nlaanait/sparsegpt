@@ -78,7 +78,7 @@ def test_mask_support_and_scaled_independent_row_refits():
     assert not mlp.gate_proj.weight[~candidate.keep].any()
     assert not mlp.up_proj.weight[~candidate.keep].any()
     assert not mlp.down_proj.weight[:, ~candidate.keep].any()
-    assert candidate.diagnostics["post_refit_objective"] <= candidate.diagnostics["pre_refit_objective"]+1e-12
+    assert candidate.diagnostics["surrogate_post_refit_objective"] <= candidate.diagnostics["surrogate_pre_refit_objective"]+1e-12
 
 
 def test_alpha_zero_bypasses_geometry_and_zero_sparsity_is_bitwise():

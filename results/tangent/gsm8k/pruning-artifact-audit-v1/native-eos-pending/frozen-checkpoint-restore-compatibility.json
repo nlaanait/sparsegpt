@@ -1,0 +1,17 @@
+{
+  "scope": "real96_stage_frozen_checkpoint_loader_under_isolated_native_EOS_sources",
+  "verified_at": "2026-11-16T19:23:21.185100+00:00",
+  "source": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s70-seed0-batch32-repcal-v1",
+  "config_sha256": "0ab25f388697767d7b8b5cbc819b7f959e38ab2dacf7ddf9af6907417985cc78",
+  "report_sha256": "76538bb161b2acb664986d8c2c6b1ecbc4d1aa0871dbefef59fca8a0d688f743",
+  "stages_verified": 96,
+  "old_pruning_policy_differs_from_new_evaluation_policy": true,
+  "old_pruning_metadata_accepted_for_restore": true,
+  "evaluation_cache_policy_unchanged_by_restore": "model_and_tokenizer_eos_v1",
+  "loaded_full_model": false,
+  "used_cuda": false,
+  "validated_native_source_sha256": {
+    "src/sparsifier/eval/gsm8k_batching.py": "e88756bd4716cacac891e0772dc83e3b74bdbcf61d5640d901c5290f89f6f471",
+    "src/sparsifier/eval/gsm8k_pruning.py": "ccd29d201db5d6df6e3672ef88e48dd7237a0bc5268430333c19588eb5f8470d"
+  }
+}

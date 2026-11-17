@@ -1,0 +1,12 @@
+{
+  "scope": "configuration_preflight_not_final_pruning_audit",
+  "job": 258,
+  "source": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-downstream-weightdiag-s60-seed0-batch32-repcal-v1",
+  "differences_from_downstream55": [
+    "sparsity"
+  ],
+  "metric": "weight_diagonal",
+  "full_metric_enabled": false,
+  "seed": 0,
+  "alpha": 1.0
+}

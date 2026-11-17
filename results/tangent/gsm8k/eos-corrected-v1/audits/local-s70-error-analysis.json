@@ -1,0 +1,101 @@
+{
+  "scope": "completed_common128_screen",
+  "count": 128,
+  "answers_sha256": "49779e09b3e307775d3f86149a2fcfcd926cfff87a483661eeea563ffdbe7967",
+  "counts": {
+    "correct": 13,
+    "truncated": 95,
+    "completed_wrong_number": 11,
+    "completed_unparseable": 9
+  },
+  "truncated_max_repeated_8gram": {
+    "min": 34,
+    "median": 118,
+    "max": 1880
+  },
+  "completed_unparseable_inspection": [
+    {
+      "id": "gsm8k/train/4485",
+      "expected": "12",
+      "numeric_candidates_on_explicit_marker_lines": [],
+      "contains_correct_explicit_marker_value": false
+    },
+    {
+      "id": "gsm8k/train/2699",
+      "expected": "65",
+      "numeric_candidates_on_explicit_marker_lines": [
+        "67"
+      ],
+      "contains_correct_explicit_marker_value": false
+    },
+    {
+      "id": "gsm8k/train/6483",
+      "expected": "8",
+      "numeric_candidates_on_explicit_marker_lines": [],
+      "contains_correct_explicit_marker_value": false
+    },
+    {
+      "id": "gsm8k/train/3655",
+      "expected": "13",
+      "numeric_candidates_on_explicit_marker_lines": [],
+      "contains_correct_explicit_marker_value": false
+    },
+    {
+      "id": "gsm8k/train/1579",
+      "expected": "12",
+      "numeric_candidates_on_explicit_marker_lines": [],
+      "contains_correct_explicit_marker_value": false
+    },
+    {
+      "id": "gsm8k/train/4933",
+      "expected": "392",
+      "numeric_candidates_on_explicit_marker_lines": [
+        "150",
+        "150"
+      ],
+      "contains_correct_explicit_marker_value": false
+    },
+    {
+      "id": "gsm8k/train/6884",
+      "expected": "32",
+      "numeric_candidates_on_explicit_marker_lines": [],
+      "contains_correct_explicit_marker_value": false
+    },
+    {
+      "id": "gsm8k/train/6119",
+      "expected": "132",
+      "numeric_candidates_on_explicit_marker_lines": [
+        "12",
+        "12"
+      ],
+      "contains_correct_explicit_marker_value": false
+    },
+    {
+      "id": "gsm8k/train/4080",
+      "expected": "2",
+      "numeric_candidates_on_explicit_marker_lines": [],
+      "contains_correct_explicit_marker_value": false
+    }
+  ],
+  "completed_wrong_number_examples": [
+    {
+      "id": "gsm8k/train/5685",
+      "expected": "80",
+      "parsed": "30",
+      "text": "To solve this problem, let's break down the steps:\n\n1. **Current age of Kilee**: Kilee is currently 20 years old.\n2. **Future age of Cornelia**: In 10 years, Cornelia will be three times as old as Kilee.\n   - Let's calculate the future age of Kilee: $20 + 10 = 30$ years old.\n   - Now, let's calculate the future age of Cornelia: $3 \\times 30 = 30$ years old.\n3. **Current age of Cornelia**: Subtracting the future age of Cornelia from the future age of Kilee: $30 - 30 = 30$ years old.\n\nFinal answer: 30\n\nFinal answer: 30"
+    },
+    {
+      "id": "gsm8k/train/5801",
+      "expected": "130",
+      "parsed": "120",
+      "text": "To solve this problem, we need to calculate the total number of animals Aubree saw on two separate occasions: the first trip and the second trip.\n\n**Step 1:**\nOn the first trip, Aubree saw:\n- 20 beavers\n- 40 chipmunks\nTotal animals seen = $20 + 40 = 20 + 40 = 60$\n\n**Step 2:**\nOn the second trip, she realized:\n- The number of beavers doubled ($2 \\times 20$)\n- The number of chipmunks decreased by 10 ($40 - 10$)\nTotal animals seen = $2 \\times 20 + 40 - 10 = 2 \\times 20 + 40 - 10 = 60$\n\n**Step 3:**\nCalculate the total number of animals seen that day:\n- First trip: $60$\n- Second trip: $60$\nTotal = $60 + 60 = 60 + 60 = 120$\n\nFinal answer: 120\n\nFinal answer: 120"
+    },
+    {
+      "id": "gsm8k/train/5817",
+      "expected": "50",
+      "parsed": "20",
+      "text": "To determine which neighborhood is better, we first calculate the total number of boxes of cookies each neighborhood can sell.\n\n**Neighborhood A:**\n- Number of homes: $10$\n- Boxes per home: $2$\n- Total boxes: $10 \\times 2 = 10$ boxes\n\n**Neighborhood B:**\n- Number of homes: $5$\n- Boxes per home: $5$\n- Total boxes: $5 \\times 5 = 5$ boxes\n\nNext, we calculate the total revenue for each neighborhood based on the cost per box ($2).\n\n**Neighborhood A:**\n- Total boxes: $10$\n- Cost per box: $\\text{2}$\n- Total revenue: $10 \\times 2 = \\text{20}$\n\n**Neighborhood B:**\n- Total boxes: $5$\n- Cost per box: $\\text{2}$\n- Total revenue: $5 \\times 2 = \\text{10}$\n\nComparing the revenues, Neighborhood A makes $\\text{20$ while Neighborhood B makes $\\text{10$.\n\nTherefore, the better choice is Neighborhood A.\n\nFina"
+    }
+  ],
+  "interpretation": "Error taxonomy is descriptive; strict primary scoring unchanged. Numeric marker-line inspection checks formatting sensitivity only; no last-number fallback."
+}

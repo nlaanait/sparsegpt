@@ -1,0 +1,69 @@
+{
+  "auditor_sha256": "aaed4e2bd6fda968f9846219388cb90cdedf5777fdf76e4c442a685785fdf80b",
+  "evaluations": [
+    {
+      "audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/dense-generation-inputs.json",
+      "batches": 4,
+      "count": 128,
+      "label": "dense"
+    },
+    {
+      "audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/sparsegpt-task-s55-generation-inputs.json",
+      "batches": 4,
+      "count": 128,
+      "label": "sparsegpt-task-s55"
+    },
+    {
+      "audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/local-s55-generation-inputs.json",
+      "batches": 4,
+      "count": 128,
+      "label": "local-s55"
+    },
+    {
+      "audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/downstream-weightdiag-s55-generation-inputs.json",
+      "batches": 4,
+      "count": 128,
+      "label": "downstream-weightdiag-s55"
+    },
+    {
+      "audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/sparsegpt-task-s60-generation-inputs.json",
+      "batches": 4,
+      "count": 128,
+      "label": "sparsegpt-task-s60"
+    },
+    {
+      "audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/local-s70-generation-inputs.json",
+      "batches": 4,
+      "count": 128,
+      "label": "local-s70"
+    },
+    {
+      "audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/downstream-weightdiag-s70-generation-inputs.json",
+      "batches": 4,
+      "count": 128,
+      "label": "downstream-weightdiag-s70"
+    },
+    {
+      "audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/local-s60-generation-inputs.json",
+      "batches": 4,
+      "count": 128,
+      "label": "local-s60"
+    },
+    {
+      "audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/downstream-weightdiag-s60-generation-inputs.json",
+      "batches": 4,
+      "count": 128,
+      "label": "downstream-weightdiag-s60"
+    },
+    {
+      "audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/sparsegpt-task-s65-generation-inputs.json",
+      "batches": 4,
+      "count": 128,
+      "label": "sparsegpt-task-s65"
+    }
+  ],
+  "in_memory_corruption_controls_detected": 2,
+  "scope": "independent_gold_question_to_packed_input_check_not_goal_completion",
+  "uses_GPU": false,
+  "verified_evaluations": 10
+}

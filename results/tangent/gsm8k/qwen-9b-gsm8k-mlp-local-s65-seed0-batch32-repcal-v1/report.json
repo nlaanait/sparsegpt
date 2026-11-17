@@ -1,0 +1,5502 @@
+{
+  "complete": false,
+  "config_sha256": "3325b584500c139a2454d6f5c9026e86b73bcae5a5cfeb06bb9f8b5ce0acd5cd",
+  "eligible_parameters": 4831838208,
+  "removed_weights": 817888800,
+  "stages": [
+    {
+      "candidate_sha256": "cdffa682e4c3b6b1994a8fd9cfd40b58b338cbc00da4097d855f1d64f214ad40",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 8209735680.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              41,
+              36,
+              34,
+              26
+            ],
+            [
+              9,
+              47,
+              11
+            ],
+            [
+              24,
+              13,
+              29,
+              23
+            ],
+            [
+              19,
+              12,
+              47,
+              34
+            ],
+            [
+              93,
+              88,
+              79,
+              60
+            ],
+            [
+              58,
+              56,
+              57,
+              90
+            ],
+            [
+              32,
+              23,
+              18,
+              63
+            ],
+            [
+              42,
+              27,
+              29,
+              60
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              33,
+              31,
+              29,
+              22
+            ],
+            [
+              6,
+              37,
+              8
+            ],
+            [
+              20,
+              12,
+              23,
+              16
+            ],
+            [
+              17,
+              11,
+              40,
+              24
+            ],
+            [
+              73,
+              71,
+              57,
+              49
+            ],
+            [
+              38,
+              36,
+              48,
+              72
+            ],
+            [
+              23,
+              17,
+              14,
+              53
+            ],
+            [
+              38,
+              22,
+              26,
+              58
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 31,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.003288574925833779,
+          "retained_singular_vectors": 31,
+          "storage_scalars": 1167484,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 105739.20583162124,
+        "geometric_curvature_trace_sum": 77641.359375,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 70449.43811035156,
+        "output_metric_trace_ratio": 1.3445435311841487,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 35.006744384765625,
+        "scale_min": 1.0000090599060059,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0358681678771973,
+          1.1306380033493042,
+          1.326272964477539,
+          1.5793540477752686,
+          2.62577486038208
+        ],
+        "selection_damping": {
+          "damping": 3.2622413635253906,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        0,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "40885973d9a744bd5f20d5768669c6f6338e914bff4ffb642fb21d5d5b25d6a2",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 8209735680.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              16,
+              25,
+              35,
+              6
+            ],
+            [
+              37,
+              34,
+              34,
+              60
+            ],
+            [
+              45,
+              62,
+              61,
+              36
+            ],
+            [
+              31,
+              42,
+              35,
+              64
+            ],
+            [
+              64,
+              52,
+              43,
+              38
+            ],
+            [
+              38,
+              54,
+              53,
+              62
+            ],
+            [
+              62,
+              37,
+              27,
+              40
+            ],
+            [
+              19,
+              27,
+              21,
+              20
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              11,
+              21,
+              26,
+              5
+            ],
+            [
+              27,
+              30,
+              27,
+              45
+            ],
+            [
+              35,
+              59,
+              52,
+              27
+            ],
+            [
+              23,
+              37,
+              25,
+              51
+            ],
+            [
+              54,
+              41,
+              32,
+              33
+            ],
+            [
+              34,
+              47,
+              40,
+              49
+            ],
+            [
+              46,
+              30,
+              23,
+              24
+            ],
+            [
+              16,
+              24,
+              16,
+              14
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 32,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.0037256359270375896,
+          "retained_singular_vectors": 32,
+          "storage_scalars": 1192064,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 105739.20583162124,
+        "geometric_curvature_trace_sum": 77641.359375,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 63851.322662353516,
+        "output_metric_trace_ratio": 1.3445435311841487,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 15.119867324829102,
+        "scale_min": 1.0000183582305908,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0409271717071533,
+          1.1457374095916748,
+          1.3652589321136475,
+          1.6274006366729736,
+          2.419767141342163
+        ],
+        "selection_damping": {
+          "damping": 3.2622413635253906,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        0,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "841d7341cbee60405eeb94923ad25772477d7bc269b5983f5a0b8acf3fd7d48a",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 45775068.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              14,
+              13,
+              28,
+              12
+            ],
+            [
+              10,
+              55,
+              114,
+              50
+            ],
+            [
+              10,
+              39,
+              31,
+              22
+            ],
+            [
+              31,
+              24,
+              24,
+              9
+            ],
+            [
+              98,
+              79,
+              69,
+              111
+            ],
+            [
+              42,
+              64,
+              58,
+              57
+            ],
+            [
+              11,
+              18,
+              25
+            ],
+            [
+              42,
+              39,
+              45,
+              36
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              10,
+              10,
+              25,
+              10
+            ],
+            [
+              8,
+              42,
+              89,
+              41
+            ],
+            [
+              8,
+              30,
+              22,
+              17
+            ],
+            [
+              27,
+              20,
+              16,
+              6
+            ],
+            [
+              74,
+              65,
+              52,
+              92
+            ],
+            [
+              33,
+              57,
+              53,
+              45
+            ],
+            [
+              8,
+              13,
+              22
+            ],
+            [
+              29,
+              31,
+              39,
+              30
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 31,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.0034800125182934904,
+          "retained_singular_vectors": 31,
+          "storage_scalars": 389244,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 76769.43356798832,
+        "geometric_curvature_trace_sum": 596.266845703125,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 157.9538016617298,
+        "output_metric_trace_ratio": 2.9285214831538515,
+        "readout_rank_max": 2.000000238418579,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 111.65341186523438,
+        "scale_min": 1.0000001192092896,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.005122423171997,
+          1.0183424949645996,
+          1.2588855028152466,
+          1.817436933517456,
+          2.6930770874023438
+        ],
+        "selection_damping": {
+          "damping": 0.018189309164881706,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        0,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "2512b6316f8781865bee7039018f7b1d6c7f0a9ba42b75c535b43e9b8437623b",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 16305073152.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              67,
+              90,
+              61,
+              56
+            ],
+            [
+              41,
+              19,
+              23,
+              23
+            ],
+            [
+              43,
+              11,
+              29,
+              25
+            ],
+            [
+              70,
+              62,
+              38,
+              67
+            ],
+            [
+              10,
+              11,
+              35,
+              14
+            ],
+            [
+              111,
+              66,
+              42,
+              48
+            ],
+            [
+              38,
+              26,
+              47,
+              14
+            ],
+            [
+              34,
+              11,
+              22,
+              26
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              58,
+              70,
+              52,
+              43
+            ],
+            [
+              28,
+              13,
+              18,
+              18
+            ],
+            [
+              34,
+              9,
+              22,
+              19
+            ],
+            [
+              58,
+              56,
+              31,
+              50
+            ],
+            [
+              7,
+              9,
+              26,
+              9
+            ],
+            [
+              89,
+              54,
+              37,
+              39
+            ],
+            [
+              27,
+              19,
+              38,
+              10
+            ],
+            [
+              26,
+              10,
+              21,
+              24
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 32,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.00527849072703951,
+          "retained_singular_vectors": 32,
+          "storage_scalars": 1192064,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 120107.33114217932,
+        "geometric_curvature_trace_sum": 135754.1875,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 175180.5997314453,
+        "output_metric_trace_ratio": 1.527243692298626,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 15.316271781921387,
+        "scale_min": 1.0000228881835938,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0270670652389526,
+          1.1108890771865845,
+          1.319659948348999,
+          1.7667515277862549,
+          2.8987114429473877
+        ],
+        "selection_damping": {
+          "damping": 6.47902250289917,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        1,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "b0873efdea1a62831abe05a7425e3383759bb27329ac65dec2c3389ad595a9c2",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 16305073152.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              40,
+              46,
+              37,
+              44
+            ],
+            [
+              34,
+              76,
+              47,
+              58
+            ],
+            [
+              29,
+              31,
+              19,
+              27
+            ],
+            [
+              25,
+              18,
+              27,
+              18
+            ],
+            [
+              83,
+              128,
+              69,
+              118
+            ],
+            [
+              39,
+              9,
+              6
+            ],
+            [
+              35,
+              19
+            ],
+            [
+              32,
+              75,
+              44,
+              47
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              29,
+              37,
+              30,
+              35
+            ],
+            [
+              25,
+              61,
+              36,
+              48
+            ],
+            [
+              20,
+              25,
+              17,
+              21
+            ],
+            [
+              20,
+              14,
+              23,
+              15
+            ],
+            [
+              65,
+              106,
+              55,
+              97
+            ],
+            [
+              30,
+              8,
+              4
+            ],
+            [
+              28,
+              13
+            ],
+            [
+              26,
+              64,
+              34,
+              38
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 29,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.004932030476916071,
+          "retained_singular_vectors": 29,
+          "storage_scalars": 1118324,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 120107.33114217932,
+        "geometric_curvature_trace_sum": 135754.1875,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 158837.26092529297,
+        "output_metric_trace_ratio": 1.527243692298626,
+        "readout_rank_max": 2.000000238418579,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 15.410663604736328,
+        "scale_min": 1.0000288486480713,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0289169549942017,
+          1.1207695007324219,
+          1.3337485790252686,
+          1.800755500793457,
+          2.768270969390869
+        ],
+        "selection_damping": {
+          "damping": 6.47902250289917,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        1,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "1c22508c9a178ffccd53b31020f96cc7baea31cc534b1da4eada1342e8b8c005",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 94955328.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              34,
+              62,
+              22,
+              37
+            ],
+            [
+              22,
+              30,
+              44,
+              16
+            ],
+            [
+              28,
+              37,
+              51,
+              26
+            ],
+            [
+              26,
+              27,
+              18,
+              21
+            ],
+            [
+              55,
+              43,
+              73,
+              61
+            ],
+            [
+              40,
+              27,
+              22,
+              25
+            ],
+            [
+              79,
+              40,
+              63,
+              66
+            ],
+            [
+              35,
+              37,
+              50,
+              63
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              28,
+              55,
+              17,
+              22
+            ],
+            [
+              20,
+              24,
+              37,
+              15
+            ],
+            [
+              22,
+              28,
+              38,
+              21
+            ],
+            [
+              20,
+              22,
+              16,
+              19
+            ],
+            [
+              46,
+              33,
+              59,
+              45
+            ],
+            [
+              29,
+              23,
+              16,
+              18
+            ],
+            [
+              66,
+              31,
+              51,
+              57
+            ],
+            [
+              26,
+              29,
+              40,
+              51
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 32,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.006796026135423228,
+          "retained_singular_vectors": 32,
+          "storage_scalars": 397440,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 83752.23917138611,
+        "geometric_curvature_trace_sum": 1133.7646484375,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 490.82324400544167,
+        "output_metric_trace_ratio": 3.1948943775705763,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 27.20377540588379,
+        "scale_min": 1.0000001192092896,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0064067840576172,
+          1.045789122581482,
+          1.2718948125839233,
+          1.673933506011963,
+          2.9467408657073975
+        ],
+        "selection_damping": {
+          "damping": 0.03773174807429314,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        1,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "0eeaf627d97024e8201b50cdd309d5a609d06e63248d621dbd7585bb676ceb73",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 26609006592.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              15,
+              15,
+              4,
+              13
+            ],
+            [
+              52,
+              27,
+              45,
+              37
+            ],
+            [
+              42,
+              40,
+              30,
+              26
+            ],
+            [
+              42,
+              29,
+              9,
+              15
+            ],
+            [
+              24,
+              7,
+              5,
+              18
+            ],
+            [
+              73,
+              66,
+              59,
+              64
+            ],
+            [
+              33,
+              45,
+              37,
+              48
+            ],
+            [
+              74,
+              96,
+              108,
+              82
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              10,
+              10,
+              4,
+              11
+            ],
+            [
+              44,
+              20,
+              32,
+              30
+            ],
+            [
+              37,
+              29,
+              23,
+              22
+            ],
+            [
+              35,
+              22,
+              7,
+              11
+            ],
+            [
+              16,
+              6,
+              4,
+              15
+            ],
+            [
+              61,
+              51,
+              48,
+              53
+            ],
+            [
+              25,
+              36,
+              34,
+              39
+            ],
+            [
+              61,
+              74,
+              85,
+              69
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 32,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.004634890157758592,
+          "retained_singular_vectors": 32,
+          "storage_scalars": 1192064,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 122980.0391092049,
+        "geometric_curvature_trace_sum": 216368.5,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 318229.2849121094,
+        "output_metric_trace_ratio": 1.563772063054465,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.999999761581421,
+        "readout_tokens": 640,
+        "scale_max": 14.177864074707031,
+        "scale_min": 1.0000914335250854,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.1110349893569946,
+          1.224060297012329,
+          1.4129664897918701,
+          1.6840596199035645,
+          2.3071091175079346
+        ],
+        "selection_damping": {
+          "damping": 10.573410034179688,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        2,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "72d4cacbbadb609e46e2dc9c85b59c4ad3d6987560087028830917cfcbe2030b",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 26609006592.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              39,
+              26,
+              48,
+              52
+            ],
+            [
+              44,
+              26,
+              47,
+              36
+            ],
+            [
+              10,
+              26,
+              26
+            ],
+            [
+              56,
+              55,
+              69,
+              54
+            ],
+            [
+              13,
+              54,
+              23,
+              25
+            ],
+            [
+              44,
+              41,
+              29,
+              95
+            ],
+            [
+              49,
+              71,
+              93,
+              67
+            ],
+            [
+              30,
+              11,
+              21
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              29,
+              22,
+              41,
+              42
+            ],
+            [
+              33,
+              24,
+              33,
+              26
+            ],
+            [
+              8,
+              22,
+              20
+            ],
+            [
+              40,
+              46,
+              58,
+              49
+            ],
+            [
+              7,
+              45,
+              15,
+              20
+            ],
+            [
+              33,
+              34,
+              24,
+              75
+            ],
+            [
+              39,
+              56,
+              80,
+              54
+            ],
+            [
+              26,
+              10,
+              13
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 30,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.005185634583702042,
+          "retained_singular_vectors": 30,
+          "storage_scalars": 1142904,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 122980.0391092049,
+        "geometric_curvature_trace_sum": 216368.5,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 263336.0148925781,
+        "output_metric_trace_ratio": 1.563772063054465,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.999999761581421,
+        "readout_tokens": 640,
+        "scale_max": 12.531720161437988,
+        "scale_min": 1.0000731945037842,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.1153064966201782,
+          1.2298842668533325,
+          1.4153634309768677,
+          1.6799850463867188,
+          2.276111602783203
+        ],
+        "selection_damping": {
+          "damping": 10.573410034179688,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        2,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "fe434c8b385f258747b8077719d11487d8aa8e1fd25513d45ba356b3902786b1",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 350864640.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              30,
+              21,
+              39,
+              53
+            ],
+            [
+              38,
+              37,
+              57,
+              54
+            ],
+            [
+              24,
+              27,
+              26,
+              26
+            ],
+            [
+              47,
+              56,
+              47,
+              88
+            ],
+            [
+              45,
+              72,
+              107,
+              40
+            ],
+            [
+              10,
+              21,
+              17,
+              23
+            ],
+            [
+              52,
+              45,
+              46,
+              64
+            ],
+            [
+              19,
+              10,
+              24,
+              15
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              28,
+              17,
+              27,
+              43
+            ],
+            [
+              29,
+              30,
+              44,
+              46
+            ],
+            [
+              17,
+              23,
+              21,
+              21
+            ],
+            [
+              35,
+              47,
+              40,
+              64
+            ],
+            [
+              38,
+              58,
+              85,
+              31
+            ],
+            [
+              10,
+              14,
+              13,
+              18
+            ],
+            [
+              38,
+              32,
+              38,
+              56
+            ],
+            [
+              16,
+              7,
+              23,
+              15
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 32,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.005174132761874715,
+          "retained_singular_vectors": 32,
+          "storage_scalars": 397440,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 124387.21877495939,
+        "geometric_curvature_trace_sum": 2820.7451171875,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1196.8278539180756,
+        "output_metric_trace_ratio": 4.744995833395363,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.999999761581421,
+        "readout_tokens": 640,
+        "scale_max": 156.8779296875,
+        "scale_min": 1.0000001192092896,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.009141445159912,
+          1.0539309978485107,
+          1.1634525060653687,
+          1.3166860342025757,
+          1.6551954746246338
+        ],
+        "selection_damping": {
+          "damping": 0.13942061364650726,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        2,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "b7157077b9ae3b2522b90da751959ebda85380daa13d2c3d6ee1fdf71d8b507a",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 0.9999999999999999,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 33157484544.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              51,
+              50,
+              31,
+              23
+            ],
+            [
+              52,
+              39,
+              43,
+              31
+            ],
+            [
+              82,
+              81,
+              56,
+              67
+            ],
+            [
+              47,
+              5,
+              14,
+              31
+            ],
+            [
+              11,
+              31,
+              21
+            ],
+            [
+              37,
+              36,
+              50,
+              49
+            ],
+            [
+              78,
+              44,
+              57,
+              70
+            ],
+            [
+              17,
+              28,
+              30,
+              18
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              41,
+              39,
+              25,
+              20
+            ],
+            [
+              45,
+              32,
+              34,
+              25
+            ],
+            [
+              63,
+              62,
+              45,
+              59
+            ],
+            [
+              37,
+              5,
+              11,
+              28
+            ],
+            [
+              9,
+              27,
+              14
+            ],
+            [
+              29,
+              29,
+              38,
+              37
+            ],
+            [
+              61,
+              34,
+              47,
+              49
+            ],
+            [
+              15,
+              21,
+              26,
+              17
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 31,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.0025214006140771893,
+          "retained_singular_vectors": 31,
+          "storage_scalars": 1167484,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 70290.1354421267,
+        "geometric_curvature_trace_sum": 471723.15625,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 390081.3298339844,
+        "output_metric_trace_ratio": 0.8937852915716388,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 13.093009948730469,
+        "scale_min": 1.000120997428894,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0287636518478394,
+          1.0855815410614014,
+          1.2616161108016968,
+          1.6276030540466309,
+          2.7701902389526367
+        ],
+        "selection_damping": {
+          "damping": 13.175535202026367,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        3,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "f4ad452145db9c3dae7459dde3b1fd34a0be6c343fbf9965e98468890dba30b4",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 0.9999999999999999,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 33157484544.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              43,
+              65,
+              33,
+              42
+            ],
+            [
+              49,
+              39,
+              66,
+              61
+            ],
+            [
+              22,
+              29
+            ],
+            [
+              55,
+              85,
+              30,
+              67
+            ],
+            [
+              52,
+              27,
+              29,
+              20
+            ],
+            [
+              14,
+              20,
+              29,
+              22
+            ],
+            [
+              45,
+              31,
+              17,
+              36
+            ],
+            [
+              68,
+              62,
+              60,
+              62
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              30,
+              54,
+              27,
+              33
+            ],
+            [
+              42,
+              33,
+              52,
+              45
+            ],
+            [
+              15,
+              26
+            ],
+            [
+              38,
+              68,
+              25,
+              55
+            ],
+            [
+              43,
+              25,
+              23,
+              18
+            ],
+            [
+              11,
+              17,
+              24,
+              18
+            ],
+            [
+              39,
+              27,
+              15,
+              28
+            ],
+            [
+              58,
+              40,
+              48,
+              47
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 30,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.003631516213032748,
+          "retained_singular_vectors": 30,
+          "storage_scalars": 1142904,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 70290.1354421267,
+        "geometric_curvature_trace_sum": 471723.15625,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 351407.03369140625,
+        "output_metric_trace_ratio": 0.8937852915716388,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 7.484023094177246,
+        "scale_min": 1.0001565217971802,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0291333198547363,
+          1.0865345001220703,
+          1.2633116245269775,
+          1.6357768774032593,
+          2.7843244075775146
+        ],
+        "selection_damping": {
+          "damping": 13.175535202026367,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        3,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "6a9de7dc6457be0cb4e3efc2b95ef42f5fe37f2f796528aeab4731b4b93204bd",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 345015840.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              60,
+              39,
+              92,
+              59
+            ],
+            [
+              24,
+              28,
+              41,
+              14
+            ],
+            [
+              61,
+              61,
+              54,
+              53
+            ],
+            [
+              48,
+              44,
+              60,
+              62
+            ],
+            [
+              48,
+              84,
+              41,
+              29
+            ],
+            [
+              44,
+              22,
+              40,
+              28
+            ],
+            [
+              23,
+              34,
+              14,
+              42
+            ],
+            [
+              13,
+              7,
+              5,
+              6
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              46,
+              34,
+              72,
+              49
+            ],
+            [
+              20,
+              21,
+              34,
+              12
+            ],
+            [
+              45,
+              48,
+              43,
+              42
+            ],
+            [
+              37,
+              36,
+              50,
+              48
+            ],
+            [
+              43,
+              59,
+              33,
+              25
+            ],
+            [
+              39,
+              15,
+              30,
+              25
+            ],
+            [
+              16,
+              29,
+              12,
+              35
+            ],
+            [
+              11,
+              5,
+              5,
+              5
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 32,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.005134653294059991,
+          "retained_singular_vectors": 32,
+          "storage_scalars": 397440,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 22231.673643845534,
+        "geometric_curvature_trace_sum": 15519.1123046875,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1810.8967950344086,
+        "output_metric_trace_ratio": 0.8480710465944494,
+        "readout_rank_max": 2.000000238418579,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 10.486669540405273,
+        "scale_min": 1.000000238418579,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.010913610458374,
+          1.0615532398223877,
+          1.3002136945724487,
+          2.0128602981567383,
+          3.224679470062256
+        ],
+        "selection_damping": {
+          "damping": 0.13709653913974762,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        3,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "d10a7d9bf5f8cd0b0ef24cf46b76cbc6a22ddaa4e61ebfe332f03829490d0131",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 69834264576.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              21,
+              29,
+              35,
+              17
+            ],
+            [
+              34,
+              47,
+              52,
+              49
+            ],
+            [
+              45,
+              45,
+              64,
+              32
+            ],
+            [
+              57,
+              64,
+              59,
+              63
+            ],
+            [
+              22,
+              39,
+              30,
+              47
+            ],
+            [
+              27,
+              30,
+              37,
+              20
+            ],
+            [
+              32,
+              28,
+              16,
+              29
+            ],
+            [
+              72,
+              34,
+              47,
+              57
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              21,
+              21,
+              30,
+              12
+            ],
+            [
+              27,
+              40,
+              39,
+              33
+            ],
+            [
+              39,
+              42,
+              57,
+              24
+            ],
+            [
+              47,
+              54,
+              43,
+              45
+            ],
+            [
+              18,
+              32,
+              23,
+              38
+            ],
+            [
+              21,
+              22,
+              31,
+              16
+            ],
+            [
+              23,
+              24,
+              14,
+              24
+            ],
+            [
+              57,
+              24,
+              39,
+              44
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 32,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.0039016203430559384,
+          "retained_singular_vectors": 32,
+          "storage_scalars": 1192064,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 69050.98473070722,
+        "geometric_curvature_trace_sum": 1011343.5,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 582909.5415039062,
+        "output_metric_trace_ratio": 0.8780286754698082,
+        "readout_rank_max": 2.000000238418579,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 7.902915000915527,
+        "scale_min": 1.000097393989563,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.1313683986663818,
+          1.346380352973938,
+          1.6483266353607178,
+          2.0083937644958496,
+          2.7735960483551025
+        ],
+        "selection_damping": {
+          "damping": 27.749496459960938,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        4,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "02b916770acfb296fb9f7cbebafb8d7de4a4168e5534a4138763a69c5655d98a",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 69834264576.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              42,
+              36,
+              31,
+              62
+            ],
+            [
+              50,
+              76,
+              82,
+              66
+            ],
+            [
+              30,
+              32,
+              6
+            ],
+            [
+              46,
+              56,
+              56,
+              49
+            ],
+            [
+              72,
+              61,
+              28,
+              41
+            ],
+            [
+              14,
+              28,
+              30,
+              11
+            ],
+            [
+              36,
+              32,
+              45,
+              91
+            ],
+            [
+              12,
+              19,
+              18,
+              22
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              36,
+              31,
+              24,
+              53
+            ],
+            [
+              42,
+              60,
+              66,
+              44
+            ],
+            [
+              25,
+              25,
+              6
+            ],
+            [
+              35,
+              42,
+              43,
+              41
+            ],
+            [
+              59,
+              47,
+              23,
+              31
+            ],
+            [
+              12,
+              24,
+              25,
+              10
+            ],
+            [
+              29,
+              21,
+              36,
+              76
+            ],
+            [
+              11,
+              14,
+              14,
+              19
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 31,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.0044108918002045815,
+          "retained_singular_vectors": 31,
+          "storage_scalars": 1167484,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 69050.97619614698,
+        "geometric_curvature_trace_sum": 1011343.625,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 523269.1708984375,
+        "output_metric_trace_ratio": 0.8780285669472628,
+        "readout_rank_max": 2.000000238418579,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 6.808079242706299,
+        "scale_min": 1.0001167058944702,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.1359769105911255,
+          1.3575985431671143,
+          1.6600415706634521,
+          2.0084500312805176,
+          2.6987006664276123
+        ],
+        "selection_damping": {
+          "damping": 27.749496459960938,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        4,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "3437e8a61bad8a9fcb585896cdf0f8d639a0a0a40df4805457fa048d14ccce40",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 599972288.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              89,
+              42,
+              41,
+              32
+            ],
+            [
+              52,
+              62,
+              30,
+              41
+            ],
+            [
+              59,
+              87,
+              56,
+              14
+            ],
+            [
+              55,
+              36,
+              73,
+              46
+            ],
+            [
+              26,
+              20,
+              48,
+              18
+            ],
+            [
+              53,
+              68,
+              65,
+              66
+            ],
+            [
+              19,
+              18,
+              19,
+              12
+            ],
+            [
+              15,
+              10,
+              8
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              74,
+              28,
+              30,
+              29
+            ],
+            [
+              40,
+              54,
+              24,
+              32
+            ],
+            [
+              44,
+              72,
+              43,
+              12
+            ],
+            [
+              43,
+              25,
+              59,
+              41
+            ],
+            [
+              21,
+              17,
+              38,
+              13
+            ],
+            [
+              42,
+              57,
+              49,
+              51
+            ],
+            [
+              17,
+              16,
+              13,
+              10
+            ],
+            [
+              13,
+              10,
+              7
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 31,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.006539481050718016,
+          "retained_singular_vectors": 31,
+          "storage_scalars": 389244,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 19525.47295403223,
+        "geometric_curvature_trace_sum": 30727.669921875,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 3203.0449018478394,
+        "output_metric_trace_ratio": 0.7448376828778164,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 23.619115829467773,
+        "scale_min": 1.000000238418579,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0565876960754395,
+          1.269822120666504,
+          1.6191877126693726,
+          2.2250428199768066,
+          3.3884365558624268
+        ],
+        "selection_damping": {
+          "damping": 0.23840667307376862,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        4,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "d3cd891dc905dc0ea46d4f9a6bf98fe5d858b0ad9a3f860a836fbbda1b351ca3",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 103355940864.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              41,
+              51,
+              40,
+              23
+            ],
+            [
+              51,
+              89,
+              110,
+              19
+            ],
+            [
+              44,
+              46,
+              36,
+              35
+            ],
+            [
+              33,
+              5,
+              19
+            ],
+            [
+              29,
+              17,
+              26,
+              26
+            ],
+            [
+              59,
+              117,
+              50,
+              37
+            ],
+            [
+              42,
+              26,
+              35,
+              48
+            ],
+            [
+              22,
+              24,
+              32,
+              48
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              36,
+              40,
+              31,
+              18
+            ],
+            [
+              38,
+              70,
+              88,
+              16
+            ],
+            [
+              34,
+              37,
+              25,
+              30
+            ],
+            [
+              30,
+              4,
+              14
+            ],
+            [
+              21,
+              15,
+              23,
+              21
+            ],
+            [
+              45,
+              97,
+              40,
+              26
+            ],
+            [
+              36,
+              23,
+              28,
+              31
+            ],
+            [
+              16,
+              21,
+              29,
+              41
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 31,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.0034840563095460317,
+          "retained_singular_vectors": 31,
+          "storage_scalars": 1167484,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 73785.19559555901,
+        "geometric_curvature_trace_sum": 1400768.0,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 843152.8076171875,
+        "output_metric_trace_ratio": 0.9382272796066159,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 7.797718524932861,
+        "scale_min": 1.0000427961349487,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0506740808486938,
+          1.1548683643341064,
+          1.4354121685028076,
+          1.772242784500122,
+          2.360341787338257
+        ],
+        "selection_damping": {
+          "damping": 41.069602966308594,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        5,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "aad556e40cd7ccccc8fc9a48ee50ac82eb0004de1af441f59e057381a04b5a5d",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 103355940864.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              45,
+              52,
+              13,
+              36
+            ],
+            [
+              14,
+              24,
+              22,
+              17
+            ],
+            [
+              98,
+              52,
+              62,
+              74
+            ],
+            [
+              58,
+              67,
+              51,
+              86
+            ],
+            [
+              21,
+              15,
+              15,
+              21
+            ],
+            [
+              22,
+              22,
+              34,
+              24
+            ],
+            [
+              32,
+              43,
+              26,
+              30
+            ],
+            [
+              26,
+              47,
+              57,
+              74
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              32,
+              43,
+              12,
+              33
+            ],
+            [
+              13,
+              19,
+              21,
+              16
+            ],
+            [
+              78,
+              41,
+              46,
+              59
+            ],
+            [
+              43,
+              53,
+              44,
+              64
+            ],
+            [
+              16,
+              12,
+              15,
+              20
+            ],
+            [
+              20,
+              15,
+              30,
+              21
+            ],
+            [
+              26,
+              34,
+              20,
+              21
+            ],
+            [
+              19,
+              33,
+              42,
+              63
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 32,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.005286361536766891,
+          "retained_singular_vectors": 32,
+          "storage_scalars": 1192064,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 73785.19559555901,
+        "geometric_curvature_trace_sum": 1400768.0,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 696466.205078125,
+        "output_metric_trace_ratio": 0.9382272796066159,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 7.755138397216797,
+        "scale_min": 1.0000509023666382,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.051189661026001,
+          1.1568191051483154,
+          1.4465229511260986,
+          1.7801077365875244,
+          2.3380985260009766
+        ],
+        "selection_damping": {
+          "damping": 41.069602966308594,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        5,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "3a964e5976cbabf8785d2ee66f605621c547e9ce2a2fc8bed8ba736fc3cff5b8",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 1048448384.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              89,
+              67,
+              89,
+              51
+            ],
+            [
+              24,
+              23,
+              34,
+              23
+            ],
+            [
+              61,
+              58,
+              41,
+              80
+            ],
+            [
+              45,
+              23,
+              28,
+              41
+            ],
+            [
+              71,
+              45,
+              27,
+              14
+            ],
+            [
+              7,
+              5,
+              9,
+              8
+            ],
+            [
+              77,
+              26,
+              58,
+              58
+            ],
+            [
+              20,
+              29,
+              32,
+              17
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              74,
+              49,
+              70,
+              40
+            ],
+            [
+              18,
+              21,
+              29,
+              21
+            ],
+            [
+              50,
+              45,
+              26,
+              65
+            ],
+            [
+              37,
+              17,
+              20,
+              28
+            ],
+            [
+              59,
+              36,
+              22,
+              13
+            ],
+            [
+              7,
+              5,
+              9,
+              6
+            ],
+            [
+              62,
+              21,
+              48,
+              43
+            ],
+            [
+              17,
+              24,
+              26,
+              16
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 32,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.007739786849981303,
+          "retained_singular_vectors": 32,
+          "storage_scalars": 397440,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 29369.259710192757,
+        "geometric_curvature_trace_sum": 35698.8359375,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 6500.393084526062,
+        "output_metric_trace_ratio": 1.1203483470990279,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 35.396419525146484,
+        "scale_min": 1.000000238418579,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0147305727005005,
+          1.1229615211486816,
+          1.5097835063934326,
+          2.210824966430664,
+          3.499645948410034
+        ],
+        "selection_damping": {
+          "damping": 0.41661468148231506,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        5,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "84de6c16f1198730aaaa43e56f1d33afbd6264a80f4c6aafad36fb8872bfe4e0",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 185514393600.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              47,
+              25,
+              42,
+              56
+            ],
+            [
+              48,
+              38,
+              51,
+              57
+            ],
+            [
+              24,
+              17,
+              16,
+              12
+            ],
+            [
+              35,
+              62,
+              76,
+              52
+            ],
+            [
+              100,
+              59,
+              101,
+              78
+            ],
+            [
+              48,
+              46,
+              60,
+              57
+            ],
+            [
+              14,
+              8,
+              16
+            ],
+            [
+              8,
+              11,
+              16
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              34,
+              18,
+              34,
+              43
+            ],
+            [
+              35,
+              31,
+              44,
+              49
+            ],
+            [
+              20,
+              15,
+              14,
+              11
+            ],
+            [
+              24,
+              50,
+              61,
+              43
+            ],
+            [
+              79,
+              43,
+              87,
+              59
+            ],
+            [
+              35,
+              37,
+              46,
+              49
+            ],
+            [
+              11,
+              7,
+              15
+            ],
+            [
+              8,
+              9,
+              13
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 30,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.004445044420468728,
+          "retained_singular_vectors": 30,
+          "storage_scalars": 1142904,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 78534.12655819145,
+        "geometric_curvature_trace_sum": 2362213.75,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1066741.669921875,
+        "output_metric_trace_ratio": 0.9986130594659354,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 8.464262008666992,
+        "scale_min": 1.0000642538070679,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.1478267908096313,
+          1.2913076877593994,
+          1.5452336072921753,
+          1.859776258468628,
+          2.5891106128692627
+        ],
+        "selection_damping": {
+          "damping": 73.71617889404297,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        6,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "8309a8a622a0a6683bb1dfd891e9b8fa7c885fd442bd66cddee4637e4fcbf9d2",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 185514393600.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              16,
+              16
+            ],
+            [
+              21,
+              30,
+              23,
+              17
+            ],
+            [
+              50,
+              43,
+              85,
+              56
+            ],
+            [
+              41,
+              33,
+              62,
+              50
+            ],
+            [
+              79,
+              18,
+              36,
+              58
+            ],
+            [
+              48,
+              41,
+              43,
+              43
+            ],
+            [
+              47,
+              48,
+              33,
+              33
+            ],
+            [
+              64,
+              27,
+              86,
+              33
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              14,
+              14
+            ],
+            [
+              20,
+              27,
+              23,
+              16
+            ],
+            [
+              36,
+              32,
+              68,
+              45
+            ],
+            [
+              33,
+              26,
+              51,
+              32
+            ],
+            [
+              63,
+              10,
+              30,
+              44
+            ],
+            [
+              42,
+              35,
+              32,
+              32
+            ],
+            [
+              37,
+              41,
+              24,
+              27
+            ],
+            [
+              50,
+              21,
+              71,
+              28
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 30,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.005476531738277028,
+          "retained_singular_vectors": 30,
+          "storage_scalars": 1142904,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 78534.13486968896,
+        "geometric_curvature_trace_sum": 2362213.5,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 865628.4482421875,
+        "output_metric_trace_ratio": 0.9986131651520914,
+        "readout_rank_max": 2.000000238418579,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 6.771583080291748,
+        "scale_min": 1.0000282526016235,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.1579608917236328,
+          1.3023971319198608,
+          1.5503191947937012,
+          1.856601357460022,
+          2.5061123371124268
+        ],
+        "selection_damping": {
+          "damping": 73.71617889404297,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        6,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "24243c26319cd6f86d9e9fb3716d5e762bf50b081e486413108095f96866496a",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 3289348864.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              76,
+              104,
+              69,
+              82
+            ],
+            [
+              32,
+              63,
+              33,
+              17
+            ],
+            [
+              22,
+              48,
+              10,
+              21
+            ],
+            [
+              22,
+              45,
+              44,
+              30
+            ],
+            [
+              55,
+              58,
+              32,
+              63
+            ],
+            [
+              30,
+              52,
+              54,
+              40
+            ],
+            [
+              38,
+              6,
+              20,
+              31
+            ],
+            [
+              20,
+              28,
+              12,
+              23
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              63,
+              80,
+              53,
+              66
+            ],
+            [
+              27,
+              47,
+              25,
+              13
+            ],
+            [
+              19,
+              36,
+              9,
+              16
+            ],
+            [
+              18,
+              34,
+              32,
+              28
+            ],
+            [
+              39,
+              46,
+              23,
+              52
+            ],
+            [
+              24,
+              46,
+              47,
+              31
+            ],
+            [
+              33,
+              6,
+              16,
+              25
+            ],
+            [
+              15,
+              22,
+              12,
+              21
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 32,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.007287418370808073,
+          "retained_singular_vectors": 32,
+          "storage_scalars": 397440,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 55234.36183294162,
+        "geometric_curvature_trace_sum": 59552.58203125,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 11640.399892807007,
+        "output_metric_trace_ratio": 2.107023690526643,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 36.36659240722656,
+        "scale_min": 1.0000007152557373,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.009043574333191,
+          1.0494935512542725,
+          1.4408015012741089,
+          1.7545835971832275,
+          2.3948304653167725
+        ],
+        "selection_damping": {
+          "damping": 1.3070608377456665,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        6,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "ee4c0cee50ce8927c7429df769a6202e357f1901bd7f131aea6ec3e07af26116",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 148418592768.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              50,
+              40,
+              62,
+              42
+            ],
+            [
+              39,
+              24,
+              15,
+              39
+            ],
+            [
+              57,
+              75,
+              70,
+              65
+            ],
+            [
+              12,
+              21,
+              30,
+              12
+            ],
+            [
+              53,
+              78,
+              68,
+              57
+            ],
+            [
+              25,
+              53,
+              25,
+              17
+            ],
+            [
+              60,
+              72,
+              34,
+              48
+            ],
+            [
+              12,
+              4,
+              16,
+              5
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              39,
+              31,
+              45,
+              32
+            ],
+            [
+              33,
+              20,
+              13,
+              33
+            ],
+            [
+              50,
+              59,
+              52,
+              54
+            ],
+            [
+              10,
+              17,
+              26,
+              11
+            ],
+            [
+              38,
+              65,
+              53,
+              43
+            ],
+            [
+              22,
+              44,
+              20,
+              14
+            ],
+            [
+              41,
+              62,
+              24,
+              40
+            ],
+            [
+              12,
+              4,
+              12,
+              5
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 32,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.003807948952282851,
+          "retained_singular_vectors": 32,
+          "storage_scalars": 1192064,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 71799.25998603985,
+        "geometric_curvature_trace_sum": 2067132.625,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1262200.140625,
+        "output_metric_trace_ratio": 0.9129748024754822,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 10.316463470458984,
+        "scale_min": 1.0000317096710205,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.1213350296020508,
+          1.318095088005066,
+          1.5627102851867676,
+          1.8413267135620117,
+          2.4840288162231445
+        ],
+        "selection_damping": {
+          "damping": 58.97579574584961,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        7,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "b1989593dd6ca77b05f23cfa097a995bcb3ed07c395c1dfc14167013ba37eadb",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 148418592768.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              60,
+              18,
+              32,
+              25
+            ],
+            [
+              48,
+              70,
+              66,
+              61
+            ],
+            [
+              7,
+              17,
+              12,
+              23
+            ],
+            [
+              81,
+              63,
+              37,
+              43
+            ],
+            [
+              28,
+              28,
+              25,
+              14
+            ],
+            [
+              27,
+              44,
+              47,
+              47
+            ],
+            [
+              20,
+              17,
+              22,
+              31
+            ],
+            [
+              60,
+              57,
+              66,
+              84
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              49,
+              15,
+              26,
+              21
+            ],
+            [
+              40,
+              50,
+              49,
+              50
+            ],
+            [
+              7,
+              14,
+              10,
+              21
+            ],
+            [
+              68,
+              48,
+              27,
+              34
+            ],
+            [
+              20,
+              26,
+              20,
+              12
+            ],
+            [
+              20,
+              34,
+              40,
+              37
+            ],
+            [
+              17,
+              13,
+              18,
+              25
+            ],
+            [
+              45,
+              47,
+              50,
+              71
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 32,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.005500631347466202,
+          "retained_singular_vectors": 32,
+          "storage_scalars": 1192064,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 71799.25998603985,
+        "geometric_curvature_trace_sum": 2067132.625,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1001325.69140625,
+        "output_metric_trace_ratio": 0.9129748024754822,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.999999761581421,
+        "readout_tokens": 640,
+        "scale_max": 6.557199954986572,
+        "scale_min": 1.000110149383545,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.130955457687378,
+          1.341639518737793,
+          1.5702234506607056,
+          1.825784683227539,
+          2.368058204650879
+        ],
+        "selection_damping": {
+          "damping": 58.97579574584961,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        7,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "0541abc081f11d0ade77aaab0171af9053ca5f84f2c1a6ffe3f4ab6a826de52b",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0000000000000002,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 1905878784.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              30,
+              26,
+              12,
+              24
+            ],
+            [
+              14,
+              27,
+              29,
+              34
+            ],
+            [
+              61,
+              126,
+              59,
+              76
+            ],
+            [
+              17,
+              33,
+              40
+            ],
+            [
+              31,
+              15,
+              25,
+              23
+            ],
+            [
+              103,
+              56,
+              63,
+              73
+            ],
+            [
+              43,
+              25,
+              39
+            ],
+            [
+              42,
+              58,
+              51,
+              25
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              21,
+              20,
+              10,
+              21
+            ],
+            [
+              13,
+              23,
+              22,
+              26
+            ],
+            [
+              46,
+              105,
+              53,
+              57
+            ],
+            [
+              15,
+              32,
+              31
+            ],
+            [
+              25,
+              14,
+              23,
+              20
+            ],
+            [
+              77,
+              45,
+              52,
+              55
+            ],
+            [
+              35,
+              22,
+              30
+            ],
+            [
+              32,
+              37,
+              40,
+              22
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 30,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.00773344054437184,
+          "retained_singular_vectors": 30,
+          "storage_scalars": 381048,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 19313.463009335446,
+        "geometric_curvature_trace_sum": 98681.359375,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 10577.573517799377,
+        "output_metric_trace_ratio": 0.7367501453146151,
+        "readout_rank_max": 2.000000238418579,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 19.092416763305664,
+        "scale_min": 1.000001072883606,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0228698253631592,
+          1.1453931331634521,
+          1.3979830741882324,
+          1.761873483657837,
+          2.5187954902648926
+        ],
+        "selection_damping": {
+          "damping": 0.7573245167732239,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        7,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "ea3a29d938de9aa8c92e1ba6659e57b5b6967a6bada2ae078f0e083c46889076",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.6499996185302734,
+        "added_curvature_trace_ratio": 1.0000000000000002,
+        "alpha": 1.0,
+        "ambient_curvature_trace_sum": 164949897216.0,
+        "ambient_tokens": 8192,
+        "atlas": {
+          "active_factor_chart_coverage": 1.0,
+          "chart_eval_counts": [
+            [
+              28,
+              27,
+              9,
+              25
+            ],
+            [
+              25,
+              17,
+              41,
+              20
+            ],
+            [
+              71,
+              76,
+              47,
+              35
+            ],
+            [
+              48,
+              38,
+              31,
+              37
+            ],
+            [
+              20,
+              53,
+              92,
+              35
+            ],
+            [
+              41,
+              53,
+              49,
+              42
+            ],
+            [
+              52,
+              70,
+              60,
+              45
+            ],
+            [
+              13,
+              14,
+              49,
+              17
+            ]
+          ],
+          "chart_fit_counts": [
+            [
+              24,
+              25,
+              7,
+              20
+            ],
+            [
+              19,
+              15,
+              34,
+              18
+            ],
+            [
+              51,
+              65,
+              39,
+              27
+            ],
+            [
+              39,
+              32,
+              22,
+              30
+            ],
+            [
+              19,
+              42,
+              71,
+              30
+            ],
+            [
+              37,
+              41,
+              31,
+              35
+            ],
+            [
+              39,
+              52,
+              47,
+              37
+            ],
+            [
+              13,
+              9,
+              40,
+              14
+            ]
+          ],
+          "chart_retained_ranks": [
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ]
+          ],
+          "charts": 32,
+          "diagnostic_samples": 640,
+          "dictionary_iterations": 20,
+          "estimator": "approximate_block_dictionary_with_within_factor_charts",
+          "fit_samples": 512,
+          "mean_active_factors": 2.0,
+          "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+          "relative_reconstruction_error": 0.004630640351132205,
+          "retained_singular_vectors": 32,
+          "storage_scalars": 1192064,
+          "unsupported_factors": []
+        },
+        "averaging_convention": "ambient_token_mean_geometry_zero_outside_readouts",
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "excluded_geometric_trace_sum": 0.0,
+        "gamma": 67856.66385291365,
+        "geometric_curvature_trace_sum": 2430857.75,
+        "mean_readout_rank": 2.0,
+        "normalization": "curvature-trace-v2",
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1348980.498046875,
+        "output_metric_trace_ratio": 0.8628421001804817,
+        "readout_rank_max": 2.0,
+        "readout_rank_min": 1.9999998807907104,
+        "readout_tokens": 640,
+        "scale_max": 6.843861103057861,
+        "scale_min": 1.0000736713409424,
+        "scale_quantile_probabilities": [
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99
+        ],
+        "scale_quantile_samples": 65536,
+        "scale_quantiles": [
+          1.0586085319519043,
+          1.3182857036590576,
+          1.611229658126831,
+          2.009164810180664,
+          3.120741844177246
+        ],
+        "selection_damping": {
+          "damping": 65.54476165771484,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "row_diagonal_congruence_approximation",
+        "supported_readout_fraction": 1.0,
+        "unsupported_input_coordinates": 0,
+        "zero_geometric_trace": false
+      },
+      "removed": 32715552,
+      "site": [
+        8,
+        "mlp.gate_proj"
+      ]
+    }
+  ],
+  "total_parameters": 8953803264
+}

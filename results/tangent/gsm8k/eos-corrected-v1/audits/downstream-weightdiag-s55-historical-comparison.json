@@ -1,0 +1,35 @@
+{
+  "checked_input_provenance_fields": [
+    "prompt_sha256",
+    "input_tokens",
+    "batch_ids",
+    "batch_size",
+    "batching"
+  ],
+  "comparator_sha256": "862d75079a9bb0c1a4dd9ed9ae158127ffad84834b063aa6e0e8b45cf31aae43",
+  "configuration_differences": [
+    "dense_config_sha256",
+    "stopping_policy"
+  ],
+  "corrected": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/downstream-weightdiag-s55",
+  "corrected_answers_snapshot_sha256": "940b39c2453b4c791a96d26a9db39cb1da7d3f509b7bf00089c0f4c217d91406",
+  "corrected_audited_records_sha256": "cf5d7344af02dd6b68b94b95e59d01871bba8eeb00a6919ac2e49321d73f842e",
+  "corrected_config_sha256": "daeaaa93ef241104c61cf0c802ebb2f38b21d48cb806fc3178c5795ddc67c39d",
+  "corrected_correct": 98,
+  "corrected_strict_marker_correct_ignoring_truncation": 98,
+  "corrected_truncated": 4,
+  "count": 128,
+  "decoded_prefix_matches": 128,
+  "decoded_prefix_mismatch_ids": [],
+  "gained_correct_ids": [],
+  "historical": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-downstream-weightdiag-s55-seed0-batch32-repcal-v1-decision512",
+  "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+  "lost_correct_ids": [],
+  "max_answer_nll_abs_difference": 0.0,
+  "old_answers_sha256": "f9a7643461e955afb9a9ad75c533e8be3a2d6b43b8c82bf30432f63990d98f42",
+  "old_config_sha256": "4542dd4b4368f6af7c806ef663cb1fc4c1a4555a67da10cb0d81c8cd75b70169",
+  "old_correct": 98,
+  "old_strict_marker_correct_ignoring_truncation": 98,
+  "old_truncated": 4,
+  "scope": "paired_common128"
+}

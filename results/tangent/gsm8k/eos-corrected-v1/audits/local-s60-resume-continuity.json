@@ -1,0 +1,30 @@
+{
+  "scope": "resume_continuity_not_final_pruning_audit",
+  "job": 256,
+  "verified_at": "2026-11-16T12:45:42.492508-06:00",
+  "source_config_sha256": "33bff9a2654b10d51be3a60fcf9e6d0790534651bf4f27ec64c74203e8b13da7",
+  "preemption_evidence_sha256": "3e788ea477847b2db7b78babf2ff42c54128dc921a016907e481fd9bb606b850",
+  "historically_hashed_stages": 15,
+  "historically_hashed_stages_unchanged": true,
+  "saved_before_resume_reported": 16,
+  "current_saved_stages": 19,
+  "advanced_beyond_saved_checkpoint": true,
+  "first15_indices": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "full96_pruning_complete": false
+}

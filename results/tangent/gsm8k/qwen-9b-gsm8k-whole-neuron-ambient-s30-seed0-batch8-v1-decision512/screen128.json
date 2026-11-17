@@ -1,0 +1,10 @@
+{
+  "accuracy_drop_pp": 63.28125,
+  "candidate_correct": 42,
+  "dense_correct": 123,
+  "max_accuracy_drop_pp": 15,
+  "passed": false,
+  "purpose": "exploratory_compute_screen_not_retention_claim",
+  "screen_count": 128,
+  "screen_ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb"
+}

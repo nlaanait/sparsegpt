@@ -84,7 +84,10 @@ def main():
                                    for module in (factor_atlas, geometry_features)}
     write_immutable(args.output / "config.json", config)
     train = np.array([r["split"] == "geometry_fit" for r in index["rows"]])
-    atlas = FactorAtlas(args.groups, args.width, 2, args.charts, args.rank, args.seed).fit(y[train])
+    from sparsifier.prune.progress import Progress
+    progress = Progress(atlas_role="local_output", seed=args.seed)
+    with progress.phase("output_atlas"):
+        atlas = FactorAtlas(args.groups, args.width, 2, args.charts, args.rank, args.seed).fit(y[train], progress=progress)
     atlas.save(args.output / "atlas.npz")
     report = {"config": config, "fit": atlas.diagnostics(y[train]), "splits": {},
               "claim": "development_diagnostics_only_no_semantic_factor_recovery_asserted"}

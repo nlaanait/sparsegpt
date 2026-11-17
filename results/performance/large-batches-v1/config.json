@@ -1,0 +1,74 @@
+{
+  "backend": {
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn",
+    "causal_conv1d_update": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_update",
+    "torch_chunk_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_chunk_gated_delta_rule",
+    "torch_recurrent_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_recurrent_gated_delta_rule"
+  },
+  "batches": [
+    8,
+    16,
+    32
+  ],
+  "ids": [
+    "gsm8k/train/5723",
+    "gsm8k/train/1345",
+    "gsm8k/train/3035",
+    "gsm8k/train/2549",
+    "gsm8k/train/5685",
+    "gsm8k/train/5801",
+    "gsm8k/train/5350",
+    "gsm8k/train/1873",
+    "gsm8k/train/6920",
+    "gsm8k/train/4485",
+    "gsm8k/train/3738",
+    "gsm8k/train/4026",
+    "gsm8k/train/5721",
+    "gsm8k/train/3167",
+    "gsm8k/train/7319",
+    "gsm8k/train/5817",
+    "gsm8k/train/2699",
+    "gsm8k/train/6483",
+    "gsm8k/train/2674",
+    "gsm8k/train/5177",
+    "gsm8k/train/1299",
+    "gsm8k/train/5729",
+    "gsm8k/train/3821",
+    "gsm8k/train/4797",
+    "gsm8k/train/1689",
+    "gsm8k/train/1190",
+    "gsm8k/train/1904",
+    "gsm8k/train/3517",
+    "gsm8k/train/2748",
+    "gsm8k/train/2423",
+    "gsm8k/train/4915",
+    "gsm8k/train/2365"
+  ],
+  "interleaving": "rotate_batch_order_each_round",
+  "manifest_sha256": "60107022919db28eb59dc9d7effa79630997cf744fd929a8643558397e35cdb5",
+  "memory": {
+    "allocator_cap_gib": 24.0,
+    "cuda_free_gib": 29.937652587890625,
+    "cuda_total_gib": 121.69016647338867,
+    "guard_cap_gib": 24.0,
+    "host_before": {
+      "available_gib": 94.00175476074219,
+      "total_gib": 121.69016647338867,
+      "used_gib": 27.688411712646484
+    },
+    "requested_cap_gib": 56.0
+  },
+  "model": "Qwen/Qwen3.5-9B",
+  "packages": {
+    "flash-linear-attention": "0.6.0",
+    "kernels": "0.17.3",
+    "torch": "2.12.0+cu130",
+    "transformers": "5.22.2"
+  },
+  "purpose": "throughput_not_accuracy",
+  "repeats": 3,
+  "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "seed": 0,
+  "source_sha256": "6ad1f865324fcb32749e1031eb12abff830fd800b3824fa73eb244c5380eceb2",
+  "tokens": 32
+}

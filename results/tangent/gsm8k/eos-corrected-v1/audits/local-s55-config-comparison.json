@@ -1,0 +1,15 @@
+{
+  "method": "local",
+  "sparsity": 0.55,
+  "historical_evaluation_job": 238,
+  "corrected_evaluation_job": 268,
+  "same_checkpoint_and_manifest": true,
+  "verified_stage_count": 96,
+  "only_configuration_differences": [
+    "dense_config_sha256",
+    "stopping_policy"
+  ],
+  "source_cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/sparsity-bracket-repcal-v1/audits/local-s55-cpu.json",
+  "source_config_sha256": "830af8c7fb50f6e86beb4dca684ada1ec01c22d93f049288beec2688b8eeece2",
+  "source_report_sha256": "e2cfb7f0decc179bd94b77a27759fc61e30a1e90746db981f4d44bd486335be3"
+}

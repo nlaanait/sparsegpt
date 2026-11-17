@@ -1,0 +1,26 @@
+{
+  "purpose": "prove corrected EOS cannot silently resume historical scores",
+  "legacy_evaluation_config": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s70-seed0-batch32-repcal-v1-decision512/config.json",
+  "legacy_config_file_sha256": "03a305c8fed557361d511d31c72528800ddebe2fc9adb0122f362b32064b8278",
+  "legacy_semantic_config_sha256": "b3080b1127c58c37b5d19f6c1d82e1354b926cc3a362ac4424cd999194a3db53",
+  "corrected_semantic_config_sha256": "6f693280e24fbaca4540140db3ce24395df04cdfd70d72288664fbbaedc98574",
+  "legacy_config_unchanged": true,
+  "temporary_legacy_copy_unchanged": true,
+  "corrected_policy_tag_added_before_hash": true,
+  "expected_rejection": "immutable artifact differs",
+  "adapter_policy": {
+    "version": "gsm8k-model-and-tokenizer-eos-v1",
+    "eos_token_ids": [
+      248044,
+      248046
+    ],
+    "original_model_eos_ids": [
+      248044
+    ],
+    "tokenizer_eos_id": 248046,
+    "parser": "unchanged_strict_numeric_marker_and_budget_truncation_rejection",
+    "adapter_sha256": "1f6a8606cae56c9a9daaa1cd210679ef45198ce2c6b190573f0c792d70d75dbd",
+    "parser_sha256": "55b2346da6bd750f18a087c2acc14875514906e1d46d4ce5f979db2cde9db814",
+    "behavior_sha256": "f73d564fa3b7d97e44cdad97e72dd93b8a9db980848c9eadadfdba492d3017d9"
+  }
+}

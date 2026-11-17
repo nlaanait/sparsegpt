@@ -1,0 +1,42 @@
+{
+  "scope": "toy_CPU_sampling_and_atlas_RNG_history_check_not_GPU_mask_equivalence",
+  "capture_examples": 128,
+  "sampled_position_arrays_equal": 160,
+  "ambient_tokens": 8192,
+  "atlas_fit_samples": 512,
+  "atlas_features": 32,
+  "seed": 0,
+  "global_rng_histories": {
+    "capture": [
+      31,
+      701
+    ],
+    "atlas": [
+      41,
+      801
+    ]
+  },
+  "capture_arrays_equal": {
+    "readout_x": true,
+    "readout_y": true,
+    "ambient_inputs": true,
+    "c4_inputs": true
+  },
+  "all_atlas_saved_arrays_equal": true,
+  "atlas_arrays_checked": 76,
+  "projector_diagonals_equal": true,
+  "source_sha256": {
+    "src/sparsifier/eval/gsm8k_sequential.py": "53f68c7de70b48c9b356f762df522c09aa806d028d1d42765a74653b4b851fd4",
+    "src/sparsifier/eval/gsm8k_capture.py": "9e22bb5dfbaa59fc787a9e43192dad1d78d9ba5fe62759062145c0dafb461194",
+    "src/sparsifier/prune/geometry_features.py": "7fb23c665527a75f80bf4e4514fc660e536395c72c1180a805119056d7eb2544",
+    "src/sparsifier/prune/factor_atlas.py": "080b5ef4d24042e1f9a941d49897f3558ea6627230438bb9619461598b4389a8",
+    "src/sparsifier/prune/gram_dictionary.py": "072888bfa523ca40d0a8d5d4f40b221d5d843b893a79f0275bed22a6482f2add",
+    "src/sparsifier/prune/sparsegpt.py": "2b0eb994326336c579fff33716d39955e2844f52e3caca7543fe6b675c7108f8",
+    "src/sparsifier/eval/gsm8k_pruning.py": "f73d564fa3b7d97e44cdad97e72dd93b8a9db980848c9eadadfdba492d3017d9"
+  },
+  "script_sha256": "56d77521d84695ba1f233b5a6bb04bf288f455fad4fa84de391d42e116ab967d",
+  "used_cuda": false,
+  "limitation": "Does not prove bitwise equality of model-wide GPU runs across process restarts. Code uses fresh local generators seeded per example,calibration collection,dictionary fit,and chart fit; existing saved checkpoint hashes are separately verified.",
+  "active_run_source_config_sha256": "33bff9a2654b10d51be3a60fcf9e6d0790534651bf4f27ec64c74203e8b13da7",
+  "audited_source_code_matches_active_run": true
+}

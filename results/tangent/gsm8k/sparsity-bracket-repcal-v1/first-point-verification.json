@@ -1,0 +1,16 @@
+{
+  "verified_at": "2026-11-15T22:12:09.868905-06:00",
+  "job": 235,
+  "state": "Running (R)",
+  "config_sha256": "dfe11a78742106bd40988220414c64b95c20883cd6daa33a3a3548a61087c4fd",
+  "method": "sparsegpt_task",
+  "sparsity": 0.55,
+  "batch_size": 32,
+  "baseline_config_differences": [
+    "arm",
+    "sparsity"
+  ],
+  "sources_match_submission_plan": true,
+  "saved_stages": 3,
+  "measured_screen_accuracy": null
+}

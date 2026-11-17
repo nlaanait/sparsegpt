@@ -1,0 +1,126 @@
+{
+  "updated_at": "2026-11-16T11:03:46.947279-06:00",
+  "active_job": 268,
+  "active_state": "Running (R)",
+  "active_method": "local",
+  "active_sparsity": 0.55,
+  "active_phase": "corrected_local55_evaluation",
+  "completed_points": 4,
+  "expected_points": 9,
+  "point_results": [
+    {
+      "method": "sparsegpt-task",
+      "sparsity": 0.55,
+      "pruning_job": 235,
+      "evaluation_job": 236,
+      "correct": 95,
+      "count": 128,
+      "accuracy": 0.7421875,
+      "truncated": 4,
+      "screen_complete": true,
+      "full512_complete": false,
+      "screen_rejected": true,
+      "cpu_audit": "audits/sparsegpt-task-s55-cpu.json",
+      "screen_audit": "audits/sparsegpt-task-s55-screen.json"
+    },
+    {
+      "method": "local",
+      "sparsity": 0.55,
+      "pruning_job": 237,
+      "evaluation_job": 238,
+      "correct": 83,
+      "count": 128,
+      "accuracy": 0.6484375,
+      "truncated": 19,
+      "screen_complete": true,
+      "full512_complete": false,
+      "screen_rejected": true,
+      "cpu_audit": "audits/local-s55-cpu.json",
+      "screen_audit": "audits/local-s55-screen.json"
+    },
+    {
+      "method": "downstream-weightdiag",
+      "sparsity": 0.55,
+      "pruning_job": 239,
+      "evaluation_job": 240,
+      "correct": 98,
+      "count": 128,
+      "accuracy": 0.765625,
+      "truncated": 4,
+      "screen_complete": true,
+      "full512_complete": false,
+      "screen_rejected": true,
+      "cpu_audit": "audits/downstream-weightdiag-s55-cpu.json",
+      "trace_audit": "audits/downstream-weightdiag-s55-trace.json",
+      "screen_audit": "audits/downstream-weightdiag-s55-screen.json"
+    },
+    {
+      "method": "sparsegpt-task",
+      "sparsity": 0.6,
+      "pruning_job": 241,
+      "evaluation_job": 242,
+      "correct": 21,
+      "count": 128,
+      "accuracy": 0.1640625,
+      "truncated": 99,
+      "strict_marker_correct_ignoring_truncation": 74,
+      "screen_complete": true,
+      "full512_complete": false,
+      "screen_rejected": true,
+      "cpu_audit": "audits/sparsegpt-task-s60-cpu.json",
+      "screen_audit": "audits/sparsegpt-task-s60-screen.json",
+      "interpretation": "Original finished-answer metric. Large truncation sensitivity; EOS check pending job253, not a corrected score."
+    }
+  ],
+  "first_tested_sample_zero": {
+    "sparsegpt-task": null,
+    "local": null,
+    "downstream-weightdiag": null
+  },
+  "zero_frontier_status": "All three 55% points and SparseGPT60 have nonzero original scores. Five grid points remain. Stop-policy artifact investigation remains open; do not infer a mathematical-accuracy zero boundary from budget-truncated scores.",
+  "active_saved_stages": 14,
+  "stop_token_diagnostic": {
+    "job": 255,
+    "state": "finished",
+    "depends_on": 241,
+    "evidence": "../pruning-artifact-audit-v1/stop-token-evidence.json",
+    "changes_existing_workers": false,
+    "fresh_generation_correct_old": 5,
+    "fresh_generation_correct_corrected": 22,
+    "complete": true
+  },
+  "local60_resume": {
+    "original_job": 243,
+    "resume_job": 256,
+    "after": 255,
+    "evaluation_job": 257,
+    "verified_saved_stages_before_cancel": 15,
+    "same_command_and_output": true,
+    "journal": "../pruning-artifact-audit-v1/stop-token-queue-recovery.json"
+  },
+  "replacement_jobs": {
+    "local60": [
+      256,
+      257
+    ],
+    "downstream60": [
+      258,
+      259
+    ],
+    "sparsegpt65": [
+      260,
+      261
+    ],
+    "local65": [
+      262,
+      263
+    ],
+    "downstream65": [
+      264,
+      265
+    ]
+  },
+  "measurement_policy_warning": "Historical point_results use omitted-chat-EOS policy. Use ../eos-corrected-v1/progress.json for corrected grid; remaining evaljobs now write fresh corrected namespaces.",
+  "corrected_evaluation_journal": "../eos-corrected-v1/submissions.json",
+  "corrected_completed_points": 1
+}

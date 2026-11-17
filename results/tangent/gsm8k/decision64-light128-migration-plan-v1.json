@@ -1,0 +1,49 @@
+{
+  "dense_job": 143,
+  "generation_cap": 2048,
+  "light": 128,
+  "manifest_sha256": "60107022919db28eb59dc9d7effa79630997cf744fd929a8643558397e35cdb5",
+  "replacements": [
+    [
+      121,
+      120,
+      "qwen-9b-gsm8k-mlp-local-s50-seed0-v2"
+    ],
+    [
+      123,
+      122,
+      "qwen-9b-gsm8k-mlp-local-s70-seed0-v2"
+    ],
+    [
+      125,
+      124,
+      "qwen-9b-gsm8k-mlp-local-s80-seed0-v2"
+    ],
+    [
+      127,
+      126,
+      "qwen-9b-gsm8k-mlp-local-s90-seed0-v2"
+    ],
+    [
+      129,
+      128,
+      "qwen-9b-gsm8k-mlp-local-s99-seed0-v2"
+    ],
+    [
+      138,
+      137,
+      "qwen-9b-gsm8k-mlp-downstream-s30-seed0-weightdiag-v1"
+    ],
+    [
+      140,
+      139,
+      "qwen-9b-gsm8k-mlp-downstream-s50-seed0-weightdiag-v1"
+    ],
+    [
+      142,
+      141,
+      "qwen-9b-gsm8k-mlp-downstream-s70-seed0-weightdiag-v1"
+    ]
+  ],
+  "screen": 64
+}

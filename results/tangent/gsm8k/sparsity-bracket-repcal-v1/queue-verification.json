@@ -1,0 +1,190 @@
+{
+  "verified_at": "2026-11-15T16:07:51.837117-06:00",
+  "jobs": [
+    {
+      "id": 235,
+      "name": "qwen-9b-gsm8k-mlp-sparsegpt-task-s55-seed0-batch32-repcal-v1",
+      "depends_on": [
+        221
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 236,
+      "name": "qwen-9b-gsm8k-mlp-sparsegpt-task-s55-seed0-batch32-repcal-v1-decision512",
+      "depends_on": [
+        221,
+        235
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 237,
+      "name": "qwen-9b-gsm8k-mlp-local-s55-seed0-batch32-repcal-v1",
+      "depends_on": [
+        236
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 238,
+      "name": "qwen-9b-gsm8k-mlp-local-s55-seed0-batch32-repcal-v1-decision512",
+      "depends_on": [
+        221,
+        237
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 239,
+      "name": "qwen-9b-gsm8k-mlp-downstream-weightdiag-s55-seed0-batch32-repcal-v1",
+      "depends_on": [
+        238
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 240,
+      "name": "qwen-9b-gsm8k-mlp-downstream-weightdiag-s55-seed0-batch32-repcal-v1-decision512",
+      "depends_on": [
+        221,
+        239
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 241,
+      "name": "qwen-9b-gsm8k-mlp-sparsegpt-task-s60-seed0-batch32-repcal-v1",
+      "depends_on": [
+        240
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 242,
+      "name": "qwen-9b-gsm8k-mlp-sparsegpt-task-s60-seed0-batch32-repcal-v1-decision512",
+      "depends_on": [
+        221,
+        241
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 243,
+      "name": "qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1",
+      "depends_on": [
+        242
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 244,
+      "name": "qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1-decision512",
+      "depends_on": [
+        221,
+        243
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 245,
+      "name": "qwen-9b-gsm8k-mlp-downstream-weightdiag-s60-seed0-batch32-repcal-v1",
+      "depends_on": [
+        244
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 246,
+      "name": "qwen-9b-gsm8k-mlp-downstream-weightdiag-s60-seed0-batch32-repcal-v1-decision512",
+      "depends_on": [
+        221,
+        245
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 247,
+      "name": "qwen-9b-gsm8k-mlp-sparsegpt-task-s65-seed0-batch32-repcal-v1",
+      "depends_on": [
+        246
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 248,
+      "name": "qwen-9b-gsm8k-mlp-sparsegpt-task-s65-seed0-batch32-repcal-v1-decision512",
+      "depends_on": [
+        221,
+        247
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 249,
+      "name": "qwen-9b-gsm8k-mlp-local-s65-seed0-batch32-repcal-v1",
+      "depends_on": [
+        248
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 250,
+      "name": "qwen-9b-gsm8k-mlp-local-s65-seed0-batch32-repcal-v1-decision512",
+      "depends_on": [
+        221,
+        249
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 251,
+      "name": "qwen-9b-gsm8k-mlp-downstream-weightdiag-s65-seed0-batch32-repcal-v1",
+      "depends_on": [
+        250
+      ],
+      "state": "Queued (PD)"
+    },
+    {
+      "id": 252,
+      "name": "qwen-9b-gsm8k-mlp-downstream-weightdiag-s65-seed0-batch32-repcal-v1-decision512",
+      "depends_on": [
+        221,
+        251
+      ],
+      "state": "Queued (PD)"
+    }
+  ],
+  "production_sources_match_completed_baselines": {
+    "qwen-9b-gsm8k-mlp-downstream-weightdiag-s70-seed0-batch32-repcal-v1": {
+      "src/sparsifier/prune/curvature_replay.py": "b84c75fc76109a0c5b6c8ba000f3ab8dda1c75462f9cfebfd818161f0b2a2d67",
+      "src/sparsifier/prune/downstream.py": "45788fccc8fd4a266ed82f0f0ba41f291f07a8a4d51bc6f93d8e9995cfec0de9",
+      "src/sparsifier/prune/factor_atlas.py": "080b5ef4d24042e1f9a941d49897f3558ea6627230438bb9619461598b4389a8",
+      "src/sparsifier/prune/geometry_features.py": "7fb23c665527a75f80bf4e4514fc660e536395c72c1180a805119056d7eb2544",
+      "src/sparsifier/prune/gram_dictionary.py": "072888bfa523ca40d0a8d5d4f40b221d5d843b893a79f0275bed22a6482f2add",
+      "src/sparsifier/eval/gsm8k_capture.py": "9e22bb5dfbaa59fc787a9e43192dad1d78d9ba5fe62759062145c0dafb461194",
+      "src/sparsifier/eval/gsm8k_downstream.py": "6573a7955a8039834ded5b7c68bdef2e70efd7e1192ab6218afa521647ad67eb",
+      "src/sparsifier/eval/gsm8k_input_tangents.py": "a2957fd792c431770bd14b8e71068798f81033c2fe793d6e26881843a628b84d",
+      "src/sparsifier/eval/gsm8k_pruning.py": "f73d564fa3b7d97e44cdad97e72dd93b8a9db980848c9eadadfdba492d3017d9",
+      "src/sparsifier/eval/gsm8k_sequential.py": "53f68c7de70b48c9b356f762df522c09aa806d028d1d42765a74653b4b851fd4",
+      "src/sparsifier/models/qwen.py": "e735c91419ee0286a734e40eef8196a492edf0041df8af6494bf9c9e303a863e",
+      "src/sparsifier/prune/rescale.py": "e420e53619e223ca234dee06bf5e659429a22ca6dfcc2621b0dd8d82dc7f1ad1",
+      "src/sparsifier/prune/sparsegpt.py": "2b0eb994326336c579fff33716d39955e2844f52e3caca7543fe6b675c7108f8",
+      "src/sparsifier/prune/two_sided.py": "8b69e61ef47cd5127fc0973507856802cd91e32f823d8008bcb8d1c341b5ae10",
+      "src/sparsifier/prune/whole_neuron_metric.py": "5454a5bdc6701d91a24e98892b607649a426118a31ec5d42cc644c80ce14b1f0"
+    },
+    "qwen-9b-gsm8k-mlp-local-s70-seed0-batch32-repcal-v1": {
+      "src/sparsifier/prune/factor_atlas.py": "080b5ef4d24042e1f9a941d49897f3558ea6627230438bb9619461598b4389a8",
+      "src/sparsifier/prune/geometry_features.py": "7fb23c665527a75f80bf4e4514fc660e536395c72c1180a805119056d7eb2544",
+      "src/sparsifier/prune/gram_dictionary.py": "072888bfa523ca40d0a8d5d4f40b221d5d843b893a79f0275bed22a6482f2add",
+      "src/sparsifier/eval/gsm8k_capture.py": "9e22bb5dfbaa59fc787a9e43192dad1d78d9ba5fe62759062145c0dafb461194",
+      "src/sparsifier/eval/gsm8k_pruning.py": "f73d564fa3b7d97e44cdad97e72dd93b8a9db980848c9eadadfdba492d3017d9",
+      "src/sparsifier/eval/gsm8k_sequential.py": "53f68c7de70b48c9b356f762df522c09aa806d028d1d42765a74653b4b851fd4",
+      "src/sparsifier/prune/input_side.py": "267491336d302c01dd6bdc65c91bd5c17d5a438999ff739bc9a9e35875b1aaca",
+      "src/sparsifier/prune/rescale.py": "e420e53619e223ca234dee06bf5e659429a22ca6dfcc2621b0dd8d82dc7f1ad1",
+      "src/sparsifier/prune/sparsegpt.py": "2b0eb994326336c579fff33716d39955e2844f52e3caca7543fe6b675c7108f8"
+    }
+  },
+  "completed_measurements": 0,
+  "validation": "18 commands independently checked for requested sparsities/method flags, batch size, source/reference paths; actual gflow dependencies/resources/priorities verified"
+}

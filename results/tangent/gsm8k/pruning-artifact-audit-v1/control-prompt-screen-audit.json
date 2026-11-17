@@ -1,0 +1,24 @@
+{
+  "folder": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/control-prompt32768-decision512",
+  "config_sha256": "62fbaadc4144bb75dd5b9e9486f8d8041517b2277548fa524ead26d247b0bfee",
+  "answers_sha256": "29fad98f3afccbbff155cc16d63cdb329d4a2dbbe8d00a31260f815d470c7fbb",
+  "count": 128,
+  "correct": 0,
+  "truncated": 128,
+  "rescoring_mismatches": 0,
+  "correct_ignoring_truncation_same_strict_parser": 4,
+  "batch_size": 32,
+  "complete": false,
+  "examples": [
+    {
+      "id": "gsm8k/train/5723",
+      "prefix": "To solve this problem, we first need to determine the total number of tissues Tucker bought.\n\n1.  **Calculate the total number of tissues:**\n    *   There are 160 tissues in one box.\n    *   Tucker bought 3 boxes.\n    *   The total number of tissues is calculated by multiplying the number of tissues",
+      "suffix": "ing number, subtract the number used from the total calculated:\n    $$ \\text{Remaining} = \\text{300} - \\text{210} $$\n    $$ \\text{Remaining} = \\text{300} - \\text{210 = \\text{100} $$\n\n3.  **Final calculation:**\n    *   The calculation is $300 - 210$.\n    $$ \\text{Final} = \\text{100} $$\n\nFinal answer:"
+    },
+    {
+      "id": "gsm8k/train/1345",
+      "prefix": "Here is the step-by-step breakdown to solve the problem:\n\n1.  **Identify the known amount**: Mimi spent $\\600 on Adidas sneakers.\n2.  **Calculate the cost of Skechers**: The problem states that the cost of Adidas is $1/5$ of the cost of Skechers.\n    $$ \\text{Cost} \\text{ \\text{ \\text{ \\text{ \\text{",
+      "suffix": " \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text"
+    }
+  ]
+}

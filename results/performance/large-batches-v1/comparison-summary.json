@@ -1,0 +1,127 @@
+{
+  "complete": true,
+  "model": "Qwen/Qwen3.5-9B",
+  "equal_work": {
+    "prompts": 32,
+    "generated_tokens_per_prompt": 32,
+    "timed_repeats": 3,
+    "same_process": true,
+    "rotating_order": true
+  },
+  "background_job": 210,
+  "queue_modified": false,
+  "hard_total_memory_limit_gb": 110,
+  "memory_guards": {
+    "benchmark_cuda_allocator_cap_gib": 24,
+    "system_pressure_stop_gib": 80,
+    "process_memory_max_gib": 40
+  },
+  "observed_total_system_memory_peak_gib": 56.466800689697266,
+  "observed_total_system_memory_peak_gb": 60.630765568,
+  "generation": [
+    {
+      "batch": 8,
+      "median_seconds": 31.422605223953724,
+      "peak_cuda_allocated_gib": 17.544306755065918,
+      "phase": "generation",
+      "units_per_second": 32.58800448599965,
+      "speedup_vs_batch8": 1.0
+    },
+    {
+      "batch": 16,
+      "median_seconds": 23.562545276246965,
+      "peak_cuda_allocated_gib": 18.379319190979004,
+      "phase": "generation",
+      "units_per_second": 43.458802433889794,
+      "speedup_vs_batch8": 1.3335828050643734
+    },
+    {
+      "batch": 32,
+      "median_seconds": 18.5355506320484,
+      "peak_cuda_allocated_gib": 20.04929208755493,
+      "phase": "generation",
+      "units_per_second": 55.24518911401964,
+      "speedup_vs_batch8": 1.6952614922387745
+    }
+  ],
+  "prefill": [
+    {
+      "batch": 8,
+      "median_seconds": 5.975237022154033,
+      "peak_cuda_allocated_gib": 17.134512901306152,
+      "phase": "prefill",
+      "units_per_second": 5.355436090878988
+    },
+    {
+      "batch": 16,
+      "median_seconds": 6.458155440166593,
+      "peak_cuda_allocated_gib": 17.559731006622314,
+      "phase": "prefill",
+      "units_per_second": 4.954975193222438
+    },
+    {
+      "batch": 32,
+      "median_seconds": 6.328935944009572,
+      "peak_cuda_allocated_gib": 18.41016721725464,
+      "phase": "prefill",
+      "units_per_second": 5.056142182998148
+    }
+  ],
+  "warmup_output_parity": [
+    {
+      "event": "warmup",
+      "batch": 8,
+      "phase": "prefill",
+      "examples": 32,
+      "max_logit_difference_from_batch8": 0.0,
+      "next_tokens_matching_batch8": 32
+    },
+    {
+      "event": "warmup",
+      "batch": 8,
+      "phase": "generation",
+      "examples": 32,
+      "exact_sequences_matching_batch8": 32
+    },
+    {
+      "event": "warmup",
+      "batch": 16,
+      "phase": "prefill",
+      "examples": 32,
+      "max_logit_difference_from_batch8": 0.3828125,
+      "next_tokens_matching_batch8": 32
+    },
+    {
+      "event": "warmup",
+      "batch": 16,
+      "phase": "generation",
+      "examples": 32,
+      "exact_sequences_matching_batch8": 30
+    },
+    {
+      "event": "warmup",
+      "batch": 32,
+      "phase": "prefill",
+      "examples": 32,
+      "max_logit_difference_from_batch8": 0.375,
+      "next_tokens_matching_batch8": 32
+    },
+    {
+      "event": "warmup",
+      "batch": 32,
+      "phase": "generation",
+      "examples": 32,
+      "exact_sequences_matching_batch8": 30
+    }
+  ],
+  "limitations": [
+    "Background job may change phases between timings",
+    "32 decode tokens, not full reasoning",
+    "Output differences must be evaluated before changing scientific experiment defaults",
+    "System memory pressure is a conservative total-memory proxy on unified-memory GB10; nvidia-smi memory usage counters are unavailable.",
+    "Does not validate the 2048-token generation budget or pruned checkpoints."
+  ],
+  "raw_report": "report.json",
+  "raw_measurements": "measurements.jsonl",
+  "raw_memory": "memory.jsonl"
+}

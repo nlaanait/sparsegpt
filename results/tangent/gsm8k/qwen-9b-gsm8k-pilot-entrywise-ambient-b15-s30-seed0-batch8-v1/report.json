@@ -1,0 +1,57 @@
+{
+  "complete": true,
+  "config_sha256": "b17c2e9219c5fdf085e30fc51d92a76aec65adb197343d570ca7e8415ab7b19e",
+  "eligible_parameters": 150994944,
+  "memory": {
+    "allocator_cap_gib": 56.0,
+    "cuda_free_gib": 31.25550079345703,
+    "cuda_total_gib": 121.69016647338867,
+    "host_before": {
+      "available_gib": 116.67203521728516,
+      "total_gib": 121.69016647338867,
+      "used_gib": 5.018131256103516
+    },
+    "requested_cap_gib": 56.0
+  },
+  "phase": "candidate_only",
+  "removed_weights": 45298432,
+  "stages": [
+    {
+      "candidate_sha256": "91873e148ccff82bebaeee78feb222ece4947c57a3507986cf913afb56a3c674",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "site": [
+        15,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "e6551497591f0eb363da01c5d8f566daa12337042c56b84eefcc68124c0bea80",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "site": [
+        15,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "fe88c76c2fbce1bbbbafeee25c0e389f0f42846846b2de2860a0783daa878747",
+      "diagnostics": {
+        "blocksize": 128,
+        "damping": 0.01,
+        "solver": "ambient_obs"
+      },
+      "site": [
+        15,
+        "mlp.down_proj"
+      ]
+    }
+  ],
+  "total_parameters": 8953803264
+}

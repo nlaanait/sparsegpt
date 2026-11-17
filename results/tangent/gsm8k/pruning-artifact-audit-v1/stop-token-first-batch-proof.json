@@ -1,0 +1,26 @@
+{
+  "updated_at": "2026-11-16T08:58:18.104998-06:00",
+  "status": "omitted_chat_eos_artifact_confirmed_on_exact_historical_token_streams",
+  "diagnostic_job": 255,
+  "model_eos_ids": [
+    248044
+  ],
+  "tokenizer_eos_id": 248046,
+  "count": 32,
+  "historical_text_matches": 32,
+  "original_correct": 5,
+  "original_truncated": 25,
+  "same_tokens_union_eos_correct": 22,
+  "same_tokens_union_eos_truncated": 1,
+  "rows_containing_chat_eos": 31,
+  "model_only_policy_sha256": "9311c3b1ce7b5981dd8a00ce45067e71ea02cc5c8ac83446d6c2269fedcbea16",
+  "strict_parser_unchanged": true,
+  "new_generation_policy_complete": true,
+  "corrected_full128_evaluation_job": 270,
+  "corrected_dense_reference_job": 266,
+  "corrected_evaluations_journal": "../eos-corrected-v1/submissions.json",
+  "fresh_corrected_generation_correct": 22,
+  "fresh_corrected_generation_truncated": 1,
+  "fresh_generation_prefix_matches": 32,
+  "fresh_generation_matches_same_tokens_union_grade": true
+}

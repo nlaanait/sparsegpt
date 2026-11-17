@@ -1,0 +1,711 @@
+{
+  "scope": "live_prefix_producer_diagnostics_not_full_tensor_remeasurement",
+  "job": 258,
+  "observed_at": "2026-11-16T22:19:44.391532+00:00",
+  "saved_stages_checked": 62,
+  "target_stages": 96,
+  "full_pruning_complete": false,
+  "report_snapshot_sha256": "9d293fde5612ea4aa621a3fa251588a0bb2ac36ea27b4a2ecb35773aac225a2e",
+  "source_config_sha256": "fef174c665fb701853f78fa9d1eeba999ce714d27ae5cbad9929a5d7dfcc0ee9",
+  "all_reported_zero_fractions_within_integer_rounding_bound": true,
+  "rounding_rule": "int(block_weight_count*sparsity), with one-float32-ULP reporting allowance",
+  "target_sparsity": 0.6,
+  "module_shapes_from_dense_header": {
+    "mlp.gate_proj": [
+      12288,
+      4096
+    ],
+    "mlp.up_proj": [
+      12288,
+      4096
+    ],
+    "mlp.down_proj": [
+      4096,
+      12288
+    ]
+  },
+  "ratios": [
+    {
+      "site": [
+        0,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        0,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        0,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        1,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        1,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        1,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        2,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0000000000000002,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        2,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        2,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        3,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        3,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        3,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        4,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        4,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        4,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        5,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        5,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 0.9999999999999999,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        5,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        6,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        6,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        6,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        7,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        7,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        7,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0000000000000002,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        8,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        8,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        8,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        9,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        9,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        9,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        10,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        10,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        10,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        11,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        11,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        11,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        12,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        12,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        12,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        13,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        13,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        13,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        14,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        14,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        14,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        15,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 0.9999999999999999,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        15,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 0.9999999999999999,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        15,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        16,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        16,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        16,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        17,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        17,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        17,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        18,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        18,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        18,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        19,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        19,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        19,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999984741210938,
+      "per_block_rounding_bound_plus_float32_reporting_error": 1.9673486328125e-06
+    },
+    {
+      "site": [
+        20,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    },
+    {
+      "site": [
+        20,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "reported_zero_fraction": 0.5999997854232788,
+      "per_block_rounding_bound_plus_float32_reporting_error": 6.957828776041666e-07
+    }
+  ]
+}

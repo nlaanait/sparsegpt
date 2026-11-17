@@ -1,0 +1,202 @@
+{
+  "purpose": "historical_geometry_sweep_scope_and_provenance_audit",
+  "sweeps": [
+    {
+      "path": "results/tangent/gemma4-12b-c4-a05-hi-sparsity-sweep/sweep_report.json",
+      "sha256": "96b1b8189418f704cbe2fb85b44dee95d05befebe691a98410dd4553ee1a3fcd",
+      "model": "google/gemma-4-12B",
+      "method": "output tangent weighted mask scores with ambient SparseGPT compensation",
+      "dense_ppl": 6.913173,
+      "baseline_70_ppl": 30.07575,
+      "tangent_70_ppl": 30.003031,
+      "tangent_vs_baseline_percent": -0.24178615662119318,
+      "only_tangent_settings_differ_in_saved_commands": true,
+      "runtime_source_hashes_recorded": false
+    },
+    {
+      "path": "results/tangent/gemma4-e2b-c4-a05-hi-sparsity-sweep/sweep_report.json",
+      "sha256": "1127b44e8dfc88e5aae6ee6752cacb4a27cef62ef05fe21aac73a44834235ea3",
+      "model": "google/gemma-4-E2B",
+      "method": "output tangent weighted mask scores with ambient SparseGPT compensation",
+      "dense_ppl": 8.235835,
+      "baseline_70_ppl": 48.193303,
+      "tangent_70_ppl": 49.936962,
+      "tangent_vs_baseline_percent": 3.6180524916501478,
+      "only_tangent_settings_differ_in_saved_commands": true,
+      "runtime_source_hashes_recorded": false
+    },
+    {
+      "path": "results/tangent/gemma4-e4b-c4-a05-hi-sparsity-sweep/sweep_report.json",
+      "sha256": "637c8bb1d83ceb74bbf30305b806fb88c46a15d6716fe0ffe3ea807d30a0dcb9",
+      "model": "google/gemma-4-E4B",
+      "method": "output tangent weighted mask scores with ambient SparseGPT compensation",
+      "dense_ppl": 7.072832,
+      "baseline_70_ppl": 60.315063,
+      "tangent_70_ppl": 58.620399,
+      "tangent_vs_baseline_percent": -2.8096861972937037,
+      "only_tangent_settings_differ_in_saved_commands": true,
+      "runtime_source_hashes_recorded": false
+    },
+    {
+      "path": "results/tangent/olmo2-13b-c4-a05-hi-sparsity-sweep/sweep_report.json",
+      "sha256": "89a0f1c73c16a1292059c55cade59088c6a56de627f17a8c3e868f6a14475e13",
+      "model": "allenai/OLMo-2-1124-13B-Instruct",
+      "method": "output tangent weighted mask scores with ambient SparseGPT compensation",
+      "dense_ppl": 5.816511,
+      "baseline_70_ppl": 24.82295,
+      "tangent_70_ppl": 25.180348,
+      "tangent_vs_baseline_percent": 1.4397885827429846,
+      "only_tangent_settings_differ_in_saved_commands": true,
+      "runtime_source_hashes_recorded": false
+    },
+    {
+      "path": "results/tangent/olmo2-1b-c4-a05-sparsity-sweep/sweep_report.json",
+      "sha256": "1b87f15899d147b4f0c948d6418e7c54c39b6661cf3d522d3500eecea20c7ac4",
+      "model": "allenai/OLMo-2-0425-1B-Instruct",
+      "method": "output tangent weighted mask scores with ambient SparseGPT compensation",
+      "dense_ppl": 13.303711,
+      "baseline_70_ppl": 64.51439,
+      "tangent_70_ppl": 63.023408,
+      "tangent_vs_baseline_percent": -2.311084395279883,
+      "only_tangent_settings_differ_in_saved_commands": true,
+      "runtime_source_hashes_recorded": false
+    },
+    {
+      "path": "results/tangent/olmo2-7b-c4-a05-hi-sparsity-sweep/sweep_report.json",
+      "sha256": "33bc07e5e83374e0ea7ad743df583661663d8fbe30365eea87e0f7a3b6253ce6",
+      "model": "allenai/OLMo-2-1124-7B-Instruct",
+      "method": "output tangent weighted mask scores with ambient SparseGPT compensation",
+      "dense_ppl": 8.487804,
+      "baseline_70_ppl": 31.347869,
+      "tangent_70_ppl": 31.413941,
+      "tangent_vs_baseline_percent": 0.21077030786367246,
+      "only_tangent_settings_differ_in_saved_commands": true,
+      "runtime_source_hashes_recorded": false
+    },
+    {
+      "path": "results/tangent/qwen35-0.8b-c4-a05-sparsity-sweep/sweep_report.json",
+      "sha256": "16866635878c1f3ffca3ce3a7d94a9baac3a72e0369f09a07e188da61899535e",
+      "model": "Qwen/Qwen3.5-0.8B",
+      "method": "output tangent weighted mask scores with ambient SparseGPT compensation",
+      "dense_ppl": 17.18007,
+      "baseline_70_ppl": 360.736059,
+      "tangent_70_ppl": 380.705405,
+      "tangent_vs_baseline_percent": 5.535722171871926,
+      "only_tangent_settings_differ_in_saved_commands": true,
+      "runtime_source_hashes_recorded": false
+    },
+    {
+      "path": "results/tangent/qwen35-27b-c4-a05-hi-sparsity-sweep/sweep_report.json",
+      "sha256": "c0103351b89c29aaec17a1f133c1fb0d8611ac3f555c96395d657978bb4d72b9",
+      "model": "Qwen/Qwen3.5-27B",
+      "method": "output tangent weighted mask scores with ambient SparseGPT compensation",
+      "dense_ppl": 6.896269,
+      "baseline_70_ppl": 14.961731,
+      "tangent_70_ppl": 14.976249,
+      "tangent_vs_baseline_percent": 0.09703422685516383,
+      "only_tangent_settings_differ_in_saved_commands": true,
+      "runtime_source_hashes_recorded": false
+    },
+    {
+      "path": "results/tangent/qwen35-2b-c4-a05-sparsity-sweep/sweep_report.json",
+      "sha256": "d5f550c85b3f777ac1975d7c210dd727c044348d85fc6321c35c24b63c042624",
+      "model": "Qwen/Qwen3.5-2B",
+      "method": "output tangent weighted mask scores with ambient SparseGPT compensation",
+      "dense_ppl": 12.104634,
+      "baseline_70_ppl": 125.80062,
+      "tangent_70_ppl": 121.759454,
+      "tangent_vs_baseline_percent": -3.2123577769330502,
+      "only_tangent_settings_differ_in_saved_commands": true,
+      "runtime_source_hashes_recorded": false
+    },
+    {
+      "path": "results/tangent/qwen35-4b-c4-a05-sparsity-sweep/sweep_report.json",
+      "sha256": "317f97c42fd82731824c8c2154c28467758b57e4c6912f64170c105a21a50c6d",
+      "model": "Qwen/Qwen3.5-4B",
+      "method": "output tangent weighted mask scores with ambient SparseGPT compensation",
+      "dense_ppl": 9.586394,
+      "baseline_70_ppl": 38.52445,
+      "tangent_70_ppl": 38.140303,
+      "tangent_vs_baseline_percent": -0.9971511598478311,
+      "only_tangent_settings_differ_in_saved_commands": true,
+      "runtime_source_hashes_recorded": false
+    },
+    {
+      "path": "results/tangent/qwen35-9b-c4-a05-sparsity-sweep/sweep_report.json",
+      "sha256": "05494528b45f0a551874da565ae2b83146395a767686b772986029507f7c3a73",
+      "model": "Qwen/Qwen3.5-9B",
+      "method": "output tangent weighted mask scores with ambient SparseGPT compensation",
+      "dense_ppl": 8.64753,
+      "baseline_70_ppl": 26.340843,
+      "tangent_70_ppl": 26.623354,
+      "tangent_vs_baseline_percent": 1.072520723805237,
+      "only_tangent_settings_differ_in_saved_commands": true,
+      "runtime_source_hashes_recorded": false
+    }
+  ],
+  "arithmetic_checks": 139,
+  "max_abs_log_ppl_minus_nats_per_token": 6.272703112486511e-08,
+  "tangent_better_at_70": 5,
+  "tangent_worse_at_70": 6,
+  "qwen08_method_sweep": {
+    "path": "results/tangent/qwen35-0.8b-method-sweep.json",
+    "sha256": "e5b3b68af7ebd3b6dbea801103a04a875686faaae5a9b538ead25e7ef4313408",
+    "points_70": [
+      {
+        "model": "Qwen/Qwen3.5-0.8B",
+        "dataset": "wikitext2",
+        "method": "sparsegpt",
+        "sparsity": 0.7,
+        "perplexity": 380.459339
+      },
+      {
+        "model": "Qwen/Qwen3.5-0.8B",
+        "dataset": "wikitext2",
+        "method": "wanda",
+        "sparsity": 0.7,
+        "perplexity": 289.422608
+      },
+      {
+        "model": "Qwen/Qwen3.5-0.8B",
+        "dataset": "wikitext2",
+        "method": "tangent_input_side",
+        "sparsity": 0.7,
+        "perplexity": 438.425393
+      },
+      {
+        "model": "Qwen/Qwen3.5-0.8B",
+        "dataset": "wikitext2",
+        "method": "tangent_rescale",
+        "sparsity": 0.7,
+        "perplexity": 565.259254
+      },
+      {
+        "model": "Qwen/Qwen3.5-0.8B",
+        "dataset": "wikitext2",
+        "method": "tangent_heuristic",
+        "sparsity": 0.7,
+        "perplexity": 634.887791
+      },
+      {
+        "model": "Qwen/Qwen3.5-0.8B",
+        "dataset": "wikitext2",
+        "method": "tangent_sparse_lowrank",
+        "sparsity": 0.7,
+        "perplexity": 369.947857
+      }
+    ],
+    "source_commit_recording_results": "a97bc8b",
+    "normalization_correction_commit": "c368013",
+    "rescale_and_heuristic_interpretation": "Historical rank-normalized variants; not measurements of corrected curvature-trace-v2 implementations.",
+    "runtime_source_hashes_recorded": false,
+    "resume_caveat": "The original resume path ignored implementation identity. It is now guarded by source/runtime/pair-bank provenance and a new default namespace; historical measurements remain unchanged.",
+    "resume_guard_follow_up": "method-sweep-resume-guard.json"
+  },
+  "historical_rank_formula_evidence": "\n        self.gamma = geometric_weight(self.geo_alpha, coupling.shape[0], r_bar)\n        self.scale = row_scales(coupling, self.ga",
+  "scope_cautions": [
+    "Archived sweep source/runtime identity cannot be reconstructed from the summary JSON alone.",
+    "Legacy score-only convex blend and corrected row-congruence methods are different algorithms.",
+    "Across-family perplexity and GSM8K bounded-generation accuracy are different measurements.",
+    "Small mixed changes in a one-seed heuristic comparison do not establish an advantage or equivalence."
+  ]
+}

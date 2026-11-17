@@ -22,6 +22,43 @@ from sparsifier.prune.sparsegpt import SparseGPT
 
 Basis = torch.Tensor | Callable[[torch.Tensor], torch.Tensor]
 
+WEIGHT_CONTRACTION = {"version": "chunked-device-fp64-v1", "backend": "auto",
+                      "dtype": "float64", "chunk_rows": 512, "scratch_bytes": 64*1024**2,
+                      "sequence_reduction": "sum_tokens_then_square_independent_sequences"}
+
+
+@torch.no_grad()
+def _weight_probe_diagonal_(gradient, inputs, moment, *, consumer=False, chunk_rows=512):
+    """Contract a complete sequence in bounded row chunks, then square.
+
+    A CPU unsquared matrix is materialized only for existing probe consumers;
+    the common diagonal-only path never copies per-probe weights to CPU.
+    """
+    if type(chunk_rows) is not int or chunk_rows < 1:
+        raise ValueError("positive integer contraction chunk_rows required")
+    if gradient.ndim != 2 or inputs.ndim != 2 or gradient.shape[0] != inputs.shape[0]:
+        raise ValueError("matching sequence-major gradient/input matrices required")
+    device = moment.device if moment is not None else gradient.device
+    g, x = gradient.to(device=device, dtype=torch.float64), inputs.to(device=device, dtype=torch.float64)
+    shape = (g.shape[1], x.shape[1])
+    if moment is not None and (moment.shape != shape or moment.dtype != torch.float64):
+        raise ValueError("FP64 moment must match weight shape")
+    row_bytes = x.shape[1]*8
+    if row_bytes > WEIGHT_CONTRACTION["scratch_bytes"]:
+        raise ValueError("one contraction row exceeds scratch budget")
+    chunk_rows = min(chunk_rows, max(1, WEIGHT_CONTRACTION["scratch_bytes"]//max(row_bytes, 1)))
+    host = torch.empty(shape, dtype=torch.float64, device="cpu") if consumer else None
+    for start in range(0, shape[0], chunk_rows):
+        stop = min(start+chunk_rows, shape[0])
+        contraction = g[:, start:stop].T@x
+        if host is not None:
+            host[start:stop].copy_(contraction)
+        if moment is not None:
+            contraction.square_()
+            moment[start:stop].add_(contraction)
+        del contraction
+    return host
+
 
 def _finite_nonnegative(value: float, name: str) -> None:
     if not math.isfinite(value) or value < 0:
@@ -103,6 +140,8 @@ def tangent_pullback_diagonal(
     weight_inputs: Mapping[str, torch.Tensor] | None = None,
     probe_inputs: Mapping[str, torch.Tensor] | None = None,
     probe_consumer: Callable[[dict], None] | None = None,
+    contraction_backend: str = "auto",
+    contraction_chunk_rows: int = 512,
 ) -> dict[str, torch.Tensor]:
     """Estimate diag(J.T P J) at targets by backpropagating tangent probes.
 
@@ -123,7 +162,15 @@ def tangent_pullback_diagonal(
     for each independent sequence, then sum sequences and average probes.
     Two-dimensional targets represent one sequence; three-dimensional
     targets have an independent leading batch axis.
+
+    Auto contraction uses chunked FP64 GEMMs on CUDA targets, accumulating
+    probes there and returning the weight diagonal on CPU once. ``cpu`` keeps
+    the reference path. Probe consumers still receive unsquared CPU factors.
     """
+    if contraction_backend not in ("auto", "cpu", "cuda"):
+        raise ValueError("unknown contraction backend")
+    if type(contraction_chunk_rows) is not int or contraction_chunk_rows < 1:
+        raise ValueError("positive integer contraction chunk rows required")
     if num_probes is not None and (
         isinstance(num_probes, bool) or not isinstance(num_probes, int) or num_probes < 1
     ):
@@ -145,15 +192,25 @@ def tangent_pullback_diagonal(
                 raise ValueError("weight inputs must match target sequence axes")
             if not torch.isfinite(x).all():
                 raise ValueError("weight inputs must be finite")
+    contraction_devices = {name: (value.device if value.is_cuda and contraction_backend != "cpu" else
+        torch.device("cuda") if contraction_backend == "cuda" else torch.device("cpu"))
+        for name, value in targets.items()}
     result = {
         name: torch.zeros_like(value, dtype=torch.float64 if value.dtype == torch.float64 else torch.float32)
         for name, value in targets.items()
     } if weight_inputs is None else {
-        name: torch.zeros(value.shape[-1], weight_inputs[name].shape[-1], dtype=torch.float64)
+        name: torch.zeros(value.shape[-1], weight_inputs[name].shape[-1], dtype=torch.float64,
+                          device=contraction_devices[name])
         for name, value in targets.items()
     }
     if rank == 0 or not frames.any():
-        return result
+        return {name: value.cpu() for name, value in result.items()} if weight_inputs is not None else result
+    contraction_inputs = weight_inputs if weight_inputs is not None else probe_inputs
+    cached_inputs = ({name: (x.detach().cpu() if probe_consumer is not None or
+        contraction_devices[name].type == "cpu" else x.detach()) for name, x in (contraction_inputs or {}).items()}
+                     if weight_inputs is not None or probe_consumer is not None else {})
+    double_inputs = {name: x.detach().to(device=contraction_devices[name], dtype=torch.float64)
+                     for name, x in (contraction_inputs or {}).items() if name in cached_inputs}
     count = positions * rank if num_probes is None else num_probes
     for index in range(count):
         if num_probes is None:
@@ -174,36 +231,41 @@ def tangent_pullback_diagonal(
         )
         for name, gradient in zip(targets, gradients):
             if gradient is not None:
-                contraction_inputs = weight_inputs if weight_inputs is not None else probe_inputs
-                if probe_consumer is not None:
-                    if contraction_inputs is None:
-                        raise ValueError("unsquared probe consumer requires matching local inputs")
-                    g_probe = gradient.detach().to(device="cpu", dtype=torch.float64)
-                    x_probe = contraction_inputs[name].detach().to(device="cpu", dtype=torch.float64)
-                    if g_probe.ndim == 2:
-                        g_probe, x_probe = g_probe.unsqueeze(0), x_probe.unsqueeze(0)
-                    for sequence, (gs, xs) in enumerate(zip(g_probe, x_probe)):
-                        probe_consumer({"target": name, "sequence": sequence, "probe": index,
-                            "exact_enumeration": num_probes is None, "probe_count": count,
-                            "seed": generator.initial_seed(),
-                            "coefficient": 1. if num_probes is None else 1./count,
-                            "contraction": gs.T @ xs})
                 if weight_inputs is None:
                     result[name].add_(gradient.detach().to(result[name].dtype).square())
-                else:
-                    g = gradient.detach().to(device="cpu", dtype=torch.float64)
-                    x = weight_inputs[name].detach().to(device="cpu", dtype=torch.float64)
+                if weight_inputs is not None or probe_consumer is not None:
+                    if contraction_inputs is None:
+                        raise ValueError("unsquared probe consumer requires matching local inputs")
+                    fast = contraction_devices[name].type == "cuda"
+                    raw_g = gradient.detach().cpu() if probe_consumer is not None or not fast else gradient.detach()
+                    raw_x = cached_inputs[name]
+                    g = gradient.detach().to(contraction_devices[name]) if fast else raw_g.double()
+                    x = double_inputs[name]
                     if g.ndim == 2:
                         g, x = g.unsqueeze(0), x.unsqueeze(0)
-                    # Shared weights aggregate tokens, never independent examples.
-                    for sequence_g, sequence_x in zip(g, x):
-                        result[name].add_((sequence_g.T @ sequence_x).square())
+                        raw_g, raw_x = raw_g.unsqueeze(0), raw_x.unsqueeze(0)
+                    for sequence, (gs, xs) in enumerate(zip(g, x)):
+                        if fast:
+                            contraction = _weight_probe_diagonal_(gs, xs,
+                                result[name] if weight_inputs is not None else None,
+                                consumer=probe_consumer is not None, chunk_rows=contraction_chunk_rows)
+                        else:
+                            contraction = gs.T @ xs
+                            if weight_inputs is not None:
+                                result[name].add_(contraction.square())
+                        if probe_consumer is not None:
+                            probe_consumer({"target": name, "sequence": sequence, "probe": index,
+                                "exact_enumeration": num_probes is None, "probe_count": count,
+                                "seed": generator.initial_seed(), "kind": "weight", "term": "base",
+                                "coefficient": 1. if num_probes is None else 1./count,
+                                "gradient": raw_g[sequence], "inputs": raw_x[sequence],
+                                "contraction": contraction})
     if num_probes is not None:
         for diagonal in result.values():
             diagonal.div_(count)
     if any(not torch.isfinite(diagonal).all() for diagonal in result.values()):
         raise ValueError("nonfinite tangent pullback; check activations and backward precision")
-    return result
+    return {name: value.cpu() for name, value in result.items()} if weight_inputs is not None else result
 
 
 def _tensor_output(output) -> torch.Tensor:
@@ -301,18 +363,23 @@ class DownstreamTangentSparseGPT(SparseGPT):
         self.vector_count += len(x)
 
     @torch.no_grad()
-    def add_weight_diagonal_batch(self, inputs, diagonal, *, collect_ambient=True):
+    def add_weight_diagonal_batch(self, inputs, diagonal, *, input_diagonal=None, collect_ambient=True):
         """Accumulate an already probe-averaged, sequence-summed weight metric."""
         if self.scale is not None or self.H is None:
             raise RuntimeError("cannot add calibration after finalization or pruning")
-        if self.input_alpha:
-            raise ValueError("weight-diagonal calibration does not support input_alpha")
+        if self.input_alpha and input_diagonal is None:
+            raise ValueError("input_alpha requires paired input tangent moments")
         value = diagonal.detach().to(device="cpu", dtype=torch.float64)
         if value.shape != self.geometry_energy.shape or not torch.isfinite(value).all() or (value < 0).any():
             raise ValueError("weight diagonal must be finite, nonnegative and match layer weights")
         if collect_ambient:
             self.add_ambient_batch(inputs)
         self.geometry_energy.add_(value)
+        if input_diagonal is not None:
+            local = input_diagonal.detach().to(device="cpu", dtype=torch.float64)
+            if local.shape != value.shape or not torch.isfinite(local).all() or (local < 0).any():
+                raise ValueError("invalid input tangent weight diagonal")
+            self.input_geometry_energy.add_(local)
         self.metric = "weight_diagonal"
         self.geometry_vector_count += inputs.numel() // self.columns
 
@@ -354,6 +421,10 @@ class DownstreamTangentSparseGPT(SparseGPT):
             "excluded_geometry_trace": (raw_trace - geo_trace) / self.vector_count,
             "achieved_geometry_to_ambient_ratio": gamma * geo_trace / ambient_trace if ambient_trace else 0.,
             "input_geometry_trace": input_trace / self.vector_count,
+            "raw_input_geometry_trace": float(self.input_geometry_energy.sum()) / self.vector_count,
+            "excluded_input_geometry_trace": (float(self.input_geometry_energy.sum())-input_trace)/self.vector_count,
+            "achieved_input_to_ambient_ratio": eta * input_trace / ambient_trace if ambient_trace else 0.,
+            "input_structure": getattr(self, "input_structure", "independent_tokens"),
             "unsupported_inputs": int((~support).sum()),
             "metric": self.metric,
             "diagonal_output_and_token_approximation": self.metric == "activation_diagonal",
@@ -402,15 +473,30 @@ class DownstreamTangentCalibrator:
         seed: int = 0,
         metric: str = "activation_diagonal",
         probe_consumer: Callable[[dict], None] | None = None,
+        input_probe_consumer: Callable[[dict], None] | None = None,
+        input_structure: str = "independent_tokens",
+        contraction_backend: str = "auto",
+        contraction_chunk_rows: int = 512,
     ):
         if not targets or not anchors:
             raise ValueError("at least one target and one anchor are required")
         if metric not in ("activation_diagonal", "weight_diagonal"):
             raise ValueError("unknown downstream metric")
-        if metric == "weight_diagonal" and (input_alpha or input_bases):
-            raise ValueError("weight_diagonal does not support local input tangent coupling")
+        from sparsifier.prune.two_sided import STRUCTURES
+        if input_structure not in STRUCTURES:
+            raise ValueError("unknown input tangent sequence structure")
+        if metric == "activation_diagonal" and input_structure != "independent_tokens":
+            raise ValueError("activation-diagonal mode requires independent token input tangents")
         self.metric = metric
+        if contraction_backend not in ("auto", "cpu", "cuda"):
+            raise ValueError("unknown contraction backend")
+        if type(contraction_chunk_rows) is not int or contraction_chunk_rows < 1:
+            raise ValueError("positive integer contraction chunk rows required")
+        self.contraction_backend, self.contraction_chunk_rows = contraction_backend, contraction_chunk_rows
         self.probe_consumer = probe_consumer
+        self.input_probe_consumer = input_probe_consumer
+        self.input_structure = input_structure
+        self.input_alpha = input_alpha
         if len({id(module) for module in targets.values()}) != len(targets):
             raise ValueError("target modules must be unique")
         if num_probes is not None and (
@@ -429,6 +515,8 @@ class DownstreamTangentCalibrator:
             name: DownstreamTangentSparseGPT(module, alpha=alpha, input_alpha=input_alpha)
             for name, module in targets.items()
         }
+        for solver in self.solvers.values():
+            solver.input_structure = input_structure
         self.num_probes = num_probes
         self.generator = torch.Generator(device="cpu").manual_seed(seed)
         self.batch_count = 0
@@ -482,31 +570,49 @@ class DownstreamTangentCalibrator:
                 } if self.metric == "activation_diagonal" else {
                     name: torch.zeros_like(solver.geometry_energy) for name, solver in self.solvers.items()
                 }
+                input_frames = {}
+                input_moments = {name: torch.zeros_like(solver.geometry_energy) for name, solver in self.solvers.items()}
+                for target, provider in self.input_bases.items():
+                    inputs = target_inputs[target]
+                    frame = provider(inputs) if callable(provider) else provider
+                    frame = _frames(frame, inputs)
+                    input_frames[target] = frame.reshape(*inputs.shape[:-1], *frame.shape[-2:])
                 for index, (name, anchor) in enumerate(self.anchors.items()):
                     if anchor.weight == 0:
                         continue
                     output = anchor_outputs[name]
                     basis = anchor.basis(output.detach()) if callable(anchor.basis) else anchor.basis
+                    def consume(event, anchor_name=name, weight=anchor.weight):
+                        from sparsifier.prune.two_sided import input_probe_moments
+                        weighted = dict(event, anchor=anchor_name, anchor_weight=weight,
+                                        coefficient=event["coefficient"]*weight)
+                        if self.probe_consumer is not None:
+                            self.probe_consumer(weighted)
+                        if self.input_alpha:
+                            frames = input_frames[event["target"]]
+                            if frames.ndim == 4:
+                                frames = frames[event["sequence"]]
+                            moment, factors = input_probe_moments(weighted, frames, self.input_structure)
+                            input_moments[event["target"]].add_(moment, alpha=weighted["coefficient"])
+                            if self.input_probe_consumer is not None:
+                                for factor in factors:
+                                    self.input_probe_consumer(factor)
                     diagonal = tangent_pullback_diagonal(
                         output, basis, target_outputs,
                         num_probes=self.num_probes, generator=self.generator,
                         retain_graph=index + 1 < len(self.anchors),
                         weight_inputs=target_inputs if self.metric == "weight_diagonal" else None,
                         probe_inputs=target_inputs,
-                        probe_consumer=(lambda event, anchor_name=name, weight=anchor.weight:
-                            self.probe_consumer(dict(event, anchor=anchor_name,
-                                anchor_weight=weight, coefficient=event["coefficient"]*weight)))
-                            if self.probe_consumer is not None else None,
+                        probe_consumer=consume if self.probe_consumer is not None or self.input_alpha else None,
+                        contraction_backend=self.contraction_backend,
+                        contraction_chunk_rows=self.contraction_chunk_rows,
                     )
                     for target in sensitivities:
                         sensitivities[target].add_(diagonal[target], alpha=anchor.weight)
-                input_frames = {}
-                for name, basis in self.input_bases.items():
-                    inputs = target_inputs[name]
-                    input_frames[name] = basis(inputs) if callable(basis) else basis
                 for name, solver in self.solvers.items():
                     if self.metric == "weight_diagonal":
                         solver.add_weight_diagonal_batch(target_inputs[name], sensitivities[name],
+                                                        input_diagonal=input_moments[name] if self.input_alpha else None,
                                                         collect_ambient=collect_ambient)
                     else:
                         solver.add_pullback_batch(

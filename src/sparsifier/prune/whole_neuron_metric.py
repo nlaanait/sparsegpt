@@ -97,8 +97,19 @@ class FrozenNeuronMetric:
         eye = torch.eye(size, device=h0.device, dtype=torch.float64)
         return torch.stack([self.action(row.reshape(shape), h0.double(), ridge).flatten() for row in eye], 1)
 
-    def refit(self, weight, keep, h0, ridge, *, method="direct", rtol=1e-5, max_iterations=200):
-        mask = keep[None, :].expand_as(weight)
+    def curvature_diagonal(self, shape, *, device=None, dtype=torch.float64):
+        return self.gamma*self.diagonal(shape, device=device, dtype=dtype)
+
+    def refit(self, weight, keep, h0, ridge, *, method="direct", rtol=1e-5, max_iterations=200,
+              progress=None):
+        if keep.dtype != torch.bool or keep.shape not in (weight.shape, weight.shape[1:]):
+            raise ValueError("fixed mask must be boolean columns or a weight-shaped mask")
+        mask = keep.to(device=weight.device).expand_as(weight)
+        if not torch.isfinite(weight).all() or not torch.isfinite(h0).all() or not torch.isfinite(torch.as_tensor(ridge)).all():
+            raise ValueError("finite full-metric reference, curvature and ridge required")
+        if progress is not None:
+            progress({"event": "full_metric_started", "method": method, "rtol": rtol,
+                      "max_iterations": max_iterations, "retained_weights": int(mask.sum())})
         if method == "direct":
             h = self.matrix(weight.shape, h0, ridge)
             candidate = explicit_refit(weight, mask, h).to(weight)
@@ -110,7 +121,7 @@ class FrozenNeuronMetric:
                 a = torch.zeros_like(weight)
                 a[mask] = v
                 return self.action(a, h0, ridge)[mask]
-            diagonal = h0.diagonal()[None, :].expand_as(weight) + self.gamma*self.diagonal(
+            diagonal = h0.diagonal()[None, :].expand_as(weight) + self.curvature_diagonal(
                 weight.shape, device=weight.device, dtype=weight.dtype) + torch.as_tensor(ridge, device=weight.device)
             preconditioner = diagonal[mask]
             if (preconditioner <= 0).any():
@@ -123,32 +134,65 @@ class FrozenNeuronMetric:
             target = rtol * rhs.norm().clamp_min(1e-30)
             converged = bool(r.norm() <= target)
             iterations = 0
-            for iterations in range(1, max_iterations+1):
+            if progress is not None:
+                progress({"event": "full_metric_cg", "iteration": 0, "max_iterations": max_iterations,
+                    "relative_residual": float(r.norm()/rhs.norm().clamp_min(1e-30)),
+                    "residual_kind": "recomputed", "rhs_norm": float(rhs.norm()), "rtol": rtol})
+            for _ in range(max_iterations):
                 if converged:
                     break
+                iterations += 1
                 ap = apply(p)
                 denom = torch.dot(p, ap)
                 if denom <= 0:
+                    if progress is not None:
+                        progress({"event": "full_metric_failed", "iteration": iterations,
+                                  "error": "non-positive CG curvature", "curvature": float(denom)})
                     raise RuntimeError("non-positive CG curvature")
                 step = rz/denom
                 solution += step*p
                 r -= step*ap
                 converged = bool(r.norm() <= target)
+                if converged or iterations % 25 == 0:
+                    r = rhs-apply(solution)
+                    converged = bool(r.norm() <= target)
+                    if progress is not None:
+                        progress({"event": "full_metric_cg", "iteration": iterations,
+                            "max_iterations": max_iterations, "rtol": rtol,
+                            "relative_residual": float(r.norm()/rhs.norm().clamp_min(1e-30)),
+                            "residual_kind": "recomputed", "converged": converged})
+                    if not converged:
+                        z = r/preconditioner
+                        p, rz = z.clone(), torch.dot(r, z)
+                        continue
+                elif progress is not None and (iterations == 1 or iterations % 10 == 0):
+                    progress({"event": "full_metric_cg", "iteration": iterations,
+                        "max_iterations": max_iterations, "rtol": rtol,
+                        "relative_residual": float(r.norm()/rhs.norm().clamp_min(1e-30)),
+                        "residual_kind": "recursive", "converged": converged})
                 z = r/preconditioner
                 next_rz = torch.dot(r, z)
                 p = z + (next_rz/rz)*p
                 rz = next_rz
             residual[mask] = solution
             candidate = weight-residual
+            true_residual = rhs-apply(solution)
+            converged = bool(torch.isfinite(candidate).all() and true_residual.norm() <= target)
         else:
             raise ValueError("unknown full refit method")
         error = weight-candidate
         gradient = self.action(error, h0, ridge)
         stationarity = float(gradient[mask].norm()/self.action(weight, h0, ridge).norm().clamp_min(1e-30))
-        return candidate, {"full_metric_converged": converged, "full_metric_iterations": iterations,
+        diagnostics = {"full_metric_converged": converged, "full_metric_iterations": iterations,
                            "full_metric_relative_stationarity": stationarity,
                            "full_metric_objective": float((error*gradient).sum()),
                            "full_metric_ridge": "isotropic" if not isinstance(ridge, torch.Tensor) or ridge.ndim == 0 else "anisotropic"}
+        if method == "cg":
+            diagnostics["full_metric_relative_residual"] = float(true_residual.norm()/rhs.norm().clamp_min(1e-30))
+            diagnostics["full_metric_rtol"] = rtol
+        if progress is not None:
+            progress({"event": "full_metric_completed", **diagnostics})
+        return candidate, diagnostics
 
 
 class NeuronProbeConsumer:
@@ -183,12 +227,20 @@ class StreamedGroupMetric:
     group_energy: torch.Tensor
     ambient_count: int
     gamma: float = 1.
+    input_group_energy: torch.Tensor | None = None
+    eta: float = 0.
 
     def with_gamma(self, gamma):
         return replace(self, gamma=gamma)
 
+    def with_weights(self, gamma, eta):
+        return replace(self, gamma=gamma, eta=eta)
+
     def direct_scores(self, weight, h0):
-        return weight.square().sum(0)*h0.diagonal()+self.gamma*self.group_energy.to(weight)/self.ambient_count
+        score = weight.square().sum(0)*h0.diagonal()+self.gamma*self.group_energy.to(weight)/self.ambient_count
+        if self.input_group_energy is not None:
+            score += self.eta*self.input_group_energy.to(weight)/self.ambient_count
+        return score
 
     def refit(self, *args, **kwargs):
         raise ValueError("full-metric refit needs cached factors or deterministic replay, not only group scores")

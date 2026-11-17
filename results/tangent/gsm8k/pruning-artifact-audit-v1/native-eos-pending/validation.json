@@ -1,0 +1,23 @@
+{
+  "isolated_only": true,
+  "command": [
+    "/home/nlaanait/sparsegpt-tangent-revised/.pixi/envs/gb10/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_gsm8k_native_eos.py",
+    "tests/test_gsm8k_screened.py",
+    "tests/test_gsm8k_batching.py",
+    "tests/test_gsm8k_batch_runtime.py",
+    "tests/test_gsm8k.py",
+    "tests/test_gsm8k_decision.py",
+    "tests/test_gsm8k_decision_full.py",
+    "tests/test_gsm8k_eos_control.py",
+    "tests/test_gsm8k_eos_evaluation_audit.py",
+    "tests/test_gsm8k_eos_comparison.py",
+    "tests/test_gsm8k_stop_diagnostic.py"
+  ],
+  "returncode": 0,
+  "output_sha256": "70a64e4676779be0bd2b09b35660a3daa7de39f590da2c32db6ee916477b892b",
+  "test_source_sha256": "62f4bb87a959896611cbe4956d139cde8a2587b9d20dca6eb022eb6f169c120f"
+}

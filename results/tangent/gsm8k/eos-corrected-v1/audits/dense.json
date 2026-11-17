@@ -1,0 +1,50 @@
+{
+  "answers_sha256": "e9e4add9b683f1385f9d39ff467c8393aeedeb853ee48ac9ddeaaa291ee93b5d",
+  "audited_records_sha256": "313a6a9cfcb3d6bd84a8b54ae645fddbb2e9d5563b5967e8e47899c54f2b5ef7",
+  "auditor_sha256": "908a4025254d682957a5ece799b5f75d5a86535e59cda5096b5e017dc3ba5c53",
+  "common128": {
+    "correct": 123,
+    "count": 128,
+    "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+    "strict_marker_correct_ignoring_truncation": 123,
+    "truncated": 1,
+    "truncated_correct_with_complete_marker_line": 0
+  },
+  "common128_complete": true,
+  "config_sha256": "24d78214d3bd9c9b69112e2cc25f94abadb260d18c0e59bd58b0fa62f4b1ff56",
+  "correct": 123,
+  "count": 128,
+  "evaluation": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/dense",
+  "raw_files": {
+    "0185a7824cbc0b6acb3d6812b44774b363e9e8d800276ec78778b1d1db1ee582.json": "22240ed4460a57207e51a379acc0ecdfce53f191885fa0fa3156ff425ad71bb5",
+    "1a2ca9d4f53236c6fb1792355d220e644d6598fa0576dc3c185f4a3158950a05.json": "f175de2222cadadab29fb7a2805feaa083e28d4d291ff53c7a5b7f73cae5c465",
+    "86bcd37f3492bc438fc810e171af7389a473116baee0bbe25f15c357d7bf4c9e.json": "8d68d20da933aec43d326db0bcd72fc610654f59609a0554a6db4273ab18fd63",
+    "dc222d2275ad2afc079276fca7b86345e18f54cfa7898fc29d7f128ff08e063b.json": "c67c35ab45805faadc88bb963d28bfa50ecb202a515c46df03835f0d7fa150f6"
+  },
+  "raw_token_rescore_mismatches": 0,
+  "report_sha256": "2301e2cf40c75a1c1084f7d6fcac365583c1285d3009cbabce5b73c62608f6be",
+  "scope": "complete_evaluation",
+  "source": null,
+  "stopping_policy": {
+    "adapter_sha256": "1f6a8606cae56c9a9daaa1cd210679ef45198ce2c6b190573f0c792d70d75dbd",
+    "behavior_sha256": "f73d564fa3b7d97e44cdad97e72dd93b8a9db980848c9eadadfdba492d3017d9",
+    "eos_token_ids": [
+      248044,
+      248046
+    ],
+    "original_model_eos_ids": [
+      248044
+    ],
+    "parser": "unchanged_strict_numeric_marker_and_budget_truncation_rejection",
+    "parser_sha256": "55b2346da6bd750f18a087c2acc14875514906e1d46d4ce5f979db2cde9db814",
+    "tokenizer_eos_id": 248046,
+    "version": "gsm8k-model-and-tokenizer-eos-v1"
+  },
+  "strict_marker_correct_ignoring_truncation": 123,
+  "terminal_token_counts": {
+    "248046": 127
+  },
+  "truncated": 1,
+  "truncated_correct_with_complete_marker_line": 0,
+  "truncated_strict_marker_correct": 0
+}

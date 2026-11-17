@@ -1,5 +1,6 @@
 """Evaluate dense or frozen sequential candidates on original GSM8K validation."""
 from __future__ import annotations
+from sparsifier.eval.gsm8k_batching import policy as batch_policy
 import argparse
 import hashlib
 import json
@@ -34,7 +35,7 @@ def frozen_stages(source):
 
 def main():
     from transformers import AutoModelForCausalLM, AutoTokenizer
-    from sparsifier.models.qwen import force_pytorch_attention
+    from sparsifier.eval.gsm8k_batching import reference_backend as force_pytorch_attention
     from sparsifier.data.loaders import get_loaders
     from sparsifier.eval.natural_layer import vocabulary_reference, language_metrics
     p = argparse.ArgumentParser(description=__doc__)
@@ -59,6 +60,7 @@ def main():
               'purpose':'original_GSM8K_validation_not_test',
               'source_sha256':hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
     args.output.mkdir(parents=True,exist_ok=True)
+    config["batching"] = batch_policy()
     write_immutable(args.output/'config.json',config)
     config_hash = digest(config); path = args.output/'report.json'
     if path.exists():

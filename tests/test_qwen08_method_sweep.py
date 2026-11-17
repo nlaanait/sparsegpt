@@ -2,6 +2,12 @@
 
 from __future__ import annotations
 
+import copy
+import json
+import sys
+
+import pytest
+
 from drivers.qwen08_method_sweep import (
     METHODS,
     SPARSITIES,
@@ -45,3 +51,59 @@ def test_pending_points_skip_saved_perplexities():
     assert ("sparsegpt", 0.5) not in missing
     assert ("sparsegpt", 0.6) in missing
     assert missing[0] == ("sparsegpt", 0.6)
+
+
+def test_legacy_results_cannot_resume_as_corrected_measurements(tmp_path,monkeypatch):
+    from drivers import qwen08_method_sweep as sweep
+    current = {'protocol':sweep.PROTOCOL,'sources':{'rescale.py':'curvature-trace-v2'}}
+    monkeypatch.setattr(sweep,'current_provenance',lambda:current)
+    path = tmp_path/'legacy.json'
+    path.write_text(json.dumps({'points':[{'method':'tangent_rescale','sparsity':.7,'perplexity':565.259254}]}))
+    original = path.read_bytes()
+    with pytest.raises(ValueError,match='historical points cannot be relabeled'):
+        sweep.load_results(path)
+    assert path.read_bytes()==original
+    assert sweep.RESULT.name!='qwen35-0.8b-method-sweep.json'
+    assert 'curvature-trace-v2' in sweep.RESULT.name
+
+
+@pytest.mark.parametrize('changed',['sources','runtime','pair_files'])
+def test_resume_requires_matching_sources_child_runtime_and_pair_bank(tmp_path,monkeypatch,changed):
+    from drivers import qwen08_method_sweep as sweep
+    current = {'protocol':sweep.PROTOCOL,'sources':{'rescale.py':'v2'},
+               'runtime':{'torch':'original'},'pair_files':{'pairs.npy':'original'}}
+    monkeypatch.setattr(sweep,'current_provenance',lambda:current)
+    path = tmp_path/'current.json'
+    result = sweep.load_results(path)
+    sweep.save_results(path,result)
+    assert sweep.load_results(path)==result
+    current[changed] = {'changed':'different'}
+    with pytest.raises(ValueError,match='provenance'):
+        sweep.load_results(path)
+
+
+@pytest.mark.parametrize('value',[float('inf'),float('nan'),0.])
+def test_invalid_cached_metric_does_not_mark_a_point_done(value):
+    saved = {'points':[{'dataset':'wikitext2','method':'sparsegpt','sparsity':.7,'perplexity':value}]}
+    assert ('sparsegpt',.7) in pending_points(saved)
+
+
+def test_source_change_during_point_does_not_write_a_mixed_result(tmp_path,monkeypatch):
+    from drivers import qwen08_method_sweep as sweep
+    current = {'protocol':sweep.PROTOCOL,'sources':{'solver':'before'}}
+    monkeypatch.setattr(sweep,'current_provenance',lambda:copy.deepcopy(current))
+    monkeypatch.setattr(sweep,'METHODS',('sparsegpt',))
+    monkeypatch.setattr(sweep,'SPARSITIES',[.7])
+    monkeypatch.setattr(sweep,'assert_room',lambda where:None)
+    observed = []
+    def run(method,sparsity,log_path):
+        observed.append(log_path)
+        current['sources']['solver'] = 'after'
+        return 10.
+    monkeypatch.setattr(sweep,'run_point',run)
+    output = tmp_path/'current.json'
+    monkeypatch.setattr(sys,'argv',['sweep','--output',str(output)])
+    with pytest.raises(RuntimeError,match='result not saved'):
+        sweep.main()
+    assert not output.exists()
+    assert observed[0].parent==tmp_path/'current.json.artifacts'/'logs'

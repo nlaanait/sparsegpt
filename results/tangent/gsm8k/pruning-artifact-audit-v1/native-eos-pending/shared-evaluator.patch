@@ -1,0 +1,170 @@
+--- a/src/sparsifier/eval/gsm8k_batching.py
++++ b/src/sparsifier/eval/gsm8k_batching.py
+@@ -16,7 +16,11 @@
+             "membership": "contiguous_manifest_order_regenerate_partial_batch",
+             "seconds": "batch_wall_time_divided_by_batch_size",
+             "backend": "verified_pytorch_reference",
+-            "source_sha256": sha256(Path(__file__).read_bytes()).hexdigest()}
++            "source_sha256": sha256(Path(__file__).read_bytes()).hexdigest(),
++            "stopping_policy": "model_and_tokenizer_eos_v1",
++            "behavior_source_sha256": sha256(Path(__file__).with_name("gsm8k_pruning.py").read_bytes()).hexdigest(),
++            "prompt_source_sha256": sha256(Path(__file__).with_name("gsm8k.py").read_bytes()).hexdigest(),
++            "parser_source_sha256": sha256((Path(__file__).parents[1]/"data/gsm8k.py").read_bytes()).hexdigest()}
+ 
+ 
+ def batches(values, size=BATCH_SIZE):
+@@ -45,6 +49,22 @@
+         ids[row, -len(sequence):] = torch.as_tensor(sequence, device=device)
+         mask[row, -len(sequence):] = 1
+     return {"input_ids": ids, "attention_mask": mask}
++
++
++def generation_eos(model, tokenizer):
++    """Honor both declared generation and tokenizer end-of-message tokens."""
++    result = set()
++    for value in (model.generation_config.eos_token_id,
++                  getattr(tokenizer, "eos_token_id", None)):
++        if value is None:
++            continue
++        for token in value if isinstance(value, (list, tuple)) else [value]:
++            if type(token) is not int or token < 0:
++                raise ValueError("EOS token IDs must be nonnegative integers")
++            result.add(token)
++    if not result:
++        raise ValueError("model or tokenizer must declare an EOS token")
++    return sorted(result)
+ 
+ 
+ def trim_generated(tokens, eos):
+--- a/src/sparsifier/eval/gsm8k_pruning.py
++++ b/src/sparsifier/eval/gsm8k_pruning.py
+@@ -24,7 +24,7 @@
+ from sparsifier.eval.gsm8k import MODEL, REVISION, atomic_json, read_completed, render_prompt
+ from sparsifier.eval.gsm8k_geometry import load_capture
+ from sparsifier.eval.memory_guard import configure_cuda, host_memory
+-from sparsifier.eval.gsm8k_batching import batches, pack, pad_id, policy, trim_generated
++from sparsifier.eval.gsm8k_batching import batches, pack, pad_id, policy, trim_generated, generation_eos
+ from sparsifier.prune.factor_atlas import FactorAtlas, projector_diagonals
+ from sparsifier.prune.input_side import InputSideSparseGPT
+ from sparsifier.prune.rescale import LOCAL_PRUNING_VERSION, local_row_scales
+@@ -180,8 +180,7 @@
+         raise ValueError("answer batching provenance mismatch; use a new batch8 output")
+     if set(done) - {r["id"] for r in rows}:
+         raise ValueError("unexpected result IDs")
+-    eos = model.generation_config.eos_token_id
+-    eos = set(eos if isinstance(eos, list) else [eos])
++    eos = generation_eos(model, tokenizer)
+     device = next(model.parameters()).device
+     with path.open("a", buffering=1) as handle:
+         for group in batches(rows):
+@@ -193,7 +192,8 @@
+             ids = pack(sequences, tokenizer, device)
+             with torch.inference_mode():
+                 result = model.generate(**ids, do_sample=False, max_new_tokens=max_new_tokens,
+-                                        use_cache=True, pad_token_id=pad_id(tokenizer))
++                                        use_cache=True, pad_token_id=pad_id(tokenizer),
++                                        eos_token_id=eos)
+             generated_rows = result[:, ids["input_ids"].shape[1]:].tolist()
+             likelihoods = answer_likelihoods(model, tokenizer, group)
+             elapsed = time.monotonic()-start
+@@ -207,6 +207,7 @@
+                 parsed = parse_answer(text, truncated=truncated)
+                 record = {"id": row["id"], "family": row["family"], "config_sha256": config_hash,
+                       "text": text, "generated_tokens": len(generated), "truncated": truncated,
++                      "generated_token_ids": generated, "eos_token_ids": eos,
+                       "parsed_answer": str(parsed) if parsed is not None else None,
+                       "expected_answer": row["answer"],
+                       "correct": parsed is not None and parsed == Fraction(row["answer"]),
+--- a/src/sparsifier/eval/gsm8k_screened.py
++++ b/src/sparsifier/eval/gsm8k_screened.py
+@@ -1,10 +1,10 @@
+ """Screen on 128 matched validation problems, then continue in the same process.
+ 
+-Keep the original evaluator and its immutable configuration unchanged so existing
+-answer records and complete 512-problem reports remain reusable.
++Only reuse reference and candidate answers made under the current execution
++policy. Validate cached records before any saved-screen early return.
+ """
+ from __future__ import annotations
+-from sparsifier.eval.gsm8k_batching import batches
++from sparsifier.eval.gsm8k_batching import batches, policy
+ 
+ import argparse
+ import hashlib
+@@ -40,11 +40,14 @@
+         report.get('behavior', {}).get('count') != 512 or config.get('arm') != 'dense' or
+         config.get('model') != gsm8k_original.MODEL or config.get('revision') != gsm8k_original.REVISION or
+         config.get('manifest_sha256') != manifest['manifest_sha256'] or
+-        config.get('evaluation_ids') != ids or config.get('max_new_tokens') != max_new_tokens):
++        config.get('evaluation_ids') != ids or config.get('max_new_tokens') != max_new_tokens or
++        config.get('batching') != policy()):
+         raise ValueError('dense reference does not match the full validation protocol')
+     baseline = read_completed(reference/'answers.jsonl', cfg_hash)
+     if set(baseline) != set(ids):
+         raise ValueError('dense reference answers do not match the validation manifest')
++    if any(record.get('batching') != policy() for record in baseline.values()):
++        raise ValueError('dense reference answer execution policy mismatch')
+     return rows, baseline, cfg_hash
+ 
+ 
+@@ -66,6 +69,10 @@
+ def screened_behavior(original_behavior, rows, baseline, baseline_hash, model, tokenizer, output, config_hash, *, max_new_tokens):
+     path = output/'answers.jsonl'
+     done = read_completed(path, config_hash)
++    if any(record.get('batching') != policy() for record in done.values()):
++        raise ValueError('candidate answer execution policy mismatch')
++    if any(record.get('batching') != policy() for record in baseline.values()):
++        raise ValueError('dense reference answer execution policy mismatch')
+     ids = {row['id'] for row in rows}
+     if set(done) - ids:
+         raise ValueError('unexpected result IDs')
+@@ -121,6 +128,7 @@
+         if (cfg.get('model') != gsm8k_original.MODEL or cfg.get('revision') != gsm8k_original.REVISION or
+             cfg.get('manifest_sha256') != json.loads((args.screen_reference/'config.json').read_text())['manifest_sha256'] or
+             cfg.get('evaluation_ids') != expected_ids or cfg.get('max_new_tokens') != args.max_new_tokens or
++            cfg.get('batching') != policy() or
+             cfg.get('source_config_sha256') != digest(source_cfg) or not source_report.get('complete') or
+             source_report.get('config_sha256') != digest(source_cfg) or
+             cfg.get('candidate_chain') != [s['candidate_sha256'] for s in source_report['stages']] or
+@@ -128,6 +136,8 @@
+             raise ValueError('existing candidate evaluation provenance mismatch')
+         cfg_hash = digest(cfg)
+         done = read_completed(args.output/'answers.jsonl', cfg_hash)
++        if any(record.get('batching') != policy() for record in done.values()):
++            raise ValueError('existing candidate answer execution policy mismatch')
+         if set(done) - set(expected_ids):
+             raise ValueError('unexpected result IDs')
+         result = decision(rows, baseline, done, baseline_hash, cfg_hash)
+--- a/tests/test_gsm8k_screened.py
++++ b/tests/test_gsm8k_screened.py
+@@ -1,6 +1,7 @@
+ import json
+ import pytest
+ from sparsifier.eval.gsm8k import read_completed
++from sparsifier.eval.gsm8k_batching import policy
+ from sparsifier.eval.gsm8k_screened import decision, screened_behavior, ScreenRejected
+ 
+ 
+@@ -10,7 +11,7 @@
+ 
+ def record(row, correct=True):
+     return {'id':row['id'], 'config_sha256':'candidate', 'correct':correct,
+-            'answer_nll':1., 'truncated':False}
++            'answer_nll':1., 'truncated':False, 'batching':policy()}
+ 
+ 
+ def test_threshold_uses_matched_problem_counts():
+@@ -35,9 +36,10 @@
+         return {'count':len(chosen)}
+     result=screened_behavior(fake_behavior,data,baseline,'dense',None,None,tmp_path,'candidate',max_new_tokens=2048)
+     assert result['count']==512
+-    # The interrupted 48:56 batch is regenerated intact, including rows 48/49.
+-    assert calls[:8] == [r['id'] for r in data[48:56]]
+-    assert len(calls)==464 and len(set(calls))==464
++    # Regenerate the complete companion batch that contains saved row 49.
++    size=policy()['batch_size']; start=(50//size)*size
++    assert calls[:size] == [r['id'] for r in data[start:start+size]]
++    assert len(calls)==512-start and len(set(calls))==512-start
+     assert len(read_completed(tmp_path/'answers.jsonl','candidate'))==512
+     assert json.loads((tmp_path/'screen.json').read_text())['passed']
+ 

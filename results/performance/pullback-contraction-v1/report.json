@@ -1,0 +1,87 @@
+{
+  "records": [
+    {
+      "backend": "cpu",
+      "chunk_rows": 4096,
+      "median_seconds": 0.07550012180581689,
+      "seconds": [
+        0.11686054896563292,
+        0.1137531460262835,
+        0.04837136622518301,
+        0.07550012180581689,
+        0.048307460732758045
+      ],
+      "max_absolute_difference": 0.0,
+      "host": {
+        "total_gib": 121.69016647338867,
+        "available_gib": 88.91790771484375,
+        "used_gib": 32.77225875854492
+      },
+      "cuda_peak_gib": 0.0
+    },
+    {
+      "backend": "cuda",
+      "chunk_rows": 512,
+      "median_seconds": 0.05094925872981548,
+      "seconds": [
+        0.04524487582966685,
+        0.05046109622344375,
+        0.05209154123440385,
+        0.05359619436785579,
+        0.05094925872981548
+      ],
+      "max_absolute_difference": 0.0,
+      "host": {
+        "total_gib": 121.69016647338867,
+        "available_gib": 87.89566040039062,
+        "used_gib": 33.79450607299805
+      },
+      "cuda_peak_gib": 0.515625
+    },
+    {
+      "backend": "cuda",
+      "chunk_rows": 2048,
+      "median_seconds": 0.04895185073837638,
+      "seconds": [
+        0.043909343890845776,
+        0.05006891628727317,
+        0.04895185073837638,
+        0.04937598295509815,
+        0.04794043395668268
+      ],
+      "max_absolute_difference": 0.0,
+      "host": {
+        "total_gib": 121.69016647338867,
+        "available_gib": 87.58681106567383,
+        "used_gib": 34.103355407714844
+      },
+      "cuda_peak_gib": 0.796875
+    },
+    {
+      "backend": "cuda",
+      "chunk_rows": 4096,
+      "median_seconds": 0.054670650977641344,
+      "seconds": [
+        0.054670650977641344,
+        0.04835589416325092,
+        0.045122587122023106,
+        0.07082851370796561,
+        0.07007692521438003
+      ],
+      "max_absolute_difference": 0.0,
+      "host": {
+        "total_gib": 121.69016647338867,
+        "available_gib": 87.58895874023438,
+        "used_gib": 34.1012077331543
+      },
+      "cuda_peak_gib": 0.796875
+    }
+  ],
+  "cuda_cap_gib": 2,
+  "background_job": 215,
+  "tokens": 128,
+  "outputs": 4096,
+  "inputs": 12288,
+  "dtype": "float64",
+  "purpose": "single_probe_contraction_not_end_to_end"
+}

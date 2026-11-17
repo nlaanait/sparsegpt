@@ -85,8 +85,19 @@ def choose_allocator_cap(
     return actual_cap
 
 
+def limited_cuda_cap(cap_gib):
+    """A worker cannot raise a lower allocator limit supplied by its guard."""
+    import math
+    limit = float(os.environ.get("SPARSIFIER_GPU_CAP_GIB", cap_gib))
+    if not math.isfinite(limit) or limit <= 0:
+        raise ValueError("SPARSIFIER_GPU_CAP_GIB must be finite and positive")
+    return min(cap_gib, limit)
+
+
 def configure_cuda(cap_gib: float = 56.) -> dict:
     import torch
+    requested_cap = cap_gib
+    cap_gib = limited_cuda_cap(cap_gib)
     host = host_memory()
     check_budget(host["used_gib"], cap_gib)
     if not torch.cuda.is_available():
@@ -113,7 +124,8 @@ def configure_cuda(cap_gib: float = 56.) -> dict:
     if last_error is not None:
         raise last_error
     torch.cuda.set_per_process_memory_fraction(actual_cap * GIB / total)
-    return {"allocator_cap_gib": actual_cap, "requested_cap_gib": cap_gib, "cuda_total_gib": total / GIB,
+    return {"allocator_cap_gib": actual_cap, "requested_cap_gib": requested_cap,
+            "guard_cap_gib": cap_gib, "cuda_total_gib": total / GIB,
             "host_before": host_memory(), "cuda_free_gib": free / GIB}
 
 

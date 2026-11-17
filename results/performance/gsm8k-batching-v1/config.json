@@ -1,0 +1,38 @@
+{
+  "backend": {
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn",
+    "causal_conv1d_update": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_update",
+    "torch_chunk_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_chunk_gated_delta_rule",
+    "torch_recurrent_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_recurrent_gated_delta_rule"
+  },
+  "batches": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "generation_tokens": 32,
+  "ids": [
+    "gsm8k/train/5723",
+    "gsm8k/train/1345",
+    "gsm8k/train/3035",
+    "gsm8k/train/2549",
+    "gsm8k/train/5685",
+    "gsm8k/train/5801",
+    "gsm8k/train/5350",
+    "gsm8k/train/1873"
+  ],
+  "manifest_sha256": "60107022919db28eb59dc9d7effa79630997cf744fd929a8643558397e35cdb5",
+  "model": "Qwen/Qwen3.5-9B",
+  "packages": {
+    "flash-linear-attention": "0.6.0",
+    "kernels": "0.17.3",
+    "torch": "2.12.0+cu130",
+    "transformers": "5.22.2"
+  },
+  "purpose": "throughput_and_parity_only_not_accuracy",
+  "repeats": 3,
+  "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "seed": 0,
+  "source_sha256": "3723567a4b7ca2fe35cafebbb7ab73c61bee5756588c943c311f69960d7cd8f5"
+}

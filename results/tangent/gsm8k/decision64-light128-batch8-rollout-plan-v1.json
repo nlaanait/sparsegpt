@@ -1,0 +1,179 @@
+{
+  "batching": {
+    "backend": "verified_pytorch_reference",
+    "batch_size": 8,
+    "membership": "contiguous_manifest_order_regenerate_partial_batch",
+    "padding_side": "left",
+    "seconds": "batch_wall_time_divided_by_batch_size",
+    "source_sha256": "a5d58093374eb33c707f4f4342a242224e21a297bb05dbe781d081f25498fd9a",
+    "version": "gsm8k-batch8-v1"
+  },
+  "block": 15,
+  "calibration_seed": 0,
+  "dense": "qwen-9b-gsm8k-decision-dense-seed0-batch8-v1",
+  "eligible_sparsity": 0.3,
+  "excluded": "previously_canceled_local_pilots",
+  "historical": "existing_results_and_started_jobs_keep_their_original_configuration",
+  "light": 128,
+  "manifest": "data/decision64-light128-seed0-v1.json",
+  "manifest_sha256": "60107022919db28eb59dc9d7effa79630997cf744fd929a8643558397e35cdb5",
+  "max_drop_pp": 15,
+  "max_new_tokens": 2048,
+  "next_decision": "Review 64/128 results and solver/backend checks before widening blocks or sparsity",
+  "purpose": "batch8_rollout_of_current_pilot_and_queued_evaluations",
+  "replacements": {
+    "148": {
+      "new_name": "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-batch8-v1",
+      "old_name": "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-v1"
+    },
+    "149": {
+      "new_name": "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-batch8-v1-light128",
+      "old_name": "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-v1-light128"
+    },
+    "150": {
+      "new_name": "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-batch8-v1",
+      "old_name": "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-v1"
+    },
+    "151": {
+      "new_name": "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-batch8-v1-light128",
+      "old_name": "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-v1-light128"
+    },
+    "154": {
+      "new_name": "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-batch8-v1",
+      "old_name": "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-v1"
+    },
+    "155": {
+      "new_name": "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-batch8-v1-light128",
+      "old_name": "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-v1-light128"
+    },
+    "161": {
+      "new_name": "qwen-9b-gsm8k-mlp-downstream-s30-seed0-weightdiag-v1-decision128-seed0-batch8-v1",
+      "old_name": "qwen-9b-gsm8k-mlp-downstream-s30-seed0-weightdiag-v1-decision128-seed0-v1"
+    },
+    "162": {
+      "new_name": "qwen-9b-gsm8k-mlp-downstream-s50-seed0-weightdiag-v1-decision128-seed0-batch8-v1",
+      "old_name": "qwen-9b-gsm8k-mlp-downstream-s50-seed0-weightdiag-v1-decision128-seed0-v1"
+    },
+    "163": {
+      "new_name": "qwen-9b-gsm8k-mlp-downstream-s70-seed0-weightdiag-v1-decision128-seed0-batch8-v1",
+      "old_name": "qwen-9b-gsm8k-mlp-downstream-s70-seed0-weightdiag-v1-decision128-seed0-v1"
+    }
+  },
+  "screen": 64,
+  "shuffle_seed": 0,
+  "tasks": [
+    {
+      "depends_on": [],
+      "name": "qwen-9b-gsm8k-decision-dense-seed0-batch8-v1",
+      "phase": "dense"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-v1"
+      ],
+      "metric": "ambient",
+      "name": "qwen-9b-gsm8k-pilot-entrywise-ambient-b15-s30-seed0-batch8-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "entrywise"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-entrywise-ambient-b15-s30-seed0-batch8-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-entrywise-ambient-b15-s30-seed0-batch8-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-entrywise-ambient-b15-s30-seed0-batch8-v1"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-v1"
+      ],
+      "metric": "downstream_weight_diagonal",
+      "name": "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-batch8-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "entrywise"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-batch8-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-batch8-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-batch8-v1"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-v1"
+      ],
+      "metric": "ambient",
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-batch8-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "whole_neuron"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-batch8-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-batch8-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-batch8-v1"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-v1"
+      ],
+      "metric": "downstream_weight_diagonal",
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-batch8-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "whole_neuron"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-batch8-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-batch8-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-batch8-v1"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-downstream-s30-seed0-weightdiag-v1-decision128-seed0-batch8-v1",
+      "phase": "evaluate",
+      "reuse_frozen_candidate": true,
+      "source": "qwen-9b-gsm8k-mlp-downstream-s30-seed0-weightdiag-v1"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-downstream-s50-seed0-weightdiag-v1-decision128-seed0-batch8-v1",
+      "phase": "evaluate",
+      "reuse_frozen_candidate": true,
+      "source": "qwen-9b-gsm8k-mlp-downstream-s50-seed0-weightdiag-v1"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-v1"
+      ],
+      "name": "qwen-9b-gsm8k-mlp-downstream-s70-seed0-weightdiag-v1-decision128-seed0-batch8-v1",
+      "phase": "evaluate",
+      "reuse_frozen_candidate": true,
+      "source": "qwen-9b-gsm8k-mlp-downstream-s70-seed0-weightdiag-v1"
+    }
+  ],
+  "torch_seed": 0
+}

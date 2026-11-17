@@ -1,0 +1,26 @@
+{
+  "behavior": {
+    "accuracy": 0.9609375,
+    "count": 128,
+    "truncated": 0
+  },
+  "complete": true,
+  "config_sha256": "9f6ed3e63c50b84de4311d22f9402951affcedd8a0e9e7b16bd9fc00fc3691e5",
+  "eligible_parameters": 0,
+  "memory": {
+    "allocator_cap_gib": 56.0,
+    "cuda_free_gib": 30.416622161865234,
+    "cuda_total_gib": 121.69016647338867,
+    "host_before": {
+      "available_gib": 115.79302978515625,
+      "total_gib": 121.69016647338867,
+      "used_gib": 5.897136688232422
+    },
+    "requested_cap_gib": 56.0
+  },
+  "removed_weights": 0,
+  "scope": "64 screen / 128 light validation; no 512 or official test",
+  "screen": null,
+  "screen_rejected": false,
+  "total_parameters": 8953803264
+}

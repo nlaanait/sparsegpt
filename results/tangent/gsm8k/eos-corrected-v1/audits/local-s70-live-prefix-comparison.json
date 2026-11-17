@@ -1,0 +1,10 @@
+{
+  "scope": "live_prefix_not_final128",
+  "count": 64,
+  "old_correct": 0,
+  "corrected_correct": 8,
+  "old_truncated": 64,
+  "corrected_truncated": 44,
+  "decoded_prefix_matches": 64,
+  "max_answer_nll_abs_difference": 0.0
+}

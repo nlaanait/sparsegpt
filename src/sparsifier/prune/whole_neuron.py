@@ -12,7 +12,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-VERSION = "whole-neuron-v1"
+VERSION = "whole-neuron-v2"
 METRICS = ("ambient", "local", "downstream_activation_diagonal", "downstream_weight_diagonal")
 SELECTORS = ("block_obs", "direct_write", "direct_full_metric", "random", "greedy_reference")
 
@@ -29,6 +29,11 @@ class WholeNeuronConfig:
     unsupported_policy: str = "protect"
     support_threshold: float = 1e-12
     seed: int = 0
+    input_alpha: float = 0.
+    input_structure: str = "independent_tokens"
+    full_metric_solver: str = "auto"
+    full_metric_rtol: float = 1e-5
+    full_metric_max_iterations: int = 200
 
     def __post_init__(self):
         if not math.isfinite(self.sparsity) or not 0 <= self.sparsity < 1:
@@ -41,16 +46,30 @@ class WholeNeuronConfig:
             raise ValueError("unsupported_policy must be protect or allow")
         if isinstance(self.blocksize, bool) or not isinstance(self.blocksize, int) or self.blocksize < 1:
             raise ValueError("blocksize must be a positive integer")
-        if any(not math.isfinite(v) or v < 0 for v in (self.alpha, self.percdamp, self.support_threshold)):
+        if any(not math.isfinite(v) or v < 0 for v in (self.alpha, self.input_alpha, self.percdamp, self.support_threshold)):
             raise ValueError("alpha, percdamp and support threshold must be finite/nonnegative")
         if self.metric == "ambient" and self.alpha != 0:
             raise ValueError("ambient requires alpha=0")
+        from sparsifier.prune.two_sided import STRUCTURES
+        if self.input_structure not in STRUCTURES or (self.input_alpha and not self.metric.startswith("downstream_")):
+            raise ValueError("two-sided input coupling requires a downstream metric and declared structure")
+        if self.metric == "downstream_activation_diagonal" and self.input_structure != "independent_tokens":
+            raise ValueError("activation-diagonal coupling requires independent tokens")
+        if self.full_metric_solver not in ("auto", "direct", "cg"):
+            raise ValueError("unknown full-metric solver")
+        if not math.isfinite(self.full_metric_rtol) or self.full_metric_rtol <= 0 or self.full_metric_max_iterations < 1:
+            raise ValueError("positive full-metric tolerance and iteration limit required")
 
 
 class SwiGLUTriplet:
     """Validate the actual FX computation, not just projection attribute names."""
     def __init__(self, mlp: nn.Module):
         self.mlp = mlp
+        if any(m._forward_hooks or m._forward_pre_hooks for m in mlp.modules()):
+            raise ValueError("forward/pre-forward hooks are unsupported on a SwiGLU triplet")
+        from torch.nn.modules import module as module_hooks
+        if module_hooks._global_forward_hooks or module_hooks._global_forward_pre_hooks:
+            raise ValueError("global forward/pre-forward hooks prevent architecture validation")
         modules = [getattr(mlp, name, None) for name in ("gate_proj", "up_proj", "down_proj")]
         if any(type(m) is not nn.Linear or m.bias is not None for m in modules):
             raise ValueError("requires distinct bias-free dense Linear gate/up/down projections")
@@ -149,10 +168,12 @@ def refit_columns(reference_weight, h_damped, keep, *, row_chunk=256):
     return out
 
 
-def select_columns(weight, h0, *, count, blocksize=128, damping=.01, eligible=None, scale=None):
+def select_columns(weight, h0, *, count, blocksize=128, damping=.01, eligible=None, scale=None, progress=None):
     """Shared-mask block OBS; deterministic ties in original neuron order."""
     start = time.monotonic()
     h, c, diagnostics = damped_curvature(h0, damping)
+    if progress is not None:
+        progress({"event": "curvature_factorized", **diagnostics})
     v = weight.clone() if scale is None else weight * scale
     width = v.shape[1]
     eligible = torch.ones(width, dtype=torch.bool, device=v.device) if eligible is None else eligible.to(v.device)
@@ -182,6 +203,12 @@ def select_columns(weight, h0, *, count, blocksize=128, damping=.01, eligible=No
         v[:, e:] -= errors @ c[b:e, e:]
         quotas.append(quota)
         previous = cumulative
+        if progress is not None:
+            progress({"event": "neuron_selection_block", "columns_done": e, "columns_total": width,
+                "blocks_done": b//blocksize+1, "blocks_total": math.ceil(width/blocksize),
+                "removed_neurons": int((~keep).sum()), "target_deletions": count,
+                "block_obs_surrogate_objective": float(errors.square().sum()/2),
+                "objective_coordinates": "scaled_weights_half_damped_quadratic"})
     return keep, v, h, dict(diagnostics, block_quotas=quotas,
                            column_selection_seconds=time.monotonic()-start-diagnostics["factorization_seconds"])
 
@@ -250,9 +277,12 @@ def build_candidate(triplet, keep, compensated_down, diagnostics=None):
 
 @torch.no_grad()
 def prune_triplet(triplet, calibration, config, *, geometric_diagonal=None, full_metric=None,
-                  _requested_percdamp=None, _refit_retries=0):
+                  _requested_percdamp=None, _refit_retries=0, progress=None):
     """Pure out-of-place solve. calibration is [tokens, intermediate_width]."""
     start = time.monotonic()
+    if config.alpha == 0 and config.input_alpha == 0:
+        # Reused fitted metrics may retain a positive gamma.
+        full_metric = None
     g, u, d = triplet.weights
     width = len(g)
     count = math.floor(config.sparsity * width)
@@ -267,20 +297,40 @@ def prune_triplet(triplet, calibration, config, *, geometric_diagonal=None, full
     support = h0.diagonal() > config.support_threshold * h0.diagonal().max()
     scale = torch.ones_like(d, dtype=dtype)
     diag = {"gamma": 0., "averaging": "ambient_token_mean"}
-    if config.metric != "ambient" and config.alpha > 0:
+    if config.metric != "ambient" and config.alpha+config.input_alpha > 0:
         if geometric_diagonal is None:
             raise ValueError("geometric metric requires paired curvature diagonal")
-        scale, support, diag = geometric_scales(h0, geometric_diagonal.to(h0), config.alpha,
+        base = geometric_diagonal["base"] if isinstance(geometric_diagonal, dict) else geometric_diagonal
+        scale, support, diag = geometric_scales(h0, base.to(h0), config.alpha,
                                                 len(d), threshold=config.support_threshold)
+        if config.input_alpha:
+            if not isinstance(geometric_diagonal, dict) or "input" not in geometric_diagonal:
+                raise ValueError("two-sided pruning requires paired input moments")
+            input_scale, _, input_diag = geometric_scales(h0, geometric_diagonal["input"].to(h0),
+                config.input_alpha, len(d), threshold=config.support_threshold)
+            if input_diag["supported_geometry_trace"] <= 0:
+                raise ValueError("no supported input tangent geometry")
+            scale = (scale.square()+input_scale.square()-1).sqrt()
+            diag.update(eta=input_diag["gamma"], input_alpha=config.input_alpha,
+                        input_geometry_trace=input_diag["supported_geometry_trace"],
+                        input_to_ambient_ratio=input_diag["added_to_ambient_ratio"], input_structure=config.input_structure)
         if full_metric is not None:
-            full_metric = full_metric.with_gamma(diag["gamma"])
+            full_metric = (full_metric.with_weights(diag["gamma"], diag["eta"]) if config.input_alpha
+                           else full_metric.with_gamma(diag["gamma"]))
+            if hasattr(full_metric, "with_support"):
+                full_metric = full_metric.with_support(support)
     eligible = support if config.unsupported_policy == "protect" else torch.ones_like(support)
     if count > int(eligible.sum()):
         raise ValueError("requested deletion count exceeds supported eligible columns")
     reference = d.to(dtype) * scale
+    if progress is not None:
+        progress({"event": "neuron_pruning_started", "neurons": width, "requested_deletions": count,
+            "unsupported_columns": int((~support).sum()), "selector": config.selector,
+            "compensation": config.compensation, "ambient_tokens": len(x),
+            "scale_min": float(scale.min()), "scale_max": float(scale.max()), **diag})
     if config.selector == "block_obs":
         keep, block_candidate, h, damping = select_columns(reference, h0, count=count,
-            blocksize=config.blocksize, damping=config.percdamp, eligible=eligible)
+            blocksize=config.blocksize, damping=config.percdamp, eligible=eligible, progress=progress)
     else:
         h, _, damping = damped_curvature(h0, config.percdamp)
         if config.selector == "greedy_reference":
@@ -290,7 +340,7 @@ def prune_triplet(triplet, calibration, config, *, geometric_diagonal=None, full
                 scores = d.to(dtype).square().sum(0) * h0.diagonal()
             elif config.selector == "direct_full_metric":
                 if full_metric is None:
-                    if config.alpha > 0:
+                    if config.alpha+config.input_alpha > 0:
                         raise ValueError("full-direction selector requires frames/probes")
                     scores = d.to(dtype).square().sum(0)*h0.diagonal()
                 else:
@@ -308,37 +358,46 @@ def prune_triplet(triplet, calibration, config, *, geometric_diagonal=None, full
         return float(((residual @ h) * residual).sum())
     before = objective(block_candidate)
     refit_start = time.monotonic()
-    if config.compensation == "none":
-        compensated = reference * keep
-    elif config.compensation == "full_metric_refit" and config.alpha > 0:
-        if full_metric is None:
-            raise ValueError("full refit requires retained frames or bounded frozen probes")
-        compensated_down, full_diagnostics = full_metric.refit(d.to(dtype), keep, h0, damping["damping"])
-        compensated = compensated_down * scale
-        diag.update(full_diagnostics)
-    else:
-        try:
+    try:
+        if config.compensation == "none":
+            compensated = reference * keep
+        elif config.compensation == "full_metric_refit" and config.alpha+config.input_alpha > 0:
+            if full_metric is None:
+                raise ValueError("full refit requires retained frames or bounded frozen probes")
+            induced_ridge = damping["damping"] * scale.square()
+            method = config.full_metric_solver
+            if method == "auto":
+                method = "direct" if d.numel() <= 2048 else "cg"
+            compensated_down, full_diagnostics = full_metric.refit(d.to(dtype), keep, h0, induced_ridge,
+                method=method, rtol=config.full_metric_rtol, max_iterations=config.full_metric_max_iterations,
+                **({"progress": progress} if progress is not None else {}))
+            if not full_diagnostics["full_metric_converged"]:
+                raise RuntimeError("full-metric CG did not converge; candidate was not accepted")
+            compensated = compensated_down * scale
+            diag.update(full_diagnostics)
+        else:
             compensated = refit_columns(reference, h, keep)
-        except torch.linalg.LinAlgError:
-            if _refit_retries >= 19:
-                raise RuntimeError("retained-column refit failed after 20 selection restarts")
-            retry = replace(config, percdamp=max(damping["effective_percdamp"]*2, 1e-8))
-            return prune_triplet(triplet, calibration, retry, geometric_diagonal=geometric_diagonal,
-                full_metric=full_metric, _requested_percdamp=config.percdamp if _requested_percdamp is None else _requested_percdamp,
-                _refit_retries=_refit_retries+1)
+    except torch.linalg.LinAlgError:
+        if _refit_retries >= 19:
+            raise RuntimeError("retained-column refit failed after 20 selection restarts")
+        retry = replace(config, percdamp=max(damping["effective_percdamp"]*2, 1e-8))
+        if progress is not None:
+            progress({"event": "neuron_refit_retry", "selection_restart": _refit_retries+1,
+                      "next_percdamp": retry.percdamp})
+        return prune_triplet(triplet, calibration, retry, geometric_diagonal=geometric_diagonal,
+            full_metric=full_metric, _requested_percdamp=config.percdamp if _requested_percdamp is None else _requested_percdamp,
+            _refit_retries=_refit_retries+1, progress=progress)
     residual = reference - compensated
     gradient = (residual @ h)[:, keep]
     stationarity = float(gradient.norm() / ((reference @ h).norm().clamp_min(1e-30)))
     diag.update(method_version=VERSION, config=asdict(config), requested_deletions=count,
                 removed_neurons=int((~keep).sum()), kept_indices=torch.where(keep)[0].tolist(),
                 removed_indices=torch.where(~keep)[0].tolist(), unsupported_columns=int((~support).sum()),
-                pre_refit_objective=before, post_refit_objective=objective(compensated),
-                relative_stationarity=stationarity, ridge="scaled_coordinate_delta_squared_weight_residual",
+                surrogate_pre_refit_objective=before, surrogate_post_refit_objective=objective(compensated),
+                surrogate_relative_stationarity=stationarity, ridge="scaled_coordinate_delta_squared_weight_residual",
                 ambient_tokens=len(x), refit_seconds=time.monotonic()-refit_start,
                 selection_and_refit_seconds=time.monotonic()-start, **damping)
     candidate = build_candidate(triplet, keep, compensated / scale, diag)
-    if config.compensation == "full_metric_refit" and config.alpha > 0:
-        candidate.diagnostics["ridge"] = "full_reference_isotropic_delta_squared_weight_residual"
     candidate.diagnostics["selection_restarts_for_refit"] = _refit_retries
     if _requested_percdamp is not None:
         candidate.diagnostics["requested_percdamp"] = _requested_percdamp
@@ -349,6 +408,12 @@ def prune_triplet(triplet, calibration, config, *, geometric_diagonal=None, full
     incidental = int(((d[:, keep] != 0) & (candidate.down[:, keep] == 0)).sum())
     candidate.diagnostics.update(architectural_removed_slots=architectural,
         eligible_slots=3*d.numel(), original_nonzero_removed=removed, incidental_down_zeros=incidental)
+    if progress is not None:
+        progress({"event": "neuron_pruning_completed", "removed_neurons": int((~keep).sum()),
+            "surrogate_pre_refit_objective": before, "surrogate_post_refit_objective": diag["surrogate_post_refit_objective"],
+            "surrogate_relative_stationarity": stationarity, "refit_seconds": diag["refit_seconds"],
+            "selection_and_refit_seconds": diag["selection_and_refit_seconds"],
+            "surrogate_objective_definition": "scaled_weight_residual_damped_quadratic_without_half", **damping})
     return candidate
 
 

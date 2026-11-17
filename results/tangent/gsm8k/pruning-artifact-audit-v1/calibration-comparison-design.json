@@ -1,0 +1,18 @@
+{
+  "purpose": "interpretation_limits_of_calibration_controls",
+  "baseline": {
+    "task_tokens": 4096,
+    "c4_tokens": 4096,
+    "task_fraction": 0.5
+  },
+  "controls": {
+    "task_tokens": 32768,
+    "c4_tokens": 4096,
+    "task_fraction": 0.8888888888888888,
+    "total_ambient_tokens": 36864
+  },
+  "prompt_vs_baseline": "Changes task token count, sampled coverage, and task/C4 mixture. A difference demonstrates calibration-protocol sensitivity; it cannot be attributed solely to sample count.",
+  "reasoning_vs_prompt": "Holds task/C4 counts and total budget fixed. Changes sampled token population and guarantees every pre-EOS answer endpoint in the reasoning arm.",
+  "geometry": "Same estimator/readout/strength-normalization rule. Atlas and gamma are recomputed from each candidate upstream state and calibration distribution; concrete atlas matrices and absolute gamma are not frozen.",
+  "no_production_change": "These are interpretation annotations for already-frozen commands; no active worker, data bundle, or config was changed."
+}

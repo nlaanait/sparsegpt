@@ -1,0 +1,110 @@
+{
+  "rows": [
+    {
+      "repeat": 0,
+      "backend": "cpu",
+      "seconds": 0.8664015801623464,
+      "max_absolute_difference": 0.0,
+      "cuda_peak_gib": 0.042481422424316406,
+      "host": {
+        "total_gib": 121.69016647338867,
+        "available_gib": 86.86624145507812,
+        "used_gib": 34.82392501831055
+      }
+    },
+    {
+      "repeat": 0,
+      "backend": "auto",
+      "seconds": 0.40837361197918653,
+      "max_absolute_difference": 0.0,
+      "cuda_peak_gib": 0.9384784698486328,
+      "host": {
+        "total_gib": 121.69016647338867,
+        "available_gib": 86.85824203491211,
+        "used_gib": 34.83192443847656
+      }
+    },
+    {
+      "repeat": 1,
+      "backend": "auto",
+      "seconds": 0.4575041248463094,
+      "max_absolute_difference": 0.0,
+      "cuda_peak_gib": 0.9384784698486328,
+      "host": {
+        "total_gib": 121.69016647338867,
+        "available_gib": 86.84700775146484,
+        "used_gib": 34.84315872192383
+      }
+    },
+    {
+      "repeat": 1,
+      "backend": "cpu",
+      "seconds": 0.7448042072355747,
+      "max_absolute_difference": 0.0,
+      "cuda_peak_gib": 0.042481422424316406,
+      "host": {
+        "total_gib": 121.69016647338867,
+        "available_gib": 86.80715942382812,
+        "used_gib": 34.88300704956055
+      }
+    },
+    {
+      "repeat": 2,
+      "backend": "cpu",
+      "seconds": 0.6712270309217274,
+      "max_absolute_difference": 0.0,
+      "cuda_peak_gib": 0.042481422424316406,
+      "host": {
+        "total_gib": 121.69016647338867,
+        "available_gib": 86.8080062866211,
+        "used_gib": 34.88216018676758
+      }
+    },
+    {
+      "repeat": 2,
+      "backend": "auto",
+      "seconds": 0.42448784969747066,
+      "max_absolute_difference": 0.0,
+      "cuda_peak_gib": 0.9384784698486328,
+      "host": {
+        "total_gib": 121.69016647338867,
+        "available_gib": 86.8072509765625,
+        "used_gib": 34.88291549682617
+      }
+    }
+  ],
+  "median_seconds": {
+    "cpu": 0.7448042072355747,
+    "auto": 0.42448784969747066
+  },
+  "speedup": 1.754594878902638,
+  "cuda_cap_gib": 2,
+  "background_job": 215,
+  "probes": 8,
+  "tokens": 128,
+  "outputs": 4096,
+  "inputs": 12288,
+  "policy": {
+    "version": "chunked-device-fp64-v1",
+    "backend": "auto",
+    "dtype": "float64",
+    "chunk_rows": 512,
+    "scratch_bytes": 67108864,
+    "sequence_reduction": "sum_tokens_then_square_independent_sequences"
+  },
+  "purpose": "synthetic_VJP_pipeline_not_full_model",
+  "observed_total_memory_peak_gib": 34.88300704956055,
+  "observed_total_memory_peak_gb": 37.455343616,
+  "memory_stop_gib": 80,
+  "memory_stop_gb": 85.89934592,
+  "cuda_parity_tests_passed": 5,
+  "max_diagonal_difference": 0.0,
+  "limitations": [
+    "Synthetic VJP graph, not a full-model pruning run",
+    "Job 215 continued running during timings",
+    "CPU consumers for replay/two-sided metrics still receive their existing factors"
+  ],
+  "cpu_regression_tests_passed": 118,
+  "cpu_expected_failures": 1,
+  "cpu_skipped_cuda_cases": 8
+}

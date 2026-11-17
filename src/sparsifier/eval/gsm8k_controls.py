@@ -1,5 +1,6 @@
 """Additional matched controls: task gradients and whole-activation charts."""
 from __future__ import annotations
+from sparsifier.eval.gsm8k_batching import policy as batch_policy
 
 import argparse
 import hashlib
@@ -30,7 +31,7 @@ def whole_chart_diagonals(fit_outputs, assigned_outputs, *, charts=4, rank=2, se
 
 def main():
     from transformers import AutoModelForCausalLM, AutoTokenizer
-    from sparsifier.models.qwen import force_pytorch_attention
+    from sparsifier.eval.gsm8k_batching import reference_backend as force_pytorch_attention
     from sparsifier.eval.natural_layer import replaced_weight, vocabulary_reference, language_metrics
     from sparsifier.data.loaders import get_loaders
     parser = argparse.ArgumentParser(description=__doc__)
@@ -81,6 +82,7 @@ def main():
                        "normalization":"trace_relative_to_ambient", "not_model_fisher":True}
         config["sensitivity_sha256"] = digest(sensitivity_config)
     config["metric"] = metric_info
+    config["batching"] = batch_policy()
     write_immutable(args.output/"config.json",config)
     config_hash = digest(config)
     if (args.output/"report.json").exists() and json.loads((args.output/"report.json").read_text()).get("complete"):

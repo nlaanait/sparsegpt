@@ -1,0 +1,164 @@
+{
+  "batching": {
+    "backend": "verified_pytorch_reference",
+    "batch_size": 8,
+    "membership": "contiguous_manifest_order_regenerate_partial_batch",
+    "padding_side": "left",
+    "seconds": "batch_wall_time_divided_by_batch_size",
+    "source_sha256": "a5d58093374eb33c707f4f4342a242224e21a297bb05dbe781d081f25498fd9a",
+    "version": "gsm8k-batch8-v1"
+  },
+  "block": 15,
+  "calibration_manifest": "data/representative-calibration-seed0-v1.json",
+  "calibration_manifest_sha256": "5e0ddf6f2a66521f0dd49146b47a9f960d813d4504151203d335d86513c30fca",
+  "calibration_regime": {
+    "atlas_fit_parent_count": 512,
+    "atlas_fit_rows": 512,
+    "backward_problem_count": 128,
+    "protocol": "gsm8k-original-calibration-v1",
+    "pruning_calibration_parent_count": 128,
+    "pruning_calibration_rows": 128
+  },
+  "calibration_seed": 0,
+  "dense": "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1",
+  "eligible_sparsity": 0.3,
+  "light": 128,
+  "manifest": "data/decision64-light128-repcal-seed0-v1.json",
+  "manifest_sha256": "44a3ee5e3673b5639b756b423499425031241597d8dfa133bd5cafe61ab03387",
+  "max_drop_pp": 15,
+  "max_new_tokens": 2048,
+  "next_decision": "Review 64/128 results and solver/backend checks before widening blocks or sparsity",
+  "num_probes": 8,
+  "probe_count": 128,
+  "purpose": "representative_original_calibration_block_pilot_not_controlled_template_transfer",
+  "screen": 64,
+  "shuffle_seed": 0,
+  "tasks": [
+    {
+      "depends_on": [],
+      "name": "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1",
+      "phase": "dense"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1"
+      ],
+      "metric": "ambient",
+      "name": "qwen-9b-gsm8k-pilot-entrywise-ambient-b15-s30-seed0-batch8-repcal-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "entrywise"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-entrywise-ambient-b15-s30-seed0-batch8-repcal-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-entrywise-ambient-b15-s30-seed0-batch8-repcal-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-entrywise-ambient-b15-s30-seed0-batch8-repcal-v1"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1"
+      ],
+      "metric": "local",
+      "name": "qwen-9b-gsm8k-pilot-entrywise-local-b15-s30-seed0-batch8-repcal-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "entrywise"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-entrywise-local-b15-s30-seed0-batch8-repcal-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-entrywise-local-b15-s30-seed0-batch8-repcal-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-entrywise-local-b15-s30-seed0-batch8-repcal-v1"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1"
+      ],
+      "metric": "downstream_weight_diagonal",
+      "name": "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-batch8-repcal-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "entrywise"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-batch8-repcal-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-batch8-repcal-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-batch8-repcal-v1"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1"
+      ],
+      "metric": "ambient",
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-batch8-repcal-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "whole_neuron"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-batch8-repcal-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-batch8-repcal-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-batch8-repcal-v1"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1"
+      ],
+      "metric": "local",
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-local-b15-s30-seed0-batch8-repcal-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "whole_neuron"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-whole-neuron-local-b15-s30-seed0-batch8-repcal-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-local-b15-s30-seed0-batch8-repcal-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-whole-neuron-local-b15-s30-seed0-batch8-repcal-v1"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1"
+      ],
+      "metric": "downstream_weight_diagonal",
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-batch8-repcal-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "whole_neuron"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-batch8-repcal-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-batch8-repcal-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-batch8-repcal-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-batch8-repcal-v1"
+    }
+  ],
+  "torch_seed": 0
+}

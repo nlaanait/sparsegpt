@@ -38,7 +38,7 @@ class BlockDictionary:
                            self.groups, self.width, self.active)
         return z
 
-    def fit(self, h, iterations=20):
+    def fit(self, h, iterations=20, *, progress=None):
         if h.ndim != 2 or h.shape[1] < 2 or not np.isfinite(h).all():
             raise ValueError('H must be a finite matrix with at least two samples')
         rng = np.random.default_rng(self.seed)
@@ -46,15 +46,34 @@ class BlockDictionary:
         x = h-self.mean
         self.dictionary = rng.normal(size=(h.shape[0], self.groups*self.width))
         self._normalize()
-        for _ in range(iterations):
+        energy = float(np.square(x).sum()) if progress is not None else None
+        self.fit_diagnostics = {"iterations": iterations, "sparse_coding_steps": 35,
+                                "stopping_rule": "fixed_iteration_budget"}
+        for iteration in range(iterations):
             z = self.encode(h)
             # Step 2b: ridge dictionary update. Faster: minibatch sufficient
             # statistics and Cholesky solves; better recovery: restarts, dead-block
             # resampling, validation early stopping, or the paper's trained BSF.
             gram = z@z.T
             ridge = 1e-5*max(np.trace(gram)/len(gram), 1e-12)
-            self.dictionary = np.linalg.solve(gram+ridge*np.eye(len(gram)), z@x.T).T
+            cross = z@x.T
+            previous = self.dictionary
+            self.dictionary = np.linalg.solve(gram+ridge*np.eye(len(gram)), cross).T
             self._normalize()
+            if progress is not None:
+                # Sufficient statistics avoid reconstructing the large sample
+                # matrix. These are post-update losses with the current codes
+                # held fixed, not a monotonic or convergence guarantee.
+                error = max(0., energy-2*float((self.dictionary*cross.T).sum())
+                            +float(((self.dictionary.T@self.dictionary)*gram.T).sum()))
+                metrics = {"event": "dictionary_iteration", "iteration": iteration+1,
+                    "iterations_total": iterations, "fit_samples": h.shape[1],
+                    "features": h.shape[0], "sparse_coding_steps": 35,
+                    "fixed_codes_relative_squared_error": error/max(energy, 1e-30),
+                    "relative_dictionary_change": float(np.linalg.norm(self.dictionary-previous)
+                        /max(np.linalg.norm(previous), 1e-30)), "ridge": float(ridge)}
+                self.fit_diagnostics.update(metrics)
+                progress(metrics)
         return self
 
     def _normalize(self):

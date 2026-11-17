@@ -1,0 +1,11 @@
+{
+  "scope": "same_arm_representative_pruning_configuration",
+  "baseline_sparsity": 0.55,
+  "candidate_sparsity": 0.6,
+  "differences": [
+    "sparsity"
+  ],
+  "same_calibration_seed_sources_and_batching": true,
+  "verified_stages": 96,
+  "cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/local-s60-cpu.json"
+}

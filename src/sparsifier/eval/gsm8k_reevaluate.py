@@ -1,5 +1,6 @@
 """Reevaluate frozen single-layer candidates under a common development budget."""
 from __future__ import annotations
+from sparsifier.eval.gsm8k_batching import policy as batch_policy
 import argparse
 import hashlib
 import json
@@ -28,7 +29,7 @@ def validate_source(config, report, manifest, capture):
 
 def main():
     from transformers import AutoModelForCausalLM, AutoTokenizer
-    from sparsifier.models.qwen import force_pytorch_attention
+    from sparsifier.eval.gsm8k_batching import reference_backend as force_pytorch_attention
     from sparsifier.eval.natural_layer import replaced_weight
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument('--source', type=Path, required=True)
@@ -57,6 +58,7 @@ def main():
               'candidate_sha256': hashlib.sha256(candidate_path.read_bytes()).hexdigest(),
               'source_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
     args.output.mkdir(parents=True, exist_ok=True)
+    config["batching"] = batch_policy()
     write_immutable(args.output/'config.json', config)
     config_hash = digest(config)
     report_path = args.output/'report.json'

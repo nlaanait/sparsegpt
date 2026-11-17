@@ -1,0 +1,50 @@
+{
+  "answers_sha256": "381cbdc1f4045937d2e247d9ad98c329be45b5865222316317f6258200a404e8",
+  "audited_records_sha256": "e983de0866f79e385caff5331e601dd474a23cc7c9501e466014fb982a5ca543",
+  "auditor_sha256": "908a4025254d682957a5ece799b5f75d5a86535e59cda5096b5e017dc3ba5c53",
+  "common128": {
+    "correct": 89,
+    "count": 128,
+    "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+    "strict_marker_correct_ignoring_truncation": 89,
+    "truncated": 7,
+    "truncated_correct_with_complete_marker_line": 0
+  },
+  "common128_complete": true,
+  "config_sha256": "da83ba2158ac4f6c73b36d8ecb8c2acbe4a1a89b7dbc46344fda9c7d2d8eb7c3",
+  "correct": 89,
+  "count": 128,
+  "evaluation": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/local-s55",
+  "raw_files": {
+    "0185a7824cbc0b6acb3d6812b44774b363e9e8d800276ec78778b1d1db1ee582.json": "9ee4aede311dd29c9050e98c9dbe1b4825116f794e02d4a1b15a87891379f0d5",
+    "1a2ca9d4f53236c6fb1792355d220e644d6598fa0576dc3c185f4a3158950a05.json": "8e4f5c237504dae718fa3d4707f9dbe78f9000bccdd239a745a8bb836d574681",
+    "86bcd37f3492bc438fc810e171af7389a473116baee0bbe25f15c357d7bf4c9e.json": "453774834be534e3c573ebe08e81f14ac6d75e8903a926948f2f97ae6ab78f2c",
+    "dc222d2275ad2afc079276fca7b86345e18f54cfa7898fc29d7f128ff08e063b.json": "991234fa2c08684028484039515323c6796cd8e5cb9760efd82a4d2e04e20aa3"
+  },
+  "raw_token_rescore_mismatches": 0,
+  "report_sha256": "6177269db92821fb849bcd489230108c8f0dcc2684191dfff035006f0407d45f",
+  "scope": "complete_evaluation",
+  "source": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s55-seed0-batch32-repcal-v1",
+  "stopping_policy": {
+    "adapter_sha256": "1f6a8606cae56c9a9daaa1cd210679ef45198ce2c6b190573f0c792d70d75dbd",
+    "behavior_sha256": "f73d564fa3b7d97e44cdad97e72dd93b8a9db980848c9eadadfdba492d3017d9",
+    "eos_token_ids": [
+      248044,
+      248046
+    ],
+    "original_model_eos_ids": [
+      248044
+    ],
+    "parser": "unchanged_strict_numeric_marker_and_budget_truncation_rejection",
+    "parser_sha256": "55b2346da6bd750f18a087c2acc14875514906e1d46d4ce5f979db2cde9db814",
+    "tokenizer_eos_id": 248046,
+    "version": "gsm8k-model-and-tokenizer-eos-v1"
+  },
+  "strict_marker_correct_ignoring_truncation": 89,
+  "terminal_token_counts": {
+    "248046": 121
+  },
+  "truncated": 7,
+  "truncated_correct_with_complete_marker_line": 0,
+  "truncated_strict_marker_correct": 0
+}

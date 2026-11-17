@@ -1,0 +1,19 @@
+{
+  "answers_sha256": "5a95c5f55fa07b5801050944585518f57dd5b066a0d4039d098fe73c6b2a3d19",
+  "common128_ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+  "correct": 54,
+  "count": 128,
+  "dense_config_sha256": "24d78214d3bd9c9b69112e2cc25f94abadb260d18c0e59bd58b0fa62f4b1ff56",
+  "evaluation_config_sha256": "709e1d98d8542db240bb6e0f7826e60fcd12fa02b32daf9d2974c7c5e7f3853d",
+  "evaluation_report_sha256": "98cb717a4d28be6f7d3146edcccc2af935436badb1ab24650caced6da6bb5526",
+  "full512_complete": false,
+  "full_evaluation_count": 128,
+  "raw_audit_sha256": "ff071d48d57c73bfa51b7ee0175eb18b6828d8c378fd3b3c08a8149a086bee58",
+  "source": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-sparsegpt-task-s65-seed0-batch32-repcal-v1",
+  "source_config_sha256": "e56c0980b9626b2e9052d5e65ef880df4f38fa6db4aedd560049142141a55cb5",
+  "source_cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/sparsegpt-task-s65-cpu.json",
+  "source_cpu_audit_sha256": "61470fc5d22eca5081f09ca08e69d03640dca69aa810a0430d8794acde0812d5",
+  "source_report_sha256": "1fe47a70aa558d89c65cdeeb1955a2b46871cd14970f2ca46ccf363d21d727de",
+  "truncated": 27,
+  "verified_stage_count": 96
+}

@@ -1,0 +1,19 @@
+{
+  "answers_sha256": "49779e09b3e307775d3f86149a2fcfcd926cfff87a483661eeea563ffdbe7967",
+  "common128_ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+  "correct": 13,
+  "count": 128,
+  "dense_config_sha256": "24d78214d3bd9c9b69112e2cc25f94abadb260d18c0e59bd58b0fa62f4b1ff56",
+  "evaluation_config_sha256": "4610aa0f50ef8ab903c562643e01e600f92613a070e9d73fd44130d240d4829b",
+  "evaluation_report_sha256": "780d810d55908b4b614fe8d5310c9c01fb235d03c680735af52f8078d1514206",
+  "full512_complete": false,
+  "full_evaluation_count": 128,
+  "raw_audit_sha256": "ee5c90f853fb02684aa63cbeffb47842fd1c4c0f16efc9da68c1d56713e42e8b",
+  "source": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s70-seed0-batch32-repcal-v1",
+  "source_config_sha256": "0ab25f388697767d7b8b5cbc819b7f959e38ab2dacf7ddf9af6907417985cc78",
+  "source_cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/cpu-report.json",
+  "source_cpu_audit_sha256": "d5db9111b4a10cd57aa6e153bceb7bb79be6b7370d5c5a04118dacaa09af9869",
+  "source_report_sha256": "76538bb161b2acb664986d8c2c6b1ecbc4d1aa0871dbefef59fca8a0d688f743",
+  "truncated": 95,
+  "verified_stage_count": 96
+}

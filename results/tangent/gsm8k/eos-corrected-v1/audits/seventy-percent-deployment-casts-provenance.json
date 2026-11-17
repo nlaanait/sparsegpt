@@ -1,0 +1,20 @@
+{
+  "report": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/seventy-percent-deployment-casts.json",
+  "report_sha256": "12d888ea4d44c8e6f40c582e19841cc550ec3d36aedd3f9ac683c7d34fa77335",
+  "checker": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/audits/seventy-percent-deployment-casts.py",
+  "checker_sha256": "4f7bea6565b7058adf93e1e09a69d3fa42d58ea1b29a9a0a9d92d1c6292f2f36",
+  "verified_stage_tensors": 192,
+  "all_masks_unchanged": true,
+  "all_deployment_weights_finite": true,
+  "writer_sources_match_pruning_configs": {
+    "gsm8k_sequential.py": {
+      "sha256": "53f68c7de70b48c9b356f762df522c09aa806d028d1d42765a74653b4b851fd4",
+      "rounding_before_checkpoint_save": "candidate.to(torch.bfloat16).float()"
+    },
+    "gsm8k_downstream.py": {
+      "sha256": "6573a7955a8039834ded5b7c68bdef2e70efd7e1192ab6218afa521647ad67eb",
+      "rounding_before_checkpoint_save": "candidate.to(torch.bfloat16).float()"
+    }
+  },
+  "interpretation": "Checkpoints are stored in float32 containers after explicit BF16 rounding. The deployment cast introduced no extra zeros or nonfinite values; measured relative weight change is0. This is not a task-accuracy comparison between inference precisions."
+}

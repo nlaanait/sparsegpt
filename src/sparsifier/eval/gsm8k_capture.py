@@ -4,6 +4,7 @@ Run only via the guarded gflow helper. This phase excludes controlled final
 test and GSM8K test examples, and requires the dense competence gate.
 """
 from __future__ import annotations
+from sparsifier.eval.gsm8k_batching import policy as batch_policy
 
 import argparse
 import hashlib
@@ -13,36 +14,48 @@ from pathlib import Path
 import numpy as np
 
 from sparsifier.data.gsm8k import digest, load_manifest, write_immutable
+from sparsifier.data.gsm8k_calibration import DEFAULT_MANIFEST, load_calibration, regime
 from sparsifier.eval.gsm8k import MODEL, REVISION, atomic_json, render_prompt
 from sparsifier.eval.memory_guard import configure_cuda, host_memory
+from sparsifier.eval.gsm8k_batching import batches, pack, policy
 
 
-def capture_one(model, layer, tokens, *, token_samples=32, seed=0):
-    """Capture the same token positions at both sides of one actual forward."""
+def capture_batch(model, layer, inputs, lengths, seeds, *, token_samples=32):
+    """Capture unpadded positions and per-example seeded samples in one forward."""
     import torch
-    stored = {}
+    stored = []
     def hook(_module, args, output):
-        x, y = args[0][0], output[0]
-        if x.shape[0] != tokens.shape[1] or y.shape[0] != x.shape[0]:
+        x_all, y_all = args[0], output
+        if x_all.shape[:2] != inputs["input_ids"].shape or y_all.shape[:2] != x_all.shape[:2]:
             raise RuntimeError("token axes do not align at readout site")
-        generator = np.random.default_rng(seed)
-        positions = generator.choice(len(x), min(token_samples, len(x)), replace=False)
-        positions = np.unique(np.append(positions, len(x) - 1))
-        ix = torch.as_tensor(positions, device=x.device)
-        stored.update(x=x[-1].detach().float().cpu().numpy(),
+        for row, (length, seed) in enumerate(zip(lengths, seeds)):
+            x, y = x_all[row, -length:], y_all[row, -length:]
+            generator = np.random.default_rng(seed)
+            positions = generator.choice(len(x), min(token_samples, len(x)), replace=False)
+            positions = np.unique(np.append(positions, len(x) - 1))
+            ix = torch.as_tensor(positions, device=x.device)
+            stored.append(dict(x=x[-1].detach().float().cpu().numpy(),
                       y=y[-1].detach().float().cpu().numpy(),
                       token_x=x[ix].detach().float().cpu().numpy(),
                       token_y=y[ix].detach().float().cpu().numpy(),
-                      positions=positions, readout_position=np.array(len(x) - 1))
+                      positions=positions, readout_position=np.array(len(x) - 1)))
     handle = layer.register_forward_hook(hook)
     try:
         with torch.inference_mode():
-            model(input_ids=tokens, use_cache=False, logits_to_keep=1)
+            model(**inputs, use_cache=False, logits_to_keep=1)
     finally:
         handle.remove()
-    if not stored:
+    if len(stored) != len(lengths):
         raise RuntimeError("selected layer was not called")
     return stored
+
+
+def capture_one(model, layer, tokens, *, token_samples=32, seed=0):
+    """Single-example adapter for diagnostics and historical callers."""
+    if tokens.shape[0] != 1:
+        raise ValueError("capture_one expects one sequence")
+    return capture_batch(model, layer, {"input_ids": tokens}, [tokens.shape[1]],
+                         [seed], token_samples=token_samples)[0]
 
 
 def check_competence(path: Path):
@@ -55,11 +68,11 @@ def check_competence(path: Path):
 def main():
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
-    from sparsifier.models.qwen import force_pytorch_attention
+    from sparsifier.eval.gsm8k_batching import reference_backend as force_pytorch_attention
     from sparsifier.data.loaders import get_loaders
 
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--manifest", type=Path, required=True)
+    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
     parser.add_argument("--pilot-report", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--seed", type=int, default=0)
@@ -70,7 +83,7 @@ def main():
     if args.limit_per_split < 0:
         parser.error("limit must be nonnegative")
     pilot_hash = check_competence(args.pilot_report)
-    manifest = load_manifest(args.manifest)
+    manifest = load_calibration(args.manifest)
     splits = ("geometry_fit", "pruning_calibration", "validation", "stage2_holdout")
     rows = []
     for split in splits:
@@ -78,11 +91,13 @@ def main():
         rows.extend(selected[:args.limit_per_split] if args.limit_per_split else selected)
     args.output.mkdir(parents=True, exist_ok=True)
     config = {"model": MODEL, "revision": REVISION, "manifest_sha256": manifest["manifest_sha256"],
+              "calibration_regime": regime(manifest),
               "pilot_report_sha256": pilot_hash, "block": args.block, "module": args.module,
               "seed": args.seed, "ids": [r["id"] for r in rows],
               "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
               "c4_windows": 32, "c4_seqlen": 128, "dtype": "bfloat16",
               "purpose": "development_capture_no_final_test", "gpu_cap_gib": 56}
+    config["batching"] = batch_policy()
     write_immutable(args.output / "config.json", config)
     config_hash = digest(config)
     torch.set_num_threads(8)
@@ -99,6 +114,7 @@ def main():
     with (args.output / "weight.npy").open("wb") as handle:
         np.save(handle, weight)
     index = []
+    pending = []
     for n, row in enumerate(rows):
         filename = digest(row["id"])[:24] + ".npz"
         path = args.output / filename
@@ -113,27 +129,34 @@ def main():
             with np.load(path, allow_pickle=False) as old:
                 if str(old["metadata"]) != json.dumps(metadata, sort_keys=True):
                     raise ValueError("capture provenance mismatch")
-        else:
-            tokens = torch.tensor([ids], device="cuda")
-            arrays = capture_one(model, layer, tokens, seed=int(digest(row["id"])[:8], 16) + args.seed)
+        pending.append((row, ids, metadata, path))
+        index.append({**metadata, "file": filename})
+    for group in batches(pending):
+        if all(path.exists() for _, _, _, path in group):
+            continue
+        sequences = [ids for _, ids, _, _ in group]
+        captured = capture_batch(model, layer, pack(sequences, tokenizer, "cuda"), list(map(len, sequences)),
+            [int(digest(row["id"])[:8], 16)+args.seed for row, _, _, _ in group])
+        for (_, _, metadata, path), arrays in zip(group, captured):
+            if path.exists():
+                continue
             temporary = path.with_suffix(".tmp")
             with temporary.open("wb") as handle:
                 np.savez_compressed(handle, **arrays, metadata=np.array(json.dumps(metadata, sort_keys=True)))
             temporary.replace(path)
-        index.append({**metadata, "file": filename})
-        if n % 20 == 0:
-            print(json.dumps({"captured": n + 1, "total": len(rows), "host": host_memory()}), flush=True)
+        print(json.dumps({"captured_batch": len(group), "total": len(rows), "host": host_memory()}), flush=True)
     # Ambient C4 is kept separate so every task-aware arm can match data access.
     c4_path = args.output / "c4.npz"
     if not c4_path.exists():
         calibration, _ = get_loaders("c4", 32, args.seed, 128, MODEL)
         xs, token_rows = [], []
-        for tokens, _ in calibration:
-            arrays = capture_one(model, layer, tokens.to("cuda"), token_samples=128, seed=args.seed)
-            xs.append(arrays["token_x"])
-            token_rows.append(tokens.numpy())
+        token_rows = [tokens[0].numpy() for tokens, _ in calibration]
+        for group in batches(token_rows):
+            captured = capture_batch(model, layer, pack(group, tokenizer, "cuda"), list(map(len, group)),
+                                     [args.seed]*len(group), token_samples=128)
+            xs.extend(arrays["token_x"] for arrays in captured)
         with c4_path.with_suffix(".tmp").open("wb") as handle:
-            np.savez_compressed(handle, inputs=np.concatenate(xs), tokens=np.concatenate(token_rows),
+            np.savez_compressed(handle, inputs=np.concatenate(xs), tokens=np.stack(token_rows),
                                 config_sha256=np.array(config_hash))
         c4_path.with_suffix(".tmp").replace(c4_path)
     else:

@@ -1,0 +1,12 @@
+{
+  "scope": "pre_generation_configuration_match_not_accuracy_result",
+  "baseline": "local-s55",
+  "candidate": "local-s60",
+  "differences": [
+    "source_config_sha256",
+    "source_report_sha256"
+  ],
+  "same_cohort_batching_budget_runtime_seed_and_stopping": true,
+  "source_matches_full_CPU_audit": true,
+  "candidate_config_sha256": "37ee2b2613a7dddc593a07cdebbb7f41c2a7f37557a91774e1406dc4c0f4e87a"
+}

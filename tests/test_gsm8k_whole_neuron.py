@@ -145,3 +145,52 @@ def test_paired_report_uses_actual_removal_and_rejects_protocol_drift(tmp_path):
     (paths[1]/"config.json").write_text(json.dumps(config))
     with pytest.raises(ValueError, match="mismatched"):
         compare(paths)
+
+
+def test_original_validation_checks_bound_manifest_and_controlled_parent_sources():
+    from sparsifier.eval.gsm8k_whole_neuron_evaluate import validate_source_separation
+    calibration = {'manifest_sha256': 'source-hash', 'rows': [
+        {'id': 'controlled/42/variant', 'source_index': 42, 'split': 'geometry_fit'},
+        {'id': 'controlled/43/variant', 'source_index': 43, 'split': 'pruning_calibration'}]}
+    source = {'manifest_sha256': 'source-hash', 'calibration_ids': ['controlled/42/variant', 'controlled/43/variant']}
+    validation = {'rows': [{'id': 'gsm8k/train/1001', 'source_index': 1001, 'split': 'validation'}]}
+    assert validate_source_separation(source, calibration, validation)['disjoint_parent_sources']
+    # A new manifest hash/validation label cannot make a used parent disjoint.
+    leaked = {'manifest_sha256': 'independently-hashed', 'rows': [
+        {'id': 'gsm8k/train/42', 'source_index': 42, 'split': 'validation'}]}
+    with pytest.raises(ValueError, match='overlap'):
+        validate_source_separation(source, calibration, leaked)
+    with pytest.raises(ValueError, match='hash mismatch'):
+        validate_source_separation(source, dict(calibration, manifest_sha256='wrong'), validation)
+    with pytest.raises(ValueError, match='source_index'):
+        validate_source_separation(source, calibration, {'rows': [{'id': 'gsm8k/train/1001'}]})
+    with pytest.raises(ValueError, match='disagree'):
+        validate_source_separation(source, calibration,
+            {'rows': [{'id': 'gsm8k/train/1001', 'source_index': 1002}]})
+
+
+def test_leaked_validation_is_rejected_before_model_or_cuda_loading(tmp_path, monkeypatch):
+    import sys
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    from sparsifier.eval import gsm8k_whole_neuron_evaluate as module
+    from sparsifier.eval.gsm8k import MODEL, REVISION
+    cal = {'rows': [{'id':'controlled/42/variant', 'source_index':42, 'split':'geometry_fit'}]}
+    cal['manifest_sha256'] = digest(cal)
+    val = {'source_split':'train', 'rows':[{'id':'gsm8k/train/42', 'source_index':42, 'split':'validation'}]}
+    val['manifest_sha256'] = digest(val)
+    source = tmp_path/'source'
+    source.mkdir()
+    (source/'config.json').write_text(json.dumps({'model':MODEL, 'revision':REVISION,
+        'manifest_sha256':cal['manifest_sha256'], 'calibration_ids':['controlled/42/variant']}))
+    (tmp_path/'cal.json').write_text(json.dumps(cal))
+    (tmp_path/'val.json').write_text(json.dumps(val))
+    def forbidden(*args, **kwargs):
+        raise AssertionError('leaked validation must fail before model/CUDA loading')
+    monkeypatch.setattr(AutoModelForCausalLM, 'from_pretrained', forbidden)
+    monkeypatch.setattr(AutoTokenizer, 'from_pretrained', forbidden)
+    monkeypatch.setattr(module, 'configure_cuda', forbidden)
+    monkeypatch.setattr(sys, 'argv', ['evaluate','--source',str(source),'--manifest',str(tmp_path/'val.json'),
+        '--calibration-manifest',str(tmp_path/'cal.json'),'--output',str(tmp_path/'output')])
+    with pytest.raises(ValueError, match='overlap'):
+        module.main()
+    assert not (tmp_path/'output').exists()

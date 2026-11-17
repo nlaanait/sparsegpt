@@ -1,0 +1,143 @@
+{
+  "block": 15,
+  "calibration_seed": 0,
+  "dense": "qwen-9b-gsm8k-decision-dense-seed0-v1",
+  "eligible_sparsity": 0.3,
+  "light": 128,
+  "manifest": "data/decision64-light128-seed0-v1.json",
+  "manifest_sha256": "60107022919db28eb59dc9d7effa79630997cf744fd929a8643558397e35cdb5",
+  "max_drop_pp": 15,
+  "max_new_tokens": 2048,
+  "next_decision": "Review 64/128 results and solver/backend checks before widening blocks or sparsity",
+  "purpose": "single_block_engineering_and_metric_pilot_not_retention_frontier",
+  "screen": 64,
+  "shuffle_seed": 0,
+  "tasks": [
+    {
+      "depends_on": [],
+      "name": "qwen-9b-gsm8k-decision-dense-seed0-v1",
+      "phase": "dense"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-v1"
+      ],
+      "metric": "ambient",
+      "name": "qwen-9b-gsm8k-pilot-entrywise-ambient-b15-s30-seed0-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "entrywise"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-entrywise-ambient-b15-s30-seed0-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-entrywise-ambient-b15-s30-seed0-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-entrywise-ambient-b15-s30-seed0-v1"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-v1"
+      ],
+      "metric": "local",
+      "name": "qwen-9b-gsm8k-pilot-entrywise-local-b15-s30-seed0-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "entrywise"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-entrywise-local-b15-s30-seed0-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-entrywise-local-b15-s30-seed0-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-entrywise-local-b15-s30-seed0-v1"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-v1"
+      ],
+      "metric": "downstream_weight_diagonal",
+      "name": "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "entrywise"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-entrywise-downstream-weight-diagonal-b15-s30-seed0-v1"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-v1"
+      ],
+      "metric": "ambient",
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "whole_neuron"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-whole-neuron-ambient-b15-s30-seed0-v1"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-v1"
+      ],
+      "metric": "local",
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-local-b15-s30-seed0-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "whole_neuron"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-whole-neuron-local-b15-s30-seed0-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-local-b15-s30-seed0-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-whole-neuron-local-b15-s30-seed0-v1"
+    },
+    {
+      "block": 15,
+      "depends_on": [
+        "qwen-9b-gsm8k-decision-dense-seed0-v1"
+      ],
+      "metric": "downstream_weight_diagonal",
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-v1",
+      "phase": "prune",
+      "sparsity": 0.3,
+      "structure": "whole_neuron"
+    },
+    {
+      "depends_on": [
+        "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-v1",
+        "qwen-9b-gsm8k-decision-dense-seed0-v1"
+      ],
+      "name": "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-v1-light128",
+      "phase": "evaluate",
+      "source": "qwen-9b-gsm8k-pilot-whole-neuron-downstream-weight-diagonal-b15-s30-seed0-v1"
+    }
+  ],
+  "torch_seed": 0
+}

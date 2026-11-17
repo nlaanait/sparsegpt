@@ -62,7 +62,7 @@ def answer_gradient(model, layer, tokens, prefix_length):
 
 def main():
     from transformers import AutoModelForCausalLM, AutoTokenizer
-    from sparsifier.models.qwen import force_pytorch_attention
+    from sparsifier.eval.gsm8k_batching import reference_backend as force_pytorch_attention
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--manifest", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)

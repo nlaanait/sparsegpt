@@ -1,0 +1,21 @@
+{
+  "answers_snapshot_sha256": "9fe59a2aebe2bf1e6c940593c9d6eacc68fa24f5aa447659fec0553c46264636",
+  "audited_records_sha256": "9c33e75cb0e941aca3dfcda0210661dbb2ca88efafdadca65fa69bd3ff08803c",
+  "auditor_sha256": "aaed4e2bd6fda968f9846219388cb90cdedf5777fdf76e4c442a685785fdf80b",
+  "common128_complete": true,
+  "config_sha256": "3a93e2e80c9480e357ca8f098d7064f650d86505d8e0cd917450f23b819841bc",
+  "count": 128,
+  "evaluation": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/downstream-weightdiag-s70",
+  "evaluation_report_present": true,
+  "manifest_sha256": "ad504f83614c1f0ee27a761bbbfcfc7c1842414bb91def1863ebde5267e7d362",
+  "packed_input_and_prompt_mismatches": 0,
+  "raw_files_sha256": {
+    "0185a7824cbc0b6acb3d6812b44774b363e9e8d800276ec78778b1d1db1ee582.json": "d6d34ccf7d82293e68cd2fb719b922a7a50f8dac18f873d774d3f16e24748c6d",
+    "1a2ca9d4f53236c6fb1792355d220e644d6598fa0576dc3c185f4a3158950a05.json": "177bb71ff3242abd3414706a7caac4d300fe19b3eff4307c4b4c2d743f525cc2",
+    "86bcd37f3492bc438fc810e171af7389a473116baee0bbe25f15c357d7bf4c9e.json": "4a10a9016fe8f65fcf9def64fa727f62648e9e0c1a171c5e2060c18a14b44e9f",
+    "dc222d2275ad2afc079276fca7b86345e18f54cfa7898fc29d7f128ff08e063b.json": "3587d7d9cdf4978201b8bf8f2e862fb145ef1cb0a1f39b95ef7615cfbf1ec4f8"
+  },
+  "renderer_sha256": "b34c60d3659e5072aef6f09beea62d11dad900f4741f76fb9311f0bd0d8428c9",
+  "scope": "generation_input_provenance_only",
+  "verified_batches": 4
+}

@@ -1,0 +1,16 @@
+{
+  "scope": "actual_immutable_config_match_not_generation_input_audit",
+  "observed_at": "2026-11-17T01:58:23.665817+00:00",
+  "pruning_config_differences": [
+    "sparsity"
+  ],
+  "evaluation_config_differences": [
+    "source_config_sha256",
+    "source_report_sha256"
+  ],
+  "source_config_sha256": "e56c0980b9626b2e9052d5e65ef880df4f38fa6db4aedd560049142141a55cb5",
+  "source_report_sha256": "1fe47a70aa558d89c65cdeeb1955a2b46871cd14970f2ca46ccf363d21d727de",
+  "evaluation_config_sha256": "709e1d98d8542db240bb6e0f7826e60fcd12fa02b32daf9d2974c7c5e7f3853d",
+  "only_sparsity_changes_in_pruning": true,
+  "only_source_hashes_change_in_evaluation": true
+}

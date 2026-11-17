@@ -1,0 +1,70 @@
+{
+  "folder": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/control-fp64-decision512",
+  "config_sha256": "8b6325f7690800f6c7139de317faac79f1f399db02e5eb3dc75eba906bd73e99",
+  "answers_sha256": "5116f455bc8ea299b9500f0c789c2039d37415b8480aeb09c4fca9b65d34deb7",
+  "count": 128,
+  "correct": 0,
+  "truncated": 125,
+  "rescoring_mismatches": 0,
+  "correct_ignoring_truncation_same_strict_parser": 9,
+  "batch_size": 32,
+  "complete": false,
+  "examples": [
+    {
+      "id": "gsm8k/train/5723",
+      "prefix": "To solve the problem, we first need to determine the total number of tissues Tucker has.\n\n**Step 1:** Calculate the total number of tissues.\nWe know there are 160 tissues inside a single box. Tucker bought 3 boxes.\n$$ \\text{Total Tissues} = \\text{160} \\times \\text{3} \\text{ = \\text{160} \\text{ \\text",
+      "suffix": " \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text{ \\text"
+    },
+    {
+      "id": "gsm8k/train/1345",
+      "prefix": "To solve the problem, let's break down the information step by step.\n\n**Step 1:** Define variables\nLet $x$ be the amount Mimi spent on Adidas sneakers.\nLet $y$ be the amount Mimi spent on Nike sneakers.\nLet $z$ be the amount Mimi spent on Skechers.\n\n**Step 2:** Define relationships\nWe know that Mimi",
+      "suffix": "\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times 600$\n$y = 3 \\times "
+    }
+  ],
+  "same_ids_comparison": {
+    "original_local": {
+      "count": 128,
+      "correct": 0,
+      "truncated": 128,
+      "answers_sha256": "b0c98b13ab7fa8c468f96887da61c4e7f7f0f214017db70ee964cc409c4e62b5"
+    },
+    "prompt_high": {
+      "count": 128,
+      "correct": 0,
+      "truncated": 128,
+      "answers_sha256": "29fad98f3afccbbff155cc16d63cdb329d4a2dbbe8d00a31260f815d470c7fbb"
+    },
+    "reasoning_high": {
+      "count": 128,
+      "correct": 34,
+      "truncated": 83,
+      "answers_sha256": "f433d8518d391b571f5a52c56ab1e865e2cc870c5b6d46174acc0513eacbfc04"
+    },
+    "dense": {
+      "count": 128,
+      "correct": 123,
+      "truncated": 1,
+      "answers_sha256": "99ba0eaf1a2e4c8386fee221e6d40ec7636de23f6310583c63fe378cc0330744"
+    }
+  },
+  "evaluation_config_differences": {
+    "original_local": [
+      "source_config_sha256",
+      "source_report_sha256"
+    ],
+    "prompt_high": [
+      "source_config_sha256",
+      "source_report_sha256"
+    ],
+    "reasoning_high": [
+      "source_config_sha256",
+      "source_report_sha256"
+    ]
+  },
+  "baseline_pruning_shared_fields_identical": true,
+  "screen_rejected": true,
+  "screen_complete": true,
+  "full512_complete": false,
+  "scope": "completed matched128 screen; no512 result",
+  "interpretation": "Raising internal solver precision did not recover the original prompt-only local70 behavior under the retained FP32 geometry and BF16 model/checkpoint protocol."
+}

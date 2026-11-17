@@ -1,0 +1,30 @@
+{
+  "purpose": "user_authorized_two_process_simulation_without_queue_changes",
+  "original_job": 210,
+  "user_hard_ceiling_gb": 110,
+  "secondary_cuda_allocator_cap_gib": 24,
+  "secondary_process_memory_max": "40G",
+  "secondary_global_pressure_stop_gib": 80,
+  "watchdog_interval_seconds": 0.1,
+  "observed_peak_system_used_gib": 57.46181869506836,
+  "observed_peak_system_used_gb": 61.699158016,
+  "comparison": [
+    {
+      "phase": "prefill",
+      "historical_solo_seconds": 0.7499611442908645,
+      "co_running_seconds": 1.5593742453493178,
+      "slowdown": 2.079273382654783,
+      "co_running_units_per_second": 5.130263003803752
+    },
+    {
+      "phase": "generation",
+      "historical_solo_seconds": 3.9053573329001665,
+      "co_running_seconds": 8.172195651102811,
+      "slowdown": 2.0925602843707103,
+      "co_running_units_per_second": 31.32573067624166
+    }
+  ],
+  "same_runtime_packages": true,
+  "same_example_ids": true,
+  "conclusion": "Two models fit within the imposed margin; this mixed-workload test does not establish aggregate throughput improvement. Solo reference is historical; primary-job stages vary by projection and depth."
+}

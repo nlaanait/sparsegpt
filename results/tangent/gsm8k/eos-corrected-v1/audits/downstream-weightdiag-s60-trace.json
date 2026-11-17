@@ -1,0 +1,1650 @@
+{
+  "scope": "full96_producer_trace_arithmetic_bound_to_independent_CPU_weight_audit_not_independent_trace_tensor_remeasurement",
+  "observed_at": "2026-11-16T23:30:13.470769+00:00",
+  "source": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-downstream-weightdiag-s60-seed0-batch32-repcal-v1",
+  "source_config_sha256": "fef174c665fb701853f78fa9d1eeba999ce714d27ae5cbad9929a5d7dfcc0ee9",
+  "source_report_sha256": "31ed26be8dc8613ea8432d4878049e3c722e8c2bd6ca2588df0022014f663017",
+  "cpu_audit_sha256": "52ee46b1e28211ff87cf17872379c5518543649bf5c754eae05f80818b1da2e5",
+  "stages_checked": 96,
+  "full_pruning_complete": true,
+  "geometry_to_ambient_ratio_range": [
+    0.9999999999999999,
+    1.0000000000000002
+  ],
+  "all_actual_zero_counts_match_per_block_integer_rule": true,
+  "max_reported_vs_measured_zero_fraction_difference": 3.973642981325298e-08,
+  "checks": [
+    {
+      "site": [
+        0,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        0,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        0,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        1,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        1,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        1,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        2,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0000000000000002,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        2,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        2,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        3,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        3,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        3,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        4,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        4,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        4,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        5,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        5,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 0.9999999999999999,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        5,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        6,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        6,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        6,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        7,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        7,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        7,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0000000000000002,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        8,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        8,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        8,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        9,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        9,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        9,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        10,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        10,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        10,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        11,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        11,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        11,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        12,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        12,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        12,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        13,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        13,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        13,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        14,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        14,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        14,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        15,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 0.9999999999999999,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        15,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 0.9999999999999999,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        15,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        16,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        16,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        16,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        17,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        17,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        17,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        18,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        18,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        18,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        19,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        19,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        19,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        20,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        20,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        20,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        21,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        21,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        21,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        22,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 0.9999999999999999,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        22,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        22,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        23,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 0.9999999999999999,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        23,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        23,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        24,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        24,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        24,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        25,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        25,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        25,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        26,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        26,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        26,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        27,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        27,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        27,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        28,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        28,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        28,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 0.9999999999999999,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        29,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        29,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        29,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        30,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        30,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        30,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    },
+    {
+      "site": [
+        31,
+        "mlp.gate_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        31,
+        "mlp.up_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        12288,
+        4096
+      ],
+      "expected_zeros_from_integer_block_rule": 30198976,
+      "measured_zeros": 30198976,
+      "reported_zero_fraction": 0.5999997854232788,
+      "measured_zero_fraction": 0.599999745686849
+    },
+    {
+      "site": [
+        31,
+        "mlp.down_proj"
+      ],
+      "recomputed_ratio": 1.0,
+      "alpha": 1.0,
+      "factorization_attempts": 1,
+      "shape": [
+        4096,
+        12288
+      ],
+      "expected_zeros_from_integer_block_rule": 30198912,
+      "measured_zeros": 30198912,
+      "reported_zero_fraction": 0.5999984741210938,
+      "measured_zero_fraction": 0.5999984741210938
+    }
+  ]
+}

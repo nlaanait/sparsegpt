@@ -1,0 +1,126 @@
+{
+  "complete": true,
+  "config": {
+    "backend": {
+      "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn",
+      "causal_conv1d_update": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_update",
+      "torch_chunk_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_chunk_gated_delta_rule",
+      "torch_recurrent_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_recurrent_gated_delta_rule"
+    },
+    "batches": [
+      8,
+      16,
+      32
+    ],
+    "ids": [
+      "gsm8k/train/5723",
+      "gsm8k/train/1345",
+      "gsm8k/train/3035",
+      "gsm8k/train/2549",
+      "gsm8k/train/5685",
+      "gsm8k/train/5801",
+      "gsm8k/train/5350",
+      "gsm8k/train/1873",
+      "gsm8k/train/6920",
+      "gsm8k/train/4485",
+      "gsm8k/train/3738",
+      "gsm8k/train/4026",
+      "gsm8k/train/5721",
+      "gsm8k/train/3167",
+      "gsm8k/train/7319",
+      "gsm8k/train/5817",
+      "gsm8k/train/2699",
+      "gsm8k/train/6483",
+      "gsm8k/train/2674",
+      "gsm8k/train/5177",
+      "gsm8k/train/1299",
+      "gsm8k/train/5729",
+      "gsm8k/train/3821",
+      "gsm8k/train/4797",
+      "gsm8k/train/1689",
+      "gsm8k/train/1190",
+      "gsm8k/train/1904",
+      "gsm8k/train/3517",
+      "gsm8k/train/2748",
+      "gsm8k/train/2423",
+      "gsm8k/train/4915",
+      "gsm8k/train/2365"
+    ],
+    "interleaving": "rotate_batch_order_each_round",
+    "manifest_sha256": "60107022919db28eb59dc9d7effa79630997cf744fd929a8643558397e35cdb5",
+    "memory": {
+      "allocator_cap_gib": 24.0,
+      "cuda_free_gib": 29.937652587890625,
+      "cuda_total_gib": 121.69016647338867,
+      "guard_cap_gib": 24.0,
+      "host_before": {
+        "available_gib": 94.00175476074219,
+        "total_gib": 121.69016647338867,
+        "used_gib": 27.688411712646484
+      },
+      "requested_cap_gib": 56.0
+    },
+    "model": "Qwen/Qwen3.5-9B",
+    "packages": {
+      "flash-linear-attention": "0.6.0",
+      "kernels": "0.17.3",
+      "torch": "2.12.0+cu130",
+      "transformers": "5.22.2"
+    },
+    "purpose": "throughput_not_accuracy",
+    "repeats": 3,
+    "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+    "seed": 0,
+    "source_sha256": "6ad1f865324fcb32749e1031eb12abff830fd800b3824fa73eb244c5380eceb2",
+    "tokens": 32
+  },
+  "limitations": [
+    "Background job may change phases between timings",
+    "32 decode tokens, not full reasoning",
+    "Output differences must be evaluated before changing scientific experiment defaults"
+  ],
+  "summary": [
+    {
+      "batch": 8,
+      "median_seconds": 5.975237022154033,
+      "peak_cuda_allocated_gib": 17.134512901306152,
+      "phase": "prefill",
+      "units_per_second": 5.355436090878988
+    },
+    {
+      "batch": 8,
+      "median_seconds": 31.422605223953724,
+      "peak_cuda_allocated_gib": 17.544306755065918,
+      "phase": "generation",
+      "units_per_second": 32.58800448599965
+    },
+    {
+      "batch": 16,
+      "median_seconds": 6.458155440166593,
+      "peak_cuda_allocated_gib": 17.559731006622314,
+      "phase": "prefill",
+      "units_per_second": 4.954975193222438
+    },
+    {
+      "batch": 16,
+      "median_seconds": 23.562545276246965,
+      "peak_cuda_allocated_gib": 18.379319190979004,
+      "phase": "generation",
+      "units_per_second": 43.458802433889794
+    },
+    {
+      "batch": 32,
+      "median_seconds": 6.328935944009572,
+      "peak_cuda_allocated_gib": 18.41016721725464,
+      "phase": "prefill",
+      "units_per_second": 5.056142182998148
+    },
+    {
+      "batch": 32,
+      "median_seconds": 18.5355506320484,
+      "peak_cuda_allocated_gib": 20.04929208755493,
+      "phase": "generation",
+      "units_per_second": 55.24518911401964
+    }
+  ]
+}

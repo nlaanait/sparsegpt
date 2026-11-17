@@ -1,0 +1,58 @@
+{
+  "state": "isolated_cpu_verified_not_applied",
+  "sandbox": "/tmp/gsm8k-native-eos-s0ryv29s",
+  "base_source_sha256": {
+    "src/sparsifier/eval/gsm8k_batching.py": "a5d58093374eb33c707f4f4342a242224e21a297bb05dbe781d081f25498fd9a",
+    "src/sparsifier/eval/gsm8k_pruning.py": "f73d564fa3b7d97e44cdad97e72dd93b8a9db980848c9eadadfdba492d3017d9",
+    "src/sparsifier/eval/gsm8k_screened.py": "60d9c7074301e62a2c19df2f143ac0ff36693e153f2b8f274df944eb6e5ce786"
+  },
+  "patched_source_sha256": {
+    "src/sparsifier/eval/gsm8k_batching.py": "e88756bd4716cacac891e0772dc83e3b74bdbcf61d5640d901c5290f89f6f471",
+    "src/sparsifier/eval/gsm8k_pruning.py": "ccd29d201db5d6df6e3672ef88e48dd7237a0bc5268430333c19588eb5f8470d",
+    "src/sparsifier/eval/gsm8k_screened.py": "d4e9c76eb1d98eae04c17a6c9a61698619297167230d7741cea11df9a0ccb5c3"
+  },
+  "patch_sha256": "543a975d53d8428e49d131145ecbc327493a68946cd7cc44c52495f01d88df5c",
+  "tests_passed": 83,
+  "native_regression_cases": 20,
+  "validation": "validation.json",
+  "test_source": "test_gsm8k_native_eos.py",
+  "apply_gate": "Do not apply during the intentional stop. After explicitly resumed frozen-source work completes (cancellation alone does not satisfy this gate), recheck the three production base hashes and screening-test fixture hash, apply the prepared patch, copy the regression test, and run the 83-case suite in the real worktree.",
+  "frozen_audit_compatibility": {
+    "report": "frozen-local70-audit-compatibility.json",
+    "exact_report_equality": true,
+    "count": 128,
+    "raw_rescore_mismatches": 0,
+    "preserves_historical_measurements": true
+  },
+  "frozen_checkpoint_loader_compatibility": {
+    "proof": "frozen-checkpoint-restore-compatibility.json",
+    "proof_sha256": "62feeb26772efecbfb635f8e05b8a3155e87f7abdd2ba204d35f5db22444797b",
+    "verified_stages": 96,
+    "old_pruning_policy_still_accepted_for_restore": true,
+    "used_cuda": false
+  },
+  "base_test_source_sha256": {
+    "tests/test_gsm8k_screened.py": "d24ff8cc3ccf5521d315ebeba0b5780cc4582839425e8091ebbc5a19f7addfe5"
+  },
+  "patched_test_source_sha256": {
+    "tests/test_gsm8k_screened.py": "fbfd7dd70dda85d3ec8d92b72e65da1aef5fa43bc14d478765016ef10be0b0d6"
+  },
+  "prior_two_file_tests_passed": 74,
+  "legacy_screen_pre_fix_reproduction": {
+    "command": "pytest -q tests/test_gsm8k_native_eos.py -k legacy_screen",
+    "expected_failures_reproduced": 5,
+    "valid_current_reference_passed": 1,
+    "returncode": 1,
+    "uses_synthetic_data_and_CPU_only": true,
+    "stale_zero_screen_reproduced": true,
+    "current_versioned_grid_affected": false
+  },
+  "consumer_coverage": "consumer-coverage.json",
+  "read_only_apply_check": {
+    "command": "git apply --check results/tangent/gsm8k/pruning-artifact-audit-v1/native-eos-pending/shared-evaluator.patch",
+    "returncode": 0,
+    "checked_at": "2026-11-16T19:42:01.407096+00:00",
+    "production_files_modified": false
+  },
+  "hold_reason": "User intentionally stopped GPU work with a verified 25-stage partial checkpoint. Preserve matching production sources for later resume."
+}

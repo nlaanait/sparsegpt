@@ -1,0 +1,780 @@
+{
+  "updated_at": "2026-11-16T21:31:21.121970-06:00",
+  "status": "stopped_by_user_artifact_confirmed_investigation_incomplete",
+  "goal_complete": false,
+  "cpu_report": "cpu-report.json",
+  "cpu_validation": {
+    "existing_passed": 90,
+    "existing_gpu_skipped": 5,
+    "existing_known_xfailed": 1,
+    "new_passed": 16,
+    "tensors_verified": 480,
+    "reasoning_control_new_passed": 3,
+    "follow_up_focused_passed": 28,
+    "method_sweep_guard_passed": 12,
+    "unique_candidate_tensors_verified": 1536,
+    "unique_full_sources_verified": 16
+  },
+  "gpu_job": {
+    "id": 226,
+    "state_at_submission": "queued",
+    "priority": 11,
+    "time_limit": "00:45:00",
+    "depends_on": [],
+    "exclusive": true,
+    "running_job_at_submission": 224,
+    "report": "gpu/report.json",
+    "last_verified_state": "Finished",
+    "last_verified_at": "2026-11-15T09:58:30.208076-06:00",
+    "complete": true,
+    "runtime_seconds": 485
+  },
+  "remaining": [
+    "On an explicit resume request, restore local65 pruning from its verified 25/96-stage checkpoint, then complete and audit local65 and downstream65 common128 evaluations. Seven of nine grid points are complete.",
+    "Re-evaluate the already complete prompt-high, reasoning-high and FP64 source checkpoints with corrected EOS; cancelled evaluation jobs were 273/274/275.",
+    "Run the matched representative-calibration SparseGPT70 pruning/evaluation pair; cancelled jobs were 276/277. The older baseline uses a different protocol.",
+    "Update the six cancelled evaluation job IDs in the existing corrected submission-journal labels, then restart the CPU collector. Preserve the 10 verified evaluations.",
+    "After all remaining evaluations, rerun generation-input and common-input parity checks and regenerate the sparsity chart.",
+    "Keep the prepared native EOS fix unapplied to preserve partial-run source hashes; integrate and rerun its 83-case suite after completing frozen-source work or establishing a separately verified frozen-source resume path."
+  ],
+  "production_solver_or_scoring_changes": false,
+  "previous_turn_classification": "User confirmed intentional GPU cancellation and cleared the goal. Seven grid points and three references/anchors remain verified; 25 local65 stages are validated and preserved. No jobs restarted.",
+  "recorded_geometry_frontier": {
+    "report": "geometry-frontier/report.json",
+    "complete": true,
+    "comparisons": 27,
+    "sparsities": [
+      0.5,
+      0.7,
+      0.9
+    ],
+    "scope": "8-by-16 principal-coordinate crops, matched masks and induced ridge; no model-wide inference"
+  },
+  "reasoning_control": {
+    "manifest": "reasoning-calibration.json",
+    "manifest_sha256": "1020a6fab308ebc8546db8dd11e51b470aa30f7f29f760314501489d249a5528",
+    "parents": 640,
+    "response_tokens": 61757,
+    "max_context_tokens": 407,
+    "gpu_experiment_submitted": true,
+    "driver": "scripts/run_gsm8k_calibration_control.py",
+    "plan": "calibration-control-plan.json",
+    "control_ambient_tokens": 36864,
+    "control_cpu_tests_passed": 12,
+    "submission_journal": "calibration-control-submissions.json",
+    "jobs": [
+      {
+        "id": 228,
+        "mode": "prompt",
+        "phase": "pruning",
+        "depends_on": [],
+        "output": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/control-prompt32768"
+      },
+      {
+        "id": 229,
+        "mode": "prompt",
+        "phase": "evaluation",
+        "depends_on": [
+          221,
+          228
+        ],
+        "output": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/control-prompt32768-decision512"
+      },
+      {
+        "id": 230,
+        "mode": "reasoning",
+        "phase": "pruning",
+        "depends_on": [
+          228
+        ],
+        "output": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/control-reasoning32768"
+      },
+      {
+        "id": 231,
+        "mode": "reasoning",
+        "phase": "evaluation",
+        "depends_on": [
+          221,
+          230
+        ],
+        "output": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/control-reasoning32768-decision512"
+      }
+    ],
+    "interpretation_annotation": "calibration-comparison-design.json",
+    "active_job": null,
+    "last_verified_prompt_stages": 96,
+    "prompt_pruning_complete": true,
+    "prompt_screen": {
+      "complete": true,
+      "count": 128,
+      "correct": 0,
+      "truncated": 128,
+      "dense_correct": 123,
+      "screen_rejected": true,
+      "audit": "control-prompt-screen-audit.json",
+      "correct_ignoring_truncation": 4
+    },
+    "reasoning_sources_match_prompt": true,
+    "last_verified_reasoning_stages": 96,
+    "last_verified_state": "Running (R)",
+    "reasoning_pruning_complete": true,
+    "reasoning_engineering": {
+      "count": 4,
+      "correct": 1,
+      "truncated": 2,
+      "correct_ignoring_truncation": 2
+    },
+    "prompt_reasoning_config_differences": [
+      "calibration_control.mode"
+    ],
+    "reasoning_cpu_audit": "control-reasoning-cpu-report.json",
+    "partial_matched_screen": {
+      "provisional": true,
+      "count": 32,
+      "correct": 11,
+      "truncated": 18,
+      "same_ids_prompt_high_correct": 0,
+      "same_ids_dense_correct": 31,
+      "rescoring_mismatches": 0,
+      "audit": "control-reasoning-screen-partial32-audit.json",
+      "evaluation_config_differences": [
+        "source_config_sha256",
+        "source_report_sha256"
+      ]
+    },
+    "reasoning_evaluation_state": "Finished (CD)",
+    "matched_screen": {
+      "complete": true,
+      "count": 128,
+      "correct": 34,
+      "accuracy": 0.265625,
+      "truncated": 83,
+      "dense_correct": 123,
+      "original_local_correct": 0,
+      "prompt_high_correct": 0,
+      "rescoring_mismatches": 0,
+      "correct_ignoring_truncation": 42,
+      "screen_rejected": true,
+      "audit": "control-reasoning-screen-audit.json"
+    }
+  },
+  "broader_sweeps": {
+    "report": "broader-sweeps.json",
+    "models": 11,
+    "paired_70_tangent_better": 5,
+    "paired_70_tangent_worse": 6,
+    "likelihood_arithmetic_checks": 139,
+    "current_method_cpu_tests_passed": 59,
+    "historical_rescale_heuristic_are_not_corrected_v2_measurements": true
+  },
+  "gpu_reorder_journal": "gflow-reorder.json",
+  "resumed_original_experiment": {
+    "original_job": 224,
+    "resume_job": 227,
+    "evaluation_job": 225,
+    "completed_stages_preserved": 25,
+    "resume_depends_on": [
+      226
+    ],
+    "evaluation_depends_on": [
+      221,
+      227
+    ],
+    "resume_auto_cancel_on_diagnostic_failure": false,
+    "last_verified_state": "Finished",
+    "advanced_beyond_preserved_stage": true,
+    "stages": 96,
+    "engineering_behavior": {
+      "count": 4,
+      "correct": 0,
+      "truncated": 4
+    },
+    "evaluation_last_verified_state": "Finished",
+    "matched_screen": {
+      "count": 128,
+      "correct": 0,
+      "truncated": 128,
+      "screen_rejected": true,
+      "correct_ignoring_truncation": 4,
+      "audit": "repcal-downstream-screen-audit.json"
+    }
+  },
+  "gpu_summary": "gpu-summary.json",
+  "fresh_downstream_tensor_audit": "repcal-downstream-cpu-report.json",
+  "full_size_precision_audit": {
+    "job": 232,
+    "submission": "solver-precision-submission.json",
+    "report": "solver-precision/report.json",
+    "cpu_tests_passed": 19,
+    "state_at_submission": "Queued",
+    "complete": true,
+    "last_verified_state": "Finished",
+    "interpretation": "Substantial mask/weight sensitivity despite nearly equal common quadratic losses; model-wide FP64 behavioral control required",
+    "mask_changed_fractions": [
+      0.05883049964904785,
+      0.054802536964416504
+    ],
+    "relative_bf16_candidate_differences": [
+      0.4071354936760462,
+      0.4080459994519419
+    ]
+  },
+  "method_sweep_resume_guard": {
+    "proof": "method-sweep-resume-guard.json",
+    "driver": "drivers/qwen08_method_sweep.py",
+    "tests_passed": 12,
+    "legacy_results_unchanged": true,
+    "new_default_result": "results/tangent/qwen08-method-sweep-curvature-trace-v2.json"
+  },
+  "production_driver_changes": [
+    "drivers/qwen08_method_sweep.py: versioned source/runtime/pair-bank resume guard and separate logs"
+  ],
+  "prompt_control_cpu_audit": "control-prompt-cpu-report.json",
+  "modelwide_fp64_control": {
+    "pruning_job": 233,
+    "evaluation_job": 234,
+    "submission": "fp64-control-submissions.json",
+    "adapter_tests_passed": 8,
+    "baseline": "original representative local 70% with 8192 tokens",
+    "last_verified_state": "Finished (CD)",
+    "shared_baseline_configuration_identical": true,
+    "last_verified_stages": 96,
+    "first_stage_verified": {
+      "precision": "float64_curvature_factor_and_ordered_OBS_FP32_geometry",
+      "normalization": "curvature-trace-v2",
+      "ambient_tokens": 8192,
+      "readout_tokens": 640,
+      "selection_damping": {
+        "damping": 3.262256134034676,
+        "effective_percdamp": 0.01,
+        "factorization_attempts": 1,
+        "requested_percdamp": 0.01
+      },
+      "inverse_probe_residual": {
+        "max": 1.069653778342717e-12,
+        "mean": 8.169870539563521e-13,
+        "probes": 4
+      }
+    },
+    "pruning_complete": true,
+    "cpu_audit": "control-fp64-cpu-report.json",
+    "engineering": {
+      "count": 4,
+      "correct": 0,
+      "truncated": 4,
+      "correct_ignoring_truncation": 1
+    },
+    "max_inverse_probe_residual": 9.624152315561902e-12,
+    "weight_comparison": "fp64-weight-comparison.json",
+    "evaluation_state": "Finished (CD)",
+    "matched_screen": {
+      "complete": true,
+      "count": 128,
+      "correct": 0,
+      "truncated": 125,
+      "correct_ignoring_truncation": 9,
+      "rescoring_mismatches": 0,
+      "screen_rejected": true,
+      "audit": "control-fp64-screen-audit.json"
+    }
+  },
+  "requested_sparsity_bracket": {
+    "requested_sparsities": [
+      0.55,
+      0.6,
+      0.65
+    ],
+    "methods": [
+      "sparsegpt_task",
+      "local",
+      "downstream_weight_diagonal"
+    ],
+    "state": "stopped_by_user_resume_later",
+    "plan": "../sparsity-bracket-repcal-v1/plan.json",
+    "journal": "../sparsity-bracket-repcal-v1/submissions.json",
+    "verification": "../sparsity-bracket-repcal-v1/queue-verification.json",
+    "jobs": [
+      235,
+      236,
+      237,
+      238,
+      239,
+      240,
+      241,
+      242,
+      243,
+      244,
+      245,
+      246,
+      247,
+      248,
+      249,
+      250,
+      251,
+      252
+    ],
+    "evaluation": "common first128 at batch32; existing screen continues passing candidates to512",
+    "endpoint_caveats": "old SparseGPT endpoints differ in calibration/runtime; representative local50 uses batch8",
+    "active_job": null,
+    "first_point_validation": "../sparsity-bracket-repcal-v1/first-point-verification.json",
+    "last_verified_pruning_stages": 96,
+    "progress": "../eos-corrected-v1/progress.json",
+    "first_pruning_audit": "../sparsity-bracket-repcal-v1/audits/sparsegpt-task-s55-cpu.json",
+    "completed_points": 7,
+    "second_pruning_audit": "../sparsity-bracket-repcal-v1/audits/local-s55-cpu.json",
+    "third_pruning_audit": "../sparsity-bracket-repcal-v1/audits/downstream-weightdiag-s55-cpu.json",
+    "fourth_pruning_audit": "../sparsity-bracket-repcal-v1/audits/sparsegpt-task-s60-cpu.json",
+    "remaining_points": 2,
+    "replacement_jobs": [
+      256,
+      257,
+      258,
+      259,
+      260,
+      261,
+      262,
+      263,
+      264,
+      265
+    ],
+    "recovery_journal": "stop-token-queue-recovery.json",
+    "corrected_completed_points": 7,
+    "historical_policy_completed_points": 4,
+    "historical_policy_remaining_points": 5,
+    "historical_progress": "../sparsity-bracket-repcal-v1/progress.json",
+    "historical_first_result": {
+      "method": "sparsegpt-task",
+      "sparsity": 0.55,
+      "pruning_job": 235,
+      "evaluation_job": 236,
+      "correct": 95,
+      "count": 128,
+      "accuracy": 0.7421875,
+      "truncated": 4,
+      "screen_complete": true,
+      "full512_complete": false,
+      "screen_rejected": true,
+      "cpu_audit": "audits/sparsegpt-task-s55-cpu.json",
+      "screen_audit": "audits/sparsegpt-task-s55-screen.json"
+    },
+    "historical_second_result": {
+      "method": "local",
+      "sparsity": 0.55,
+      "pruning_job": 237,
+      "evaluation_job": 238,
+      "correct": 83,
+      "count": 128,
+      "accuracy": 0.6484375,
+      "truncated": 19,
+      "screen_complete": true,
+      "full512_complete": false,
+      "screen_rejected": true,
+      "cpu_audit": "audits/local-s55-cpu.json",
+      "screen_audit": "audits/local-s55-screen.json"
+    },
+    "historical_third_result": {
+      "method": "downstream-weightdiag",
+      "sparsity": 0.55,
+      "pruning_job": 239,
+      "evaluation_job": 240,
+      "correct": 98,
+      "count": 128,
+      "accuracy": 0.765625,
+      "truncated": 4,
+      "screen_complete": true,
+      "full512_complete": false,
+      "screen_rejected": true,
+      "cpu_audit": "audits/downstream-weightdiag-s55-cpu.json",
+      "trace_audit": "audits/downstream-weightdiag-s55-trace.json",
+      "screen_audit": "audits/downstream-weightdiag-s55-screen.json"
+    }
+  },
+  "core_artifact_controls_complete": true,
+  "completed_control_comparison": "controlled-comparison.json",
+  "stop_token_diagnostic": {
+    "job": 255,
+    "state": "Finished (CD)",
+    "depends_on": 241,
+    "evidence": "stop-token-evidence.json",
+    "submission": "stop-token-submission.json",
+    "report": "stop-tokens-s60/report.json",
+    "cpu_tests_passed": 3,
+    "reorder": "stop-token-reorder.json",
+    "local60_resume_job": 256,
+    "recovery_journal": "stop-token-queue-recovery.json",
+    "raw_token_proof": "stop-token-first-batch-proof.json",
+    "artifact_confirmed": true,
+    "complete": true,
+    "live_generation_correct_old": 5,
+    "live_generation_correct_corrected": 22,
+    "prefix_agreement": 32,
+    "fresh_correct": 22,
+    "fresh_truncated": 1,
+    "exact_prefix_matches": 32
+  },
+  "completion_censoring_sensitivity": "completion-censoring-sensitivity.json",
+  "eos_correction": {
+    "adapter": "scripts/run_gsm8k_eos_control.py",
+    "protocol": "gsm8k-model-and-tokenizer-eos-v1",
+    "journal": "../eos-corrected-v1/submissions.json",
+    "dense_job": 266,
+    "completed_grid_re_evaluations": [
+      267,
+      268,
+      269,
+      270,
+      257,
+      259,
+      261
+    ],
+    "remaining_grid_evaluations": [
+      263,
+      265
+    ],
+    "seventy_percent_anchors": [
+      271,
+      272
+    ],
+    "existing_pruning_code_or_weights_modified": false,
+    "parser_unchanged": true,
+    "cpu_tests_passed": 20,
+    "independent_raw_auditor": "scripts/audit_gsm8k_eos_evaluation.py",
+    "active_job": null,
+    "active_phase": "stopped_by_user",
+    "tests_passed": 28,
+    "dense_verified": {
+      "count": 128,
+      "correct": 123,
+      "truncated": 1,
+      "raw_rescore_mismatches": 0,
+      "audit": "../eos-corrected-v1/audits/dense.json"
+    },
+    "local70_first_batch": {
+      "count": 32,
+      "corrected_correct": 3,
+      "old_correct": 0,
+      "truncated": 22,
+      "decoded_prefix_matches": 32,
+      "answer_nll_max_difference": 0.0,
+      "audit": "../eos-corrected-v1/audits/local-s70-live-prefix.json"
+    },
+    "calibration_and_precision_re_evaluations": [
+      273,
+      274,
+      275
+    ],
+    "cache_resume_guard": "../eos-corrected-v1/audits/legacy-resume-guard.json",
+    "local70_complete": {
+      "correct": 13,
+      "count": 128,
+      "truncated": 95,
+      "strict_marker_correct_ignoring_truncation": 14,
+      "historical_correct": 0,
+      "all128_prefixes_match": true,
+      "answer_nll_max_abs_difference": 0.0,
+      "audit": "../eos-corrected-v1/audits/local-s70.json",
+      "source_link": "../eos-corrected-v1/audits/local-s70-checkpoint-score-link.json"
+    },
+    "matched_sparsegpt70_baseline": {
+      "pruning_job": 276,
+      "evaluation_job": 277,
+      "reason": "historical SparseGPT70 used different calibration/runtime; new baseline matches current representative-calibration geometry arms",
+      "source": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-sparsegpt-task-s70-seed0-batch32-repcal-v1",
+      "output": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/sparsegpt-task-s70"
+    },
+    "causal_comparator": "scripts/compare_gsm8k_eos_evaluations.py",
+    "downstream70_first_batch": {
+      "count": 32,
+      "correct": 2,
+      "historical_correct": 0,
+      "truncated": 19,
+      "decoded_prefix_matches": 32,
+      "max_answer_nll_abs_difference": 0.0,
+      "trace_check": "../eos-corrected-v1/audits/downstream-weightdiag-s70-trace.json"
+    },
+    "downstream70_complete": {
+      "count": 128,
+      "correct": 12,
+      "truncated": 80,
+      "old_correct": 0,
+      "decoded_prefix_matches": 128,
+      "answer_nll_max_abs_difference": 0.0,
+      "audit": "../eos-corrected-v1/audits/downstream-weightdiag-s70.json",
+      "checkpoint_link": "../eos-corrected-v1/audits/downstream-weightdiag-s70-checkpoint-score-link.json"
+    },
+    "corrected_grid_completed": 7,
+    "existing_checkpoint_re_evaluation_jobs": [
+      267,
+      268,
+      269,
+      270
+    ],
+    "corrected_control_evaluations_complete": false,
+    "downstream55_first_batch": {
+      "method": "downstream-weightdiag",
+      "sparsity": 0.55,
+      "evaluation_job": 269,
+      "count": 32,
+      "correct": 25,
+      "truncated": 1,
+      "provisional_not_final128": true,
+      "audit": "audits/downstream-weightdiag-s55-live-prefix32.json",
+      "historical_comparison": "audits/downstream-weightdiag-s55-live-prefix32-comparison.json"
+    },
+    "sparsegpt60_complete": {
+      "count": 128,
+      "correct": 95,
+      "truncated": 5,
+      "old_correct": 21,
+      "old_truncated": 99,
+      "decoded_prefix_matches": 128,
+      "answer_nll_max_abs_difference": 0.0,
+      "gained_correct": 74,
+      "lost_correct": 0,
+      "audit": "../eos-corrected-v1/audits/sparsegpt-task-s60.json",
+      "checkpoint_link": "../eos-corrected-v1/audits/sparsegpt-task-s60-checkpoint-score-link.json",
+      "rescue_breakdown": "../eos-corrected-v1/audits/sparsegpt-task-s60-rescue-breakdown.json"
+    },
+    "downstream55_complete": {
+      "count": 128,
+      "correct": 98,
+      "truncated": 4,
+      "old_correct": 98,
+      "decoded_prefix_matches": 128,
+      "answer_nll_max_abs_difference": 0.0,
+      "audit": "../eos-corrected-v1/audits/downstream-weightdiag-s55.json",
+      "checkpoint_link": "../eos-corrected-v1/audits/downstream-weightdiag-s55-checkpoint-score-link.json"
+    },
+    "local60_first_batch": {
+      "method": "local",
+      "sparsity": 0.6,
+      "evaluation_job": 257,
+      "count": 32,
+      "correct": 19,
+      "truncated": 4,
+      "provisional_not_final128": true,
+      "audit": "audits/local-s60-live-prefix32.json"
+    },
+    "local60_live_prefix": {
+      "method": "local",
+      "sparsity": 0.6,
+      "evaluation_job": 257,
+      "count": 64,
+      "correct": 38,
+      "truncated": 9,
+      "provisional_not_final128": true,
+      "audit": "audits/local-s60-live-prefix64.json",
+      "generation_inputs_audit": "audits/local-s60-generation-inputs.json"
+    },
+    "local60_complete": {
+      "method": "local",
+      "sparsity": 0.6,
+      "pruning_job": 256,
+      "evaluation_job": 257,
+      "count": 128,
+      "correct": 72,
+      "accuracy": 0.5625,
+      "truncated": 16,
+      "strict_marker_correct_ignoring_truncation": 72,
+      "common128_complete": true,
+      "full512_complete": false,
+      "screen_rejected": true,
+      "raw_audit": "audits/local-s60.json",
+      "checkpoint_score_link": "audits/local-s60-checkpoint-score-link.json",
+      "cpu_audit": "audits/local-s60-cpu.json",
+      "generation_inputs_audit": "audits/local-s60-generation-inputs.json",
+      "historical_policy_evaluation_not_run": true,
+      "pruning_config_comparison": "audits/local-s60-pruning-config-comparison.json",
+      "evaluation_config_comparison": "audits/local-s60-evaluation-config-comparison.json"
+    },
+    "downstream60_complete": {
+      "count": 128,
+      "correct": 77,
+      "truncated": 10,
+      "dense_relative_drop_pp": 35.9375,
+      "common128_complete": true,
+      "full512_complete": false,
+      "screen_rejected": true,
+      "audit": "../eos-corrected-v1/audits/downstream-weightdiag-s60.json",
+      "checkpoint_link": "../eos-corrected-v1/audits/downstream-weightdiag-s60-checkpoint-score-link.json",
+      "generation_input_audit": "../eos-corrected-v1/audits/downstream-weightdiag-s60-generation-inputs.json"
+    },
+    "sparsegpt65_complete": {
+      "count": 128,
+      "correct": 54,
+      "truncated": 27,
+      "dense_relative_drop_pp": 53.90625,
+      "common128_complete": true,
+      "full512_complete": false,
+      "screen_rejected": true,
+      "audit": "../eos-corrected-v1/audits/sparsegpt-task-s65.json",
+      "checkpoint_link": "../eos-corrected-v1/audits/sparsegpt-task-s65-checkpoint-score-link.json",
+      "generation_input_audit": "../eos-corrected-v1/audits/sparsegpt-task-s65-generation-inputs.json"
+    }
+  },
+  "matched_sparsegpt70_baseline": {
+    "pruning_job": 276,
+    "evaluation_job": 277,
+    "reason": "historical SparseGPT70 used different calibration/runtime; new baseline matches current representative-calibration geometry arms",
+    "source": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-sparsegpt-task-s70-seed0-batch32-repcal-v1",
+    "output": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/sparsegpt-task-s70"
+  },
+  "tests_passed": 28,
+  "deployment_cast_check": {
+    "tensors_verified": 192,
+    "all_masks_unchanged": true,
+    "all_finite": true,
+    "report": "../eos-corrected-v1/audits/seventy-percent-deployment-casts.json",
+    "provenance": "../eos-corrected-v1/audits/seventy-percent-deployment-casts-provenance.json"
+  },
+  "default_evaluator_fix": {
+    "state": "deferred_until_frozen_workers_complete",
+    "reason": "active resumable pruning jobs bind source hashes; current corrected evaluations use the tested versioned adapter",
+    "scope": "Shared behavior EOS union and explicit generation stops; execution-policy provenance for scores; legacy gsm8k_screened baseline/candidate config and row validation before any cached early return; preserve frozen pruning checkpoint reuse.",
+    "current_corrected_entry": "scripts/run_gsm8k_eos_control.py",
+    "existing_gpu_equivalence_evidence": {
+      "direct_eos_keyword_job": 255,
+      "adapter_evaluation_job": 270,
+      "scope": "first32 same SparseGPT60 source,batch,budget,runtime",
+      "state": "verified",
+      "raw_padded_matrices_identical": true,
+      "token_prefixes_identical": 32,
+      "proof": "../eos-corrected-v1/audits/sparsegpt-task-s60-direct-eos-equivalence.json"
+    },
+    "source_archive": "frozen-source-v1/manifest.json",
+    "source_archive_sha256": "91c4345299481e4e4a03e5a94134881010b83966ccde2d3ea5603d58e44b21b0",
+    "isolated_validation": "native-eos-pending/plan.json",
+    "isolated_tests_passed": 83,
+    "production_source_unchanged_verified": true,
+    "frozen_checkpoint_reuse_cpu_verified": "native-eos-pending/frozen-checkpoint-restore-compatibility.json",
+    "isolated_native_cases": 20,
+    "production_files_in_pending_patch": 3,
+    "legacy_screening_cache_guard_verified": true
+  },
+  "cpu_collector": {
+    "script": "scripts/collect_gsm8k_eos_results.py",
+    "script_sha256": "0aff005356432c70c341146be6b49e55ca9cc05a9cad92942629d5f2516154d6",
+    "pid": 2173779,
+    "exec_session": 63622,
+    "progress": "../eos-corrected-v1/collector/progress.json",
+    "scope": "CPU-only independent collection; no GPU submission or queue changes",
+    "verified_evaluations": 8,
+    "expected_evaluations": 16
+  },
+  "artifact_effect_figure": {
+    "figure": "../eos-corrected-v1/figures/eos-effect.html",
+    "data": "../eos-corrected-v1/figures/eos-effect.data.json",
+    "paired_conditions": 6,
+    "external_script_dependencies": 0
+  },
+  "read_only_observer_session": 79152,
+  "resume_randomness_audit": {
+    "report": "../eos-corrected-v1/audits/local-s60-resume-rng.json",
+    "script": "resume-rng-audit.py",
+    "sampled_position_arrays_equal": 160,
+    "atlas_saved_arrays_equal": 76,
+    "scope": "toy_CPU_sampling_and_atlas_RNG_history_check_not_GPU_mask_equivalence",
+    "active_run_source_code_matches": true
+  },
+  "generation_input_audit": {
+    "script": "generation-inputs-audit.py",
+    "script_sha256": "aaed4e2bd6fda968f9846219388cb90cdedf5777fdf76e4c442a685785fdf80b",
+    "summary": "../eos-corrected-v1/audits/generation-inputs-summary.json",
+    "evaluations_with_inputs_verified": 8,
+    "in_memory_corruption_controls_detected": 2,
+    "rerun_on_all_final_outputs_required": true
+  },
+  "sparsity_chart": {
+    "generator": "scripts/plot_gsm8k_sparsity_bracket.py",
+    "html": "../eos-corrected-v1/figures/sparsity-bracket.html",
+    "data": "../eos-corrected-v1/figures/sparsity-bracket.data.json",
+    "verified_points": 9,
+    "completed_requested_points": 7,
+    "scope": "descriptive_common128_no_fitted_zero_threshold",
+    "regenerate_after_new_final_input_audits": true
+  },
+  "downstream60_live_diagnostics": {
+    "audit": "../eos-corrected-v1/audits/downstream-weightdiag-s60-trace.json",
+    "stages_checked": 96,
+    "full_pruning_complete": true,
+    "linked_full_CPU_weight_audit": true,
+    "trace_arithmetic_and_exact_integer_sparsity_counts_passed": true
+  },
+  "source_coverage_audit": "../eos-corrected-v1/audits/unique-source-coverage.json",
+  "common128_input_parity": {
+    "audit": "../eos-corrected-v1/audits/common128-input-parity.json",
+    "auditor": "common-inputs-audit.py",
+    "verified_evaluations": 10,
+    "expected_evaluations": 16,
+    "all_expected_evaluations_present": false,
+    "in_memory_corruptions_detected": 3
+  },
+  "sparsegpt65_checkpoint_audit": {
+    "audit": "../eos-corrected-v1/audits/sparsegpt-task-s65-cpu.json",
+    "verified_stages": 96,
+    "all_finite": true,
+    "unintended_zero_rows_or_columns": 0,
+    "matched_configuration": "../eos-corrected-v1/audits/sparsegpt-task-s65-matched-configuration.json"
+  },
+  "stop_record": {
+    "confirmed_at": "2026-11-17T03:27:26.922056+00:00",
+    "reason": "user_intentionally_cancelled_keep_GPU_work_stopped_resume_later",
+    "cancelled_job_ids": [
+      262,
+      263,
+      264,
+      265,
+      273,
+      274,
+      275,
+      276,
+      277
+    ],
+    "checkpoint_stages_verified": 25,
+    "checkpoint_target_stages": 96,
+    "next_site": [
+      8,
+      "mlp.up_proj"
+    ],
+    "checkpoint_verification": "cancellations/20261117T025928Z/local-s65-prefix-verification.json",
+    "resume_plan": "cancellations/20261117T025928Z/resume-plan.json",
+    "collector_state": "exited_after_intentional_cancellations",
+    "collector_verified_evaluations": 10,
+    "restart_requires_explicit_user_request": true,
+    "jobs_restarted": false,
+    "path_base": "results/tangent/gsm8k/eos-corrected-v1"
+  },
+  "restart_requires_explicit_user_request": true,
+  "automation_running": false,
+  "last_live_observation_before_stop": {
+    "observed_at": "2026-11-17T02:35:23.292808+00:00",
+    "job": 262,
+    "state": "Running (R)",
+    "saved_stages": 3,
+    "collector_session": 63622,
+    "collector_pid_verified": 2173779,
+    "observer_session": 37286,
+    "observer_state": "running",
+    "collector_verified": 10,
+    "failed_jobs": [],
+    "new_complete_accuracy_point": true,
+    "completed_evaluation_job": 261
+  },
+  "last_scheduler_observation": {
+    "observed_at": "2026-11-17T03:27:26.922056+00:00",
+    "investigation_jobs_running": [],
+    "cancelled_job_ids": [
+      262,
+      263,
+      264,
+      265,
+      273,
+      274,
+      275,
+      276,
+      277
+    ],
+    "collector_running": false,
+    "source_worker_inactive": true
+  }
+}

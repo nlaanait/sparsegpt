@@ -6,6 +6,19 @@ import pytest
 from sparsifier.data.gsm8k import exact_number, parse_answer, digest, load_manifest, write_immutable
 from sparsifier.eval.gsm8k import read_completed, summarize
 from sparsifier.eval.memory_guard import GIB, check_budget, choose_allocator_cap
+from sparsifier.eval.memory_guard import limited_cuda_cap
+
+
+def test_guard_allocator_override_can_only_reduce_worker_request(monkeypatch):
+    monkeypatch.delenv("SPARSIFIER_GPU_CAP_GIB", raising=False)
+    assert limited_cuda_cap(56) == 56
+    monkeypatch.setenv("SPARSIFIER_GPU_CAP_GIB", "24")
+    assert limited_cuda_cap(56) == 24
+    assert limited_cuda_cap(20) == 20
+    for value in ("0", "-1", "nan", "inf", "bad"):
+        monkeypatch.setenv("SPARSIFIER_GPU_CAP_GIB", value)
+        with pytest.raises(ValueError):
+            limited_cuda_cap(56)
 
 
 @pytest.mark.parametrize("text,expected", [

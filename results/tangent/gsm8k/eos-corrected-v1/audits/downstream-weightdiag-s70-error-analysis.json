@@ -1,0 +1,94 @@
+{
+  "scope": "completed_common128_screen",
+  "count": 128,
+  "answers_sha256": "9fe59a2aebe2bf1e6c940593c9d6eacc68fa24f5aa447659fec0553c46264636",
+  "counts": {
+    "correct": 12,
+    "truncated": 80,
+    "completed_wrong_number": 30,
+    "completed_unparseable": 6
+  },
+  "truncated_max_repeated_8gram": {
+    "min": 16,
+    "median": 152.5,
+    "max": 1690
+  },
+  "completed_wrong_number_examples": [
+    {
+      "id": "gsm8k/train/2549",
+      "expected": "36",
+      "parsed": "12",
+      "text": "To solve this problem, we need to determine how many horseshoes the blacksmith can make before giving them to the riding school.\n\n**Step 1:** Calculate the number of horses in the farms.\nThere are 2 farms nearby. Each farm has 2 horses.\nTotal horses in farms = $2 \\times 2 = 4$ horses.\n\n**Step 2:** Calculate the number of horses in the stables.\nThere are 2 stables nearby. Each stable has 5 horses.\nTotal horses in stables = $2 \\times 5 = 10$ horses.\n\n**Step 3:** Calculate the total number of horses.\nThe blacksmith promises to give the horses he has finished his orders for the farms and stables.\n"
+    },
+    {
+      "id": "gsm8k/train/5685",
+      "expected": "80",
+      "parsed": "30",
+      "text": "Let $C$ be Cornelia's current age and $K$ be Kilee's current age.\nWe are given that Kilee is currently 20 years old ($K = 20$).\nIn 10 years, Kilee will be $K + 10$ years old.\nThe problem states that in 10 years, Cornelia will be three times as old as Kilee.\nThis means: $C + 10$ is equal to $3$ times Kilee's age in 10 years.\nEquation: $C + 10 = 3 \\times (K + 10)$\n\nSubstitute the known values:\n$K + 10 = 20 + 10 = 30$\n$C + 10 = 3 \\times 30$\n\nCalculate the value:\n$C + 10 = 90$\n\nSolve for $C$:\n$C = 90 - 10$\n$C = 30$\n\nSo, Cornelia is currently 30 years old.\n\nFinal answer: 30"
+    },
+    {
+      "id": "gsm8k/train/5801",
+      "expected": "130",
+      "parsed": "100",
+      "text": "To solve this problem, we need to calculate the total number of animals Aubree saw on two separate occasions.\n\n**Step 1:**\nFirst, she saw 20 beavers and 40 chipmunks.\nTotal = $20 + 40$.\n\n**Step 2:**\nSecond, she saw the number of beavers doubled and the number of chipmunks decreased by 10.\nNumber of beavers = $2 \\times 20$.\nNumber of chipmunks = $40 - 10$.\n\n**Calculation:**\n1. **First trip:**\n   Beavers: $20$\n   Chipmunks: $40$\n   Total: $20 + 40 = 60$\n\n2. **Second trip:**\n   Beavers: $2 \\times 20 = 40$\n   Chipmunks: $40 - 10 = 30$\n   Total: $40 + 30 = 70$\n\n**Total:**\nThe total number of animal"
+    }
+  ],
+  "completed_unparseable_examples": [
+    {
+      "id": "gsm8k/train/5721",
+      "expected": "7",
+      "text": "end} $$\n$$ \\text{Total candies} \\times \\text{Friends} = \\text{Candies per friend} $$\n$$ \\text{Total candies} \\times \\text{Friends} = \\text{Candies per friend} $$\n$$ \\text{Total candies} \\times \\text{Friends} = \\text{Candies per friend} $$\n$$ \\text{Total candies} \\times \\text{Friends} = \\text{Candies per friend} $$\n$$ \\text{Total candies} \\times \\text{Friends} = \\text{Candies per friend} $$\n$$ \\text{Total candies} \\times \\text{Friends} = \\text{Candies per friend} $$\n$$ \\text{Total candies} \\times \\text{Friends} = \\text{Candies per friend} $$\n$$ \\text{Total candies} \\times \\text{Friends} = \\text"
+    },
+    {
+      "id": "gsm8k/train/2380",
+      "expected": "371",
+      "text": "tion.\n$$3 \\times 128 \\text{ ounces} - 13 \\text{ ounces}$$\n\n**Step 5:** Calculate the remaining amount.\n$$3 \\times 128 \\text{ ounces} - 13 \\text{ ounces}$$\n\n**Step 6:** Perform the subtraction.\n$$3 \\times 128 \\text{ ounces} - 13 \\text{ ounces}$$\n\n**Step 7:** Calculate the final result.\n$$3 \\times 128 \\text{ ounces} - 13 \\text{ ounces}$$\n\n**Step 8:** Perform the subtraction.\n$$3 \\times 128 \\text{ ounces} - 13 \\text{ ounces}$$\n\n**Step 9:** Calculate the final answer.\n$$3 \\times 128 \\text{ ounces} - 13 \\text{ ounces}$$\n\n**Step 10:** Perform the subtraction.\n$$3 \\times 128 \\text{ ounces} - 13 \\text"
+    },
+    {
+      "id": "gsm8k/train/7102",
+      "expected": "28125",
+      "text": "\n    $$ \\text{Width} = \\frac{1}{8 \\times 1000 \\text{ feet} $$\n    $$ \\text{Width} = \\frac{1}{8 \\times 1000 \\text{ feet} $$\n    $$ \\text{Width} = \\frac{1}{8 \\times 1000 \\text{ feet} $$\n    $$ \\text{Width} = \\frac{1}{8 \\times 1000 \\text{ feet} $$\n    $$ \\text{Width} = \\frac{1}{8 \\times 1000 \\text{ feet} $$\n    $$ \\text{Width} = \\frac{1}{8 \\times 1000 \\text{ feet} $$\n    $$ \\text{Width} = \\frac{1}{8 \\times 1000 \\text{ feet} $$\n    $$ \\text{Width} = \\frac{1}{8 \\times 1000 \\text{ feet} $$\n    $$ \\text{Width} = \\frac{1}{8 \\times 1000 \\text{ feet} $$\n    $$ \\text{Width} = \\frac{1}{8 \\times 1000 \\text"
+    }
+  ],
+  "completed_unparseable_marker_inspection": [
+    {
+      "id": "gsm8k/train/5721",
+      "expected": "7",
+      "numeric_candidates_on_explicit_marker_lines": [],
+      "contains_correct_explicit_marker_value": false
+    },
+    {
+      "id": "gsm8k/train/2380",
+      "expected": "371",
+      "numeric_candidates_on_explicit_marker_lines": [],
+      "contains_correct_explicit_marker_value": false
+    },
+    {
+      "id": "gsm8k/train/7102",
+      "expected": "28125",
+      "numeric_candidates_on_explicit_marker_lines": [],
+      "contains_correct_explicit_marker_value": false
+    },
+    {
+      "id": "gsm8k/train/5612",
+      "expected": "20",
+      "numeric_candidates_on_explicit_marker_lines": [
+        "15",
+        "2"
+      ],
+      "contains_correct_explicit_marker_value": false
+    },
+    {
+      "id": "gsm8k/train/5488",
+      "expected": "655502",
+      "numeric_candidates_on_explicit_marker_lines": [],
+      "contains_correct_explicit_marker_value": false
+    },
+    {
+      "id": "gsm8k/train/7202",
+      "expected": "20",
+      "numeric_candidates_on_explicit_marker_lines": [],
+      "contains_correct_explicit_marker_value": false
+    }
+  ]
+}

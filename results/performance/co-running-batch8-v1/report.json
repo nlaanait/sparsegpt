@@ -1,0 +1,193 @@
+{
+  "complete": true,
+  "config": {
+    "backend": {
+      "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn",
+      "causal_conv1d_update": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_update",
+      "torch_chunk_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_chunk_gated_delta_rule",
+      "torch_recurrent_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_recurrent_gated_delta_rule"
+    },
+    "batches": [
+      8
+    ],
+    "generation_tokens": 32,
+    "ids": [
+      "gsm8k/train/5723",
+      "gsm8k/train/1345",
+      "gsm8k/train/3035",
+      "gsm8k/train/2549",
+      "gsm8k/train/5685",
+      "gsm8k/train/5801",
+      "gsm8k/train/5350",
+      "gsm8k/train/1873"
+    ],
+    "manifest_sha256": "60107022919db28eb59dc9d7effa79630997cf744fd929a8643558397e35cdb5",
+    "model": "Qwen/Qwen3.5-9B",
+    "packages": {
+      "flash-linear-attention": "0.6.0",
+      "kernels": "0.17.3",
+      "torch": "2.12.0+cu130",
+      "transformers": "5.22.2"
+    },
+    "purpose": "throughput_and_parity_only_not_accuracy",
+    "repeats": 6,
+    "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+    "seed": 0,
+    "source_sha256": "3723567a4b7ca2fe35cafebbb7ab73c61bee5756588c943c311f69960d7cd8f5"
+  },
+  "limitations": [
+    "Dense checkpoint only; pruned candidates require their own validation",
+    "32 forced decode steps are a diagnostic, not a 2048-token accuracy evaluation",
+    "VJP timing excludes weight contractions, atlas fitting and full calibration",
+    "Passing these prompts is necessary but insufficient to enable production batching",
+    "CUDA allocator and system unified-memory measurements must not be added"
+  ],
+  "measurements": [
+    {
+      "batch": 8,
+      "exact_32_token_sequence_matches": 7,
+      "examples": 8,
+      "host": {
+        "available_gib": 75.02246475219727,
+        "total_gib": 121.69016647338867,
+        "used_gib": 46.667701721191406
+      },
+      "max_logit_abs_difference": 0.28515625,
+      "next_token_matches": 8,
+      "peak_cuda_allocated_gib": 17.13318395614624,
+      "peak_cuda_reserved_gib": 17.611328125,
+      "phase": "prefill",
+      "rms_logit_difference": 0.04905631020665169,
+      "samples_seconds": [
+        1.5432508131489158,
+        1.5309096281416714,
+        1.5704234899021685,
+        1.6279909792356193,
+        1.548325000796467,
+        1.5919168051332235
+      ],
+      "seconds": 1.5593742453493178,
+      "unit": "prompts",
+      "units_per_second": 5.130263003803752
+    },
+    {
+      "batch": 8,
+      "exact_32_token_sequence_matches": 7,
+      "examples": 8,
+      "host": {
+        "available_gib": 74.62435150146484,
+        "total_gib": 121.69016647338867,
+        "used_gib": 47.06581497192383
+      },
+      "max_logit_abs_difference": 0.28515625,
+      "next_token_matches": 8,
+      "peak_cuda_allocated_gib": 17.542538166046143,
+      "peak_cuda_reserved_gib": 17.611328125,
+      "phase": "generation",
+      "rms_logit_difference": 0.04905631020665169,
+      "samples_seconds": [
+        8.230251640081406,
+        8.114139662124217,
+        8.086789002176374,
+        9.391095774713904,
+        8.24710710439831,
+        7.619236019905657
+      ],
+      "seconds": 8.172195651102811,
+      "unit": "generated_tokens",
+      "units_per_second": 31.32573067624166
+    },
+    {
+      "host": {
+        "available_gib": 74.60508728027344,
+        "total_gib": 121.69016647338867,
+        "used_gib": 47.085079193115234
+      },
+      "max_abs_difference": 0.0,
+      "max_abs_relative_to_reference_max": 0.0,
+      "peak_cuda_allocated_gib": 16.814122200012207,
+      "peak_cuda_reserved_gib": 17.615234375,
+      "phase": "backward_only",
+      "probe_chunk": 1,
+      "probes": 8,
+      "samples_seconds": [
+        0.07120722299441695,
+        0.07075737928971648,
+        0.07404001662507653,
+        0.0706639220006764,
+        0.07099438877776265,
+        0.07140117697417736
+      ],
+      "seconds": 0.0711008058860898
+    },
+    {
+      "host": {
+        "available_gib": 74.60526657104492,
+        "total_gib": 121.69016647338867,
+        "used_gib": 47.08489990234375
+      },
+      "max_abs_difference": 0.000244140625,
+      "max_abs_relative_to_reference_max": 0.0028089887640449437,
+      "peak_cuda_allocated_gib": 16.832401752471924,
+      "peak_cuda_reserved_gib": 17.615234375,
+      "phase": "backward_only",
+      "probe_chunk": 2,
+      "probes": 8,
+      "samples_seconds": [
+        0.05723227979615331,
+        0.048116437159478664,
+        0.05749194556847215,
+        0.05761980405077338,
+        0.05764585081487894,
+        0.05655237007886171
+      ],
+      "seconds": 0.05736211268231273
+    },
+    {
+      "host": {
+        "available_gib": 74.62881469726562,
+        "total_gib": 121.69016647338867,
+        "used_gib": 47.06135177612305
+      },
+      "max_abs_difference": 0.000244140625,
+      "max_abs_relative_to_reference_max": 0.0028089887640449437,
+      "peak_cuda_allocated_gib": 16.86697816848755,
+      "peak_cuda_reserved_gib": 17.615234375,
+      "phase": "backward_only",
+      "probe_chunk": 4,
+      "probes": 8,
+      "samples_seconds": [
+        0.029823887161910534,
+        0.029799597803503275,
+        0.03248941618949175,
+        0.02969193272292614,
+        0.030814983882009983,
+        0.02981478301808238
+      ],
+      "seconds": 0.029819335089996457
+    },
+    {
+      "host": {
+        "available_gib": 74.6231460571289,
+        "total_gib": 121.69016647338867,
+        "used_gib": 47.067020416259766
+      },
+      "max_abs_difference": 0.000244140625,
+      "max_abs_relative_to_reference_max": 0.0028089887640449437,
+      "peak_cuda_allocated_gib": 16.9361310005188,
+      "peak_cuda_reserved_gib": 17.615234375,
+      "phase": "backward_only",
+      "probe_chunk": 8,
+      "probes": 8,
+      "samples_seconds": [
+        0.03135457215830684,
+        0.030285810586065054,
+        0.03184472071006894,
+        0.048591433092951775,
+        0.05732946516945958,
+        0.05592223582789302
+      ],
+      "seconds": 0.04021807690151036
+    }
+  ]
+}

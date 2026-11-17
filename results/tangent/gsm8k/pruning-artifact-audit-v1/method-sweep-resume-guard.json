@@ -1,0 +1,14 @@
+{
+  "legacy_path": "results/tangent/qwen35-0.8b-method-sweep.json",
+  "legacy_sha256_unchanged": "e5b3b68af7ebd3b6dbea801103a04a875686faaae5a9b538ead25e7ef4313408",
+  "rejection": "method-sweep provenance differs or is missing; use a new --output path; historical points cannot be relabeled as current measurements",
+  "new_default_result": "results/tangent/qwen08-method-sweep-curvature-trace-v2.json",
+  "driver_sha256": "8ff385bae86bdbb18e80bbdc452f2b22d548482cb7006be37b32ecdf03dc9af2",
+  "cpu_tests_passed": 12,
+  "real_fingerprint": {
+    "source_files": 62,
+    "pair_files": 373,
+    "child_interpreter": "/home/nlaanait/sparsegpt-tangent-revised/.pixi/envs/gb10/bin/python"
+  },
+  "no_corrected_qwen08_measurements_created": true
+}

@@ -1,0 +1,63 @@
+{
+  "folder": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-downstream-weightdiag-s55-seed0-batch32-repcal-v1-decision512",
+  "config_sha256": "4542dd4b4368f6af7c806ef663cb1fc4c1a4555a67da10cb0d81c8cd75b70169",
+  "answers_sha256": "f9a7643461e955afb9a9ad75c533e8be3a2d6b43b8c82bf30432f63990d98f42",
+  "count": 128,
+  "correct": 98,
+  "truncated": 4,
+  "rescoring_mismatches": 0,
+  "correct_ignoring_truncation_same_strict_parser": 98,
+  "batch_size": 32,
+  "complete": false,
+  "examples": [
+    {
+      "id": "gsm8k/train/5723",
+      "prefix": "To solve this problem, we need to determine the total number of tissues Tucker had initially and then subtract the number he used.\n\n**Step 1: Calculate the total number of tissues.**\nTucker bought 3 boxes, and each box contains 160 tissues.\n$$ \\text{Total tissues} = 3 \\times 160 $$\n$$ \\text{Total ti",
+      "suffix": "$$\n\n**Step 2: Calculate the remaining tissues.**\nTucker used 210 tissues. We subtract this from the total number of tissues.\n$$ \\text{Remaining tissues} = \\text{Total tissues} - \\text{Tissues used} $$\n$$ \\text{Remaining tissues} = 480 - 210 $$\n$$ \\text{Remaining tissues} = 270 $$\n\nFinal answer: 270\n"
+    },
+    {
+      "id": "gsm8k/train/1345",
+      "prefix": "To solve this problem, let's break down the information step by step.\n\n**1. Define the variables:**\nLet $A$ be the amount spent on Adidas.\nLet $N$ be the amount spent on Nike.\nLet $S$ be the amount spent on Skechers.\nLet $C$ be the amount spent on clothes.\n\n**2. Translate the given relationships int",
+      "suffix": "+ 1,800 + 3,000 + C$\n\nSum of sneakers:\n$600 + 1,800 + 3,000 = 5,400$\n\n**5. Solve for the amount spent on clothes ($C$):**\n$8,000 - 5,400 = C$\n$C = 2,000$\n\n**Verification:**\nAdidas ($600) + Nike ($1,800) + Skechers ($3,000) + Clothes ($2,000) = $8,000.\nThe calculation holds true.\n\nFinal answer: 2000\n"
+    }
+  ],
+  "screen_complete": true,
+  "full512_complete": false,
+  "screen_rejected": true,
+  "screen": {
+    "accuracy_drop_pp": 19.53125,
+    "candidate_correct": 98,
+    "dense_correct": 123,
+    "max_accuracy_drop_pp": 15,
+    "passed": false,
+    "purpose": "exploratory_compute_screen_not_retention_claim",
+    "screen_count": 128,
+    "screen_ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb"
+  },
+  "same_ids_comparison": {
+    "dense": {
+      "count": 128,
+      "correct": 123,
+      "truncated": 1,
+      "answers_sha256": "99ba0eaf1a2e4c8386fee221e6d40ec7636de23f6310583c63fe378cc0330744"
+    },
+    "sparsegpt55": {
+      "count": 128,
+      "correct": 95,
+      "truncated": 4,
+      "answers_sha256": "89e2b7eb215c70d9977362412e03a037a583bea0f05bbaac857d8463cbef2d92"
+    },
+    "local55": {
+      "count": 128,
+      "correct": 83,
+      "truncated": 19,
+      "answers_sha256": "5ffe4fc322abef7bc880953f6da52bc8a4f4fd69bf16472bdfaec55f8e50bccd"
+    }
+  },
+  "evaluation_config_differences_from_downstream70": [
+    "source_config_sha256",
+    "source_report_sha256"
+  ],
+  "scope": "completed common128 bracket score; no512 result",
+  "accuracy": 0.765625
+}

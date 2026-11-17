@@ -4,6 +4,7 @@ GPU execution belongs in the existing guarded gflow workflow. This module
 does not submit jobs. Whole-neuron stages use a separate schema/version.
 """
 from __future__ import annotations
+from sparsifier.eval.gsm8k_batching import policy as batch_policy
 from dataclasses import asdict
 import argparse
 import inspect
@@ -15,20 +16,25 @@ import numpy as np
 import torch
 from torch.nn import functional as F
 from sparsifier.data.gsm8k import digest, load_manifest, write_immutable
+from sparsifier.data.gsm8k_calibration import DEFAULT_MANIFEST, load_calibration, regime
 from sparsifier.eval.gsm8k import MODEL, REVISION, atomic_json, render_prompt
 from sparsifier.eval.gsm8k_capture import check_competence
 from sparsifier.eval.gsm8k_pruning import behavior, select_validation
 from sparsifier.eval.gsm8k_sequential import collect, sites_for
 from sparsifier.eval.gsm8k_downstream import AnchorPrefix, anchor_block, probe_rows, readout_basis
 from sparsifier.eval.memory_guard import configure_cuda, host_memory
+from sparsifier.eval.gsm8k_batching import reference_backend, policy
 from sparsifier.prune.whole_neuron import (
     VERSION, METRICS, SELECTORS, WholeNeuronConfig, SwiGLUTriplet, prune_triplet, apply_candidate,
 )
 from sparsifier.prune.whole_neuron_metric import FrozenNeuronMetric, NeuronProbeConsumer, StreamedGroupMetric
 from sparsifier.prune.whole_neuron_io import save_stage, load_stage, file_hash
-from sparsifier.prune.downstream import DownstreamTangentCalibrator, TangentAnchor
+from sparsifier.prune.downstream import DownstreamTangentCalibrator, TangentAnchor, WEIGHT_CONTRACTION
 from sparsifier.prune.factor_atlas import FactorAtlas, projector_diagonals
 from sparsifier.prune.gram_dictionary import GramBlockDictionary
+from sparsifier.prune.curvature_replay import DiskFactorReplay, ReplayNeuronMetric, ReplayProbeConsumer
+from sparsifier.eval.gsm8k_input_tangents import fit_input_tangents
+from sparsifier.prune.progress import Progress, compact_diagnostics, scoped
 
 MODULES = "mlp.gate_proj,mlp.up_proj,mlp.down_proj"
 
@@ -48,32 +54,6 @@ def memory_estimate(hidden, width, sparsity, *, element_bytes=4):
             "excludes": "model, backward graphs, atlas and framework workspace; not a peak-memory guarantee"}
 
 
-def reference_backend():
-    """Strict opt-in for this driver; do not change historical helper semantics."""
-    from transformers.models.qwen3_5 import modeling_qwen3_5 as modeling
-    from sparsifier.models.qwen import _PYTORCH_ATTENTION
-    identities = {}
-    for name in _PYTORCH_ATTENTION:
-        fn = getattr(modeling, name)
-        seen = set()
-        while True:
-            if id(fn) in seen:
-                raise RuntimeError("cyclic reference backend wrapper")
-            seen.add(id(fn))
-            if isinstance(fn, torch.nn.Module):
-                closure = inspect.getclosurevars(fn.forward).nonlocals
-                if "func" not in closure:
-                    raise RuntimeError(f"unsupported backend module wrapper for {name}")
-                fn = closure["func"]
-            elif hasattr(fn, "__wrapped__"):
-                fn = fn.__wrapped__
-            else:
-                break
-        if not inspect.isfunction(fn) or fn.__name__ != name:
-            raise RuntimeError(f"could not verify reference backend for {name}")
-        setattr(modeling, name, fn)
-        identities[name] = fn.__module__+"."+fn.__qualname__
-    return identities
 
 
 def package_versions():
@@ -157,12 +137,13 @@ def calibration_positions(tokenizer, rows, c4_tokens, seed):
 
 
 def calibrate(model, tokenizer, block, rows, c4_tokens, config, output, *,
-              num_probes=8, probe_count=32, cache_budget_bytes=256*1024**2):
+              num_probes=8, probe_count=32, cache_budget_bytes=256*1024**2,
+              replay_disk_budget_bytes=64*1024**3, replay_chunk_size=32, progress=None):
     start = time.monotonic()
     if any(row["split"] not in ("geometry_fit", "pruning_calibration") for row in rows):
         raise ValueError("calibration contains held-out data")
     triplet = SwiGLUTriplet(model.model.layers[block].mlp)
-    geometry = config.metric != "ambient" and config.alpha > 0 and int(config.sparsity*len(triplet.gate.weight)) > 0
+    geometry = config.metric != "ambient" and config.alpha+config.input_alpha > 0 and int(config.sparsity*len(triplet.gate.weight)) > 0
     is_downstream = geometry and config.metric.startswith("downstream_")
     index = anchor_block(block, len(model.model.layers)) if is_downstream else block
     anchor = model.model.layers[index] if is_downstream else triplet.down
@@ -170,10 +151,10 @@ def calibrate(model, tokenizer, block, rows, c4_tokens, config, output, *,
     captured = []
     def capture(module, args, output):
         value = output[0] if isinstance(output, tuple) else output
-        captured.append(value[0, -1].detach().float().cpu().numpy())
+        captured.extend(value[:, -1].detach().float().cpu().numpy())
     handle = anchor.register_forward_hook(capture) if geometry else None
     try:
-        x, y, ambient, c4 = collect(prefix, tokenizer, triplet.down, rows, c4_tokens, config.seed)
+        x, y, ambient, c4 = collect(prefix, tokenizer, triplet.down, rows, c4_tokens, config.seed, progress=progress)
     finally:
         if handle is not None:
             handle.remove()
@@ -185,18 +166,48 @@ def calibrate(model, tokenizer, block, rows, c4_tokens, config, output, *,
     if not geometry:
         metadata["calibration_seconds"] = time.monotonic()-start
         return triplet, ambient, None, None, metadata
+    input_basis = None
+    if config.input_alpha:
+        input_path = output/f"input-atlas-{block:03d}.npz"
+        input_basis = fit_input_tangents(x, rows, input_path, config.seed, config.input_structure,
+                                        progress=scoped(progress, atlas_role="input"))
+        metadata.update(input_atlas_sha256=file_hash(input_path), input_alpha=config.input_alpha,
+                        input_structure=config.input_structure, input_fit_ids=[r["id"] for r in rows if r["split"] == "geometry_fit"])
     fit = np.array([row["split"] == "geometry_fit" for row in rows])
     atlas = FactorAtlas(8, 4, 2, 4, 1, config.seed)
     atlas.dictionary = GramBlockDictionary(8, 4, 2, config.seed)
-    atlas.fit(np.stack(captured[:len(rows)])[fit])
+    atlas_readouts = np.stack(captured[:len(rows)])
+    atlas.fit(atlas_readouts[fit], **({"progress": scoped(progress,
+        atlas_role="downstream_output" if is_downstream else "local_output")} if progress is not None else {}))
+    if progress is not None:
+        metadata["atlas"] = atlas.diagnostics(atlas_readouts)
     atlas_path = output/f"atlas-{block:03d}.npz"
     atlas.save(atlas_path)
     metadata["atlas_sha256"] = file_hash(atlas_path)
+    replay = None
+    if config.compensation == "full_metric_refit":
+        replay = DiskFactorReplay(output/f"curvature-{block:03d}",
+            provenance={"block": block, "seed": config.seed, "metric": config.metric,
+                "atlas_sha256": metadata["atlas_sha256"], "input_atlas_sha256": metadata.get("input_atlas_sha256"),
+                "input_structure": config.input_structure, "num_probes": num_probes,
+                "rows": [r["id"] for r in rows]},
+            cache_budget_bytes=cache_budget_bytes, disk_budget_bytes=replay_disk_budget_bytes)
     if not is_downstream:
         frames, active, assignment = atlas.frames(y, mode="local")
         q = [torch.as_tensor(frame, dtype=torch.float32) for frame in frames]
-        metric = FrozenNeuronMetric(len(ambient), local_inputs=torch.from_numpy(x), frames=q,
-                                   cache_budget_bytes=cache_budget_bytes)
+        if replay is not None:
+            for begin in range(0, len(x), replay_chunk_size):
+                group = q[begin:begin+replay_chunk_size]
+                rank = max(frame.shape[1] for frame in group)
+                padded = torch.zeros(len(group), group[0].shape[0], rank)
+                for row, frame in enumerate(group):
+                    padded[row, :, :frame.shape[1]] = frame
+                replay.append("local", {"inputs": torch.from_numpy(x[begin:begin+len(group)]), "basis": padded})
+            metric = ReplayNeuronMetric(len(ambient), replay, chunk_size=replay_chunk_size)
+            metadata["replay_manifest_sha256"] = replay.seal()
+        else:
+            metric = FrozenNeuronMetric(len(ambient), local_inputs=torch.from_numpy(x), frames=q,
+                                       cache_budget_bytes=cache_budget_bytes)
         k = metric.diagonal(triplet.down.weight.shape, dtype=torch.float32)
         metadata.update(geometry_fit_ids=[row["id"] for row in rows if row["split"] == "geometry_fit"],
                         geometric_readout_ids=[row["id"] for row in rows],
@@ -206,28 +217,52 @@ def calibrate(model, tokenizer, block, rows, c4_tokens, config, output, *,
         first_ids = tokenizer.encode(render_prompt(tokenizer, selected[0]["question"]), add_special_tokens=False)
         tokens = torch.tensor([first_ids], device=triplet.down.weight.device)
         metadata["backward_validation"] = validate_backward(prefix, triplet.down, anchor, tokens)
-        consumer = NeuronProbeConsumer(triplet.down.weight,
-            cache_budget_bytes=cache_budget_bytes if config.compensation == "full_metric_refit" else 0)
+        consumer = ReplayProbeConsumer(triplet.down.weight, replay, collect_group_scores=replay is None)
+        input_consumer = ReplayProbeConsumer(triplet.down.weight, replay, term="input", collect_group_scores=replay is None)
         mode = config.metric.removeprefix("downstream_")
         calibration = DownstreamTangentCalibrator({"down": triplet.down},
             {"next_block": TangentAnchor(anchor, lambda out: readout_basis(atlas, out),
                 select=lambda out: out[0] if isinstance(out, tuple) else out)},
             alpha=config.alpha, metric=mode, num_probes=num_probes, seed=config.seed,
-            probe_consumer=consumer)
-        for row in selected:
+            input_alpha=config.input_alpha, input_structure=config.input_structure,
+            input_bases={"down": input_basis} if input_basis is not None else None,
+            probe_consumer=consumer, input_probe_consumer=input_consumer)
+        for index, row in enumerate(selected):
+            problem_started = time.monotonic()
             ids = tokenizer.encode(render_prompt(tokenizer, row["question"]), add_special_tokens=False)
             tokens = torch.tensor([ids], device=triplet.down.weight.device)
             if not 0 < len(ids) <= 2048:
                 raise ValueError("backward calibration exceeds prompt budget")
             calibration.run(lambda: prefix(input_ids=tokens, use_cache=False, logits_to_keep=1), collect_ambient=False)
+            if progress is not None:
+                progress({"event": "pullback_calibrated", "problems_done": index+1,
+                    "problems_total": len(selected), "requested_probes_per_problem": num_probes,
+                    "probe_contractions": consumer.count, "input_probe_factors": input_consumer.count,
+                    "problem_seconds": time.monotonic()-problem_started,
+                    "raw_geometry_energy_accumulated": float(calibration.solvers["down"].geometry_energy.sum())})
         k = calibration.solvers["down"].geometry_energy/len(ambient)
-        metric = (FrozenNeuronMetric(len(ambient), probes=consumer.probes, cache_budget_bytes=cache_budget_bytes)
-                  if consumer.probes else StreamedGroupMetric(consumer.group_scores, len(ambient)))
+        if config.input_alpha:
+            k = {"base": k, "input": calibration.solvers["down"].input_geometry_energy/len(ambient)}
+        if replay is not None:
+            metadata["replay_manifest_sha256"] = replay.seal()
+            metric = ReplayNeuronMetric(len(ambient), replay, chunk_size=replay_chunk_size)
+            if mode == "activation_diagonal":
+                full_base = metric.diagonal(triplet.down.weight.shape)
+                k = {"base": full_base, "input": k["input"]} if config.input_alpha else full_base
+                metadata["full_metric_diagonal"] = "shared_weight_pullback"
+        else:
+            metric = StreamedGroupMetric(consumer.group_scores, len(ambient),
+                                        input_group_energy=input_consumer.group_scores)
         metadata.update(probe_ids=[row["id"] for row in selected], probe_contractions=consumer.count,
-                        cached_probe_bytes=consumer.cache_bytes,
-                        full_direction_group_energy=consumer.group_scores.tolist())
+                        weight_contraction=WEIGHT_CONTRACTION,
+                        cached_probe_bytes=0, input_probe_factors=input_consumer.count,
+                        group_scores_collected=replay is None,
+                        full_direction_group_energy=consumer.group_scores.tolist() if replay is None else None)
         # Do not retain an unnecessary entrywise Hessian at the group solve.
         calibration.solvers["down"].free()
+    if replay is not None:
+        metadata.update(replay_disk_bytes=replay.disk_bytes, replay_factors=len(replay.entries),
+                        replay_cache_budget_bytes=cache_budget_bytes, replay_chunk_size=replay_chunk_size)
     metadata["calibration_seconds"] = time.monotonic()-start
     return triplet, ambient, k, metric, metadata
 
@@ -267,8 +302,11 @@ def main():
     from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
     from sparsifier.eval import gsm8k_capture, gsm8k_sequential, gsm8k_downstream
     from sparsifier.prune import whole_neuron, whole_neuron_metric, whole_neuron_io, downstream, rescale, factor_atlas, gram_dictionary
+    from sparsifier.prune import curvature_replay, two_sided
+    from sparsifier.eval import gsm8k_input_tangents
     parser = argparse.ArgumentParser(description=__doc__)
-    for name in ("manifest", "pilot-report", "c4-capture", "output"):
+    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    for name in ("pilot-report", "c4-capture", "output"):
         parser.add_argument("--"+name, type=Path, required=True)
     parser.add_argument("--blocks", default="all")
     parser.add_argument("--modules", default=MODULES)
@@ -283,18 +321,31 @@ def main():
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--eval-count", type=int, default=32)
     parser.add_argument("--num-probes", type=int, default=8)
-    parser.add_argument("--probe-count", type=int, default=32)
+    parser.add_argument("--probe-count", type=int, help="manifest-defined original sample count; controlled diagnostics default to 32")
     parser.add_argument("--max-new-tokens", type=int, default=2048)
     parser.add_argument("--cache-budget-mib", type=int, default=256)
+    parser.add_argument("--skip-behavior", action="store_true", help="candidate-only phase; evaluate with the shared decision protocol")
+    parser.add_argument("--input-alpha", type=float, default=0.)
+    parser.add_argument("--input-structure", choices=("independent_tokens", "shared_directions"), default="independent_tokens")
+    parser.add_argument("--full-metric-solver", choices=("auto", "cg", "direct"), default="auto")
+    parser.add_argument("--full-metric-rtol", type=float, default=1e-5)
+    parser.add_argument("--full-metric-max-iterations", type=int, default=200)
+    parser.add_argument("--replay-disk-budget-gib", type=float, default=64.)
+    parser.add_argument("--replay-chunk-size", type=int, default=32)
     args = parser.parse_args()
+    manifest = load_calibration(args.manifest)
+    if args.probe_count is None:
+        args.probe_count = manifest.get("backward_problem_count", 32)
     cfg = WholeNeuronConfig(args.sparsity, args.metric,
         alpha=(0. if args.metric == "ambient" else 1.) if args.alpha is None else args.alpha,
         selector=args.selector, compensation=args.compensation, blocksize=args.blocksize,
-        percdamp=args.percdamp, unsupported_policy=args.unsupported_policy, seed=args.seed)
-    if min(args.eval_count, args.num_probes, args.probe_count, args.max_new_tokens, args.cache_budget_mib) < 1:
-        parser.error("positive evaluation/probe/cache budgets required")
+        percdamp=args.percdamp, unsupported_policy=args.unsupported_policy, seed=args.seed,
+        input_alpha=args.input_alpha, input_structure=args.input_structure,
+        full_metric_solver=args.full_metric_solver, full_metric_rtol=args.full_metric_rtol,
+        full_metric_max_iterations=args.full_metric_max_iterations)
+    if min(args.eval_count, args.num_probes, args.probe_count, args.max_new_tokens) < 1 or args.cache_budget_mib < 0:
+        parser.error("positive evaluation/probe budgets and nonnegative cache budget required")
     pilot_hash = check_competence(args.pilot_report)
-    manifest = load_manifest(args.manifest)
     rows = [row for row in manifest["rows"] if row["split"] in ("geometry_fit", "pruning_calibration")]
     evaluation = select_validation(manifest["rows"], args.eval_count, seed=0)
     c4_config = json.loads((args.c4_capture/"config.json").read_text())
@@ -306,24 +357,38 @@ def main():
     text_config = getattr(hf_config, "text_config", hf_config)
     blocks = list(range(text_config.num_hidden_layers)) if args.blocks == "all" else [int(b) for b in args.blocks.split(",")]
     sites = triplet_sites(blocks, args.modules.split(","), text_config.num_hidden_layers)
-    if cfg.compensation == "full_metric_refit" and cfg.alpha > 0 and text_config.hidden_size*text_config.intermediate_size > 2048:
-        parser.error("production full-metric refit requires deterministic replay; use bounded references (<=2048 coordinates)")
+    if not np.isfinite(args.replay_disk_budget_gib) or args.replay_disk_budget_gib <= 0 or args.replay_chunk_size < 1:
+        parser.error("positive replay disk and chunk budgets required")
     # Match execution across ambient/local/downstream cells in this new method.
     backend = reference_backend()
     repo = Path(__file__).resolve().parents[3]
     sources = [Path(__file__)] + [Path(module.__file__) for module in (gsm8k_capture, gsm8k_sequential,
-        gsm8k_downstream, whole_neuron, whole_neuron_metric, whole_neuron_io, downstream, rescale, factor_atlas, gram_dictionary)]
+        gsm8k_downstream, whole_neuron, whole_neuron_metric, whole_neuron_io, downstream, rescale, factor_atlas,
+        gram_dictionary, curvature_replay, two_sided, gsm8k_input_tangents)]
     config = {"method_version": VERSION, "arm": "whole_neuron_"+cfg.metric,
         "model": MODEL, "revision": REVISION, "manifest_sha256": manifest["manifest_sha256"],
+        "calibration_regime": regime(manifest),
         "pilot_sha256": pilot_hash, "c4_config_sha256": digest(c4_config), "pruning": asdict(cfg),
         "sites": [list(s) for s in sites], "calibration_ids": [r["id"] for r in rows],
         "evaluation_ids": [r["id"] for r in evaluation], "max_new_tokens": args.max_new_tokens,
         "num_probes": args.num_probes, "probe_count": args.probe_count,
         "cache_budget_bytes": args.cache_budget_mib*1024**2, "backend": backend, "packages": package_versions(),
+        "replay_disk_budget_bytes": int(args.replay_disk_budget_gib*1024**3), "replay_chunk_size": args.replay_chunk_size,
+        "two_sided_version": two_sided.VERSION, "full_metric_version": curvature_replay.VERSION,
         "thinking": False, "purpose": "whole_neuron_development_not_confirmatory",
         "memory_estimate": memory_estimate(text_config.hidden_size, text_config.intermediate_size, cfg.sparsity),
         "sources": {str(path.relative_to(repo)): file_hash(path) for path in sources}}
+    if cfg.input_alpha:
+        config["arm"] += "_two_sided"
+    if cfg.compensation == "full_metric_refit" and cfg.alpha+cfg.input_alpha > 0:
+        config["arm"] += "_full_metric_refit"
+    if args.skip_behavior:
+        config["skip_behavior"] = True
+        config["diagnostic_validation_ids"] = config["evaluation_ids"]
+        config["evaluation_ids"] = []
     args.output.mkdir(parents=True, exist_ok=True)
+    config["weight_contraction"] = WEIGHT_CONTRACTION
+    config["batching"] = batch_policy()
     write_immutable(args.output/"config.json", config)
     config_hash = digest(config)
     report_path = args.output/"report.json"
@@ -343,6 +408,8 @@ def main():
     upstream, stages = config_hash, []
     removed = architectural = 0
     for n, (block, _) in enumerate(sites):
+        progress = Progress(site=[block,"mlp_triplet"], stage_index=n, sites_total=len(sites), arm=config["arm"])
+        progress({"event": "site_started", "resumed": (args.output/f"stage-{n:03d}.pt").exists()})
         triplet = SwiGLUTriplet(model.model.layers[block].mlp)
         path = args.output/f"stage-{n:03d}.pt"
         if path.exists():
@@ -355,10 +422,14 @@ def main():
             candidate = load_stage(path, triplet, expected_hash=checksum, config_hash=config_hash,
                                    upstream=upstream, block=block)
         else:
-            triplet, ambient, k, full, metadata = calibrate(model, tokenizer, block, rows, c4_tokens,
-                cfg, args.output, num_probes=args.num_probes, probe_count=args.probe_count,
-                cache_budget_bytes=config["cache_budget_bytes"])
-            candidate = prune_triplet(triplet, ambient, cfg, geometric_diagonal=k, full_metric=full)
+            with progress.phase("calibration"):
+                triplet, ambient, k, full, metadata = calibrate(model, tokenizer, block, rows, c4_tokens,
+                    cfg, args.output, num_probes=args.num_probes, probe_count=args.probe_count,
+                    cache_budget_bytes=config["cache_budget_bytes"], replay_disk_budget_bytes=config["replay_disk_budget_bytes"],
+                    replay_chunk_size=args.replay_chunk_size, progress=progress)
+            with progress.phase("pruning"):
+                candidate = prune_triplet(triplet, ambient, cfg, geometric_diagonal=k, full_metric=full, progress=progress)
+            candidate.diagnostics["calibration"] = compact_diagnostics(metadata)
             # Capture an actual normalized MLP input from a held-out diagnostic prompt.
             diagnostic = {}
             def capture_input(module, inputs):
@@ -386,8 +457,10 @@ def main():
             "eligible_parameters": eligible, "total_parameters": total})
         del candidate
         torch.cuda.empty_cache()
-        print(json.dumps({"completed_block": block, "host": host_memory()}), flush=True)
-    evaluated = behavior(model, tokenizer, evaluation, args.output, config_hash, max_new_tokens=args.max_new_tokens)
+        progress({"event": "site_completed", "sites_done": n+1,
+                  "metrics": compact_diagnostics(diagnostic)})
+    evaluated = ({"count":0,"accuracy":None,"purpose":"candidate_only"} if args.skip_behavior else
+        behavior(model, tokenizer, evaluation, args.output, config_hash, max_new_tokens=args.max_new_tokens))
     atomic_json(report_path, {"complete": True, "config_sha256": config_hash, "stages": stages,
         "behavior": evaluated, "removed_weights": removed, "architectural_removed_slots": architectural,
         "eligible_parameters": eligible, "total_parameters": total,

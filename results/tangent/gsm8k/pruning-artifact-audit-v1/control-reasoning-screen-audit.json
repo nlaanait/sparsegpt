@@ -1,0 +1,60 @@
+{
+  "folder": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/control-reasoning32768-decision512",
+  "config_sha256": "579bc376d6b3de08413162cd4115ec1a8f67529f91731bbb833b9fe352c223e0",
+  "answers_sha256": "f433d8518d391b571f5a52c56ab1e865e2cc870c5b6d46174acc0513eacbfc04",
+  "count": 128,
+  "correct": 34,
+  "truncated": 83,
+  "rescoring_mismatches": 0,
+  "correct_ignoring_truncation_same_strict_parser": 42,
+  "batch_size": 32,
+  "complete": false,
+  "examples": [
+    {
+      "id": "gsm8k/train/5723",
+      "prefix": "**Step 1:** Calculate the total number of tissues Tucker bought.\nThere are 160 tissues in one box. Tucker bought 3 boxes.\n$$ \\text{Total tissues} = 160 \\text{ tissues/box} \\times 3 \\text{ boxes} = 480 \\text{ tissues} $$\n\n**Step 2:** Calculate the number of tissues remaining.\nTucker used 210 tissues ",
+      "suffix": " with the flu.\n$$ \\text{Remaining tissues} = \\text{Total tissues} - \\text{Used tissues} $$\n$$ \\text{Remaining tissues} = 480 - 210 $$\n\n**Step 3:** Perform the subtraction.\n$$ 480 - 210 = 270 $$\n\n**Final answer:** 270\nassistant\n</think>\n\n**Step 1:** Calculate the total number of tissues Tucker bought"
+    },
+    {
+      "id": "gsm8k/train/1345",
+      "prefix": "To solve this problem, we need to determine the amount Mimi spent on clothes based on the information given about her spending on sneakers.\n\n**Step 1:** Determine the cost of Adidas sneakers.\nThe problem states that Mimi's Adidas sneakers purchase was **$600**.\n\n**Step 2:** Determine the cost of Nik",
+      "suffix": "{Total}_{\\text{Sneakers}} + \\text{Cost}_{\\text{Clothes} = \\text{Total}_{\\text{Spend} $$\n$$ \\text{Cost}_{\\text{Clothes} = \\text{Total}_{\\text{Spend} - \\text{Total}_{\\text{Sneakers} $$\n$$ \\text{Cost}_{\\text{Clothes} = \\$8,000 - \\$5,400 $$\n$$ \\text{Cost}_{\\text{Clothes} = \\$2,600 $$\n\nFinal answer: 2600"
+    }
+  ],
+  "same_ids_comparison": {
+    "original_local": {
+      "count": 128,
+      "correct": 0,
+      "truncated": 128,
+      "answers_sha256": "b0c98b13ab7fa8c468f96887da61c4e7f7f0f214017db70ee964cc409c4e62b5"
+    },
+    "prompt_high": {
+      "count": 128,
+      "correct": 0,
+      "truncated": 128,
+      "answers_sha256": "29fad98f3afccbbff155cc16d63cdb329d4a2dbbe8d00a31260f815d470c7fbb"
+    },
+    "dense": {
+      "count": 128,
+      "correct": 123,
+      "truncated": 1,
+      "answers_sha256": "99ba0eaf1a2e4c8386fee221e6d40ec7636de23f6310583c63fe378cc0330744"
+    }
+  },
+  "evaluation_config_differences": {
+    "original_local": [
+      "source_config_sha256",
+      "source_report_sha256"
+    ],
+    "prompt_high": [
+      "source_config_sha256",
+      "source_report_sha256"
+    ]
+  },
+  "baseline_pruning_shared_fields_identical": true,
+  "screen_rejected": true,
+  "scope": "completed matched128 screen; no512 result",
+  "interpretation": "Reasoning population/endpoint calibration removes the sample zero at local70, but quality still falls far below dense; precision control remains separate.",
+  "screen_complete": true,
+  "full512_complete": false
+}

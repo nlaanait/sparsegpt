@@ -1,0 +1,156 @@
+{
+  "purpose": "frozen_checkpoint_decoding_artifact_diagnostic_not_accuracy_estimate",
+  "config_sha256": "aa0af5c97c751ba07f7927702bcd223287ffcf3f075485fd009e492444de9e1b",
+  "report_sha256": "41b7a229b7b4afaf968886290e85cd257d0cc0861182966598148ee6dfb0c3b4",
+  "scope": {
+    "questions": 2,
+    "free_generation_budget": 128,
+    "fixed_history_positions": 65,
+    "fixed_history_questions": 1
+  },
+  "states": [
+    {
+      "name": "dense",
+      "reasoning_nll_token_weighted": 0.06524849048095384,
+      "cache_comparison": {
+        "id": "gsm8k/train/5723",
+        "max_logit_difference": 0.3125,
+        "mean_vocabulary_kl": 8.851345774019137e-05,
+        "next_token_agreement": 1.0,
+        "positions": 65,
+        "rms_logit_difference": 0.03001764416694641
+      },
+      "questions": [
+        {
+          "id": "gsm8k/train/5723",
+          "cached_vs_uncached_tokens_exact": true,
+          "cached_single_vs_batch2_tokens_exact": true,
+          "max_repeated_8gram_count": {
+            "cached_single": 1,
+            "uncached_single": 1,
+            "cached_batch2": 1
+          }
+        },
+        {
+          "id": "gsm8k/train/1345",
+          "cached_vs_uncached_tokens_exact": true,
+          "cached_single_vs_batch2_tokens_exact": true,
+          "max_repeated_8gram_count": {
+            "cached_single": 1,
+            "uncached_single": 1,
+            "cached_batch2": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "qwen-9b-gsm8k-mlp-local-s50-seed0-batch8-repcal-v1",
+      "reasoning_nll_token_weighted": 0.14512442448749918,
+      "cache_comparison": {
+        "id": "gsm8k/train/5723",
+        "max_logit_difference": 0.28125,
+        "mean_vocabulary_kl": 9.779924585018307e-05,
+        "next_token_agreement": 1.0,
+        "positions": 65,
+        "rms_logit_difference": 0.03175912797451019
+      },
+      "questions": [
+        {
+          "id": "gsm8k/train/5723",
+          "cached_vs_uncached_tokens_exact": false,
+          "cached_single_vs_batch2_tokens_exact": false,
+          "max_repeated_8gram_count": {
+            "cached_single": 1,
+            "uncached_single": 2,
+            "cached_batch2": 2
+          }
+        },
+        {
+          "id": "gsm8k/train/1345",
+          "cached_vs_uncached_tokens_exact": false,
+          "cached_single_vs_batch2_tokens_exact": true,
+          "max_repeated_8gram_count": {
+            "cached_single": 2,
+            "uncached_single": 1,
+            "cached_batch2": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "qwen-9b-gsm8k-mlp-sparsegpt-task-s70-seed0-v1",
+      "reasoning_nll_token_weighted": 0.5421781583959833,
+      "cache_comparison": {
+        "id": "gsm8k/train/5723",
+        "max_logit_difference": 0.5,
+        "mean_vocabulary_kl": 0.00040374495438300073,
+        "next_token_agreement": 1.0,
+        "positions": 65,
+        "rms_logit_difference": 0.03673836961388588
+      },
+      "questions": [
+        {
+          "id": "gsm8k/train/5723",
+          "cached_vs_uncached_tokens_exact": false,
+          "cached_single_vs_batch2_tokens_exact": true,
+          "max_repeated_8gram_count": {
+            "cached_single": 2,
+            "uncached_single": 2,
+            "cached_batch2": 2
+          }
+        },
+        {
+          "id": "gsm8k/train/1345",
+          "cached_vs_uncached_tokens_exact": true,
+          "cached_single_vs_batch2_tokens_exact": true,
+          "max_repeated_8gram_count": {
+            "cached_single": 2,
+            "uncached_single": 2,
+            "cached_batch2": 2
+          }
+        }
+      ]
+    },
+    {
+      "name": "qwen-9b-gsm8k-mlp-local-s70-seed0-batch32-repcal-v1",
+      "reasoning_nll_token_weighted": 0.49998585270543405,
+      "cache_comparison": {
+        "id": "gsm8k/train/5723",
+        "max_logit_difference": 0.494140625,
+        "mean_vocabulary_kl": 0.0003115101426374167,
+        "next_token_agreement": 1.0,
+        "positions": 65,
+        "rms_logit_difference": 0.03296578675508499
+      },
+      "questions": [
+        {
+          "id": "gsm8k/train/5723",
+          "cached_vs_uncached_tokens_exact": true,
+          "cached_single_vs_batch2_tokens_exact": false,
+          "max_repeated_8gram_count": {
+            "cached_single": 17,
+            "uncached_single": 17,
+            "cached_batch2": 18
+          }
+        },
+        {
+          "id": "gsm8k/train/1345",
+          "cached_vs_uncached_tokens_exact": true,
+          "cached_single_vs_batch2_tokens_exact": true,
+          "max_repeated_8gram_count": {
+            "cached_single": 1,
+            "uncached_single": 1,
+            "cached_batch2": 1
+          }
+        }
+      ]
+    }
+  ],
+  "supported_observation": "Local representative-calibration 70% repeats a token 8-gram 17/17/18 times in cached-singleton/uncached-singleton/cached-batch2 generation on question 5723. Both local-70 singleton continuations are exactly equal across cache modes. Thus cache/batch-only failure cannot explain this reproduced early loop.",
+  "limits": [
+    "Two questions and 128 tokens are not a model-wide accuracy estimate or a test of all later token positions.",
+    "Floating-point logits differ; fixed-history top choices agree on all 65 tested positions in each state.",
+    "Not all freely generated 50% or ambient-70 sequences are bitwise equivalent across modes.",
+    "Does not test whether larger or reasoning-inclusive calibration can recover 70% behavior."
+  ]
+}

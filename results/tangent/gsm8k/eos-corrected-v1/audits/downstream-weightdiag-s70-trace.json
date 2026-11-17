@@ -1,0 +1,1078 @@
+{
+  "purpose": "downstream70_trace_budget_arithmetic_check",
+  "source": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-downstream-weightdiag-s70-seed0-batch32-repcal-v1",
+  "source_config_sha256": "185ad9fbff9c7a5b5bed0437066339804293e4ef0b8bb93177f5d50c55a61604",
+  "source_report_sha256": "c24771323d91c31b0a420306f4e31e129b02d834fdefe0523da0c569f05460bb",
+  "cpu_checkpoint_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/repcal-downstream-cpu-report.json",
+  "verified_checkpoint_stages": 96,
+  "metric": "weight_diagonal",
+  "full_metric_enabled": false,
+  "target_alpha": 1.0,
+  "recorded_ratio_range": [
+    0.9999999999999999,
+    1.0000000000000002
+  ],
+  "recomputed_ratio_range": [
+    0.9999999999999999,
+    1.0000000000000002
+  ],
+  "scope": "Recompute gamma*geometry_trace/ambient_trace from each saved diagnostic; this checks budget arithmetic, not an independent remeasurement of the full curvature tensor.",
+  "rows": [
+    {
+      "site": [
+        0,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 3723044.3738789903,
+      "geometry_trace": 0.26917892556067236,
+      "ambient_trace": 1002165.0843754527
+    },
+    {
+      "site": [
+        0,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0000000000000002,
+      "recomputed_ratio": 1.0000000000000002,
+      "gamma": 2893361.3200341775,
+      "geometry_trace": 0.34636707051977,
+      "ambient_trace": 1002165.0843754527
+    },
+    {
+      "site": [
+        0,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 14037.565365578146,
+      "geometry_trace": 0.3804279922026349,
+      "ambient_trace": 5340.2828074401405
+    },
+    {
+      "site": [
+        1,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 8043798.15240419,
+      "geometry_trace": 0.24396910655240145,
+      "ambient_trace": 1962438.2485299078
+    },
+    {
+      "site": [
+        1,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0000000000000002,
+      "recomputed_ratio": 1.0000000000000002,
+      "gamma": 6053078.341821014,
+      "geometry_trace": 0.32420499747563586,
+      "ambient_trace": 1962438.2485299078
+    },
+    {
+      "site": [
+        1,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 37353.43455087345,
+      "geometry_trace": 0.29202739508325304,
+      "ambient_trace": 10908.226189304354
+    },
+    {
+      "site": [
+        2,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 0.9999999999999999,
+      "recomputed_ratio": 0.9999999999999999,
+      "gamma": 532737.1185590571,
+      "geometry_trace": 6.022966981685538,
+      "ambient_trace": 3208658.074999495
+    },
+    {
+      "site": [
+        2,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 310560.10486889444,
+      "geometry_trace": 10.331842450768288,
+      "ambient_trace": 3208658.074999495
+    },
+    {
+      "site": [
+        2,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 4532.166220139555,
+      "geometry_trace": 8.86073300311859,
+      "ambient_trace": 40158.31480240978
+    },
+    {
+      "site": [
+        3,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 623305.1236544799,
+      "geometry_trace": 6.3660290734129,
+      "ambient_trace": 3967978.5387916416
+    },
+    {
+      "site": [
+        3,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 0.9999999999999999,
+      "recomputed_ratio": 0.9999999999999999,
+      "gamma": 398924.6044211364,
+      "geometry_trace": 9.946687907479202,
+      "ambient_trace": 3967978.5387916416
+    },
+    {
+      "site": [
+        3,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 4343.371887087107,
+      "geometry_trace": 8.951567118694074,
+      "ambient_trace": 38879.98496870918
+    },
+    {
+      "site": [
+        4,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 1819855.2119742706,
+      "geometry_trace": 4.599713292900608,
+      "ambient_trace": 8370812.209672507
+    },
+    {
+      "site": [
+        4,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 1397571.2863879693,
+      "geometry_trace": 5.989542208832093,
+      "ambient_trace": 8370812.209672507
+    },
+    {
+      "site": [
+        4,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 19191.723237020666,
+      "geometry_trace": 3.48944521611733,
+      "ambient_trace": 66968.46683846957
+    },
+    {
+      "site": [
+        5,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 1514741.6078699643,
+      "geometry_trace": 8.248263504776528,
+      "ambient_trace": 12493987.923360344
+    },
+    {
+      "site": [
+        5,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 1138382.2542105934,
+      "geometry_trace": 10.975213182696923,
+      "ambient_trace": 12493987.923360344
+    },
+    {
+      "site": [
+        5,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 20781.60386338034,
+      "geometry_trace": 5.705787916516812,
+      "ambient_trace": 118575.42420951463
+    },
+    {
+      "site": [
+        6,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 730858.4965160262,
+      "geometry_trace": 30.90985025963688,
+      "ambient_trace": 22590726.68829371
+    },
+    {
+      "site": [
+        6,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 708601.2599698637,
+      "geometry_trace": 31.880731752092114,
+      "ambient_trace": 22590726.68829371
+    },
+    {
+      "site": [
+        6,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 33687.29893084901,
+      "geometry_trace": 11.790303733196577,
+      "ambient_trace": 397183.4863456981
+    },
+    {
+      "site": [
+        7,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 1000468.508029586,
+      "geometry_trace": 18.007601454901888,
+      "ambient_trace": 18016038.160777096
+    },
+    {
+      "site": [
+        7,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 745093.9670997465,
+      "geometry_trace": 24.179551783117944,
+      "ambient_trace": 18016038.160777096
+    },
+    {
+      "site": [
+        7,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0000000000000002,
+      "recomputed_ratio": 1.0000000000000002,
+      "gamma": 19747.180171923676,
+      "geometry_trace": 11.194435483533969,
+      "ambient_trace": 221058.5344163208
+    },
+    {
+      "site": [
+        8,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 1071262.7053870119,
+      "geometry_trace": 18.754194487462513,
+      "ambient_trace": 20090669.123993278
+    },
+    {
+      "site": [
+        8,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 883648.5655115007,
+      "geometry_trace": 22.73603999160433,
+      "ambient_trace": 20090669.123993278
+    },
+    {
+      "site": [
+        8,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 21563.844754624653,
+      "geometry_trace": 11.359048870597325,
+      "ambient_trace": 244944.76640575522
+    },
+    {
+      "site": [
+        9,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 1208497.591906337,
+      "geometry_trace": 17.198143547951354,
+      "ambient_trace": 20783915.062958717
+    },
+    {
+      "site": [
+        9,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 1113427.714641727,
+      "geometry_trace": 18.666604746448634,
+      "ambient_trace": 20783915.062958717
+    },
+    {
+      "site": [
+        9,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 25558.300933280076,
+      "geometry_trace": 9.675239345944025,
+      "ambient_trace": 247282.67880514928
+    },
+    {
+      "site": [
+        10,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 643842.6113922151,
+      "geometry_trace": 36.766354950307786,
+      "ambient_trace": 23671745.98257926
+    },
+    {
+      "site": [
+        10,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 743511.7842238413,
+      "geometry_trace": 31.837754941961563,
+      "ambient_trace": 23671745.98257926
+    },
+    {
+      "site": [
+        10,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 21367.23894065772,
+      "geometry_trace": 15.94886106266748,
+      "ambient_trace": 340783.12515736825
+    },
+    {
+      "site": [
+        11,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 456489.18317181023,
+      "geometry_trace": 49.599999795850394,
+      "ambient_trace": 22641863.3921297
+    },
+    {
+      "site": [
+        11,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 460265.0217364304,
+      "geometry_trace": 49.19310032882643,
+      "ambient_trace": 22641863.3921297
+    },
+    {
+      "site": [
+        11,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 12437.38856018919,
+      "geometry_trace": 23.965285932162864,
+      "ambient_trace": 298065.57309434534
+    },
+    {
+      "site": [
+        12,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0000000000000002,
+      "recomputed_ratio": 1.0000000000000002,
+      "gamma": 304227.529219937,
+      "geometry_trace": 77.39181451864201,
+      "ambient_trace": 23544720.512854103
+    },
+    {
+      "site": [
+        12,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 251671.9939758939,
+      "geometry_trace": 93.55320050076492,
+      "ambient_trace": 23544720.512854103
+    },
+    {
+      "site": [
+        12,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 6260.123794234763,
+      "geometry_trace": 56.873373551925724,
+      "ambient_trace": 356034.3590308123
+    },
+    {
+      "site": [
+        13,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 0.9999999999999999,
+      "recomputed_ratio": 0.9999999999999999,
+      "gamma": 306590.93495341955,
+      "geometry_trace": 80.62833567020172,
+      "ambient_trace": 24719916.816865295
+    },
+    {
+      "site": [
+        13,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 306233.12344585866,
+      "geometry_trace": 80.72254411510687,
+      "ambient_trace": 24719916.816865295
+    },
+    {
+      "site": [
+        13,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 9394.362559202364,
+      "geometry_trace": 45.25745762507557,
+      "ambient_trace": 425164.9654376974
+    },
+    {
+      "site": [
+        14,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 210879.44055238907,
+      "geometry_trace": 132.99456460656063,
+      "ambient_trace": 28045819.38074007
+    },
+    {
+      "site": [
+        14,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 313824.72781706037,
+      "geometry_trace": 89.36778046721983,
+      "ambient_trace": 28045819.38074007
+    },
+    {
+      "site": [
+        14,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 8255.499283677163,
+      "geometry_trace": 56.3435041929492,
+      "ambient_trace": 465143.75850475335
+    },
+    {
+      "site": [
+        15,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0000000000000002,
+      "recomputed_ratio": 1.0000000000000002,
+      "gamma": 336630.1748296369,
+      "geometry_trace": 82.33153971899237,
+      "ambient_trace": 27715280.609597594
+    },
+    {
+      "site": [
+        15,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 391584.18594282994,
+      "geometry_trace": 70.77732350928987,
+      "ambient_trace": 27715280.609597594
+    },
+    {
+      "site": [
+        15,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 0.9999999999999999,
+      "recomputed_ratio": 0.9999999999999999,
+      "gamma": 11006.745159752585,
+      "geometry_trace": 46.8322079596611,
+      "ambient_trace": 515470.1782805263
+    },
+    {
+      "site": [
+        16,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 326588.15142130025,
+      "geometry_trace": 87.33396967982355,
+      "ambient_trace": 28522239.71401746
+    },
+    {
+      "site": [
+        16,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 356450.5933321051,
+      "geometry_trace": 80.01737196561007,
+      "ambient_trace": 28522239.71401746
+    },
+    {
+      "site": [
+        16,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 12386.45462735835,
+      "geometry_trace": 54.272868336946686,
+      "ambient_trace": 672248.4211521837
+    },
+    {
+      "site": [
+        17,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 242309.07366959224,
+      "geometry_trace": 126.5791193541647,
+      "ambient_trace": 30671269.156620406
+    },
+    {
+      "site": [
+        17,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 313111.7764483333,
+      "geometry_trace": 97.95629377000289,
+      "ambient_trace": 30671269.156620406
+    },
+    {
+      "site": [
+        17,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 12501.805317243294,
+      "geometry_trace": 70.03817431194457,
+      "ambient_trace": 875603.6200230813
+    },
+    {
+      "site": [
+        18,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 271315.28670231864,
+      "geometry_trace": 142.0390880379145,
+      "ambient_trace": 38537375.89394265
+    },
+    {
+      "site": [
+        18,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 280789.87408602476,
+      "geometry_trace": 137.24631637583934,
+      "ambient_trace": 38537375.89394265
+    },
+    {
+      "site": [
+        18,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 18796.790545363743,
+      "geometry_trace": 107.02283025677661,
+      "ambient_trace": 2011685.7239086474
+    },
+    {
+      "site": [
+        19,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 168172.82421368797,
+      "geometry_trace": 224.02626871831234,
+      "ambient_trace": 37675130.30841316
+    },
+    {
+      "site": [
+        19,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 187614.65790897762,
+      "geometry_trace": 200.8112304673523,
+      "ambient_trace": 37675130.30841316
+    },
+    {
+      "site": [
+        19,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 15376.948260478232,
+      "geometry_trace": 151.09903835293164,
+      "ambient_trace": 2323442.094961046
+    },
+    {
+      "site": [
+        20,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 188107.99167802127,
+      "geometry_trace": 207.58622212202278,
+      "ambient_trace": 39048627.343401335
+    },
+    {
+      "site": [
+        20,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 167294.80264547735,
+      "geometry_trace": 233.41207691999375,
+      "ambient_trace": 39048627.343401335
+    },
+    {
+      "site": [
+        20,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 12931.41448504444,
+      "geometry_trace": 216.09917522131232,
+      "ambient_trace": 2794468.004663035
+    },
+    {
+      "site": [
+        21,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 187767.703349742,
+      "geometry_trace": 215.34541952754208,
+      "ambient_trace": 40434914.85157326
+    },
+    {
+      "site": [
+        21,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 207807.12933126342,
+      "geometry_trace": 194.57905501940857,
+      "ambient_trace": 40434914.85157326
+    },
+    {
+      "site": [
+        21,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 15953.554008249548,
+      "geometry_trace": 200.0728307148716,
+      "ambient_trace": 3191872.710393073
+    },
+    {
+      "site": [
+        22,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 245417.68057475594,
+      "geometry_trace": 206.40593578040426,
+      "ambient_trace": 50655666.01608884
+    },
+    {
+      "site": [
+        22,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 188009.38093163824,
+      "geometry_trace": 269.4315877488457,
+      "ambient_trace": 50655666.01608884
+    },
+    {
+      "site": [
+        22,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 37274.172522325185,
+      "geometry_trace": 181.4707492792195,
+      "ambient_trace": 6764172.016389246
+    },
+    {
+      "site": [
+        23,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 267587.70985973836,
+      "geometry_trace": 173.4400983357492,
+      "ambient_trace": 46410438.71151095
+    },
+    {
+      "site": [
+        23,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 236839.1555671541,
+      "geometry_trace": 195.95762618040405,
+      "ambient_trace": 46410438.71151095
+    },
+    {
+      "site": [
+        23,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 32452.036219273854,
+      "geometry_trace": 140.62165206230816,
+      "ambient_trace": 4563458.94594015
+    },
+    {
+      "site": [
+        24,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0000000000000002,
+      "recomputed_ratio": 1.0000000000000002,
+      "gamma": 321750.98059373116,
+      "geometry_trace": 152.01448375862657,
+      "ambient_trace": 48910809.21378791
+    },
+    {
+      "site": [
+        24,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0000000000000002,
+      "recomputed_ratio": 1.0000000000000002,
+      "gamma": 346350.50752147916,
+      "geometry_trace": 141.21766289242316,
+      "ambient_trace": 48910809.21378791
+    },
+    {
+      "site": [
+        24,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 37105.963480903265,
+      "geometry_trace": 113.8468575683143,
+      "ambient_trace": 4224397.339345466
+    },
+    {
+      "site": [
+        25,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 190715.19644923112,
+      "geometry_trace": 283.1411300253404,
+      "ambient_trace": 53999316.23564008
+    },
+    {
+      "site": [
+        25,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 63197.554522498045,
+      "geometry_trace": 854.4526231061135,
+      "ambient_trace": 53999316.23564008
+    },
+    {
+      "site": [
+        25,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 17050.842655435747,
+      "geometry_trace": 250.71278380233298,
+      "ambient_trace": 4274864.228319859
+    },
+    {
+      "site": [
+        26,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 302691.40579631063,
+      "geometry_trace": 201.21725888530796,
+      "ambient_trace": 60906734.96247404
+    },
+    {
+      "site": [
+        26,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0000000000000002,
+      "recomputed_ratio": 1.0000000000000002,
+      "gamma": 71781.744657991,
+      "geometry_trace": 848.4989498746279,
+      "ambient_trace": 60906734.96247404
+    },
+    {
+      "site": [
+        26,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 33564.30128589019,
+      "geometry_trace": 331.1131391171075,
+      "ambient_trace": 11113581.161043469
+    },
+    {
+      "site": [
+        27,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 0.9999999999999999,
+      "recomputed_ratio": 0.9999999999999999,
+      "gamma": 294366.6575419448,
+      "geometry_trace": 206.02196036556208,
+      "ambient_trace": 60645995.85304955
+    },
+    {
+      "site": [
+        27,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 385603.9725941813,
+      "geometry_trace": 157.2753398909477,
+      "ambient_trace": 60645995.85304955
+    },
+    {
+      "site": [
+        27,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 53386.008513860885,
+      "geometry_trace": 127.95939320731915,
+      "ambient_trace": 6831241.255194413
+    },
+    {
+      "site": [
+        28,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 496015.39947718143,
+      "geometry_trace": 128.32421866768266,
+      "ambient_trace": 63650788.5850478
+    },
+    {
+      "site": [
+        28,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 396163.9225294107,
+      "geometry_trace": 160.6678068478647,
+      "ambient_trace": 63650788.5850478
+    },
+    {
+      "site": [
+        28,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 69137.19484119104,
+      "geometry_trace": 101.04517796826465,
+      "ambient_trace": 6985980.156954737
+    },
+    {
+      "site": [
+        29,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 108312.04439585333,
+      "geometry_trace": 647.0180877564983,
+      "ambient_trace": 70079851.84600197
+    },
+    {
+      "site": [
+        29,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 103438.92816671335,
+      "geometry_trace": 677.4997874403117,
+      "ambient_trace": 70079851.84600197
+    },
+    {
+      "site": [
+        29,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 48321.833810462944,
+      "geometry_trace": 216.37471634310415,
+      "ambient_trace": 10455623.08391754
+    },
+    {
+      "site": [
+        30,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 15709.30816488755,
+      "geometry_trace": 4442.819492030447,
+      "ambient_trace": 69793620.52127546
+    },
+    {
+      "site": [
+        30,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 16530.041701563394,
+      "geometry_trace": 4222.228944206139,
+      "ambient_trace": 69793620.52127546
+    },
+    {
+      "site": [
+        30,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 10833.778850045563,
+      "geometry_trace": 1443.0771485561052,
+      "ambient_trace": 15633978.69101119
+    },
+    {
+      "site": [
+        31,
+        "mlp.gate_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 162205.75712049668,
+      "geometry_trace": 394.077689465617,
+      "ambient_trace": 63921669.98406639
+    },
+    {
+      "site": [
+        31,
+        "mlp.up_proj"
+      ],
+      "recorded_ratio": 0.9999999999999999,
+      "recomputed_ratio": 0.9999999999999999,
+      "gamma": 19132.94054043192,
+      "geometry_trace": 3340.9224185371027,
+      "ambient_trace": 63921669.98406639
+    },
+    {
+      "site": [
+        31,
+        "mlp.down_proj"
+      ],
+      "recorded_ratio": 1.0,
+      "recomputed_ratio": 1.0,
+      "gamma": 231663.3839762051,
+      "geometry_trace": 347.19107271231377,
+      "ambient_trace": 80431458.79086329
+    }
+  ]
+}

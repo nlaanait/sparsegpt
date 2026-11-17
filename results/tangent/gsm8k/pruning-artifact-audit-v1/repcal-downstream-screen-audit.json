@@ -1,0 +1,24 @@
+{
+  "folder": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-downstream-weightdiag-s70-seed0-batch32-repcal-v1-decision512",
+  "config_sha256": "f8675ca1e4c5af7b0fa57840fef5d2b0bbc566a6c3510225c788e7d9a57c5f85",
+  "answers_sha256": "eb39d9ebebf4cf7fc9defcb392e0be6712471808668c47e1cf7325e91b97eb92",
+  "count": 128,
+  "correct": 0,
+  "truncated": 128,
+  "rescoring_mismatches": 0,
+  "correct_ignoring_truncation_same_strict_parser": 4,
+  "batch_size": 32,
+  "complete": false,
+  "examples": [
+    {
+      "id": "gsm8k/train/5723",
+      "prefix": "To solve this problem, we first need to determine the total number of tissues Tucker initially had.\n\n1. **Calculate the total number of tissues:**\n   There are 160 tissues in one box. Tucker bought 3 boxes.\n   $$ \\text{Total} = \\text{160} \\times \\text{3} \\text{ $$\n   $$ \\text{Total} = \\text{160} \\ti",
+      "suffix": "\\text$\n   $$ \\text{Total} = \\text160 \\times 3 \\text$\n   $$ \\text{Total} = \\text160 \\times 3 \\text$\n   $$ \\text{Total} = \\text160 \\times 3 \\text$\n   $$ \\text{Total} = \\text160 \\times 3 \\text$\n   $$ \\text{Total} = \\text160 \\times 3 \\text$\n   $$ \\text{Total} = \\text160 \\times 3 \\text$\n   $$ \\text{Total"
+    },
+    {
+      "id": "gsm8k/train/1345",
+      "prefix": "To solve this problem, let's break down the information step by step.\n\n**Step 1:** Determine the cost of Adidas sneakers.\nThe problem states that Mimi's Adidas purchase was $600.\nCost of Adidas = $600.\n\n**Step 2:** Determine the cost of Nike sneakers.\nThe problem states she spent thrice as much on N",
+      "suffix": "00 + \\$3,000 = \\$600 + \\$1,800 + \\$3,000 = \\$600 + \\$1,800 + \\$3,000 = \\$600 + \\$1,800 + \\$3,000 = \\$600 + \\$1,800 + \\$3,000 = \\$600 + \\$1,800 + \\$3,000 = \\$600 + \\$1,800 + \\$3,000 = \\$600 + \\$1,800 + \\$3,000 = \\$600 + \\$1,800 + \\$3,000 = \\$600 + \\$1,800 + \\$3,000 = \\$600 + \\$1,800 + \\$3,000 = \\$600"
+    }
+  ]
+}

@@ -4,6 +4,7 @@ Keep the original evaluator and its immutable configuration unchanged so existin
 answer records and complete 512-problem reports remain reusable.
 """
 from __future__ import annotations
+from sparsifier.eval.gsm8k_batching import batches
 
 import argparse
 import hashlib
@@ -68,22 +69,24 @@ def screened_behavior(original_behavior, rows, baseline, baseline_hash, model, t
     ids = {row['id'] for row in rows}
     if set(done) - ids:
         raise ValueError('unexpected result IDs')
-    # Reuse the exact existing evaluator for each missing screen example. Append
-    # each answer immediately, so an interruption costs at most one example.
+    # Keep batch membership fixed and do not cross the screen boundary.
     with tempfile.TemporaryDirectory(prefix='screen-', dir=output) as tmp:
         temp = Path(tmp)
-        for row in rows[:SCREEN_SIZE]:
-            if row['id'] in done:
+        for group in batches(rows[:SCREEN_SIZE]):
+            if all(row['id'] in done for row in group):
                 continue
-            original_behavior(model, tokenizer, [row], temp, config_hash, max_new_tokens=max_new_tokens)
+            original_behavior(model, tokenizer, group, temp, config_hash, max_new_tokens=max_new_tokens)
             one = read_completed(temp/'answers.jsonl', config_hash)
-            if set(one) != {row['id']}:
+            if set(one) != {row['id'] for row in group}:
                 raise ValueError('screen evaluator returned unexpected answers')
-            record = one[row['id']]
             with path.open('a', buffering=1) as handle:
-                handle.write(json.dumps(record)+'\n')
-                handle.flush()
-            done[row['id']] = record
+                for row in group:
+                    if row['id'] in done:
+                        continue
+                    record = one[row['id']]
+                    handle.write(json.dumps(record)+'\n')
+                    handle.flush()
+                    done[row['id']] = record
             (temp/'answers.jsonl').unlink()
             print(json.dumps({'screen_evaluated':sum(r['id'] in done for r in rows[:SCREEN_SIZE]),
                               'screen_total':SCREEN_SIZE}), flush=True)

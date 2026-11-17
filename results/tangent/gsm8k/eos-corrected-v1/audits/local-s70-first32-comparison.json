@@ -1,0 +1,16 @@
+{
+  "scope": "first32_live_prefix_not_final128",
+  "count": 32,
+  "old_correct": 0,
+  "corrected_correct": 3,
+  "old_truncated": 32,
+  "corrected_truncated": 22,
+  "decoded_prefix_matches": 32,
+  "max_answer_nll_abs_difference": 0.0,
+  "corrected_correct_ids": [
+    "gsm8k/train/5721",
+    "gsm8k/train/7319",
+    "gsm8k/train/1190"
+  ],
+  "comparison": "same checkpoint, questions, batch32, token budget; differentEOSpolicyonly"
+}

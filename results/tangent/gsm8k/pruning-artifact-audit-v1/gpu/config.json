@@ -1,0 +1,24 @@
+{
+  "budget": 128,
+  "cpu_audit_sha256": "d5db9111b4a10cd57aa6e153bceb7bb79be6b7370d5c5a04118dacaa09af9869",
+  "dense_answers_sha256": "99ba0eaf1a2e4c8386fee221e6d40ec7636de23f6310583c63fe378cc0330744",
+  "ids": [
+    "gsm8k/train/5723",
+    "gsm8k/train/1345"
+  ],
+  "model": "Qwen/Qwen3.5-9B",
+  "packages": {
+    "flash-linear-attention": "0.6.0",
+    "kernels": "0.17.3",
+    "torch": "2.12.0+cu130",
+    "transformers": "5.22.2"
+  },
+  "purpose": "frozen_pruning_artifact_diagnostic_not_retention",
+  "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "source_paths": [
+    "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s50-seed0-batch8-repcal-v1",
+    "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-sparsegpt-task-s70-seed0-v1",
+    "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s70-seed0-batch32-repcal-v1"
+  ],
+  "source_sha256": "0ed0f09d00dbb07754a368dd9a08984e5fd0749ba6675b0120d5e7426fda3f38"
+}

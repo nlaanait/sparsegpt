@@ -1,0 +1,94 @@
+{
+  "complete": true,
+  "config_sha256": "52941f993955df1853ae7678fcd71b9331202d7ae05ee730fea9dec6521c3ca0",
+  "memory": {
+    "allocator_cap_gib": 16.0,
+    "cuda_free_gib": 37.16691589355469,
+    "cuda_total_gib": 121.69016647338867,
+    "guard_cap_gib": 16.0,
+    "host_before": {
+      "available_gib": 115.69436264038086,
+      "total_gib": 121.69016647338867,
+      "used_gib": 5.9958038330078125
+    },
+    "requested_cap_gib": 16.0
+  },
+  "modes": [
+    {
+      "mask_changed_fraction": 0.05883049964904785,
+      "mode": "ambient",
+      "reference": {
+        "damping": 1.8669082602513927,
+        "inverse_probe_residual": {
+          "max": 1.0813079492560174e-11,
+          "mean": 7.377926197686492e-12,
+          "probes": 4
+        }
+      },
+      "reference_objective": {
+        "common_scaled_surrogate_half_quadratic": 1.0823529372165293,
+        "mean_squared_output_norm": 1.868445595167163
+      },
+      "reference_zero_fraction": 0.6999988555908203,
+      "relative_bf16_candidate_difference": 0.4071354936760462,
+      "relative_candidate_difference": 0.40712853702656715,
+      "scaled_surrogate_ratio": 0.9997841951842065,
+      "source": {
+        "damping": {
+          "damping": 1.8669005632400513,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "inverse_probe_residual": {
+          "max": 0.0038789443156077353,
+          "mean": 0.0025485952018759112,
+          "probes": 4
+        }
+      },
+      "source_objective": {
+        "common_scaled_surrogate_half_quadratic": 1.0821193602402897,
+        "mean_squared_output_norm": 1.8679892979957788
+      },
+      "source_zero_fraction": 0.6999988555908203
+    },
+    {
+      "mask_changed_fraction": 0.054802536964416504,
+      "mode": "local_alpha1",
+      "reference": {
+        "damping": 1.8669082602513927,
+        "inverse_probe_residual": {
+          "max": 1.0813079492560174e-11,
+          "mean": 7.377926197686492e-12,
+          "probes": 4
+        }
+      },
+      "reference_objective": {
+        "common_scaled_surrogate_half_quadratic": 1.5679680855381166,
+        "mean_squared_output_norm": 2.7197442031998684
+      },
+      "reference_zero_fraction": 0.6999988555908203,
+      "relative_bf16_candidate_difference": 0.4080459994519419,
+      "relative_candidate_difference": 0.40804103451777074,
+      "scaled_surrogate_ratio": 0.9997392405011977,
+      "source": {
+        "damping": {
+          "damping": 1.8669005632400513,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "inverse_probe_residual": {
+          "max": 0.0038789443156077353,
+          "mean": 0.0025485952018759112,
+          "probes": 4
+        }
+      },
+      "source_objective": {
+        "common_scaled_surrogate_half_quadratic": 1.5675592229659936,
+        "mean_squared_output_norm": 2.7189430113172293
+      },
+      "source_zero_fraction": 0.6999988555908203
+    }
+  ]
+}

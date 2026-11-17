@@ -3,6 +3,7 @@
 All GPU invocations must be scheduled through the guarded gflow helper.
 """
 from __future__ import annotations
+from sparsifier.eval.gsm8k_batching import policy as batch_policy
 
 import argparse
 import hashlib
@@ -61,7 +62,7 @@ def render_prompt(tokenizer, question: str) -> str:
 def run(args):
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
-    from sparsifier.models.qwen import force_pytorch_attention
+    from sparsifier.eval.gsm8k_batching import reference_backend as force_pytorch_attention
 
     manifest = load_manifest(args.manifest)
     rows = manifest["rows"][:args.limit] if args.limit else manifest["rows"]
@@ -82,6 +83,7 @@ def run(args):
               "torch": torch.__version__}
     import transformers
     config["transformers"] = transformers.__version__
+    config["batching"] = batch_policy()
     write_immutable(args.output / "config.json", config)
     config_hash = digest(config)
     completed = read_completed(args.output / "answers.jsonl", config_hash)
@@ -105,45 +107,14 @@ def run(args):
     print(json.dumps({"event": "loaded", "seconds": time.monotonic() - started,
                       "parameters": sum(p.numel() for p in model.parameters()),
                       "host": host_memory(), "cuda_allocated_gib": torch.cuda.memory_allocated() / 1024**3}), flush=True)
-    eos = model.generation_config.eos_token_id
-    eos_ids = set(eos if isinstance(eos, list) else [eos])
-    with (args.output / "answers.jsonl").open("a", buffering=1) as out:
-        for row in rows:
-            if row["id"] in completed:
-                continue
-            prompt = render_prompt(tokenizer, row["question"])
-            inputs = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to("cuda")
-            if inputs.input_ids.shape[1] > 2048:
-                raise ValueError("pilot prompt exceeds 2048-token budget")
-            started = time.monotonic()
-            with torch.inference_mode():
-                output = model.generate(**inputs, do_sample=False, max_new_tokens=args.max_new_tokens,
-                                        use_cache=True, pad_token_id=tokenizer.eos_token_id)
-            torch.cuda.synchronize()
-            generated = output[0, inputs.input_ids.shape[1]:].tolist()
-            truncated = len(generated) >= args.max_new_tokens and generated[-1] not in eos_ids
-            decoded = tokenizer.decode(generated, skip_special_tokens=True)
-            parsed = parse_answer(decoded, truncated=truncated)
-            from fractions import Fraction
-            record = {"id": row["id"], "family": row["family"], "config_sha256": config_hash,
-                      "source_sha256": row["source_sha256"], "prompt_sha256": digest(prompt),
-                      "expected_answer": row["answer"], "parsed_answer": str(parsed) if parsed is not None else None,
-                      "correct": parsed is not None and parsed == Fraction(row["answer"]),
-                      "text": decoded, "truncated": truncated, "generated_tokens": len(generated),
-                      "input_tokens": inputs.input_ids.shape[1], "seconds": time.monotonic() - started,
-                      "peak_cuda_reserved_gib": torch.cuda.max_memory_reserved() / 1024**3,
-                      "host": host_memory()}
-            out.write(json.dumps(record) + "\n")
-            out.flush()
-            os.fsync(out.fileno())
-            completed[row["id"]] = record
-            report = {**summarize(list(completed.values())), "config_sha256": config_hash,
-                      "complete": len(completed) == len(rows), "memory": memory}
-            atomic_json(args.output / "report.json", report)
-            print(json.dumps({"event": "answer", "id": row["id"], "correct": record["correct"],
-                              "tokens": len(generated), "seconds": record["seconds"],
-                              "completed": len(completed), "accuracy": report["accuracy"]}), flush=True)
-            del output, inputs
+    from sparsifier.eval.gsm8k_pruning import behavior
+    behavior(model, tokenizer, rows, args.output, config_hash, max_new_tokens=args.max_new_tokens)
+    completed = read_completed(args.output / "answers.jsonl", config_hash)
+    atomic_json(args.output / "report.json", {
+        **summarize(list(completed.values())), "config_sha256": config_hash,
+        "complete": len(completed) == len(rows), "memory": memory,
+        "peak_cuda_reserved_gib": torch.cuda.max_memory_reserved() / 1024**3,
+        "host": host_memory()})
 
 
 def main():

@@ -1,0 +1,42 @@
+{
+  "folder": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/control-reasoning32768-decision512",
+  "config_sha256": "579bc376d6b3de08413162cd4115ec1a8f67529f91731bbb833b9fe352c223e0",
+  "answers_sha256": "5f4379902dd88e6c720a5543d1a2331616f4bcc6cc4b4cb575873211a8e49b05",
+  "count": 32,
+  "correct": 11,
+  "truncated": 18,
+  "rescoring_mismatches": 0,
+  "correct_ignoring_truncation_same_strict_parser": 14,
+  "batch_size": 32,
+  "complete": false,
+  "examples": [
+    {
+      "id": "gsm8k/train/5723",
+      "prefix": "**Step 1:** Calculate the total number of tissues Tucker bought.\nThere are 160 tissues in one box. Tucker bought 3 boxes.\n$$ \\text{Total tissues} = 160 \\text{ tissues/box} \\times 3 \\text{ boxes} = 480 \\text{ tissues} $$\n\n**Step 2:** Calculate the number of tissues remaining.\nTucker used 210 tissues ",
+      "suffix": " with the flu.\n$$ \\text{Remaining tissues} = \\text{Total tissues} - \\text{Used tissues} $$\n$$ \\text{Remaining tissues} = 480 - 210 $$\n\n**Step 3:** Perform the subtraction.\n$$ 480 - 210 = 270 $$\n\n**Final answer:** 270\nassistant\n</think>\n\n**Step 1:** Calculate the total number of tissues Tucker bought"
+    },
+    {
+      "id": "gsm8k/train/1345",
+      "prefix": "To solve this problem, we need to determine the amount Mimi spent on clothes based on the information given about her spending on sneakers.\n\n**Step 1:** Determine the cost of Adidas sneakers.\nThe problem states that Mimi's Adidas sneakers purchase was **$600**.\n\n**Step 2:** Determine the cost of Nik",
+      "suffix": "{Total}_{\\text{Sneakers}} + \\text{Cost}_{\\text{Clothes} = \\text{Total}_{\\text{Spend} $$\n$$ \\text{Cost}_{\\text{Clothes} = \\text{Total}_{\\text{Spend} - \\text{Total}_{\\text{Sneakers} $$\n$$ \\text{Cost}_{\\text{Clothes} = \\$8,000 - \\$5,400 $$\n$$ \\text{Cost}_{\\text{Clothes} = \\$2,600 $$\n\nFinal answer: 2600"
+    }
+  ],
+  "provisional": true,
+  "scope": "partial matched screen; not final128 result",
+  "same_ids_comparison": {
+    "prompt_high": {
+      "count": 32,
+      "correct": 0,
+      "truncated": 32
+    },
+    "dense": {
+      "count": 32,
+      "correct": 31,
+      "truncated": 1
+    }
+  },
+  "evaluation_config_differences": [
+    "source_config_sha256",
+    "source_report_sha256"
+  ]
+}

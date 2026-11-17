@@ -1,0 +1,47 @@
+{
+  "answers_sha256": "739b4542d2c102beeef8c5f06e7d926420c939994c5a42438f6b235c70aed2f4",
+  "audited_records_sha256": "9f830c5f7aecb90f9b70beb9e7e0f0276489bd5fcf73ea236152166dd1234d1b",
+  "auditor_sha256": "908a4025254d682957a5ece799b5f75d5a86535e59cda5096b5e017dc3ba5c53",
+  "common128": {
+    "correct": 14,
+    "count": 32,
+    "ids_sha256": "dc222d2275ad2afc079276fca7b86345e18f54cfa7898fc29d7f128ff08e063b",
+    "strict_marker_correct_ignoring_truncation": 14,
+    "truncated": 7,
+    "truncated_correct_with_complete_marker_line": 0
+  },
+  "common128_complete": false,
+  "config_sha256": "709e1d98d8542db240bb6e0f7826e60fcd12fa02b32daf9d2974c7c5e7f3853d",
+  "correct": 14,
+  "count": 32,
+  "evaluation": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/sparsegpt-task-s65",
+  "raw_files": {
+    "dc222d2275ad2afc079276fca7b86345e18f54cfa7898fc29d7f128ff08e063b.json": "f1d4798976aa6d571b97ab3c5460dcd43080297d58764d8e44180b5f4b564934"
+  },
+  "raw_token_rescore_mismatches": 0,
+  "report_sha256": null,
+  "scope": "live_prefix_not_final_evaluation",
+  "source": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-sparsegpt-task-s65-seed0-batch32-repcal-v1",
+  "stopping_policy": {
+    "adapter_sha256": "1f6a8606cae56c9a9daaa1cd210679ef45198ce2c6b190573f0c792d70d75dbd",
+    "behavior_sha256": "f73d564fa3b7d97e44cdad97e72dd93b8a9db980848c9eadadfdba492d3017d9",
+    "eos_token_ids": [
+      248044,
+      248046
+    ],
+    "original_model_eos_ids": [
+      248044
+    ],
+    "parser": "unchanged_strict_numeric_marker_and_budget_truncation_rejection",
+    "parser_sha256": "55b2346da6bd750f18a087c2acc14875514906e1d46d4ce5f979db2cde9db814",
+    "tokenizer_eos_id": 248046,
+    "version": "gsm8k-model-and-tokenizer-eos-v1"
+  },
+  "strict_marker_correct_ignoring_truncation": 14,
+  "terminal_token_counts": {
+    "248046": 25
+  },
+  "truncated": 7,
+  "truncated_correct_with_complete_marker_line": 0,
+  "truncated_strict_marker_correct": 0
+}

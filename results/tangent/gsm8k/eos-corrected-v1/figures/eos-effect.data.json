@@ -1,0 +1,84 @@
+{
+  "scope": "paired_EOS_artifact_effect_not_complete_sparsity_curve",
+  "model": "Qwen/Qwen3.5-9B",
+  "common128_ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+  "dense_correct": 123,
+  "dense_raw_audit_sha256": "67a55acc36f8f2a647588574a70ffd9cb10e7629f94c8f62645d9a9f6d3a4bee",
+  "points": [
+    {
+      "label": "sparsegpt-task-s55",
+      "name": "SparseGPT 55%",
+      "count": 128,
+      "old_correct": 95,
+      "corrected_correct": 96,
+      "old_truncated": 4,
+      "corrected_truncated": 3,
+      "comparison_sha256": "47be91fa85ae0a941bc9f10aae69d160451df00b23cefe78de0f3e2dbf1d5608",
+      "raw_audit_sha256": "f2a66778dbd23410ca48d62aab14aa2616b1c07b1c31c03dde564973fe6b24c1",
+      "checkpoint_link_sha256": "8e257988cbf93e070b5b72702eee19c7ebe241d437ce864ccfa9981c65ca1433"
+    },
+    {
+      "label": "sparsegpt-task-s60",
+      "name": "SparseGPT 60%",
+      "count": 128,
+      "old_correct": 21,
+      "corrected_correct": 95,
+      "old_truncated": 99,
+      "corrected_truncated": 5,
+      "comparison_sha256": "fe5ee1db0c4ee6167b5c9428d05552e0136b649c6ae0f652e870997106b8b7be",
+      "raw_audit_sha256": "38d1e155164c6035e76f49293f8c2c1c41e64104a8632b22d1e8c7cf1b2a5dfa",
+      "checkpoint_link_sha256": "74702d888debba3d780ccc250a2f6d30764d9a46cb03823ce7c11e3bc9a19f41"
+    },
+    {
+      "label": "local-s55",
+      "name": "Local 55%",
+      "count": 128,
+      "old_correct": 83,
+      "corrected_correct": 89,
+      "old_truncated": 19,
+      "corrected_truncated": 7,
+      "comparison_sha256": "f788f8c11bbfe049617608ce3b473a9bec56b19ceef89ba514d829a90ab33261",
+      "raw_audit_sha256": "e7f45692369719a021f96de755f8b6c987cde9b0910e7a111d6abaf70dc3ad8c",
+      "checkpoint_link_sha256": "122a2899d953b3673b63efe15a750df40d05a9122f821366f0198c171348fcbb"
+    },
+    {
+      "label": "local-s70",
+      "name": "Local 70%",
+      "count": 128,
+      "old_correct": 0,
+      "corrected_correct": 13,
+      "old_truncated": 128,
+      "corrected_truncated": 95,
+      "comparison_sha256": "1d581a807595cd8ad3a286cadfacf3590316a139ef0def81f7adf8e55d6b53bb",
+      "raw_audit_sha256": "ee5c90f853fb02684aa63cbeffb47842fd1c4c0f16efc9da68c1d56713e42e8b",
+      "checkpoint_link_sha256": "8fac1e8cdb14b8c8864cbead300dc44c79dafca7c7ccfec40c3fdd8386814e19"
+    },
+    {
+      "label": "downstream-weightdiag-s55",
+      "name": "Downstream 55%",
+      "count": 128,
+      "old_correct": 98,
+      "corrected_correct": 98,
+      "old_truncated": 4,
+      "corrected_truncated": 4,
+      "comparison_sha256": "7fc0286b5a1d500c0a2de65b7de85ec8b7d87a266d472aa1903ed5c3728af82d",
+      "raw_audit_sha256": "bd9d9d8eff04fdea663132003173d736c31c5e32b86f4ff1c434237c5fff584f",
+      "checkpoint_link_sha256": "df5504e0c2748c784364d72fd6a9960db6a18f75798678ed941a070155e8cdb6"
+    },
+    {
+      "label": "downstream-weightdiag-s70",
+      "name": "Downstream 70%",
+      "count": 128,
+      "old_correct": 0,
+      "corrected_correct": 12,
+      "old_truncated": 128,
+      "corrected_truncated": 80,
+      "comparison_sha256": "feebcfae64fa3b8592790b8d23a4f5ee5b4e00be8cf37e98b67c010c0fe416db",
+      "raw_audit_sha256": "01effe4d134c48682f3be155804a945d704327d096db782c9d5256a20c82051b",
+      "checkpoint_link_sha256": "d3773df7ba8d30a37ea4cc7c69361560c9162c6e6b83f4782b024f9b03227548"
+    }
+  ],
+  "generator_sha256": "909010f94fd53c76b22e2d53a8dc2ac347f6b3c15be49a88beec7c269e979206",
+  "html_sha256": "3d6a046bca25841e8bebf62dcb1e22f87f83714aaf7e75a8a36dedb1fa6d06b2",
+  "external_script_dependencies": []
+}

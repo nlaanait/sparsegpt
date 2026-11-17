@@ -1,0 +1,13 @@
+import argparse,json,math
+from pathlib import Path
+import torch
+from sparsifier.data.gsm8k import digest
+from sparsifier.prune.whole_neuron_io import file_hash
+parser=argparse.ArgumentParser();parser.add_argument('--source',type=Path,action='append',required=True);parser.add_argument('--output',type=Path,required=True);args=parser.parse_args();torch.set_num_threads(4);results=[]
+for source in args.source:
+ config=json.loads((source/'config.json').read_text());report=json.loads((source/'report.json').read_text());cfg_hash=digest(config);report_hash=file_hash(source/'report.json');assert report['complete'] and report['config_sha256']==cfg_hash and len(report['stages'])==96;rows=[];upstream=cfg_hash
+ for i,stage in enumerate(report['stages']):
+  path=source/f'site-{i:03d}.pt';checksum=file_hash(path);assert checksum==stage['candidate_sha256'];stored=torch.load(path,weights_only=True,map_location='cpu',mmap=True);assert stored['config_sha256']==cfg_hash and stored['upstream']==upstream and stored['site']==stage['site'];w=stored['weight'];deployed=w.to(torch.bfloat16);finite=bool(torch.isfinite(deployed).all());assert finite;before=w==0;after=deployed==0;created=int((after & ~before).sum());revived=int((before & ~after).sum());assert created==revived==0;norm=float(w.float().norm());assert norm>0 and math.isfinite(norm);relative=float((deployed.float()-w.float()).norm())/norm;assert math.isfinite(relative);rows.append({'site':stage['site'],'sha256':checksum,'stored_dtype':str(w.dtype),'deployment_dtype':str(deployed.dtype),'deployment_finite':finite,'cast_created_zeros':created,'cast_revived_zeros':revived,'relative_weight_change':relative});upstream=checksum
+ assert file_hash(source/'report.json')==report_hash and digest(json.loads((source/'config.json').read_text()))==cfg_hash
+ result={'source':str(source.resolve()),'source_config_sha256':cfg_hash,'source_report_sha256':report_hash,'verified_stage_count':len(rows),'all_deployment_weights_finite':True,'all_masks_unchanged_by_cast':True,'cast_created_zeros':sum(r['cast_created_zeros'] for r in rows),'relative_weight_change_range':[min(r['relative_weight_change'] for r in rows),max(r['relative_weight_change'] for r in rows)],'scope':'CPU BF16 cast of each checkpoint tensor used by the BF16 evaluator. This checks mask/finiteness and rounding magnitude, not FP32-versus-BF16 task accuracy.','stages':rows};results.append(result);print(json.dumps({k:v for k,v in result.items() if k!='stages'}),flush=True)
+args.output.parent.mkdir(parents=True,exist_ok=True);args.output.write_text(json.dumps({'purpose':'verify deployment cast cannot silently increase pruning or create nonfinite MLP weights','script_sha256':file_hash(Path(__file__)),'sources':results},indent=2)+'\n')

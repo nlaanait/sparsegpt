@@ -1,0 +1,32 @@
+{
+  "allow_tf32": false,
+  "ambient_sha256": "522e3c47300d31d4be8339a3506e894ddd52a506e871611cdaa5ad1fa88af3a1",
+  "ambient_shape": [
+    8192,
+    12288
+  ],
+  "atlas_sha256": "aa8f779d24126fd3621fca363a22c3206e4eb9bd51b3f54d12021530f623bd14",
+  "blocksize": 128,
+  "capture_sha256": "8670c8375bdfb417c849a2e84fef4e825f04f26c3e9d6e73e2f7e884cf304487",
+  "float32_matmul_precision": "highest",
+  "modes": [
+    "ambient",
+    "local_alpha1"
+  ],
+  "percdamp": 0.01,
+  "purpose": "recorded_full_layer_precision_audit_not_model_wide_retention",
+  "scales": "fixed_FP32_for_both_solver_precisions",
+  "source_sha256": "1bd06fa43bb13b8f9231b6d1cbcdd9a76602fee52c92c28879b0b4ddba020224",
+  "sources": {
+    "eval/gsm8k_pruning.py": "f73d564fa3b7d97e44cdad97e72dd93b8a9db980848c9eadadfdba492d3017d9",
+    "prune/rescale.py": "e420e53619e223ca234dee06bf5e659429a22ca6dfcc2621b0dd8d82dc7f1ad1",
+    "prune/sparsegpt.py": "2b0eb994326336c579fff33716d39955e2844f52e3caca7543fe6b675c7108f8"
+  },
+  "sparsity": 0.7,
+  "torch": "2.12.0+cu130",
+  "weight_sha256": "b0abf164029dfec9b86cdc0ff91e98742436d886fb259224f63c3d773018108a",
+  "weight_shape": [
+    4096,
+    12288
+  ]
+}

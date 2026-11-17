@@ -1,0 +1,2334 @@
+{
+  "behavior": {
+    "accuracy": 1.0,
+    "answer_nll": 4.705281555652618,
+    "count": 4,
+    "truncated": 0
+  },
+  "complete": true,
+  "config_sha256": "dfe11a78742106bd40988220414c64b95c20883cd6daa33a3a3548a61087c4fd",
+  "eligible_parameters": 4831838208,
+  "eligible_removed_fraction": 0.5499996609157987,
+  "memory": {
+    "allocator_cap_gib": 56.0,
+    "cuda_free_gib": 28.111351013183594,
+    "cuda_total_gib": 121.69016647338867,
+    "guard_cap_gib": 56.0,
+    "host_before": {
+      "available_gib": 116.97970199584961,
+      "total_gib": 121.69016647338867,
+      "used_gib": 4.7104644775390625
+    },
+    "requested_cap_gib": 56.0
+  },
+  "peak_cuda_reserved_gib": 20.94140625,
+  "removed_weights": 2657509376,
+  "stages": [
+    {
+      "candidate_sha256": "36685a77fd24b7a954f3eb3020db0c26e75c77dd8f6c7b342fa97c835627a905",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 23093.14207458496,
+        "selection_damping": {
+          "damping": 3.2622413635253906,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        0,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "40a7314b6cf4bd98d5bf06932f2aa4965c74ea2ccec6c4fcfb93943e129774f5",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 20481.022872924805,
+        "selection_damping": {
+          "damping": 3.2622413635253906,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        0,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "8870cb5f4c5a9db3fafe629d31c5cb5b5dd54a2dbcffa155e3092a44bcbdf73f",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 55.60955724865198,
+        "selection_damping": {
+          "damping": 0.020247841253876686,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        0,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "2ff1432d5574dad5fb990174402e6132695f85edf70cecbcc630e623e35d87e8",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 59736.721435546875,
+        "selection_damping": {
+          "damping": 6.693318843841553,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        1,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "04bddb4f5d7aa88e963ceb46b87f9d00115b4b4fc644d6a7c7ce7ff9adfcb74f",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 53603.788146972656,
+        "selection_damping": {
+          "damping": 6.693318843841553,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        1,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "014666fb71c143f42e71af2b1fc066f84606afc483d6443ec89c85c88f3bf226",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 190.6054041683674,
+        "selection_damping": {
+          "damping": 0.04433911666274071,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        1,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "d2ac2792ec24ef616caa301e3ca8819591aede06cb067dc8138a1a160fb1b94e",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 105483.74530029297,
+        "selection_damping": {
+          "damping": 10.845124244689941,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        2,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "035ff4ec9a444be921efcf15d5ac873a40d5134f223175e70ad596e476e4bc5b",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 87299.86517333984,
+        "selection_damping": {
+          "damping": 10.845124244689941,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        2,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "124642702cb06c4f0020fc15512693411d5b00b15b6a4ed0d3b5d503cd93cc38",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 435.48290836811066,
+        "selection_damping": {
+          "damping": 0.16548225283622742,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        2,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "a5afbd7661bf69543b0896ca61c77b10654462104b10420ed4a5ac1d920dce1e",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 133924.20922851562,
+        "selection_damping": {
+          "damping": 13.939241409301758,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        3,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "6524535d92dcfead018c341cae606b3c745f8d3e55b5b9f038169dddcbcb6ef6",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 120893.08801269531,
+        "selection_damping": {
+          "damping": 13.939241409301758,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        3,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "ee890d6c9f065b44b07add69a9895bf34e38ad33e1ff35ff2bb002b51f3f1b90",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 727.1168866157532,
+        "selection_damping": {
+          "damping": 0.1668156236410141,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        3,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "357bc234b4ca8019d4dcf10ba501af3e92182a4d21661319ff1b25086d2e5b74",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 195569.9266357422,
+        "selection_damping": {
+          "damping": 28.58342170715332,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        4,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "1e7e90aa6bbbef60a83400e9838b3395e48f38c80e5ee5fe23f727849f2a0904",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 175695.3009033203,
+        "selection_damping": {
+          "damping": 28.58342170715332,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        4,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "efe73dbb47e6e4f087628234b37bad5422d9ab42ba0d117064e0dbf020c4eb51",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1300.3065946102142,
+        "selection_damping": {
+          "damping": 0.28132641315460205,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        4,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "4d9229b33a2c7633d4da17e0c69bc2c510e25db2b4e0da9c4ab5160ad2affc62",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 279040.8994140625,
+        "selection_damping": {
+          "damping": 41.74363327026367,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        5,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "fe011baa348ffc2d05aa1bd02980b7e1c82b9b10e643f1192f57d6a1ee2681b9",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 231729.66845703125,
+        "selection_damping": {
+          "damping": 41.74363327026367,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        5,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "b8beac86123feaaa81fd0a57b589047f1328f1a6618e1c879748168103dcef8a",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 2437.0819449424744,
+        "selection_damping": {
+          "damping": 0.48311319947242737,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        5,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "618d4d46b3b7dfcc16e6d0a124d55e73fcac8c2e0aa1e40a07614e6590d976a4",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 351720.98046875,
+        "selection_damping": {
+          "damping": 74.13882446289062,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        6,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "730f46f568fe3b45ddfc9c0f1699b03dff29844239b328558a39e7b4f6f695b4",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 286045.7624511719,
+        "selection_damping": {
+          "damping": 74.13882446289062,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        6,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "7cfb9a17ad5ee617b028f81944f2e64c8782df24a8458b4abdb78b6904d1b958",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 4013.0418696403503,
+        "selection_damping": {
+          "damping": 1.4091358184814453,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        6,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "c955f301e72083ecf2d536d5d0c97a79cf0bea0f439cce8bb0415536ef898268",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 415227.4794921875,
+        "selection_damping": {
+          "damping": 59.72787094116211,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        7,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "0e4d8dca567aca2eb740341d680662cdd0b3c1ce22371b088177122c823d1b6f",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 328952.22314453125,
+        "selection_damping": {
+          "damping": 59.72787094116211,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        7,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "820d23bfa33f55826b730f858ce2a85836a58ea120609da7c8cd026fe1a793a9",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 4230.634653568268,
+        "selection_damping": {
+          "damping": 0.8778349757194519,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        7,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "cb4b638c805483068bd6ea486a2ec1170e61ef0eb7bd8235ada23c085a2693c4",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 428525.0849609375,
+        "selection_damping": {
+          "damping": 66.15491485595703,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        8,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "f06b414ff0d38c219b69c7138e81a26365520e14aa9782f496af2ce3a975b065",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 351457.52392578125,
+        "selection_damping": {
+          "damping": 66.15491485595703,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        8,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "079d768a4aecf0e18f297cdbd96cb668cdfe4f9dbdfd700892150ae25f2cf44b",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 4510.321932315826,
+        "selection_damping": {
+          "damping": 0.9505495429039001,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        8,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "4f99dc13973a2543cf1d1a31cb004bb8d94df3057cbf9ef369cbb9eb8c807d0c",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 415606.9013671875,
+        "selection_damping": {
+          "damping": 68.30269622802734,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        9,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "889d36ebf5885237f5431eb8967dae70293f51821c26858b5857627bda351f62",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 367398.24365234375,
+        "selection_damping": {
+          "damping": 68.30269622802734,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        9,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "dca964f9c6d9504ee70bce354e8f20dd102f026dc59cc76bd398ff3ccf4c6dbf",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 4780.304418087006,
+        "selection_damping": {
+          "damping": 0.9639939665794373,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        9,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "3e4d227ea2cf77461e9503ae09003de7dacfaeacbb56026cd3ef0f9c40c16fa5",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 369984.07666015625,
+        "selection_damping": {
+          "damping": 77.66584014892578,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        10,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "3d9d1fd030e7480ad9e4d17c0db17a9c3ca3f5b7d91bad71ef3fc70fab8dd417",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 364989.7041015625,
+        "selection_damping": {
+          "damping": 77.66584014892578,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        10,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "b53771c1d40815e745d0009a97772a6fcec448ea566cd2af1031a956a3850faf",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 5366.389491081238,
+        "selection_damping": {
+          "damping": 1.3035062551498413,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        10,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "76a59d2271194e9233b1bc6e8893d0d08ca39119d2aa62fec2cbb3f0a73f086b",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 375891.9560546875,
+        "selection_damping": {
+          "damping": 74.58165740966797,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        11,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "441401684c9fbbb1906d9efd246c92db81ab8051951b5bca7309c8b6a3788e22",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 385787.02490234375,
+        "selection_damping": {
+          "damping": 74.58165740966797,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        11,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "6d27d2407aa42b70d969b633ebd2147ddd96490487d8394074260c4d215f24b2",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 5524.624588012695,
+        "selection_damping": {
+          "damping": 1.1369144916534424,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        11,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "c332f306b1ba3895412fb09083b622db5afa1b99733c0be81b1083f4e47bbf85",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 363297.6083984375,
+        "selection_damping": {
+          "damping": 77.52924346923828,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        12,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "9c890c528a41bb6c52c04781b1974e8bc06a6a4325bbe75ddb1831b53d623698",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 391626.2041015625,
+        "selection_damping": {
+          "damping": 77.52924346923828,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        12,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "a06cf3d72b48bf4bec95b5c4cbe6d5056ba6e40e1ad121e65e6848003e630f73",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 5943.339629650116,
+        "selection_damping": {
+          "damping": 1.3264830112457275,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        12,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "0f0cc1b7a29155528deb96ce6db1ea0e5f5538d95e20dd2438acee5e80eb8f3a",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 371759.76123046875,
+        "selection_damping": {
+          "damping": 81.24124908447266,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        13,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "9fb11ce8699b74298bfbd3fe7696c005c6b940b3436868c4634f18d462edbc76",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 408574.642578125,
+        "selection_damping": {
+          "damping": 81.24124908447266,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        13,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "25b1265a2f7ee990fb5bc04ff6fe5e53e25dbd86847bf71da4b6a93d0e5de7b3",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 6143.557780265808,
+        "selection_damping": {
+          "damping": 1.5329424142837524,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        13,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "dce5905382fdb5cad6b0d0923ea582c617ede3520b6283a2d2b7a9d8f495c81e",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 349228.6875,
+        "selection_damping": {
+          "damping": 91.62967681884766,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        14,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "bc8beb915732e1b8a93252e0b748d64c4f97e44eac08548dbb7e92dada7c30c7",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 409247.2353515625,
+        "selection_damping": {
+          "damping": 91.62967681884766,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        14,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "b7e19972786af8aef98e4fc99335fd69c682abc27a3ae77b5bdde6bc391f4fe3",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 6636.2601318359375,
+        "selection_damping": {
+          "damping": 1.6781960725784302,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        14,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "32053b49aeedbb4e7bc51158fe0f4ccc33bf0edd2e252d76927f15bf2e129e93",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 372973.30322265625,
+        "selection_damping": {
+          "damping": 90.73635864257812,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        15,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "b52680a0fd949fcc3cd1e292da072f92710eb57c6a236d45d9811a27432aac5f",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 444992.96240234375,
+        "selection_damping": {
+          "damping": 90.73635864257812,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        15,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "b359ee52598217bafbb18e3785ec38ea49f52903e96e9d451e509385b4fc2f53",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 7324.7149477005005,
+        "selection_damping": {
+          "damping": 1.8429418802261353,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        15,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "3eaf471462fbff91c7098853db67f4249bb62fa591d0bd056e2239c99027513c",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 389218.0595703125,
+        "selection_damping": {
+          "damping": 93.57952880859375,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        16,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "432db2a2d2aa6520188f5bcd7b119264293ec695b6887a624f7058f9b22e1320",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 470732.8583984375,
+        "selection_damping": {
+          "damping": 93.57952880859375,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        16,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "75296153f041500e511c78d5855996a309378aa9dc630b3341ea5a428bef8e8f",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 9107.711260795593,
+        "selection_damping": {
+          "damping": 2.3767342567443848,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        16,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "4c42d4112a0c010e47362a716bffaa3d2f44d6d700f9b66648e9b0c5a0ba9bfb",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 403783.6064453125,
+        "selection_damping": {
+          "damping": 100.47113037109375,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        17,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "a7a23e0d890056ed07291a3ad5d2ad82e9169e67316e348b4d65a0fbd8eaf79e",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 507230.76708984375,
+        "selection_damping": {
+          "damping": 100.47113037109375,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        17,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "59e0b6bb342c7a0cb1e694e181c1a5d9a9ed3d8947dea39d9901ea215c8c9c65",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 11349.987995147705,
+        "selection_damping": {
+          "damping": 3.1150386333465576,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        17,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "54e680cdc0a54e1d5bf7674a4169da953c1069ea2807f604cb01fe0fbeada258",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 432444.82861328125,
+        "selection_damping": {
+          "damping": 125.81648254394531,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        18,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "4c1082e3c49199448a5070aedb4265518449920f4f384320542e8e1655c06c2a",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 549603.4936523438,
+        "selection_damping": {
+          "damping": 125.81648254394531,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        18,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "ee4ae4149f3995b5eb2f7fb4801887024c1fb57157383b2b7a171e06d9962b24",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 20476.944305419922,
+        "selection_damping": {
+          "damping": 7.020815372467041,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        18,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "39ecae3de3337b9bd35f65e4da3f1adc5c8718aa2a6560c73ce7067e7d0e32f6",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 546504.3354492188,
+        "selection_damping": {
+          "damping": 123.2647705078125,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        19,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "8f48405ccd454cbd0c23d67887bcdd0184bdb89e57933fedae3bb0ecf312db30",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 690868.25390625,
+        "selection_damping": {
+          "damping": 123.2647705078125,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        19,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "5ea66d6bb63ba2fc70e75b0f7939ca0833c97111fad5080c82b2949cebb45827",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 27993.32204437256,
+        "selection_damping": {
+          "damping": 8.193228721618652,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        19,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "bfaf32efb8376424e51721dc84ff8b92697e723d413058574bf3c15e6aadf666",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 715459.1591796875,
+        "selection_damping": {
+          "damping": 128.3492889404297,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        20,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "67fe6b46307762245914efb755132a231cc0dfb0da4c5764cdd83df0ce36ea6e",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 773882.0375976562,
+        "selection_damping": {
+          "damping": 128.3492889404297,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        20,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "d3aa8c2c7b2422436979acb132cea26caecdd08b32a68361f709c9d93ef1b887",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 33845.73581695557,
+        "selection_damping": {
+          "damping": 9.881359100341797,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        20,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "13094251ce54a706d22c69c23b5460efa172cf63f52aa06058685c42d97fff90",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 818939.6455078125,
+        "selection_damping": {
+          "damping": 133.26327514648438,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        21,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "7a9563bb3ae96008cb4b556cbda9334f8ebe66e8c4f5b3a70dadfbdddce0c94e",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 834435.8623046875,
+        "selection_damping": {
+          "damping": 133.26327514648438,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        21,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "cab60f58458894e56d0abef7a3dd5abae19488af68688648c1a7a4634d5ab75c",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 42060.42588806152,
+        "selection_damping": {
+          "damping": 11.367907524108887,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        21,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "2d9ef8cce865894ffe861c2764089334052de94b1d2f320b3122c32f2d116c8b",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1119977.791015625,
+        "selection_damping": {
+          "damping": 166.17245483398438,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        22,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "2a1012c6f658381fb345fee7cd769db2c7f29dabb74f770072379280c7f5c62e",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1049133.763671875,
+        "selection_damping": {
+          "damping": 166.17245483398438,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        22,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "a81f9ea382bfaf2a56c747fee0c60d8a3f002c47d2087cd472e6ba1e08440c52",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 63428.65528869629,
+        "selection_damping": {
+          "damping": 23.072509765625,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        22,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "0430e8099dcc60967c8518895db092a95f9aea905a2396ea74c844ef87a6f457",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1189302.287109375,
+        "selection_damping": {
+          "damping": 153.4826202392578,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        23,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "e663678c4a756af12b28612ba885f0c0ea10431b35dd09b3289cf687742890cc",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1136695.3837890625,
+        "selection_damping": {
+          "damping": 153.4826202392578,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        23,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "42d733781d7c35f99f9339c1d5c0983da76d6641e0d44fcf6b17e4779d0f7094",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 60446.63748168945,
+        "selection_damping": {
+          "damping": 16.7441349029541,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        23,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "743a703a7e86516280f21cbb293dbd686f094babcde8649c999ea244d6dd98a7",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1357618.8671875,
+        "selection_damping": {
+          "damping": 162.94003295898438,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        24,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "b7b80aa4e9ef210ad059a5abe4746e8b26a2d1592eaeb14c11d743c2b1036e41",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1207541.1533203125,
+        "selection_damping": {
+          "damping": 162.94003295898438,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        24,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "7c0f2c6280b7bd6d54e3fb9c2549d33466752214c9993ff31f3300a2d2db3d98",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 57434.3032913208,
+        "selection_damping": {
+          "damping": 15.77258014678955,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        24,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "360f6b56b5ec126908ee1bdf77b4a2ee8265b68c8117882511e7bdb2404d4ad5",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1606503.8505859375,
+        "selection_damping": {
+          "damping": 180.07569885253906,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        25,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "62804685402c4b8d4112cb55d74bf8332e78daa08cbe57c3dabc9d3165749eb0",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1360771.4052734375,
+        "selection_damping": {
+          "damping": 180.07569885253906,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        25,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "5f8454a90917403e8be0534b1d70b49e100e88a0827be8996ea9b6a6c2338955",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 57171.73346710205,
+        "selection_damping": {
+          "damping": 15.848231315612793,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        25,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "567a6404d78a95e586ff6ede7f82935b9393597ddc103e9f9329017854222a5a",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1874336.185546875,
+        "selection_damping": {
+          "damping": 202.76304626464844,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        26,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "2212d0051679e0ee650904586f8aa9a3b5c9d1c2d758d09fb97319ef8e520403",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1551259.30859375,
+        "selection_damping": {
+          "damping": 202.76304626464844,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        26,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "f90da8555a1d452e8b78f9977200dcb0d829793da125c8941852d4f2aff5e6f5",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 73751.55780029297,
+        "selection_damping": {
+          "damping": 38.04718017578125,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        26,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "2434a2eb02337d99cabd38b441ad16928e7de63bb250b130627064ab3102bab5",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1827222.48046875,
+        "selection_damping": {
+          "damping": 202.41921997070312,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        27,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "3b6bc73d05ac488ad0bf23433272c86cb2ad9be336aa5ab0d39e144170b7be00",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1570300.66015625,
+        "selection_damping": {
+          "damping": 202.41921997070312,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        27,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "e2eb9204d1a0965302db1e2fb614e2d757c10cbcc074fea224a893e2e62f911d",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 74212.8889465332,
+        "selection_damping": {
+          "damping": 24.425561904907227,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        27,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "d74f758fc7292acdb26aea6b2f610fd6c64ebeb59fee964528273ff042995f48",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1805437.4609375,
+        "selection_damping": {
+          "damping": 212.64364624023438,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        28,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "b0a09e75035d12a325a295ebd37fef166e184832540e3eb85c29dfd3725f2820",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1611886.126953125,
+        "selection_damping": {
+          "damping": 212.64364624023438,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        28,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "319b1d1f88a5ff9e179f4410ed704916191255d6827681108ec842768f6b49b7",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 84690.02563476562,
+        "selection_damping": {
+          "damping": 26.222412109375,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        28,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "d7cb1c1d675e0aa73f4c85755e3b14c357e9ac714dfffe1007ce7cbe7d0f5026",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1917825.408203125,
+        "selection_damping": {
+          "damping": 233.06399536132812,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        29,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "362ccce507c62a5e43f6528f00e7c540fd163d75a2eba2219ea910f711e27df3",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1740122.25390625,
+        "selection_damping": {
+          "damping": 233.06399536132812,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        29,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "fad74b6ed6504fcedd981ab41eade5b0eedc1b8f0852d3d1cec7109a9cd18298",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 97927.20739746094,
+        "selection_damping": {
+          "damping": 38.2718505859375,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        29,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "ed4370745d819d4dac31f82eb8bf7af5c0cfaec43adc2295aafe59d558fc8bea",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1733765.40234375,
+        "selection_damping": {
+          "damping": 230.9213409423828,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        30,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "bcb6bb397e71cc65fb8092407e2af60c6998829ddec95cc0a8c69d8f4a37b46d",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1623661.533203125,
+        "selection_damping": {
+          "damping": 230.9213409423828,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        30,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "48a8f52adde1c0ed3fa4876957d4fcfbc54d09ad492582d7cd9d455694703953",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 130345.9447631836,
+        "selection_damping": {
+          "damping": 55.925994873046875,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        30,
+        "mlp.down_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "660c9af3363c85ec65a9e796973a6a20875104e769fe88aed1837f9a6e8533fb",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1575960.658203125,
+        "selection_damping": {
+          "damping": 210.03533935546875,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        31,
+        "mlp.gate_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "41dcae541d35fdcb99982e0218b0f3d8d9885bbf2cd9ce77ffdffd3f8bd26bcd",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499998927116394,
+        "blocksize": 128,
+        "column_blocks": 32,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 1445409.6689453125,
+        "selection_damping": {
+          "damping": 210.03533935546875,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682400,
+      "site": [
+        31,
+        "mlp.up_proj"
+      ]
+    },
+    {
+      "candidate_sha256": "93b9f30567c2bd285c2acda7a371b1d631c74787535c3969349c7694c5b1de56",
+      "diagnostics": {
+        "achieved_zero_fraction": 0.5499992370605469,
+        "blocksize": 128,
+        "column_blocks": 96,
+        "damping": 0.01,
+        "dead_input_columns": 0,
+        "objective_coordinates": "damped_solver_coordinates_half_quadratic",
+        "obs_surrogate_objective": 236835.19091796875,
+        "selection_damping": {
+          "damping": 260.8844909667969,
+          "effective_percdamp": 0.01,
+          "factorization_attempts": 1,
+          "requested_percdamp": 0.01
+        },
+        "solver": "ambient_obs"
+      },
+      "removed": 27682368,
+      "site": [
+        31,
+        "mlp.down_proj"
+      ]
+    }
+  ],
+  "total_parameters": 8953803264,
+  "whole_model_removed_fraction": 0.2968022970400615
+}

@@ -1,0 +1,284 @@
+{
+  "purpose": "checkpoint_safe_reorder_to_resolve_suspected_stop_token_artifact",
+  "original_pruning_job": 243,
+  "diagnostic_job": 253,
+  "evaluation_job": 244,
+  "source_config_sha256": "33bff9a2654b10d51be3a60fcf9e6d0790534651bf4f27ec64c74203e8b13da7",
+  "saved_stages_verified": [
+    {
+      "index": 0,
+      "site": [
+        0,
+        "mlp.gate_proj"
+      ],
+      "sha256": "1652778a9753535677585736f464c5780a532e142d8b84ac48f3764ebfb90266"
+    },
+    {
+      "index": 1,
+      "site": [
+        0,
+        "mlp.up_proj"
+      ],
+      "sha256": "7fe4a0884b0541497aadb967b9ae34d508b1208b8e0cdff9e0c2ec33860a0773"
+    },
+    {
+      "index": 2,
+      "site": [
+        0,
+        "mlp.down_proj"
+      ],
+      "sha256": "595de681cb26b10f7fce16a5156ea4a1d25fc63eb6a7e6f987abba3b3632ff0d"
+    },
+    {
+      "index": 3,
+      "site": [
+        1,
+        "mlp.gate_proj"
+      ],
+      "sha256": "cbd107116074838f748a34766c38b874f7abc424946ebdb8500adfb33df4525c"
+    },
+    {
+      "index": 4,
+      "site": [
+        1,
+        "mlp.up_proj"
+      ],
+      "sha256": "cb226399c4fa39bf28df0125c37a501b4fb55d2ed5e91d336befed9155caade3"
+    },
+    {
+      "index": 5,
+      "site": [
+        1,
+        "mlp.down_proj"
+      ],
+      "sha256": "761b535150c82d582670487838f801983a9a93991f735af4f2b60be2dff865d9"
+    },
+    {
+      "index": 6,
+      "site": [
+        2,
+        "mlp.gate_proj"
+      ],
+      "sha256": "09ab8d9e06c9e78c09378589b7b3aec1dd87641771ea00354de70835299e8ed8"
+    },
+    {
+      "index": 7,
+      "site": [
+        2,
+        "mlp.up_proj"
+      ],
+      "sha256": "094a03dab7990d81b318559c930bf8cb0fc28a30d7d4aeed627b639c86ea3c00"
+    },
+    {
+      "index": 8,
+      "site": [
+        2,
+        "mlp.down_proj"
+      ],
+      "sha256": "7f96ec0fd53ba07fe64799491a9c75c33986cfb15958470e27abedfd7699970c"
+    },
+    {
+      "index": 9,
+      "site": [
+        3,
+        "mlp.gate_proj"
+      ],
+      "sha256": "929f686ee26d78fc6f7772f69a25bebea2d7383244bd5ab5451dc467ca9002ca"
+    },
+    {
+      "index": 10,
+      "site": [
+        3,
+        "mlp.up_proj"
+      ],
+      "sha256": "9ed73055e96ebfdc9fcadf1f5a66e8bd598b5a8b01eebccc3ed124d1cd44e073"
+    },
+    {
+      "index": 11,
+      "site": [
+        3,
+        "mlp.down_proj"
+      ],
+      "sha256": "61259d3c54fa9ec6a186d1d427e40e646b8ade3ae0465a2e519117878eec5b5e"
+    },
+    {
+      "index": 12,
+      "site": [
+        4,
+        "mlp.gate_proj"
+      ],
+      "sha256": "4e9b6db552d33658d8cedbe6d04b1b4d18f9c599a1ecb3a52cd88c376138e42d"
+    },
+    {
+      "index": 13,
+      "site": [
+        4,
+        "mlp.up_proj"
+      ],
+      "sha256": "6d78e19b3905436a401b229dcba28794aab7b744e88f04c2d69d8f3a58efe0ed"
+    },
+    {
+      "index": 14,
+      "site": [
+        4,
+        "mlp.down_proj"
+      ],
+      "sha256": "96972c73de71ea3124c85457b0acdb6bc379b63450932db8c3090422c521bfed"
+    }
+  ],
+  "state": "auto_cancelled_then_recovered",
+  "jobs_before": {
+    "243": "Job Details:\n  ID=243\n  State=Running (R)\n  Priority=8\n  SubmittedBy=nlaanait\n  Command=bash /home/nlaanait/sparsegpt-tangent-revised/scripts/run_gsm8k_guarded.sh qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1 /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1/memory.jsonl /home/nlaanait/sparsegpt-tangent-revised/.pixi/envs/gb10/bin/python -u -m sparsifier.eval.gsm8k_batch_runtime --batch-size 32 sparsifier.eval.gsm8k_sequential --manifest /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/data/representative-calibration-seed0-v1.json --pilot-report /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-dense-pilot-v2/report.json --c4-capture /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/capture-v1 --blocks all --sparsity 0.6 --seed 0 --eval-count 4 --output /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1 --arm local\n\nResources:\n  GPUs=1\n  GPUSharing=exclusive\n  GPUMemoryLimit=64G\n  GPUIDs=0\n  MemoryLimit=80G\n\nExecution:\n  WorkingDir=/home/nlaanait/sparsegpt-tangent-revised\n  TmuxSession=gjob-243-qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1\n\nDependencies:\n  DependsOn=242\n  Mode=All\n  AutoCancel=enabled\n\nTiming:\n  TimeLimit=06:00:00\n  Submitted=11/15-17:06:34 (waited 16:13:11)\n  Started=11/16-09:19:45 (running 00:18:50 so far)\n",
+    "244": "Job Details:\n  ID=244\n  State=Queued (PD)\n  Priority=10\n  SubmittedBy=nlaanait\n  Command=bash /home/nlaanait/sparsegpt-tangent-revised/scripts/run_gsm8k_guarded.sh qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1-decision512 /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1-decision512/memory.jsonl /home/nlaanait/sparsegpt-tangent-revised/.pixi/envs/gb10/bin/python -u -m sparsifier.eval.gsm8k_batch_runtime --batch-size 32 sparsifier.eval.gsm8k_decision_full --manifest /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/data/decision128-full512-repcal-seed0-batch8-v1.json --calibration-manifest /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/data/representative-calibration-seed0-v1.json --source /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1 --reference /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-decision-dense-seed0-batch32-repcal-v1 --output /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1-decision512\n\nResources:\n  GPUs=1\n  GPUSharing=exclusive\n  GPUMemoryLimit=64G\n  MemoryLimit=80G\n\nExecution:\n  WorkingDir=/home/nlaanait/sparsegpt-tangent-revised\n  TmuxSession=gjob-244-qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1-decision512\n\nDependencies:\n  DependsOn=221,243\n  Mode=All\n  AutoCancel=enabled\n\nTiming:\n  TimeLimit=06:00:00\n  Submitted=11/15-17:06:34\n",
+    "253": "Job Details:\n  ID=253\n  State=Queued (PD)\n  Priority=11\n  SubmittedBy=nlaanait\n  Command=bash /home/nlaanait/sparsegpt-tangent-revised/scripts/run_gsm8k_guarded.sh qwen-9b-gsm8k-stop-eos-s60-audit-v1 /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/stop-tokens-s60/memory.jsonl /home/nlaanait/sparsegpt-tangent-revised/.pixi/envs/gb10/bin/python -u /home/nlaanait/sparsegpt-tangent-revised/scripts/diagnose_gsm8k_stop_tokens.py --manifest /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/data/decision128-full512-repcal-seed0-batch8-v1.json --source /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-sparsegpt-task-s60-seed0-batch32-repcal-v1 --cpu-audit /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/sparsity-bracket-repcal-v1/audits/sparsegpt-task-s60-cpu.json --original-evaluation /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-sparsegpt-task-s60-seed0-batch32-repcal-v1-decision512 --output /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/stop-tokens-s60\n\nResources:\n  GPUs=1\n  GPUSharing=exclusive\n  GPUMemoryLimit=64G\n  MemoryLimit=80G\n\nExecution:\n  WorkingDir=/home/nlaanait/sparsegpt-tangent-revised\n  TmuxSession=gjob-253-qwen-9b-gsm8k-stop-eos-s60-audit-v1\n\nDependencies:\n  DependsOn=243\n  Mode=All\n  AutoCancel=enabled\n\nTiming:\n  TimeLimit=01:00:00\n  Submitted=11/16-09:35:31\n"
+  },
+  "operations": [
+    {
+      "argv": [
+        "gjob",
+        "update",
+        "253",
+        "--depends-on",
+        "241"
+      ],
+      "stdout": "Job 253 updated successfully.\n  UpdatedFields=depends_on_ids, dependency_mode\n",
+      "stderr": "",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "gbatch",
+        "--gpus",
+        "1",
+        "--gpu-memory",
+        "64G",
+        "--memory",
+        "80G",
+        "--name",
+        "qwen-9b-gsm8k-local-s60-stop-audit-resume",
+        "--project",
+        "qwen-sparsegpt",
+        "--time",
+        "06:00:00",
+        "--priority",
+        "8",
+        "--auto-close",
+        "--depends-on",
+        "253",
+        "--",
+        "bash",
+        "/home/nlaanait/sparsegpt-tangent-revised/scripts/run_gsm8k_guarded.sh",
+        "qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1",
+        "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1/memory.jsonl",
+        "/home/nlaanait/sparsegpt-tangent-revised/.pixi/envs/gb10/bin/python",
+        "-u",
+        "-m",
+        "sparsifier.eval.gsm8k_batch_runtime",
+        "--batch-size",
+        "32",
+        "sparsifier.eval.gsm8k_sequential",
+        "--manifest",
+        "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/data/representative-calibration-seed0-v1.json",
+        "--pilot-report",
+        "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-dense-pilot-v2/report.json",
+        "--c4-capture",
+        "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/capture-v1",
+        "--blocks",
+        "all",
+        "--sparsity",
+        "0.6",
+        "--seed",
+        "0",
+        "--eval-count",
+        "4",
+        "--output",
+        "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1",
+        "--arm",
+        "local"
+      ],
+      "stdout": "Submitted batch job 254 (gjob-254-qwen-9b-gsm8k-local-s60-stop-audit-resume)\n",
+      "stderr": "",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "gjob",
+        "update",
+        "244",
+        "--depends-on-all",
+        "221,254"
+      ],
+      "stdout": "Job 244 updated successfully.\n  UpdatedFields=depends_on_ids, dependency_mode\n",
+      "stderr": "",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "gcancel",
+        "243"
+      ],
+      "stdout": "Job 243 cancelled.\n",
+      "stderr": "",
+      "returncode": 0
+    }
+  ],
+  "resume_submission_intent": [
+    "gbatch",
+    "--gpus",
+    "1",
+    "--gpu-memory",
+    "64G",
+    "--memory",
+    "80G",
+    "--name",
+    "qwen-9b-gsm8k-local-s60-stop-audit-resume",
+    "--project",
+    "qwen-sparsegpt",
+    "--time",
+    "06:00:00",
+    "--priority",
+    "8",
+    "--auto-close",
+    "--depends-on",
+    "253",
+    "--",
+    "bash",
+    "/home/nlaanait/sparsegpt-tangent-revised/scripts/run_gsm8k_guarded.sh",
+    "qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1",
+    "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1/memory.jsonl",
+    "/home/nlaanait/sparsegpt-tangent-revised/.pixi/envs/gb10/bin/python",
+    "-u",
+    "-m",
+    "sparsifier.eval.gsm8k_batch_runtime",
+    "--batch-size",
+    "32",
+    "sparsifier.eval.gsm8k_sequential",
+    "--manifest",
+    "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/data/representative-calibration-seed0-v1.json",
+    "--pilot-report",
+    "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-dense-pilot-v2/report.json",
+    "--c4-capture",
+    "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/capture-v1",
+    "--blocks",
+    "all",
+    "--sparsity",
+    "0.6",
+    "--seed",
+    "0",
+    "--eval-count",
+    "4",
+    "--output",
+    "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1",
+    "--arm",
+    "local"
+  ],
+  "resume_job": 254,
+  "jobs_before_cancel": {
+    "243": "Job Details:\n  ID=243\n  State=Running (R)\n  Priority=8\n  SubmittedBy=nlaanait\n  Command=bash /home/nlaanait/sparsegpt-tangent-revised/scripts/run_gsm8k_guarded.sh qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1 /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1/memory.jsonl /home/nlaanait/sparsegpt-tangent-revised/.pixi/envs/gb10/bin/python -u -m sparsifier.eval.gsm8k_batch_runtime --batch-size 32 sparsifier.eval.gsm8k_sequential --manifest /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/data/representative-calibration-seed0-v1.json --pilot-report /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-dense-pilot-v2/report.json --c4-capture /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/capture-v1 --blocks all --sparsity 0.6 --seed 0 --eval-count 4 --output /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1 --arm local\n\nResources:\n  GPUs=1\n  GPUSharing=exclusive\n  GPUMemoryLimit=64G\n  GPUIDs=0\n  MemoryLimit=80G\n\nExecution:\n  WorkingDir=/home/nlaanait/sparsegpt-tangent-revised\n  TmuxSession=gjob-243-qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1\n\nDependencies:\n  DependsOn=242\n  Mode=All\n  AutoCancel=enabled\n\nTiming:\n  TimeLimit=06:00:00\n  Submitted=11/15-17:06:34 (waited 16:13:11)\n  Started=11/16-09:19:45 (running 00:19:20 so far)\n",
+    "244": "Job Details:\n  ID=244\n  State=Queued (PD)\n  Priority=10\n  SubmittedBy=nlaanait\n  Command=bash /home/nlaanait/sparsegpt-tangent-revised/scripts/run_gsm8k_guarded.sh qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1-decision512 /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1-decision512/memory.jsonl /home/nlaanait/sparsegpt-tangent-revised/.pixi/envs/gb10/bin/python -u -m sparsifier.eval.gsm8k_batch_runtime --batch-size 32 sparsifier.eval.gsm8k_decision_full --manifest /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/data/decision128-full512-repcal-seed0-batch8-v1.json --calibration-manifest /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/data/representative-calibration-seed0-v1.json --source /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1 --reference /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-decision-dense-seed0-batch32-repcal-v1 --output /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1-decision512\n\nResources:\n  GPUs=1\n  GPUSharing=exclusive\n  GPUMemoryLimit=64G\n  MemoryLimit=80G\n\nExecution:\n  WorkingDir=/home/nlaanait/sparsegpt-tangent-revised\n  TmuxSession=gjob-244-qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1-decision512\n\nDependencies:\n  DependsOn=221,254\n  Mode=All\n  AutoCancel=enabled\n\nTiming:\n  TimeLimit=06:00:00\n  Submitted=11/15-17:06:34\n",
+    "253": "Job Details:\n  ID=253\n  State=Queued (PD)\n  Priority=11\n  SubmittedBy=nlaanait\n  Command=bash /home/nlaanait/sparsegpt-tangent-revised/scripts/run_gsm8k_guarded.sh qwen-9b-gsm8k-stop-eos-s60-audit-v1 /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/stop-tokens-s60/memory.jsonl /home/nlaanait/sparsegpt-tangent-revised/.pixi/envs/gb10/bin/python -u /home/nlaanait/sparsegpt-tangent-revised/scripts/diagnose_gsm8k_stop_tokens.py --manifest /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/data/decision128-full512-repcal-seed0-batch8-v1.json --source /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-sparsegpt-task-s60-seed0-batch32-repcal-v1 --cpu-audit /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/sparsity-bracket-repcal-v1/audits/sparsegpt-task-s60-cpu.json --original-evaluation /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-sparsegpt-task-s60-seed0-batch32-repcal-v1-decision512 --output /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/pruning-artifact-audit-v1/stop-tokens-s60\n\nResources:\n  GPUs=1\n  GPUSharing=exclusive\n  GPUMemoryLimit=64G\n  MemoryLimit=80G\n\nExecution:\n  WorkingDir=/home/nlaanait/sparsegpt-tangent-revised\n  TmuxSession=gjob-253-qwen-9b-gsm8k-stop-eos-s60-audit-v1\n\nDependencies:\n  DependsOn=241,243\n  Mode=All\n  AutoCancel=enabled\n\nTiming:\n  TimeLimit=01:00:00\n  Submitted=11/16-09:35:31\n",
+    "254": "Job Details:\n  ID=254\n  State=Queued (PD)\n  Priority=8\n  SubmittedBy=nlaanait\n  Command=bash /home/nlaanait/sparsegpt-tangent-revised/scripts/run_gsm8k_guarded.sh qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1 /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1/memory.jsonl /home/nlaanait/sparsegpt-tangent-revised/.pixi/envs/gb10/bin/python -u -m sparsifier.eval.gsm8k_batch_runtime --batch-size 32 sparsifier.eval.gsm8k_sequential --manifest /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/data/representative-calibration-seed0-v1.json --pilot-report /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-dense-pilot-v2/report.json --c4-capture /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/capture-v1 --blocks all --sparsity 0.6 --seed 0 --eval-count 4 --output /home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s60-seed0-batch32-repcal-v1 --arm local\n\nResources:\n  GPUs=1\n  GPUSharing=exclusive\n  GPUMemoryLimit=64G\n  MemoryLimit=80G\n\nExecution:\n  WorkingDir=/home/nlaanait/sparsegpt-tangent-revised\n  TmuxSession=gjob-254-qwen-9b-gsm8k-local-s60-stop-audit-resume\n\nDependencies:\n  DependsOn=253\n  Mode=All\n  AutoCancel=enabled\n\nTiming:\n  TimeLimit=06:00:00\n  Submitted=11/16-09:39:05\n"
+  },
+  "recovery_journal": "stop-token-queue-recovery.json",
+  "scheduler_behavior": "single --depends-on update added dependency241 to243; diagnostic canceled when243 canceled. Rebuilt with new jobs255-265. --depends-on-all replacement on244 had succeeded."
+}

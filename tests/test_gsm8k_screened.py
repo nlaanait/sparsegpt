@@ -35,7 +35,9 @@ def test_promoted_screen_reuses_answers_and_continues_same_call(tmp_path):
         return {'count':len(chosen)}
     result=screened_behavior(fake_behavior,data,baseline,'dense',None,None,tmp_path,'candidate',max_new_tokens=2048)
     assert result['count']==512
-    assert len(calls)==462 and len(set(calls))==462
+    # The interrupted 48:56 batch is regenerated intact, including rows 48/49.
+    assert calls[:8] == [r['id'] for r in data[48:56]]
+    assert len(calls)==464 and len(set(calls))==464
     assert len(read_completed(tmp_path/'answers.jsonl','candidate'))==512
     assert json.loads((tmp_path/'screen.json').read_text())['passed']
 

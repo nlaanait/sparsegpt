@@ -1,0 +1,322 @@
+{
+  "complete": true,
+  "config": {
+    "backend": {
+      "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn",
+      "causal_conv1d_update": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_update",
+      "torch_chunk_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_chunk_gated_delta_rule",
+      "torch_recurrent_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_recurrent_gated_delta_rule"
+    },
+    "batches": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "generation_tokens": 32,
+    "ids": [
+      "gsm8k/train/5723",
+      "gsm8k/train/1345",
+      "gsm8k/train/3035",
+      "gsm8k/train/2549",
+      "gsm8k/train/5685",
+      "gsm8k/train/5801",
+      "gsm8k/train/5350",
+      "gsm8k/train/1873"
+    ],
+    "manifest_sha256": "60107022919db28eb59dc9d7effa79630997cf744fd929a8643558397e35cdb5",
+    "model": "Qwen/Qwen3.5-9B",
+    "packages": {
+      "flash-linear-attention": "0.6.0",
+      "kernels": "0.17.3",
+      "torch": "2.12.0+cu130",
+      "transformers": "5.22.2"
+    },
+    "purpose": "throughput_and_parity_only_not_accuracy",
+    "repeats": 3,
+    "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+    "seed": 0,
+    "source_sha256": "3723567a4b7ca2fe35cafebbb7ab73c61bee5756588c943c311f69960d7cd8f5"
+  },
+  "limitations": [
+    "Dense checkpoint only; pruned candidates require their own validation",
+    "32 forced decode steps are a diagnostic, not a 2048-token accuracy evaluation",
+    "VJP timing excludes weight contractions, atlas fitting and full calibration",
+    "Passing these prompts is necessary but insufficient to enable production batching",
+    "CUDA allocator and system unified-memory measurements must not be added"
+  ],
+  "measurements": [
+    {
+      "batch": 1,
+      "exact_32_token_sequence_matches": 8,
+      "examples": 8,
+      "host": {
+        "available_gib": 97.82125854492188,
+        "total_gib": 121.69016647338867,
+        "used_gib": 23.868907928466797
+      },
+      "max_logit_abs_difference": 0.0,
+      "next_token_matches": 8,
+      "peak_cuda_allocated_gib": 16.76069164276123,
+      "peak_cuda_reserved_gib": 16.830078125,
+      "phase": "prefill",
+      "rms_logit_difference": 0.0,
+      "samples_seconds": [
+        0.9161277459934354,
+        0.9151586480438709,
+        0.9098512688651681
+      ],
+      "seconds": 0.9151586480438709,
+      "unit": "prompts",
+      "units_per_second": 8.741653719931296
+    },
+    {
+      "batch": 1,
+      "exact_32_token_sequence_matches": 8,
+      "examples": 8,
+      "host": {
+        "available_gib": 97.8172836303711,
+        "total_gib": 121.69016647338867,
+        "used_gib": 23.872882843017578
+      },
+      "max_logit_abs_difference": 0.0,
+      "next_token_matches": 8,
+      "peak_cuda_allocated_gib": 16.811861038208008,
+      "peak_cuda_reserved_gib": 16.830078125,
+      "phase": "generation",
+      "rms_logit_difference": 0.0,
+      "samples_seconds": [
+        23.478983125649393,
+        23.48760594194755,
+        23.494798650033772
+      ],
+      "seconds": 23.48760594194755,
+      "unit": "generated_tokens",
+      "units_per_second": 10.89936541990422
+    },
+    {
+      "batch": 2,
+      "exact_32_token_sequence_matches": 8,
+      "examples": 8,
+      "host": {
+        "available_gib": 97.64521789550781,
+        "total_gib": 121.69016647338867,
+        "used_gib": 24.04494857788086
+      },
+      "max_logit_abs_difference": 0.3125,
+      "next_token_matches": 8,
+      "peak_cuda_allocated_gib": 16.81510066986084,
+      "peak_cuda_reserved_gib": 16.951171875,
+      "phase": "prefill",
+      "rms_logit_difference": 0.047944311052560806,
+      "samples_seconds": [
+        0.6395880319178104,
+        0.6337736081331968,
+        0.6354406643658876
+      ],
+      "seconds": 0.6354406643658876,
+      "unit": "prompts",
+      "units_per_second": 12.589688461287377
+    },
+    {
+      "batch": 2,
+      "exact_32_token_sequence_matches": 8,
+      "examples": 8,
+      "host": {
+        "available_gib": 97.66058731079102,
+        "total_gib": 121.69016647338867,
+        "used_gib": 24.029579162597656
+      },
+      "max_logit_abs_difference": 0.3125,
+      "next_token_matches": 8,
+      "peak_cuda_allocated_gib": 16.917439460754395,
+      "peak_cuda_reserved_gib": 16.951171875,
+      "phase": "generation",
+      "rms_logit_difference": 0.047944311052560806,
+      "samples_seconds": [
+        11.014526625163853,
+        11.014707216061652,
+        11.009886221028864
+      ],
+      "seconds": 11.014526625163853,
+      "unit": "generated_tokens",
+      "units_per_second": 23.242033789735537
+    },
+    {
+      "batch": 4,
+      "exact_32_token_sequence_matches": 7,
+      "examples": 8,
+      "host": {
+        "available_gib": 97.40816497802734,
+        "total_gib": 121.69016647338867,
+        "used_gib": 24.282001495361328
+      },
+      "max_logit_abs_difference": 0.28125,
+      "next_token_matches": 8,
+      "peak_cuda_allocated_gib": 16.92112922668457,
+      "peak_cuda_reserved_gib": 17.171875,
+      "phase": "prefill",
+      "rms_logit_difference": 0.04808568209409714,
+      "samples_seconds": [
+        0.5983921606093645,
+        0.5947652459144592,
+        0.5927780587226152
+      ],
+      "seconds": 0.5947652459144592,
+      "unit": "prompts",
+      "units_per_second": 13.450685047509621
+    },
+    {
+      "batch": 4,
+      "exact_32_token_sequence_matches": 7,
+      "examples": 8,
+      "host": {
+        "available_gib": 97.40832138061523,
+        "total_gib": 121.69016647338867,
+        "used_gib": 24.281845092773438
+      },
+      "max_logit_abs_difference": 0.28125,
+      "next_token_matches": 8,
+      "peak_cuda_allocated_gib": 17.12580680847168,
+      "peak_cuda_reserved_gib": 17.171875,
+      "phase": "generation",
+      "rms_logit_difference": 0.04808568209409714,
+      "samples_seconds": [
+        6.0198823739774525,
+        6.019677795935422,
+        6.01948569715023
+      ],
+      "seconds": 6.019677795935422,
+      "unit": "generated_tokens",
+      "units_per_second": 42.52719309542698
+    },
+    {
+      "batch": 8,
+      "exact_32_token_sequence_matches": 7,
+      "examples": 8,
+      "host": {
+        "available_gib": 96.94375228881836,
+        "total_gib": 121.69016647338867,
+        "used_gib": 24.746414184570312
+      },
+      "max_logit_abs_difference": 0.28515625,
+      "next_token_matches": 8,
+      "peak_cuda_allocated_gib": 17.13318395614624,
+      "peak_cuda_reserved_gib": 17.62109375,
+      "phase": "prefill",
+      "rms_logit_difference": 0.04905631020665169,
+      "samples_seconds": [
+        0.7517482182011008,
+        0.7499611442908645,
+        0.7481138780713081
+      ],
+      "seconds": 0.7499611442908645,
+      "unit": "prompts",
+      "units_per_second": 10.667219309827717
+    },
+    {
+      "batch": 8,
+      "exact_32_token_sequence_matches": 7,
+      "examples": 8,
+      "host": {
+        "available_gib": 96.94255447387695,
+        "total_gib": 121.69016647338867,
+        "used_gib": 24.74761199951172
+      },
+      "max_logit_abs_difference": 0.28515625,
+      "next_token_matches": 8,
+      "peak_cuda_allocated_gib": 17.542538166046143,
+      "peak_cuda_reserved_gib": 17.62109375,
+      "phase": "generation",
+      "rms_logit_difference": 0.04905631020665169,
+      "samples_seconds": [
+        3.9073100560344756,
+        3.9053573329001665,
+        3.904208824969828
+      ],
+      "seconds": 3.9053573329001665,
+      "unit": "generated_tokens",
+      "units_per_second": 65.55097989199653
+    },
+    {
+      "host": {
+        "available_gib": 96.93591690063477,
+        "total_gib": 121.69016647338867,
+        "used_gib": 24.754249572753906
+      },
+      "max_abs_difference": 0.0,
+      "max_abs_relative_to_reference_max": 0.0,
+      "peak_cuda_allocated_gib": 16.814122200012207,
+      "peak_cuda_reserved_gib": 17.62109375,
+      "phase": "backward_only",
+      "probe_chunk": 1,
+      "probes": 8,
+      "samples_seconds": [
+        0.031590881291776896,
+        0.033046319149434566,
+        0.03110958030447364
+      ],
+      "seconds": 0.031590881291776896
+    },
+    {
+      "host": {
+        "available_gib": 96.9361572265625,
+        "total_gib": 121.69016647338867,
+        "used_gib": 24.754009246826172
+      },
+      "max_abs_difference": 0.000244140625,
+      "max_abs_relative_to_reference_max": 0.0028089887640449437,
+      "peak_cuda_allocated_gib": 16.832401752471924,
+      "peak_cuda_reserved_gib": 17.62109375,
+      "phase": "backward_only",
+      "probe_chunk": 2,
+      "probes": 8,
+      "samples_seconds": [
+        0.02611121302470565,
+        0.026102347299456596,
+        0.025304981041699648
+      ],
+      "seconds": 0.026102347299456596
+    },
+    {
+      "host": {
+        "available_gib": 96.9361572265625,
+        "total_gib": 121.69016647338867,
+        "used_gib": 24.754009246826172
+      },
+      "max_abs_difference": 0.000244140625,
+      "max_abs_relative_to_reference_max": 0.0028089887640449437,
+      "peak_cuda_allocated_gib": 16.86697816848755,
+      "peak_cuda_reserved_gib": 17.62109375,
+      "phase": "backward_only",
+      "probe_chunk": 4,
+      "probes": 8,
+      "samples_seconds": [
+        0.023340480867773294,
+        0.02329286513850093,
+        0.023513091262429953
+      ],
+      "seconds": 0.023340480867773294
+    },
+    {
+      "host": {
+        "available_gib": 96.9361572265625,
+        "total_gib": 121.69016647338867,
+        "used_gib": 24.754009246826172
+      },
+      "max_abs_difference": 0.000244140625,
+      "max_abs_relative_to_reference_max": 0.0028089887640449437,
+      "peak_cuda_allocated_gib": 16.9361310005188,
+      "peak_cuda_reserved_gib": 17.62109375,
+      "phase": "backward_only",
+      "probe_chunk": 8,
+      "probes": 8,
+      "samples_seconds": [
+        0.024127561133354902,
+        0.024749422911554575,
+        0.025197699200361967
+      ],
+      "seconds": 0.024749422911554575
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "adapter_answers_sha256": "e0729f4bfe2c6e0f76ac012f2d598843ed961435f0360883d842c3371d7981cc",
+  "adapter_config_sha256": "001fefa596460366303b18a934252939e9fbf5998ba263f8301ce03b3caa66f7",
+  "adapter_raw_sha256": "7d9aa7d5797142777ce4c75fd1ad098e9a63270120aa467b5949009a00aa6b55",
+  "correct": 22,
+  "count": 32,
+  "direct_config_sha256": "3c2f34b794f5538436774c439d087f800f6a8c456b9979d5f145d02b1cf9b9aa",
+  "direct_eos_keyword_job": 255,
+  "direct_report_sha256": "9c64eed6eb1e4c406d9cdcde8bf4dd2ea19181eb63dc0af7bcb451372658e9ba",
+  "eos_token_ids": [
+    248044,
+    248046
+  ],
+  "generation_config_adapter_job": 270,
+  "ids_sha256": "dc222d2275ad2afc079276fca7b86345e18f54cfa7898fc29d7f128ff08e063b",
+  "raw_padded_matrices_identical": true,
+  "scope": "first32_same_source_batch_budget_and_runtime",
+  "source_config_sha256": "9f99287162ed02ec90c89e16300242c6271c2273d65e68a4d53acddb382bc051",
+  "source_report_sha256": "4d2d25034a02a4ea421cd6510cb4ed92e92db04e0179da2811f6a9daf02cf6cc",
+  "tokens_match_through_first_eos": 32,
+  "truncated": 1,
+  "verified_backend_identities": {
+    "causal_conv1d_fn": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_fn",
+    "causal_conv1d_update": "transformers.models.qwen3_5.modeling_qwen3_5.causal_conv1d_update",
+    "torch_chunk_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_chunk_gated_delta_rule",
+    "torch_recurrent_gated_delta_rule": "transformers.models.qwen3_5.modeling_qwen3_5.torch_recurrent_gated_delta_rule"
+  }
+}

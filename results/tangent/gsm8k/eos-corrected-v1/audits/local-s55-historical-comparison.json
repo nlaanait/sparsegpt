@@ -1,0 +1,42 @@
+{
+  "checked_input_provenance_fields": [
+    "prompt_sha256",
+    "input_tokens",
+    "batch_ids",
+    "batch_size",
+    "batching"
+  ],
+  "comparator_sha256": "862d75079a9bb0c1a4dd9ed9ae158127ffad84834b063aa6e0e8b45cf31aae43",
+  "configuration_differences": [
+    "dense_config_sha256",
+    "stopping_policy"
+  ],
+  "corrected": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/eos-corrected-v1/local-s55",
+  "corrected_answers_snapshot_sha256": "381cbdc1f4045937d2e247d9ad98c329be45b5865222316317f6258200a404e8",
+  "corrected_audited_records_sha256": "e983de0866f79e385caff5331e601dd474a23cc7c9501e466014fb982a5ca543",
+  "corrected_config_sha256": "da83ba2158ac4f6c73b36d8ecb8c2acbe4a1a89b7dbc46344fda9c7d2d8eb7c3",
+  "corrected_correct": 89,
+  "corrected_strict_marker_correct_ignoring_truncation": 89,
+  "corrected_truncated": 7,
+  "count": 128,
+  "decoded_prefix_matches": 128,
+  "decoded_prefix_mismatch_ids": [],
+  "gained_correct_ids": [
+    "gsm8k/train/3167",
+    "gsm8k/train/5729",
+    "gsm8k/train/2791",
+    "gsm8k/train/1353",
+    "gsm8k/train/3370",
+    "gsm8k/train/6285"
+  ],
+  "historical": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s55-seed0-batch32-repcal-v1-decision512",
+  "ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+  "lost_correct_ids": [],
+  "max_answer_nll_abs_difference": 0.0,
+  "old_answers_sha256": "5ffe4fc322abef7bc880953f6da52bc8a4f4fd69bf16472bdfaec55f8e50bccd",
+  "old_config_sha256": "583dca8aecdf361df8f6460035a20e87d7bbe60fc02b16d10ae94a0eb3f0ffb4",
+  "old_correct": 83,
+  "old_strict_marker_correct_ignoring_truncation": 85,
+  "old_truncated": 19,
+  "scope": "paired_common128"
+}

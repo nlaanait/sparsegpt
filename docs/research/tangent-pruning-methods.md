@@ -8,9 +8,9 @@ Layerwise pruning compresses a model by reconstructing each linear layer on cali
 
 ## 1. Introduction
 
-A pruning method makes two choices: which errors count, and how to find a sparse weight matrix that controls those errors. Standard layer reconstruction measures Euclidean error over observed activations. This is computationally attractive, but treats every output direction equally. A small error in a direction used by downstream computation may matter more than a larger error in another direction.
+The manifold hypothesis posits that high-dimensional data concentrate near low-dimensional manifolds. A related hypothesis is that learned representations reflect the geometry of the underlying factors that generate the data. Recent work on large language models provides evidence for this correspondence in controlled tasks, reporting approximately proportional intrinsic distances between fitted activation and behavioral manifolds. These findings support an approximate, scaled isometry in the studied settings, rather than a universal equivalence between activation space and task space. [Wurgaft et al., 2026](https://arxiv.org/html/2605.05115v1)
 
-Activation geometry offers a candidate refinement. Around examples expressing a factor, local changes may concentrate along a low-dimensional tangent space. Protecting those directions could preserve useful variation more efficiently than treating all output errors equally. This requires reliable estimates of local variation and evidence that the protected variation matters to behavior. Low-dimensional structure alone supplies neither guarantee.
+Motivated by this evidence and by block-sparse models of representation, we hypothesize that activations admit a sparse additive decomposition into factor contributions, each varying locally on a smooth, low-dimensional manifold. Under this hypothesis, controlled changes in an isolated factor generate activation velocities that lie in its tangent space. We investigate whether this local geometry can guide the pruning of large language models: removing weights whose deletion, after compensation, minimally perturbs selected factor contributions and their responses to variation. Our objective is to maximize sparsity while retaining task performance, using tangent-based reconstruction criteria as tractable approximations to the geometric properties we seek to preserve. [Fel et al., 2026](https://arxiv.org/html/2606.25234v1)
 
 The presentation makes three contributions: a unified weight-space quadratic for input, local-output, and downstream geometric protection; a derivation of a scalable rescaling algorithm with its approximation boundaries; and an evaluation protocol that separates geometric validity from behavioral retention. Section 2 specifies the compression target and reconstruction baseline. Section 3 defines factor-local geometry. Sections 4–6 derive the method variants, Section 7 gives their implementation, and Section 8 defines the empirical tests. Appendices A–D supply derivations and conditional bounds; Appendix E records reproducibility requirements. These are contributions of formulation and analysis, not claims of priority over all related methods.
 
@@ -100,7 +100,22 @@ The distinction matters below: predicting an isolated deletion's energy is easie
 
 ### 3.1 The local manifold assumption
 
-Fix an activation site with ambient space \(\mathcal H=\mathbb R^d\). The local manifold hypothesis models factor-conditioned activations as samples near a smooth embedded submanifold \(\mathcal M\subset\mathcal H\) of dimension \(r\ll d\). This hypothesis is local to a regime of factor activity; it does not require the full activation distribution to lie on a single manifold. Changes in active support may instead require a collection of manifolds or a stratified description. Discrete token substitutions provide samples for this hypothesis, not a differentiable parameterization of the input space.
+Fix an activation site with ambient space \(\mathcal H=\mathbb R^d\). Our geometric hypothesis concerns the **isolated contribution of a factor**, rather than the full activation response to changing an input. These are different objects: a whole-activation response may include changes in several factors and their interactions.
+
+**Assumption (smooth isolated-factor contributions).** Within a fixed active-factor regime and local branch, factor i contributes
+
+\[
+m_i=f_i(u_i),\qquad
+f_i:\mathcal U_i\subset\mathbb R^{r_i}\longrightarrow\mathcal H,
+\qquad f_i\in C^2,\qquad
+\operatorname{rank}Df_i(u_i)=r_i\ll d.
+\]
+
+Here \(Df_i(u_i)\) is the differential of the factor parameterization: it maps a velocity in factor coordinates to a velocity in activation space. Its coordinate matrix is the Jacobian. Appendix B.6 defines the differential, the tangent and cotangent bases, and its distinction from a metric or connection.
+
+The domain \(\mathcal U_i\) is open and represents continuous within-factor states. The image is locally a smooth immersed manifold \(\mathcal M_i\), with tangent \(\operatorname{im}Df_i(u_i)\); on a sufficiently small embedded patch the constructions below apply directly. The factor identity and coordinates are held consistent across contexts in which this model is asserted. Dependence on other factors that cannot be absorbed by this fixed contribution map is a violation or residual of the additive model, not automatically part of factor i's manifold. Distinct branches can have distinct parameterizations, as in Sec. 3.2.
+
+This is an assumption about latent factor contributions, not a claim that an arbitrary sequence of token substitutions is smooth. Discrete interventions provide samples of a hypothesized continuous factor state. The hypothesis does not imply that the union over active sets is one smooth manifold, or that the factor contributions are identifiable from their sum. In particular, the fitted decomposition \(D_i z_i(h)\) is an estimate of \(m_i\), not a guarantee of its recovery.
 
 Let \(\iota:\mathcal M\hookrightarrow\mathcal H\) be the inclusion and \((\mathcal U,\psi)\) a chart, with \(\psi:\mathcal U\to\Omega\subset\mathbb R^r\). The associated local parameterization is \(f=\iota\circ\psi^{-1}\). At \(h=f(u)\), its differential identifies the tangent space with an ambient linear subspace:
 
@@ -131,9 +146,35 @@ Here S is the active factor set and c_i indexes a local branch or chart of facto
 
 The factor's global linear container \(V_i=\operatorname{span}(\mathcal M_i-b_i)\) can be much larger than its tangent at a particular point. Protecting V_i, protecting a local tangent, and pooling all factor spans are different hypotheses. Our factor dictionary and local PCA approximate this structure without proving identifiability or recovering the paper-level BSF model. Appendix B derives the projection and finite-difference interpretations used here.
 
+Figure 1 distinguishes the factor's linear span, the manifold of its states, and a tangent space at one state.
+
+![Figure 1. A three-dimensional factor block containing a sphere-shaped two-dimensional manifold and its tangent plane at a point.](figures/figure-1-factor-geometry.svg)
+
+**Figure 1. Factor span, manifold, and local tangent space.** **(a)** A factor block spans a three-dimensional linear space \(V=\operatorname{span}(d_1,d_2,d_3)\), shown through a finite cubic window; the faint sphere provides a reference. **(b)** In this schematic example, factor states occupy the unit sphere \(\mathcal M=\{z\in V:\|z\|^2=1\}\), a two-dimensional surface rather than the enclosed ball. Dots illustrate possible states, not empirical measurements. **(c)** At \(p=(0,0,1)\), the two-dimensional tangent space is \(T_p\mathcal M=\{v\in V:p^\top v=0\}\). The orange patch depicts its affine translate \(p+T_p\mathcal M\), with two independent tangent vectors drawn from p. The tangent orientation varies around the sphere, whereas the block span remains fixed. All panels use the same orthographic projection and an orthonormal block coordinate system. This example illustrates the geometric distinction; it does not assume that learned factors are spherical.
+
 ### 3.3 Estimating directions and using them in pruning
 
-The manifold and its charts are unknown. Our estimators approximate tangent frames from centered activation neighborhoods using local PCA, optionally within separately estimated factor components. These neighborhood models constitute an empirical atlas only in an approximate sense: the implementation does not recover transition maps or establish smooth compatibility on chart overlaps. Tangent estimation depends on neighborhood scale, sampling density, curvature, noise, and separation of co-active factors; stability and held-out approximation error must be measured.
+Block-sparse featurization estimates factor subspaces and sample-dependent coordinates within them. The observed factor contributions provide empirical samples of the hypothesized manifolds, but do not directly specify their local tangent spaces or a smooth atlas. We estimate these additional local structures from neighborhoods of each factor’s contributions. For the factor-local estimator, write the inferred contribution of factor i to fitting sample n as \(m_{i,n}=D_i z_i(h_n)\in\mathbb R^d\), and use only samples on which that factor is active. Partition these contributions into local neighborhoods \(\mathcal I_{i,c}\). For each neighborhood, form its mean and centered covariance,
+
+\[
+\bar m_{i,c}=\frac{1}{N_{i,c}}\sum_{n\in\mathcal I_{i,c}}m_{i,n},
+\qquad
+\widehat C_{i,c}=\frac{1}{N_{i,c}}\sum_{n\in\mathcal I_{i,c}}
+(m_{i,n}-\bar m_{i,c})(m_{i,n}-\bar m_{i,c})^\top,
+\]
+
+where \(N_{i,c}=|\mathcal I_{i,c}|\). Let \(Q_{i,c}\) contain the leading r orthonormal eigenvectors of \(\widehat C_{i,c}\), provided the neighborhood supports the requested rank. These directions minimize the local rank-r affine reconstruction error. For a new activation h, assign each active factor to its nearest fitted neighborhood center and combine only those local frames:
+
+\[
+c_i(h)=\arg\min_c\|D_i z_i(h)-\bar m_{i,c}\|_2^2,
+\qquad
+Q(h)=\operatorname{orth}\!\left([Q_{i,c_i(h)}]_{i\in S(h)}\right),
+\qquad \widehat P(h)=Q(h)Q(h)^\top.
+\]
+
+Here unsupported factors contribute no columns, and \(\operatorname{orth}\) removes linearly dependent directions. Neighborhoods are fitted k-means cells, so this is a piecewise-constant tangent estimate, not a new PCA fit at every query. A whole-activation baseline applies the same centered-PCA construction directly to neighborhoods of h, without factor decomposition. Appendix B.4 derives the estimator, its efficient factor-coordinate implementation, and the assumptions needed to interpret its principal directions as tangents.
+
+These neighborhood models constitute an empirical atlas only in an approximate sense: the implementation does not recover transition maps or establish smooth compatibility on chart overlaps. Tangent estimation depends on neighborhood scale, sampling density, curvature, noise, and separation of co-active factors; stability and held-out approximation error must be measured.
 
 At sample \(n\), let \(Q_n\in\mathbb R^{d\times r_n}\) be an estimated orthonormal frame and \(P_n=Q_nQ_n^\top\). The splitting \(\mathcal H=T_{h_n}\mathcal M\oplus N_{h_n}\mathcal M\) decomposes a pruning error \(e_n\) into tangential and normal components. The penalty \(\|P_ne_n\|_2^2\) emphasizes its tangential component in the induced metric. It does not constrain the normal component or imply preservation of intrinsic distances, curvature, or downstream behavior. Frame estimates should be distinguished from the exact tangent spaces in this interpretation.
 
@@ -144,6 +185,32 @@ Tangential variation also need not encode factor presence. Given a chart anchor 
 These projectors define selected directions in activation space, not an established semantic decomposition. Local charts should be compared with fixed factor spans, a global union, and shuffled assignments on held-out data. A geometry objective that ignores the complementary space can allow arbitrarily large unmeasured errors there. We therefore add geometric terms to ambient reconstruction.
 
 The site must also be explicit: a projection output, post-MLP residual, and normalized residual are different spaces. Geometry measured at one site applies to another only through a specified intervening map.
+
+### 3.4 Tangents from controlled isolated-factor trajectories
+
+Under the assumption in Sec. 3.1, a differentiable path \(u_i(t)\) induces an isolated-factor trajectory and velocity
+
+\[
+m_i(t)=f_i(u_i(t)),\qquad
+\dot m_i(t)=Df_i(u_i(t))\dot u_i(t)
+\in T_{m_i(t)}\mathcal M_i.
+\]
+
+At a common factor state u, choose control velocities \(a_1,\ldots,a_k\in\mathbb R^{r_i}\). Their activation velocities form
+
+\[
+V_i(u)=\left[Df_i(u)a_1\;\cdots\;Df_i(u)a_k\right].
+\]
+
+If the controls span \(\mathbb R^{r_i}\), then \(\operatorname{im}V_i(u)=T_{f_i(u)}\mathcal M_i\), and \(Q_i(u)=\operatorname{orth}(V_i(u))\) supplies a tangent frame without neighborhood PCA. One trajectory identifies at most one direction at a point. Velocities measured at different points generally belong to different tangent spaces and cannot be pooled as if they were one frame without a local approximation or an explicit alignment.
+
+Isolation is essential. Along an observed intervention,
+
+\[
+\dot h=\sum_{j\in S}Df_j(u_j)\dot u_j+\dot\epsilon.
+\]
+
+A whole-activation velocity equals the isolated velocity of factor i only when the other contributions and residual remain fixed. Otherwise, use a separately validated factor extraction or a justified decomposition of the intervention response. Freezing that extractor establishes a consistent measurement convention but does not prove that the factor has been isolated. Appendix B.5 develops finite-difference estimation and the corresponding response-preservation objective.
 
 ## 4. Input-side geometry: augment the shared curvature
 
@@ -168,6 +235,38 @@ Set the added-to-ambient trace ratio through
 Thus \(\alpha_{\rm in}\) is a ratio to ambient curvature; its fraction of the augmented trace is \(\alpha_{\rm in}/(1+\alpha_{\rm in})\). Normalize heterogeneous intervention families explicitly and disable or reject zero-energy terms.
 
 For a linear layer, \(At_k\) is exactly the error in its local response difference. For a gate or upstream projection, it is a preactivation error; behavior after nonlinearities requires further analysis or a downstream pullback.
+
+### 4.1 Reformulation as preservation of isolated-factor responses
+
+Tangent directions can be used in two ways: to project a pruning error, as in Sec. 5, or to compare how the dense and pruned models respond along a factor trajectory. For the second construction, let \(m_i(u)\) and \(\widehat m_i(u)\) denote their isolated contributions in the same activation space, with matched factor identity, coordinate u, and a fixed extraction convention. Define
+
+\[
+\mathcal L_{\rm response}
+=\mathbb E_{i,u,a}\left\|
+\bigl(D\widehat m_i(u)-Dm_i(u)\bigr)a
+\right\|_2^2.
+\]
+
+Here a is a declared control velocity, with conditional second moment \(C_i(u)=\mathbb E[aa^\top\mid i,u]\). Its distribution specifies which changes matter and with what strength. The two models must be compared at the same factor state; separately refitting their factor dictionaries or reparameterizing one model can conceal a changed response. For a hard-assignment factor extractor, differentiability is only asserted inside a fixed assignment regime.
+
+For a linear layer with frozen upstream inputs, impose the isolated input contribution \(\phi_i(u)=f_i^{\rm in}(u)\). Its additive output contribution is \(m_i(u)=W\phi_i(u)\), and the pruned contribution is \(\widehat m_i(u)=\widehat W\phi_i(u)\). With \(A=W-\widehat W\) and \(v_i=D\phi_i(u)a\),
+
+\[
+\bigl(D\widehat m_i-Dm_i\bigr)a=-A v_i,
+\qquad
+H_{\rm trajectory}=\mathbb E_{i,u,a}[v_i v_i^\top],
+\]
+\[
+\mathcal L_{\rm ambient}+\gamma_{\rm trajectory}\mathcal L_{\rm response}
+=\operatorname{tr}\!\left[A
+(H_0+\gamma_{\rm trajectory}H_{\rm trajectory})A^\top\right].
+\]
+
+Thus isolated-factor velocity preservation reduces **exactly** to input-curvature augmentation under these local linear and frozen-input assumptions. Section 4's trace normalization applies with \(H_\Delta\) replaced by \(H_{\rm trajectory}\). Using raw velocities preserves their control-dependent magnitudes; orthonormalizing them instead defines an equally weighted span metric, which is a different objective.
+
+At nonlinear downstream sites, the response derivative also changes through the intervening Jacobian. The frozen-J construction of Sec. 6.5 approximates part of that change; it is not an exact implementation of \(\mathcal L_{\rm response}\). Likewise, penalizing \(\|P_i(\widehat m_i-m_i)\|^2\) measures the tangential component of a pointwise error, not agreement of response derivatives. Neither penalty generally determines the other. A response-only loss also misses constant offsets, so ambient reconstruction or explicit reference-state matching remains necessary.
+
+This formulation introduces a proposed source of tangent probes and a corresponding scientific target. Existing paired-input and input-basis solvers provide related quadratic machinery; they do not by themselves establish controlled isolation, smooth factor trajectories, or preservation of those trajectories in a language model.
 
 ## 5. Local output geometry: sample-dependent reconstruction metrics
 
@@ -388,7 +487,7 @@ This matches the added **surrogate weight-curvature trace**, not projector rank 
 
 The code excludes unsupported ambient coordinates from normalization and assigns them unit scale, and disables a zero-trace added term. Report excluded geometric energy: this choice does not protect a geometry-only input coordinate. Preserve relative anchor weights before global normalization; separately trace-normalizing each anchor specifies a different objective. Scaled-coordinate damping has the original-coordinate penalty described in Sec. 5.2.
 
-The implemented `metric="weight_diagonal"` variant accumulates the shared-weight diagonal of Sec. 6.3: form \(Z=g^\top X\) within each independent sequence and probe, then accumulate \(Z\odot Z\). Average probes and sum independent sequences and weighted anchors after squaring. This retains token cancellation and reinforcement. Normalize by this statistic's own supported trace and use the same diagonal-matching scales; row-congruence compensation remains approximate. Optional input-tangent coupling is rejected in this mode. Diagnostics report raw, excluded and supported geometric mass and achieved trace ratio. The GSM8K geometric-arm guard checks supported geometry after finalization. The separate backend-dispatch defect identified in the implementation review remains unresolved.
+The implemented `metric="weight_diagonal"` variant accumulates the shared-weight diagonal of Sec. 6.3: form \(Z=g^\top X\) within each independent sequence and probe, then accumulate \(Z\odot Z\). Average probes and sum independent sequences and weighted anchors after squaring. This retains token cancellation and reinforcement. Normalize by this statistic's own supported trace and use the same diagonal-matching scales; row-congruence compensation remains approximate. Input-tangent coupling is now supported with separately normalized moments and an explicit sequence covariance (Sec. 6.5). Diagnostics report raw, excluded and supported geometric mass and achieved trace ratios. The GSM8K geometric-arm guard checks supported geometry after finalization. Current GSM8K drivers use the verified reference backend; the historical backend helper remains separate.
 
 ### 6.5 Optional two-sided tangent response: a distinct approximation
 
@@ -399,7 +498,7 @@ For a single-position input perturbation with frame \(U\) and covariance \(R=UU^
 =\eta\sum_k\beta_k\|L_k^{\top}J_k A U\|_F^2.
 \]
 
-For sequences, input tangent probes must specify their joint token structure: for a probe \(\xi=\operatorname{stack}_t\xi_t\), use \(T_\xi(A)=\operatorname{stack}_t A\xi_t\) and \(\mathbb E_\xi[T_\xi(A)^\top BT_\xi(A)]\). Independent token probes and correlated whole-sequence probes are different choices. Under the activation-diagonal approximation, token-local covariances give the accumulated row-diagonal term \(\eta\mathbb E_s\sum_t b_{s,t,p}(R_{s,t})_{qq}\). This is the implemented optional input-basis coupling.
+For sequences, input tangent probes must specify their joint token structure: for a probe \(\xi=\operatorname{stack}_t\xi_t\), use \(T_\xi(A)=\operatorname{stack}_t A\xi_t\) and \(\mathbb E_\xi[T_\xi(A)^\top BT_\xi(A)]\). Independent token probes and correlated whole-sequence probes are different choices. Under independent token coefficients, the accumulated weight diagonal is \(\eta\mathbb E_s\sum_t b_{s,t,p}(R_{s,t})_{qq}\). With shared direction coefficients, instead form \(Z_r=\sum_t g_t u_{t,r}^\top\) before squaring. Both choices are implemented for shared-weight calibration; only independent token coefficients apply to activation-diagonal calibration. The driver fits input charts on geometry-fit readouts, and shared directions use a declared Procrustes alignment to a frozen fit-only dictionary frame. The two moment traces receive separate curvature shares. See [implementation and sequence conventions](two-sided-full-metric-implementation.md).
 
 This term controls the contribution from changing W while **freezing the downstream Jacobian**. It is not the full change in the downstream tangent-transfer map. With input frame \(U\) fixed, \(y=W\phi\), perturbation \(\Delta W\), and transfer \(J(y)WU\), its first variation is
 
@@ -467,6 +566,8 @@ Bias correction can be represented by an appended constant input for ambient rec
 | Matched rescaling and compensation | `src/sparsifier/prune/rescale.py` |
 | Chart bases, VJPs, downstream calibration and solve | `src/sparsifier/prune/downstream.py` |
 | Small coupled quadratic/refit reference | `src/sparsifier/prune/sample_metric.py` |
+| Two-sided input-tangent moments and fit-only input charts | `src/sparsifier/prune/two_sided.py`; `src/sparsifier/eval/gsm8k_input_tangents.py` |
+| Frozen factor replay and scalable coupled fixed-mask CG | `src/sparsifier/prune/curvature_replay.py`; `whole_neuron_metric.py` |
 | Sequential GSM8K downstream arm | `src/sparsifier/eval/gsm8k_downstream.py` |
 
 ## 8. Evaluation protocol and limitations
@@ -476,6 +577,16 @@ Bias correction can be represented by an appended constant input for ambient rec
 Three questions should be separated. First, do fitted tangents describe held-out variation better than fixed spans at matched fitting and storage budgets? Second, do geometric scores predict compensated and downstream intervention effects beyond ambient scores? Third, does geometric pruning extend the measured compression frontier while retaining behavior?
 
 Use disjoint fitting, calibration, selection, and final evaluation data. Compare against task-calibrated SparseGPT with matched ambient exposure, Wanda where applicable, fixed-factor/global geometry, shuffled assignments, matched-rank random directions, and a gradient-based metric. A Fisher-style metric can use the same row-weight machinery but represents task sensitivity rather than activation geometry. Extra backward compute must be counted.
+
+Current representative-calibration defaults fit input/output/downstream atlases
+on 512 distinct original GSM8K training questions, use 128 other original
+questions for pruning calibration, and reserve 64 independent originals for
+engineering diagnostics. All are excluded from the complete reserved
+evaluation pool at the parent-question level. Controlled variants provide
+known intervention directions for separate diagnostics; they no longer define
+the default fitting population. Sampling is uniform with a fixed seed and
+exact-question deduplication, not a claim of annotated semantic balance.
+[Manifest and execution details](representative-gsm8k-calibration.md).
 
 Measure approximation error on tractable coupled quadratics (including cross-token cancellation and reinforcement), compare activation-diagonal and shared-weight-diagonal VJP estimates, test backward-probe convergence and the omitted Jacobian-variation term, and measure finite-perturbation prediction error, mask changes, runtime, and memory. Leverage distributions and gradient enrichment are diagnostics rather than sufficient decision rules. Variable-rank random controls must match the sample-dependent ranks and energy weighting of the tested statistic.
 
@@ -613,6 +724,212 @@ At a downstream anchor this becomes
 \]
 
 Thus downstream amplification also amplifies geometric estimation error. For equal-rank subspaces, \(\|\hat P-P\|_2\) is the sine of their largest principal angle. Ranks and activity changes require separate reporting; principal angles alone can conceal missing dimensions. Empirical resampling stability does not bound systematic misspecification of the manifold model.
+
+### B.4 Constructing factor-local tangent frames by centered PCA
+
+**Fitting data and neighborhoods.** Fit the factor dictionary on the declared geometry-fitting split. Its centered activation reconstruction is \(h_n\approx b+\sum_i D_i z_{i,n}\); the inferred contribution of factor i is \(m_{i,n}=D_i z_{i,n}\). The dictionary offset b is shared and is not added separately to every factor. For each factor, retain only active codes and cluster their contributions by Euclidean k-means:
+
+\[
+\min_{\{\mu_{i,c}\},\{c_{i,n}\}}
+\sum_{n:\,i\in S_n}\|m_{i,n}-\mu_{i,c_{i,n}}\|_2^2.
+\]
+
+The algorithm alternates nearest-center assignment and sample-mean updates; it finds an initialization-dependent local solution. Each resulting cell defines \(\mathcal I_{i,c}\), not an analytically known manifold chart. Restricting the samples to an active factor avoids treating that factor's absent, zero codes as within-factor variation. Centering *within each cell* separates variation around its mean from its displacement relative to the origin. Otherwise the leading direction may primarily describe factor presence or mean magnitude.
+
+**PCA as the best local affine approximation.** For one cell, let \(E\in\mathbb R^{N_{i,c}\times d}\) have rows \((m_{i,n}-\bar m_{i,c})^\top\). For a proposed orthonormal rank-r frame Q,
+
+\[
+\begin{aligned}
+\frac{1}{N_{i,c}}\|E(I-QQ^\top)\|_F^2
+&=\operatorname{tr}\widehat C_{i,c}
+-\operatorname{tr}(Q^\top\widehat C_{i,c}Q),\\
+Q^\top Q&=I_r,\qquad
+\widehat C_{i,c}=E^\top E/N_{i,c}.
+\end{aligned}
+\]
+
+Maximizing the second trace selects the eigenvectors associated with the r largest eigenvalues. Equivalently, if \(E=U\Sigma V^\top\), take \(Q_{i,c}=V_{:,1:r}\). The residual variance is \(\sum_{j>r}\sigma_j^2/N_{i,c}\). The fitted affine patch is \(\bar m_{i,c}+\operatorname{im}Q_{i,c}\); its direction space supplies the tangent estimate. The estimator uses the projector \(Q_{i,c}Q_{i,c}^\top\), not the covariance itself: the retained singular values determine which directions are selected but do not weight the pruning penalty. Selecting r is therefore a modeling decision; PCA alone does not identify the intrinsic dimension.
+
+**Computing in the factor's small coordinate space.** The implementation avoids a d-by-d covariance for every cell. Write a reduced QR factorization
+
+\[
+D_i=A_iR_i,\qquad A_i^\top A_i=I,
+\qquad v_{i,n}=R_i z_{i,n}.
+\]
+
+Then \(m_{i,n}=A_i v_{i,n}\), and distances satisfy
+
+\[
+\|m_{i,n}-m_{i,n'}\|_2^2
+=\|R_i(z_{i,n}-z_{i,n'})\|_2^2.
+\]
+
+Thus k-means in v-coordinates uses exactly the ambient contribution-space metric. Clustering raw z-coordinates would generally use a different metric when \(D_i^\top D_i\ne I\). Let \(Z_{i,c}\) contain the cell's code vectors as rows, and let \(\bar z_{i,c}\) be their column-vector mean. Form the small centered matrix and its SVD:
+
+\[
+E^{\rm small}_{i,c}
+=(Z_{i,c}-\mathbf 1\bar z_{i,c}^\top)R_i^\top
+=U_{i,c}\Sigma_{i,c}V_{i,c}^\top.
+\]
+
+Because \(E=E^{\rm small}_{i,c}A_i^\top\), the nonzero singular values agree and the ambient frame and anchor are
+
+\[
+Q_{i,c}=A_i(V_{i,c})_{:,1:r},
+\qquad \bar m_{i,c}=D_i\bar z_{i,c}.
+\]
+
+This is the computation in `FactorAtlas.fit_charts` in `src/sparsifier/prune/factor_atlas.py`, followed by numerical orthonormalization. It remains a local PCA estimator inside an approximately recovered factor, not the published BSF training algorithm.
+
+**Assignment, rank checks, and co-active factors.** `FactorAtlas` defines activity by \(\|z_i\|_2>10^{-8}\). For requested rank r it requires at least \(\max(4,r+2)\) active fitting samples per cell. It reduces the requested number of clusters until that occupancy condition is met; a factor with too few active samples receives no local frames. Within a supported cell, singular values must exceed \(\max(10^{-6}\sigma_1,10^{-12})\); fewer than r surviving singular values cause an error rather than fabrication of missing directions. These are numerical and occupancy safeguards, not an eigengap or statistical-consistency test.
+
+At a query activation the dictionary and cells are frozen. Encoding determines active factors; nearest-center assignment in \(R_i z_i(h)\) coordinates chooses one cell per supported active factor. Concatenate their ambient frames and use an SVD to obtain an orthonormal basis for the combined span, discarding numerical dependencies at relative singular-value tolerance \(10^{-6}\) (and treating a leading singular value at most \(10^{-12}\) as zero). The resulting dimension can vary with activity and overlap even when each cell uses the same r. No supported frames gives a zero-rank projector. This implementation has no distance-based rejection of out-of-distribution queries: a distant active code still receives its nearest fitted cell, which must be considered when assessing held-out coverage.
+
+The generic whole-activation estimator `fit_output_chart_atlas` instead clusters complete activation vectors and obtains PCA directions through their centered sample Gram matrix. It can reduce the retained rank according to positive eigenvalues. This baseline shares the local-PCA principle but does not perform the factor conditioning or use exactly the same rank policy as `FactorAtlas`.
+
+**When principal directions approximate a tangent.** Consider a regular factor parameterization near \(u_0\), with samples \(m_n=f(u_0+\delta_n)\), \(\|\delta_n\|\le\rho\), and a bounded second derivative. Taylor expansion gives
+
+\[
+m_n=f(u_0)+F\delta_n+e_n,
+\qquad F=Df(u_0),\qquad \|e_n\|=O(\rho^2).
+\]
+
+After subtracting the neighborhood mean, its empirical covariance has the decomposition
+
+\[
+\widehat C=F\widehat\Sigma_\delta F^\top+\mathcal E,
+\qquad \|\mathcal E\|_2=O(\rho^3)+O(\rho^4),
+\]
+
+where the cross-covariance of the linear and Taylor-remainder terms gives the cubic contribution. If F has full rank r and \(\widehat\Sigma_\delta\) excites all r coordinates, the first term has range equal to the tangent at \(f(u_0)\). Let its smallest nonzero eigenvalue be \(\Delta>0\). When \(\|\mathcal E\|_2<\Delta/2\), symmetric eigenspace perturbation bounds control the projector error by a constant times \(\|\mathcal E\|_2/\Delta\). If \(\Delta\) scales as \(\rho^2\), the smooth noiseless curvature contribution therefore scales as \(O(\rho)\). This is a conditional local argument, not a convergence guarantee for fitted k-means cells.
+
+The quantity of interest is the error in the estimated tangent space, not merely the reconstruction error of the PCA fit. A low PCA residual means that the observed neighborhood lies close to the fitted plane; it does not establish that this plane matches the manifold’s tangent at the query point. Large neighborhoods can average over curvature, while small neighborhoods may contain too few samples to determine all tangent directions reliably. Noise and imperfect factor separation introduce additional errors. We therefore assess the fit using neighborhood sample counts, discarded variance, and the stability of the estimated directions under resampling and changes in neighborhood size. These diagnostics reveal sensitivity of the estimate but do not provide a guaranteed bound on its distance from the unknown true tangent.
+
+### B.5 Controlled trajectories: estimation, isolation, and response curvature
+
+**Finite differences of isolated contributions.** At fixed factor state u and control a, the smooth contribution model gives
+
+\[
+\frac{m_i(u+\varepsilon a)-m_i(u)}{\varepsilon}
+=Dm_i(u)a+O(\varepsilon).
+\]
+
+This forward-difference bound follows from the C² assumption and bounded second derivatives on the segment. A central difference has error \(O(\varepsilon^2)\) under the stronger assumption of bounded third derivatives. If each recovered contribution has error at most \(\delta\), the forward-difference error additionally contains a term bounded by \(2\delta/|\varepsilon|\). Reducing the step therefore does not guarantee a better estimate when extraction or measurement error remains fixed.
+
+For sampled language interventions, \(u+\varepsilon a\) denotes a change in the declared latent factor state, not arithmetic on token IDs. A number substitution is a finite observation of that change. The continuous parameterization, consistent factor identity, and control of other contributions must be justified independently. Smooth interpolation through a finite set of observed points is not sufficient evidence: many interpolants can agree at those points while having different derivatives.
+
+**Isolation error.** Write a measured activation response as
+
+\[
+h(u)=b+m_i(u)+r(u),
+\]
+
+where r collects all other contributions and model residuals. Differencing the full activation gives the desired isolated secant plus \([r(u+\varepsilon a)-r(u)]/\varepsilon\). This contamination need not vanish as the step decreases; it approaches \(Dr(u)a\) when r is smooth. Likewise a frozen extractor \(\mathcal E_i\) gives \(D\mathcal E_i(h)Dh\), which equals the desired \(Dm_i\) only when the extractor correctly isolates the factor along the intervention. Factor separation and tangent estimation are therefore distinct validation questions.
+
+**Control-weighted derivative matching.** Set \(B_i(u)=D\widehat m_i(u)-Dm_i(u)\). Conditional averaging over the declared controls yields
+
+\[
+\mathbb E_a\|B_i(u)a\|^2
+=\operatorname{tr}\bigl(B_i(u)C_i(u)B_i(u)^\top\bigr).
+\]
+
+The control distribution is part of the objective. Under a coordinate change \(u'=\psi(u)\), the same physical controls transform as \(a'=D\psi(u)a\), and their second moment transforms accordingly. The loss is unchanged when derivatives and controls are transformed together. Choosing an identity covariance independently in each coordinate system generally changes the experiment.
+
+For the frozen-input linear setting of Sec. 4.1, \(B_i=-A D\phi_i\). Substitution gives
+
+\[
+H_{\rm trajectory}
+=\mathbb E_{i,u}\left[D\phi_i(u)C_i(u)D\phi_i(u)^\top\right],
+\qquad
+\mathcal L_{\rm response}=\operatorname{tr}(A H_{\rm trajectory}A^\top).
+\]
+
+This covariance has the full input tangent as its range locally only when the controls excite all intrinsic directions and the parameterization has full rank. Otherwise it protects the tested directions alone. Multiple independent factor contributions may be sampled separately; simultaneous controls introduce cross-factor covariance terms unless independence and centering, or another explicit convention, remove them.
+
+**What response preservation buys.** For a path \(u(t)\), let \(e(t)=\widehat m_i(u(t))-m_i(u(t))\). Then
+
+\[
+e(t)=e(0)+\int_0^t\dot e(s)\,ds,
+\qquad
+\|e(t)\|\le\|e(0)\|+
+\sqrt{t}\left(\int_0^t\|\dot e(s)\|^2ds\right)^{1/2},\quad t\ge0.
+\]
+
+Derivative matching controls accumulated response drift along a path **when its initial contribution is also matched**. An empirical average over a few controls is not a uniform bound over unobserved paths. This motivates evaluating both reference-state error and response differences, with factor states and contexts withheld from fitting.
+
+**Evaluation boundary.** A controlled study should declare factor coordinates and intervention step sizes, test whether other factor contributions remain stable, measure the rank and stability of recovered velocities, and evaluate predictions on unseen states and contexts. Compare velocity-derived frames with local PCA at matched rank and calibration exposure. Preserve the distinction between a known smooth synthetic factor manifold, a recovered factor contribution with extraction error, and a discrete language intervention for which smoothness remains a hypothesis. No implementation in the present experiment is claimed to satisfy all three levels of validation.
+
+### B.6 Differential, dual one-forms, and Jacobian notation
+
+**Parameterization and tangent vectors.** Let \(f:\Omega\subset\mathbb R^r\to\mathcal H=\mathbb R^d\) be a differentiable local parameterization, with coordinates \(u=(u^1,\ldots,u^r)\) and activation \(h=f(u)\). In Sec. 3.1 this is \(f=\iota\circ\psi^{-1}\): the chart \(\psi\) assigns coordinates to a point on the manifold, its inverse reconstructs that point, and the inclusion \(\iota\) places it in activation space. A tangent vector is a possible instantaneous velocity of a curve through a point. The coordinate tangent space \(T_u\Omega\) is naturally identified with \(\mathbb R^r\); the ambient tangent space \(T_h\mathcal H\) is naturally identified with \(\mathbb R^d\).
+
+The **differential** (also called the tangent map or pushforward) is the linear map
+
+\[
+Df_u=df_u=f_{*u}:T_u\Omega\longrightarrow T_{f(u)}\mathcal H,
+\qquad
+Df_u(v)=\left.\frac{d}{dt}f(\gamma(t))\right|_{t=0},
+\]
+
+where \(\gamma(0)=u\) and \(\dot\gamma(0)=v\). The result depends only on the initial velocity v, not the particular curve representing it. Equivalently,
+
+\[
+f(u+\delta u)=f(u)+Df_u(\delta u)+o(\|\delta u\|).
+\]
+
+We write \(Df(u)\) and \(Df_u\) interchangeably. If the differential has rank r, f is an immersion at u, and its image is the r-dimensional tangent space of the parameterized branch. The differential \(d\iota_h\) in Sec. 3.1 similarly maps abstract manifold tangent vectors into their ambient representatives. A local embedded patch avoids ambiguity when distinct immersed branches intersect.
+
+**Coordinate basis and its dual.** The coordinate vectors \(\partial/\partial u^a\), for \(a=1,\ldots,r\), form a basis of \(T_u\Omega\). They may also be understood as directional-derivative operators on scalar functions. Write
+
+\[
+v=\sum_{a=1}^r v^a\frac{\partial}{\partial u^a}.
+\]
+
+The cotangent space \(T_u^*\Omega\) consists of linear scalar-valued functions on tangent vectors. Its dual coordinate basis is \(du^1,\ldots,du^r\), defined by
+
+\[
+du^a\!\left(\frac{\partial}{\partial u^b}\right)=\delta^a_b,
+\qquad du^a(v)=v^a.
+\]
+
+Here \(\delta^a_b\) is the Kronecker delta: one when a=b and zero otherwise. A covector is an element of a cotangent space at one point; a differential one-form assigns such covectors smoothly over a region. Thus \(du^a\) is the one-form dual to the coordinate vector \(\partial/\partial u^a\). This duality does not require a metric.
+
+**Ambient basis and the tensor expression.** Let \(e_\mu\), for \(\mu=1,\ldots,d\), be the standard basis of the ambient activation space: its \(\mu\)-th coordinate is one and all others are zero. Write \(f=\sum_\mu f^\mu e_\mu\). Each scalar component has differential
+
+\[
+df^\mu=\sum_{a=1}^r\frac{\partial f^\mu}{\partial u^a}\,du^a.
+\]
+
+Collecting the component differentials gives
+
+\[
+Df=\sum_{\mu=1}^d\sum_{a=1}^r
+\frac{\partial f^\mu}{\partial u^a}\,e_\mu\otimes du^a.
+\]
+
+The tensor \(e_\mu\otimes du^a\) denotes the linear map \(v\mapsto du^a(v)e_\mu\): extract input component a and put it along ambient direction \(\mu\). Consequently,
+
+\[
+Df_u(v)=\sum_{\mu,a}
+\frac{\partial f^\mu}{\partial u^a}(u)\,v^a e_\mu
+=J_f(u)v,
+\qquad (J_f)_{\mu a}=\frac{\partial f^\mu}{\partial u^a}.
+\]
+
+The index a labels factor/manifold coordinates; \(\mu\) labels ambient activation coordinates. This is ordinary Jacobian–vector multiplication in basis notation. Since the target is a fixed vector space, Df can be viewed as an \(\mathbb R^d\)-valued one-form on \(\Omega\). It is not one of the scalar dual basis forms \(du^a\).
+
+**Differential, gradient, metric, and connection.** A scalar differential \(d\ell\) acts on velocities to give directional changes. A gradient is instead a tangent vector, defined only after choosing a metric g through \(g(\operatorname{grad}\ell,v)=d\ell(v)\). For the Euclidean embedding used here, the induced metric is
+
+\[
+g_u(v,w)=\langle Df_u(v),Df_u(w)\rangle,
+\qquad [g_u]=J_f(u)^\top J_f(u).
+\]
+
+Full column rank makes this metric positive definite. Knowing the differential and the ambient inner product therefore supplies both tangent orientation and the induced metric; knowing a tangent span alone does not recover the parameterization's coordinate scaling.
+
+A connection \(\nabla\) specifies how to differentiate tangent vector fields along the manifold. It is a different object from Df. For a Euclidean embedded manifold, the induced Levi–Civita connection can be written \(\nabla_XY=P_h\,DY_h[X]\): take the ambient derivative of the tangent field Y along X and project it onto the tangent space. The present local PCA estimator supplies an approximate projector at each query, not a fitted connection or a parallel-transport rule.
+
+Finally, the dual of the differential pulls covectors backward: for an ambient covector \(\alpha\), \((Df_u)^*\alpha=\alpha\circ Df_u\), represented by \(J_f(u)^\top\alpha\) in dual coordinates. This is the duality underlying the VJPs in Sec. 6; it does not make the transpose an inverse tangent map. The derivative symbol D in \(Df\) should also be distinguished from dictionary matrices \(D_i\) and the anchor-metric matrices used elsewhere in the paper.
 
 ## Appendix C. Congruence scaling and normalization
 
@@ -793,6 +1110,8 @@ The corrected local implementation uses curvature-trace normalization. Earlier r
 
 ## References
 
+- Wurgaft et al. [Manifold Steering Reveals the Shared Geometry of Neural Network Representation and Behavior](https://arxiv.org/abs/2605.05115). 2026.
+- Fel et al. [Structuring Sparsity: Block-Sparse Featurizers Capture Visual Concept Manifolds](https://arxiv.org/abs/2606.25234). 2026.
 - Frantar and Alistarh. [SparseGPT: Massive Language Models Can be Accurately Pruned in One-Shot](https://proceedings.mlr.press/v202/frantar23a.html). ICML, 2023.
 - Hassibi and Stork. [Second Order Derivatives for Network Pruning: Optimal Brain Surgeon](https://papers.neurips.cc/paper_files/paper/1992/hash/303ed4c69846ab36c2904d3ba8573050-Abstract.html). NeurIPS 5, 1992 proceedings.
 - Sun et al. [A Simple and Effective Pruning Approach for Large Language Models](https://arxiv.org/abs/2306.11695). Wanda.

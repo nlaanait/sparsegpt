@@ -84,6 +84,7 @@ class SparseGPT:
         mask_weight: torch.Tensor | None = None,
         score_matrix: torch.Tensor | None = None,
         protected_trailing: int = 0,
+        progress=None,
     ) -> None:
         """Prune ``self.layer`` in place from the accumulated Hessian.
 
@@ -138,7 +139,11 @@ class SparseGPT:
 
         # Invert the Hessian via Cholesky. High sparsity / tall FFN layers can
         # make it only barely positive definite after the usual percdamp.
-        hessian_inverse = self._invert_hessian(hessian, percdamp)
+        hessian_inverse = self._invert_hessian(hessian, percdamp, progress=progress)
+        if progress is not None:
+            progress({"event": "sparsegpt_started", "rows": weights.shape[0], "columns": self.columns,
+                      "dead_input_columns": int(dead.sum()), "target_sparsity": sparsity,
+                      "blocksize": blocksize, "column_blocks": math.ceil(self.columns/blocksize)})
 
         global_score_mask = None
         if score_matrix is not None and zeros_per_group == 0:
@@ -151,9 +156,10 @@ class SparseGPT:
                 ).indices
                 global_score_mask.flatten()[chosen] = True
 
+        total_loss = 0.
         for col_start in range(0, self.columns, blocksize):
             col_end = min(col_start + blocksize, self.columns)
-            self._prune_column_block(
+            block_loss = self._prune_column_block(
                 weights,
                 hessian_inverse,
                 col_start,
@@ -167,7 +173,23 @@ class SparseGPT:
                 if global_score_mask is None
                 else global_score_mask[:, col_start:col_end],
                 protected_trailing=protected_trailing,
+                collect_loss=progress is not None,
             )
+            if progress is not None:
+                total_loss += block_loss
+                progress({"event": "sparsegpt_block", "blocks_done": col_start//blocksize+1,
+                    "blocks_total": math.ceil(self.columns/blocksize), "columns_done": col_end,
+                    "columns_total": self.columns, "block_obs_surrogate_objective": block_loss,
+                    "cumulative_obs_surrogate_objective": total_loss,
+                    "objective_coordinates": "damped_solver_coordinates_half_quadratic"})
+
+        self.pruning_diagnostics = {"column_blocks": math.ceil(self.columns/blocksize),
+            "dead_input_columns": int(dead.sum()),
+            "obs_surrogate_objective": total_loss if progress is not None else None,
+            "objective_coordinates": "damped_solver_coordinates_half_quadratic"}
+        if progress is not None:
+            self.pruning_diagnostics["achieved_zero_fraction"] = float((weights == 0).float().mean())
+            progress({"event": "sparsegpt_completed", **self.pruning_diagnostics, **self.damping_diagnostics})
 
         if isinstance(self.layer, transformers.Conv1D):
             weights = weights.t()
@@ -175,7 +197,7 @@ class SparseGPT:
             self.layer.weight.data.dtype
         )
 
-    def _invert_hessian(self, hessian: torch.Tensor, percdamp: float) -> torch.Tensor:
+    def _invert_hessian(self, hessian: torch.Tensor, percdamp: float, *, progress=None) -> torch.Tensor:
         mean_diag = torch.mean(torch.diag(hessian))
         diagonal = torch.arange(self.columns, device=self.device)
         damp_scale = float(percdamp)
@@ -187,16 +209,27 @@ class SparseGPT:
                 cholesky = torch.linalg.cholesky(damped)
                 inverse = torch.cholesky_inverse(cholesky)
                 inverse = (inverse + inverse.T) / 2
-                return torch.linalg.cholesky(inverse, upper=True)
+                upper = torch.linalg.cholesky(inverse, upper=True)
+                self.damping_diagnostics = {"requested_percdamp": float(percdamp),
+                    "effective_percdamp": damp_scale, "damping": float(damp_scale*mean_diag),
+                    "factorization_attempts": attempt+1}
+                if progress is not None:
+                    progress({"event": "curvature_factorized", **self.damping_diagnostics,
+                              "mean_diagonal": float(mean_diag)})
+                return upper
             except Exception as exc:
                 if "cholesky" not in str(exc).lower() and type(exc).__name__ != "LinAlgError":
                     raise
                 damp_scale *= 2.0
-                print(
-                    f"Cholesky failed (attempt {attempt + 1}); "
-                    f"retrying with percdamp={damp_scale:.4g}",
-                    flush=True,
-                )
+                if progress is not None:
+                    progress({"event": "curvature_retry", "attempt": attempt+1,
+                        "next_percdamp": damp_scale, "error_type": type(exc).__name__, "error": str(exc)})
+                else:
+                    print(
+                        f"Cholesky failed (attempt {attempt + 1}); "
+                        f"retrying with percdamp={damp_scale:.4g}",
+                        flush=True,
+                    )
         raise RuntimeError(
             f"Hessian Cholesky failed after 20 damp increases (last percdamp={damp_scale:.4g})"
         )
@@ -215,7 +248,8 @@ class SparseGPT:
         score_matrix: torch.Tensor | None = None,
         preset_mask: torch.Tensor | None = None,
         protected_trailing: int = 0,
-    ) -> None:
+        collect_loss: bool = False,
+    ) -> float | None:
         weight_block = weights[:, col_start:col_end].clone()
         pruned_block = torch.zeros_like(weight_block)
         error_block = torch.zeros_like(weight_block)
@@ -296,6 +330,7 @@ class SparseGPT:
 
         weights[:, col_start:col_end] = pruned_block
         weights[:, col_end:] -= error_block.matmul(hessian_inverse[col_start:col_end, col_end:])
+        return float(error_block.square().sum()/2) if collect_loss else None
 
     def free(self) -> None:
         """Drop the Hessian and flush the CUDA cache when the layer is on GPU."""

@@ -1,0 +1,19 @@
+{
+  "answers_sha256": "e0729f4bfe2c6e0f76ac012f2d598843ed961435f0360883d842c3371d7981cc",
+  "common128_ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb",
+  "correct": 95,
+  "count": 128,
+  "dense_config_sha256": "24d78214d3bd9c9b69112e2cc25f94abadb260d18c0e59bd58b0fa62f4b1ff56",
+  "evaluation_config_sha256": "001fefa596460366303b18a934252939e9fbf5998ba263f8301ce03b3caa66f7",
+  "evaluation_report_sha256": "348d6f87ff37d8e99fc6524339dffa17f36821d8403339b966168d5fa36146af",
+  "full512_complete": false,
+  "full_evaluation_count": 128,
+  "raw_audit_sha256": "38d1e155164c6035e76f49293f8c2c1c41e64104a8632b22d1e8c7cf1b2a5dfa",
+  "source": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-sparsegpt-task-s60-seed0-batch32-repcal-v1",
+  "source_config_sha256": "9f99287162ed02ec90c89e16300242c6271c2273d65e68a4d53acddb382bc051",
+  "source_cpu_audit": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/sparsity-bracket-repcal-v1/audits/sparsegpt-task-s60-cpu.json",
+  "source_cpu_audit_sha256": "345d19e8e77f88b9732cd6b38db4ae7bbfde10a84b4debe0b71cb05562e2c747",
+  "source_report_sha256": "4d2d25034a02a4ea421cd6510cb4ed92e92db04e0179da2811f6a9daf02cf6cc",
+  "truncated": 5,
+  "verified_stage_count": 96
+}

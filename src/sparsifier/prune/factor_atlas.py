@@ -41,12 +41,17 @@ class FactorAtlas:
         self.charts, self.rank, self.seed = charts, rank, seed
         self.factors: list[FactorCharts] = []
 
-    def fit(self, outputs: np.ndarray, iterations=20):
+    def fit(self, outputs: np.ndarray, iterations=20, *, progress=None):
         y = np.asarray(outputs, dtype=np.float64)
-        self.dictionary.fit(y.T, iterations=iterations)
-        return self.fit_charts(y)
+        if progress is not None:
+            progress({"event": "atlas_started", "fit_samples": len(y), "features": y.shape[1],
+                "dictionary_iterations": iterations, "groups": self.dictionary.groups,
+                "block_width": self.dictionary.width, "active_factors": self.dictionary.active,
+                "requested_charts_per_factor": self.charts, "requested_rank_per_chart": self.rank})
+        self.dictionary.fit(y.T, iterations=iterations, **({"progress": progress} if progress is not None else {}))
+        return self.fit_charts(y, progress=progress)
 
-    def fit_charts(self, outputs: np.ndarray):
+    def fit_charts(self, outputs: np.ndarray, *, progress=None):
         """Fit local structure using an already-fitted dictionary (also test hook)."""
         y = np.asarray(outputs, dtype=np.float64)
         if y.ndim != 2 or not np.isfinite(y).all():
@@ -54,6 +59,8 @@ class FactorAtlas:
         model = self.dictionary
         z = model.encode(y.T).reshape(model.groups, model.width, -1)
         self.factors = []
+        self.fit_diagnostics = {"fit_samples": len(y), "requested_rank": self.rank,
+            "dictionary": getattr(model, "fit_diagnostics", {}), "factors": []}
         rng = np.random.default_rng(self.seed)
         for factor in range(model.groups):
             block = model.dictionary[:, factor * model.width:(factor + 1) * model.width]
@@ -65,14 +72,24 @@ class FactorAtlas:
                 self.factors.append(FactorCharts(np.empty((0, model.width)), [],
                     np.empty((0, y.shape[1])), np.array([], dtype=np.int64),
                     orth(block), np.empty((y.shape[1], 0))))
+                diagnostic = {"event": "factor_unsupported", "factor": factor,
+                    "active_fit_samples": len(codes), "minimum_fit_samples": minimum,
+                    "retained_singular_vectors": 0}
+                self.fit_diagnostics["factors"].append(diagnostic)
+                if progress is not None:
+                    progress(diagnostic)
                 continue
             # Distances in factor contribution space, expressed in a small QR frame.
             _, r = np.linalg.qr(block, mode="reduced")
             coordinates = codes @ r.T
             count = min(self.charts, len(codes) // minimum)
+            clustering_iterations = 0
+            clustering_attempts = 0
             while count:
+                clustering_attempts += 1
                 centers = coordinates[rng.choice(len(codes), count, replace=False)].copy()
                 for _ in range(30):
+                    clustering_iterations += 1
                     assignment = ((coordinates[:, None] - centers[None]) ** 2).sum(2).argmin(1)
                     if any(not np.any(assignment == k) for k in range(count)):
                         break
@@ -88,22 +105,43 @@ class FactorAtlas:
                 count -= 1
             if not count:
                 raise ValueError(f"factor {factor} cannot support a chart")
-            bases, anchors = [], []
+            bases, anchors, chart_diagnostics = [], [], []
             for chart in range(count):
                 local = codes[assignment == chart]
                 centered = local - local.mean(0)
                 _, singular, vt = np.linalg.svd(centered @ r.T, full_matrices=False)
                 available = int((singular > max(singular[0] * 1e-6, 1e-12)).sum())
                 if available < self.rank:
+                    if progress is not None:
+                        progress({"event": "chart_degenerate", "factor": factor, "chart": chart,
+                                  "available_rank": available, "requested_rank": self.rank,
+                                  "singular_values": singular.tolist()})
                     raise ValueError(f"factor {factor}, chart {chart} has degenerate local variance")
                 q, _ = np.linalg.qr(block, mode="reduced")
                 bases.append(orth(q @ vt[:self.rank].T))
                 anchors.append(block @ local.mean(0))
+                diagnostic = {"event": "chart_fitted", "factor": factor, "chart": chart,
+                    "fit_samples": len(local), "available_rank": available,
+                    "retained_singular_vectors": bases[-1].shape[1],
+                    "singular_values": singular.tolist(),
+                    "retained_variance_fraction": float(np.square(singular[:self.rank]).sum()
+                                                         /max(np.square(singular).sum(), 1e-30))}
+                chart_diagnostics.append(diagnostic)
+                if progress is not None:
+                    progress(diagnostic)
             q, _ = np.linalg.qr(block, mode="reduced")
             _, _, vt = np.linalg.svd((codes - codes.mean(0)) @ r.T, full_matrices=False)
             matched = orth(q @ vt[:self.rank].T)
             self.factors.append(FactorCharts(centers, bases, np.stack(anchors), counts,
                                               orth(block), matched))
+            factor_diagnostic = {"event": "factor_charts_fitted", "factor": factor,
+                "active_fit_samples": len(codes), "clustering_iterations": clustering_iterations,
+                "clustering_attempts": clustering_attempts, "chart_count": count}
+            self.fit_diagnostics["factors"].append(dict(factor_diagnostic, charts=chart_diagnostics))
+            if progress is not None:
+                progress(factor_diagnostic)
+        if progress is not None:
+            progress({"event": "atlas_fitted", **self.diagnostics(y)})
         return self
 
     def assign(self, outputs: np.ndarray):
@@ -153,6 +191,13 @@ class FactorAtlas:
         z, active, assignments = self.assign(y)
         reconstruction = (self.dictionary.dictionary @ z.reshape(-1, len(y)) + self.dictionary.mean).T
         return {"estimator": "approximate_block_dictionary_with_within_factor_charts",
+                "reconstruction_error_definition": "squared_residual_over_uncentered_output_energy",
+                "diagnostic_samples": len(y),
+                "fit_samples": getattr(self, "fit_diagnostics", {}).get("fit_samples"),
+                "dictionary_iterations": getattr(self.dictionary, "fit_diagnostics", {}).get("iterations"),
+                "charts": sum(len(f.bases) for f in self.factors),
+                "retained_singular_vectors": sum(b.shape[1] for f in self.factors for b in f.bases),
+                "chart_retained_ranks": [[b.shape[1] for b in f.bases] for f in self.factors],
                 "relative_reconstruction_error": float(np.square(y - reconstruction).sum() / max(np.square(y).sum(), 1e-12)),
                 "mean_active_factors": float(active.sum(1).mean()),
                 "unsupported_factors": [i for i, f in enumerate(self.factors) if not f.bases],
@@ -168,7 +213,8 @@ class FactorAtlas:
                   "active": self.dictionary.active, "charts": self.charts,
                   "rank": self.rank, "seed": self.seed}
         arrays = {"config": np.array(json.dumps(config)), "dictionary": self.dictionary.dictionary,
-                  "mean": self.dictionary.mean}
+                  "mean": self.dictionary.mean,
+                  "fit_diagnostics": np.array(json.dumps(getattr(self, "fit_diagnostics", {})))}
         for i, f in enumerate(self.factors):
             for name in ("centers", "anchors", "counts", "global_basis", "rank_matched_basis"):
                 arrays[f"{i}_{name}"] = getattr(f, name)
@@ -183,6 +229,8 @@ class FactorAtlas:
             atlas = cls(**json.loads(str(saved["config"])))
             atlas.dictionary.dictionary = saved["dictionary"].copy()
             atlas.dictionary.mean = saved["mean"].copy()
+            atlas.fit_diagnostics = json.loads(str(saved["fit_diagnostics"])) if "fit_diagnostics" in saved else {}
+            atlas.dictionary.fit_diagnostics = atlas.fit_diagnostics.get("dictionary", {})
             for i in range(atlas.dictionary.groups):
                 centers = saved[f"{i}_centers"].copy()
                 atlas.factors.append(FactorCharts(

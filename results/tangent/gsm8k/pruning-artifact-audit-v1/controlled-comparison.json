@@ -1,0 +1,107 @@
+{
+  "created_at": "2026-11-15T22:09:03.049977-06:00",
+  "purpose": "completed_local70_artifact_controls_with_bounded_conclusions",
+  "controls_complete": true,
+  "frontier_experiments_complete": false,
+  "model": "Qwen/Qwen3.5-9B",
+  "revision": "c202236235762e1c871ad0ccb60c8ee5ba337b9a",
+  "sparsity_scope": "96 MLP projections; 4,831,838,208 eligible parameters. Removing 70% of eligible weights removes 37.7748% of whole-model parameters.",
+  "evaluation": {
+    "same_question_ids": true,
+    "count": 128,
+    "batch_size": 32,
+    "max_new_tokens": 2048,
+    "strict_completed_answer_parser": true,
+    "cohort": "Reserved training parents for exploratory validation; not the official test.",
+    "evaluation_configuration_equal_except_source_hashes": true
+  },
+  "rows": [
+    {
+      "condition": "dense",
+      "sparsity": 0.0,
+      "correct": 123,
+      "count": 128,
+      "truncated": 1,
+      "task_tokens": null,
+      "c4_tokens": null,
+      "internal_solver_precision": null,
+      "accuracy": 0.9609375
+    },
+    {
+      "condition": "local_original_prompt_FP32",
+      "sparsity": 0.7,
+      "correct": 0,
+      "count": 128,
+      "truncated": 128,
+      "task_tokens": 4096,
+      "c4_tokens": 4096,
+      "internal_solver_precision": "FP32",
+      "accuracy": 0.0
+    },
+    {
+      "condition": "local_prompt_high_FP32",
+      "sparsity": 0.7,
+      "correct": 0,
+      "count": 128,
+      "truncated": 128,
+      "task_tokens": 32768,
+      "c4_tokens": 4096,
+      "internal_solver_precision": "FP32",
+      "accuracy": 0.0
+    },
+    {
+      "condition": "local_reasoning_high_FP32",
+      "sparsity": 0.7,
+      "correct": 34,
+      "count": 128,
+      "truncated": 83,
+      "task_tokens": 32768,
+      "c4_tokens": 4096,
+      "internal_solver_precision": "FP32",
+      "accuracy": 0.265625
+    },
+    {
+      "condition": "local_original_prompt_FP64",
+      "sparsity": 0.7,
+      "correct": 0,
+      "count": 128,
+      "truncated": 125,
+      "task_tokens": 4096,
+      "c4_tokens": 4096,
+      "internal_solver_precision": "FP64",
+      "accuracy": 0.0
+    }
+  ],
+  "evidence": {
+    "prompt_cpu": "control-prompt-cpu-report.json",
+    "reasoning_cpu": "control-reasoning-cpu-report.json",
+    "fp64_cpu": "control-fp64-cpu-report.json",
+    "reasoning_screen": "control-reasoning-screen-audit.json",
+    "fp64_screen": "control-fp64-screen-audit.json",
+    "weight_comparison": "fp64-weight-comparison.json",
+    "recorded_layer_precision": "solver-precision/report.json",
+    "decoding_diagnostic": "gpu-summary.json",
+    "historical_version_and_family_audit": "broader-sweeps.json",
+    "resume_guard_fix": "method-sweep-resume-guard.json"
+  },
+  "findings": [
+    "The literal 0/128 sample zero depends on calibration: equal-budget reasoning and endpoint sampling yields 34/128, versus 0/128 with prompt-high.",
+    "The reasoning control still has a severe quality loss: 34/128 versus dense 123/128, with 83 truncated outputs.",
+    "Raising internal solver arithmetic precision did not recover the original prompt-only baseline: 0/128 with 125 truncated.",
+    "The FP64 intervention substantially changed persisted weights: 13.665% mask XOR over all eligible entries and 61.218% of the original FP32 eligible-MLP Frobenius norm. Later stages include upstream and atlas changes.",
+    "Audited tensors have the intended sparsity, valid chains, and finite values. No gross tensor corruption or accidental extra sparsity was found.",
+    "A reproduced early local-70 loop persists with generation caching disabled; the small decoding diagnostic does not validate all positions or modes.",
+    "Historical rank-normalized 0.8B results cannot be relabeled as corrected-v2 measurements; implementation-blind resumption is now guarded."
+  ],
+  "limitations": [
+    "One checkpoint, one seed, one recipe per control, and 128 exploratory validation questions. These do not establish a universal geometry boundary or zero population accuracy.",
+    "Reasoning versus prompt changes token population and endpoint forcing together. Prompt-high versus original changes both coverage and the task/C4 mixture.",
+    "FP64 varies curvature accumulation, factorization, and ordered compensation together; geometry and unscale stay FP32, while model/checkpoint casts stay BF16.",
+    "Ordered row-congruence remains an approximation. The small exactness crops do not prove a full coupled geometric solution.",
+    "Earlier canceled or unconverged methods are not measured 70% behavioral failures."
+  ],
+  "remaining_user_request": "Complete and verify the requested SparseGPT/local/downstream 55/60/65% grid. Current states and measurements are in frontier_progress.",
+  "frontier_progress": "../sparsity-bracket-repcal-v1/progress.json",
+  "interpretation_warning": "Original controls used an evaluator that omitted tokenizer EOS248046. Exact raw-token reproduction confirms a stopping artifact (SparseGPT60 first32:5 correct becomes22 by stopping at first declared EOS). Historical controls retained; corrected scores pending. Do not interpret original sample zeros as intrinsic mathematical accuracy.",
+  "stop_policy_audit": "stop-token-evidence.json"
+}

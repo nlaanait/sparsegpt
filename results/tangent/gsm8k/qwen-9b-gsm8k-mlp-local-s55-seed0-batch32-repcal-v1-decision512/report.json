@@ -1,0 +1,36 @@
+{
+  "behavior": {
+    "accuracy": 0.6484375,
+    "count": 128,
+    "truncated": 19
+  },
+  "complete": false,
+  "config_sha256": "583dca8aecdf361df8f6460035a20e87d7bbe60fc02b16d10ae94a0eb3f0ffb4",
+  "eligible_parameters": 4831838208,
+  "memory": {
+    "allocator_cap_gib": 56.0,
+    "cuda_free_gib": 26.51093292236328,
+    "cuda_total_gib": 121.69016647338867,
+    "guard_cap_gib": 56.0,
+    "host_before": {
+      "available_gib": 116.68748474121094,
+      "total_gib": 121.69016647338867,
+      "used_gib": 5.002681732177734
+    },
+    "requested_cap_gib": 56.0
+  },
+  "removed_weights": 2657509376,
+  "scope": "128 screen / 512 validation; no official test",
+  "screen": {
+    "accuracy_drop_pp": 31.25,
+    "candidate_correct": 83,
+    "dense_correct": 123,
+    "max_accuracy_drop_pp": 15,
+    "passed": false,
+    "purpose": "exploratory_compute_screen_not_retention_claim",
+    "screen_count": 128,
+    "screen_ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb"
+  },
+  "screen_rejected": true,
+  "total_parameters": 8953803264
+}

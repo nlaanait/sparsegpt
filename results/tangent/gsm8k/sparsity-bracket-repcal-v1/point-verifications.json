@@ -1,0 +1,31 @@
+{
+  "local-s55": {
+    "verified_at": "2026-11-16T00:17:56.853215-06:00",
+    "job": 237,
+    "config_sha256": "830af8c7fb50f6e86beb4dca684ada1ec01c22d93f049288beec2688b8eeece2",
+    "baseline_config_differences": [
+      "sparsity"
+    ],
+    "sources_match_submission_plan": true
+  },
+  "downstream-weightdiag-s55": {
+    "verified_at": "2026-11-16T02:48:45.780590-06:00",
+    "job": 239,
+    "config_sha256": "204f54009766fd075cd7ad0c2af76a3db91849fe9019843407a42fef30fd56ec",
+    "baseline_config_differences": [
+      "sparsity"
+    ],
+    "sources_match_submission_plan": true,
+    "pullback_metric": "weight_diagonal",
+    "full_metric_refit": false
+  },
+  "sparsegpt-task-s60": {
+    "verified_at": "2026-11-16T06:01:16.507103-06:00",
+    "job": 241,
+    "config_sha256": "9f99287162ed02ec90c89e16300242c6271c2273d65e68a4d53acddb382bc051",
+    "baseline_config_differences": [
+      "sparsity"
+    ],
+    "sources_match_verified_55_point": true
+  }
+}

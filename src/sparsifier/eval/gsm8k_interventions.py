@@ -4,6 +4,7 @@ Single entries and ambient-matched discordant groups are measured before and
 after simultaneous OBS compensation within each affected output row.
 """
 from __future__ import annotations
+from sparsifier.eval.gsm8k_batching import policy as batch_policy
 
 import argparse
 import hashlib
@@ -122,7 +123,7 @@ def pool_scores(weight, inverse, ambient, readout, pdiag, deltas, labels, gradie
 
 def main():
     from transformers import AutoModelForCausalLM, AutoTokenizer
-    from sparsifier.models.qwen import force_pytorch_attention
+    from sparsifier.eval.gsm8k_batching import reference_backend as force_pytorch_attention
     from sparsifier.eval.natural_layer import replaced_weight
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--capture", type=Path, required=True)
@@ -155,6 +156,7 @@ def main():
               "group_size": args.group_size, "evaluation_ids": [r["id"] for r in rows],
               "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
               "purpose": "development_stage2_not_confirmatory"}
+    config["batching"] = batch_policy()
     write_immutable(args.output / "config.json", config)
     config_hash = digest(config)
     report_path = args.output / "report.json"

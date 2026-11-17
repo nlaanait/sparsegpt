@@ -1,0 +1,13 @@
+{
+  "purpose": "interim_first_batch_not_full128_accuracy",
+  "count": 32,
+  "correct": 31,
+  "truncated": 1,
+  "raw_token_rescore_mismatches": 0,
+  "terminal_token_counts": {
+    "248046": 31
+  },
+  "config_sha256": "24d78214d3bd9c9b69112e2cc25f94abadb260d18c0e59bd58b0fa62f4b1ff56",
+  "ids_sha256": "dc222d2275ad2afc079276fca7b86345e18f54cfa7898fc29d7f128ff08e063b",
+  "raw_file_sha256": "c67c35ab45805faadc88bb963d28bfa50ecb202a515c46df03835f0d7fa150f6"
+}

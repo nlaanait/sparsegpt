@@ -6,15 +6,19 @@ Variant D sparse-plus-low-rank. The Fisher rung is omitted: the layer
 loop does not collect loss gradients, so ``tangent_fisher`` cannot prune.
 
 Sparsities run from 0.5 through 0.9 in tenths, then 0.99. Each point is
-one C4-calibrated prune and a WikiText2 perplexity. The JSON is resumed
-on a later launch. Host memory is checked before every point and the run
+one C4-calibrated prune and a WikiText2 perplexity. Resumption requires matching
+source, child-runtime, and pair-bank provenance in a versioned result namespace.
+Historical unversioned results are retained separately. Host memory is checked before every point and the run
 stops inside the cushion under the 110 GiB brick.
 """
 
 from __future__ import annotations
 
 import fcntl
+import argparse
+import hashlib
 import json
+import math
 import os
 import signal
 import subprocess
@@ -39,8 +43,40 @@ METHODS = (
     "tangent_sparse_lowrank",
 )
 PAIRS = Path("results/tangent/qwen35-0.8b-concept-pairs")
-RESULT = Path("results/tangent/qwen35-0.8b-method-sweep.json")
-LOG_DIR = Path("results/tangent/logs")
+PROTOCOL = "qwen08-method-sweep-curvature-trace-v2"
+RESULT = Path(f"results/tangent/{PROTOCOL}.json")
+
+
+def current_provenance() -> dict:
+    """Bind cached points to the actual child runtime and pruning sources.
+
+    This guards code/runtime/pair-bank reuse. It does not establish immutable
+    Hub references or identical GPU hardware and dispatched backends.
+    """
+    root = repo_root()
+    paths = set()
+    for directory in ("prune", "models", "data", "metrics"):
+        paths.update((root / "src/sparsifier" / directory).rglob("*.py"))
+    paths.update(root / p for p in (
+        "src/sparsifier/cli.py", "src/sparsifier/eval/live_stages.py",
+        "drivers/capped_sparsifier.py", "drivers/qwen08_method_sweep.py"))
+    sources = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+               for p in sorted(paths) if p.is_file()}
+    pair_files = {str(p.relative_to(root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                  for p in sorted((root / PAIRS).rglob("*"))
+                  if p.is_file() and p.suffix in {".npy", ".json"}}
+    python = os.environ.get("SPARSIFIER_PYTHON", sys.executable)
+    script = """import importlib.metadata as m, json, sys
+packages = {}
+for name in ('torch','transformers','numpy','scipy','datasets','safetensors','accelerate','kernels','flash-linear-attention','causal-conv1d'):
+    try: packages[name] = m.version(name)
+    except m.PackageNotFoundError: packages[name] = None
+print(json.dumps({'python':sys.version,'executable':sys.executable,'packages':packages}))
+"""
+    runtime = json.loads(subprocess.check_output([python, "-c", script], text=True))
+    return {"protocol": PROTOCOL, "sources": sources, "pair_files": pair_files,
+            "runtime": runtime,
+            "commands": {m: point_command(m, .7, python=python) for m in METHODS}}
 
 
 def method_flags(method: str) -> list[str]:
@@ -92,11 +128,14 @@ def point_command(method: str, sparsity: float, *, python: str) -> list[str]:
 
 
 def pending_points(results: dict) -> list[tuple[str, float]]:
-    """Methods then sparsities, skipping points that already have a perplexity."""
+    """Plan points after load_results has validated implementation provenance."""
     have = {
         (point["method"], float(point["sparsity"]))
         for point in results.get("points", [])
-        if point.get("dataset") == DATASET and point.get("perplexity") == point.get("perplexity")
+        if point.get("dataset") == DATASET
+        and isinstance(point.get("perplexity"), (int, float))
+        and not isinstance(point.get("perplexity"), bool)
+        and math.isfinite(point["perplexity"]) and point["perplexity"] > 0
     }
     return [
         (method, sparsity)
@@ -107,14 +146,22 @@ def pending_points(results: dict) -> list[tuple[str, float]]:
 
 
 def load_results(path: Path) -> dict:
+    provenance = current_provenance()
     if path.is_file():
-        return json.loads(path.read_text(encoding="utf-8"))
+        result = json.loads(path.read_text(encoding="utf-8"))
+        expected = {"model": MODEL, "calibration": CALIBRATION, "dataset": DATASET,
+                    "sparsities": SPARSITIES, "methods": list(METHODS)}
+        if result.get("provenance") != provenance or any(result.get(k) != v for k, v in expected.items()):
+            raise ValueError("method-sweep provenance differs or is missing; use a new --output path; "
+                             "historical points cannot be relabeled as current measurements")
+        return result
     return {
         "model": MODEL,
         "calibration": CALIBRATION,
         "dataset": DATASET,
         "sparsities": SPARSITIES,
         "methods": list(METHODS),
+        "provenance": provenance,
         "points": [],
     }
 
@@ -149,7 +196,7 @@ def _perplexity(text: str) -> float:
         match = PPL_RE.search(line)
         if match and dataset == DATASET:
             found = float(match.group(1))
-    if found is None or found != found or found == float("inf"):
+    if found is None or not math.isfinite(found) or found <= 0:
         raise RuntimeError("WikiText2 perplexity line was missing or not a finite number")
     return found
 
@@ -204,18 +251,26 @@ def run_point(method: str, sparsity: float, log_path: Path) -> float:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--output", type=Path, default=RESULT,
+                        help="Versioned result namespace; legacy unversioned results cannot resume.")
+    args = parser.parse_args()
     os.chdir(repo_root())
-    RESULT.parent.mkdir(parents=True, exist_ok=True)
-    lock_path = RESULT.with_suffix(".lock")
+    args.output.parent.mkdir(parents=True, exist_ok=True)
+    lock_path = args.output.with_suffix(".lock")
     lock = lock_path.open("a", encoding="utf-8")
     fcntl.flock(lock.fileno(), fcntl.LOCK_EX)
-    results = load_results(RESULT)
+    results = load_results(args.output)
     missing = pending_points(results)
     print(f"{len(missing)} points remaining", flush=True)
     for method, sparsity in missing:
+        if current_provenance() != results["provenance"]:
+            raise RuntimeError("pruning code, pair bank, or runtime changed during the sweep; use a new --output")
         assert_room(f"{method}-{sparsity}")
-        log_path = LOG_DIR / f"qwen35-0.8b_{method}_{sparsity_token(sparsity)}_wikitext2.log"
+        log_path = args.output.with_name(args.output.name + ".artifacts") / "logs" / f"{method}_{sparsity_token(sparsity)}_wikitext2.log"
         perplexity = run_point(method, sparsity, log_path)
+        if current_provenance() != results["provenance"]:
+            raise RuntimeError("pruning code, pair bank, or runtime changed while the point ran; result not saved")
         results["points"].append(
             {
                 "model": MODEL,
@@ -225,9 +280,9 @@ def main() -> None:
                 "perplexity": perplexity,
             }
         )
-        save_results(RESULT, results)
+        save_results(args.output, results)
         print(f"saved {method} {sparsity} perplexity={perplexity:.4f}", flush=True)
-    print(f"wrote {RESULT}", flush=True)
+    print(f"wrote {args.output}", flush=True)
 
 
 if __name__ == "__main__":

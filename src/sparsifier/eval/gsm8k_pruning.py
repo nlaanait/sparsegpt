@@ -5,6 +5,7 @@ not a final GSM8K-test or whole-model compression result. Output geometry uses
 the explicitly approximate row-diagonal congruence solver.
 """
 from __future__ import annotations
+from sparsifier.eval.gsm8k_batching import policy as batch_policy
 
 import argparse
 from contextlib import contextmanager
@@ -23,6 +24,7 @@ from sparsifier.data.gsm8k import digest, load_manifest, parse_answer, write_imm
 from sparsifier.eval.gsm8k import MODEL, REVISION, atomic_json, read_completed, render_prompt
 from sparsifier.eval.gsm8k_geometry import load_capture
 from sparsifier.eval.memory_guard import configure_cuda, host_memory
+from sparsifier.eval.gsm8k_batching import batches, pack, pad_id, policy, trim_generated
 from sparsifier.prune.factor_atlas import FactorAtlas, projector_diagonals
 from sparsifier.prune.input_side import InputSideSparseGPT
 from sparsifier.prune.rescale import LOCAL_PRUNING_VERSION, local_row_scales
@@ -78,7 +80,16 @@ def pair_inputs(manifest, by_id, x, *, mode="input_side", seed=0):
 
 
 def select_validation(rows, count, seed):
-    """Round-robin family-balanced selection without seeing any outcomes."""
+    """Seeded original-question sampling; round-robin families for controlled data."""
+    if count < 0:
+        raise ValueError("nonnegative sample count required")
+    originals = [r for r in rows if r["split"] == "validation"]
+    if originals and all(r["id"].startswith("gsm8k/train/") for r in originals):
+        if count > len(originals):
+            raise ValueError("insufficient validation problems")
+        ordered = sorted(originals, key=lambda r: r["source_index"])
+        positions = np.random.default_rng(seed).permutation(len(ordered))[:count]
+        return [ordered[int(i)] for i in positions]
     groups = {}
     for row in rows:
         if row["split"] == "validation":
@@ -100,7 +111,7 @@ def select_validation(rows, count, seed):
 
 
 def prune_candidate(weight, inputs, *, arm, sparsity=.5, alpha=1., deltas=None,
-                    labels=None, readout_inputs=None, pdiag=None, device="cuda"):
+                    labels=None, readout_inputs=None, pdiag=None, device="cuda", progress=None):
     """Same SparseGPT compensation settings for all applicable arms."""
     if arm == "dense":
         return weight.clone(), {"solver": "dense"}
@@ -114,6 +125,8 @@ def prune_candidate(weight, inputs, *, arm, sparsity=.5, alpha=1., deltas=None,
         if scale.shape != w.shape:
             raise ValueError("projector output dimension must match weights")
         diagnostics.update(local_diagnostics, solver="row_diagonal_congruence_approximation")
+        if progress is not None:
+            progress({"event": "geometry_calibrated", **local_diagnostics})
     with torch.no_grad():
         layer.weight.copy_(w if scale is None else w * scale)
     solver = InputSideSparseGPT(layer) if arm.startswith("input_") else SparseGPT(layer)
@@ -122,7 +135,8 @@ def prune_candidate(weight, inputs, *, arm, sparsity=.5, alpha=1., deltas=None,
         solver.add_pairs(deltas, labels)
         solver.finalize_pairs(alpha)
         diagnostics["solver"] = "input_augmented_obs"
-    solver.fasterprune(sparsity, blocksize=128, percdamp=.01, mask_weight=torch.ones_like(w))
+    solver.fasterprune(sparsity, blocksize=128, percdamp=.01, mask_weight=torch.ones_like(w), progress=progress)
+    diagnostics.update(selection_damping=solver.damping_diagnostics, **solver.pruning_diagnostics)
     result = layer.weight.detach()
     if scale is not None:
         result = result / scale
@@ -133,52 +147,77 @@ def prune_candidate(weight, inputs, *, arm, sparsity=.5, alpha=1., deltas=None,
 
 def answer_likelihood(model, tokenizer, question, answer):
     """Direct-answer teacher forcing, separate from generated reasoning accuracy."""
+    return answer_likelihoods(model, tokenizer, [{"question": question, "answer": answer}])[0]
+
+
+def answer_likelihoods(model, tokenizer, rows):
+    """Batch direct-answer teacher forcing, retaining each target's own mean."""
     device = next(model.parameters()).device
-    prompt = tokenizer.apply_chat_template(
-        [{"role": "user", "content": "Give only the numeric answer.\n\n" + question}],
-        tokenize=False, add_generation_prompt=True, enable_thinking=False)
-    prefix = tokenizer.encode(prompt, add_special_tokens=False)
-    target = tokenizer.encode(" " + answer, add_special_tokens=False)
-    ids = torch.tensor([prefix + target], device=device)
+    sequences, targets = [], []
+    for row in rows:
+        prompt = tokenizer.apply_chat_template(
+            [{"role": "user", "content": "Give only the numeric answer.\n\n" + row["question"]}],
+            tokenize=False, add_generation_prompt=True, enable_thinking=False)
+        prefix = tokenizer.encode(prompt, add_special_tokens=False)
+        target = tokenizer.encode(" " + row["answer"], add_special_tokens=False)
+        if not prefix or not target:
+            raise ValueError("answer likelihood requires prompt and target tokens")
+        sequences.append(prefix+target)
+        targets.append(target)
     with torch.inference_mode():
-        logits = model(input_ids=ids, use_cache=False, logits_to_keep=len(target) + 1).logits
-        predicted = logits[0, -len(target)-1:-1].float()
-        nll = F.cross_entropy(predicted, torch.tensor(target, device=device), reduction="mean")
-    return float(nll)
+        logits = model(**pack(sequences, tokenizer, device), use_cache=False,
+                       logits_to_keep=max(map(len, targets))+1).logits
+        return [float(F.cross_entropy(logits[i, -len(target)-1:-1].float(),
+                                     torch.tensor(target, device=device), reduction="mean"))
+                for i, target in enumerate(targets)]
 
 
 def behavior(model, tokenizer, rows, output, config_hash, *, max_new_tokens=512):
     path = output / "answers.jsonl"
     done = read_completed(path, config_hash)
+    execution = policy()
+    if any(record.get("batching") != execution for record in done.values()):
+        raise ValueError("answer batching provenance mismatch; use a new batch8 output")
     if set(done) - {r["id"] for r in rows}:
         raise ValueError("unexpected result IDs")
     eos = model.generation_config.eos_token_id
     eos = set(eos if isinstance(eos, list) else [eos])
     device = next(model.parameters()).device
     with path.open("a", buffering=1) as handle:
-        for row in rows:
-            if row["id"] in done:
+        for group in batches(rows):
+            if all(row["id"] in done for row in group):
                 continue
             start = time.monotonic()
-            prompt = render_prompt(tokenizer, row["question"])
-            ids = tokenizer(prompt, return_tensors="pt", add_special_tokens=False).to(device)
+            prompts = [render_prompt(tokenizer, row["question"]) for row in group]
+            sequences = [tokenizer.encode(prompt, add_special_tokens=False) for prompt in prompts]
+            ids = pack(sequences, tokenizer, device)
             with torch.inference_mode():
                 result = model.generate(**ids, do_sample=False, max_new_tokens=max_new_tokens,
-                                        use_cache=True, pad_token_id=tokenizer.eos_token_id)
-            generated = result[0, ids.input_ids.shape[1]:].tolist()
-            truncated = len(generated) >= max_new_tokens and generated[-1] not in eos
-            text = tokenizer.decode(generated, skip_special_tokens=True)
-            parsed = parse_answer(text, truncated=truncated)
-            record = {"id": row["id"], "family": row["family"], "config_sha256": config_hash,
+                                        use_cache=True, pad_token_id=pad_id(tokenizer))
+            generated_rows = result[:, ids["input_ids"].shape[1]:].tolist()
+            likelihoods = answer_likelihoods(model, tokenizer, group)
+            elapsed = time.monotonic()-start
+            batch_ids = [row["id"] for row in group]
+            for row, prompt, sequence, tokens, nll in zip(group, prompts, sequences, generated_rows, likelihoods):
+                if row["id"] in done:
+                    continue
+                generated = trim_generated(tokens, eos)
+                truncated = len(generated) >= max_new_tokens and generated[-1] not in eos
+                text = tokenizer.decode(generated, skip_special_tokens=True)
+                parsed = parse_answer(text, truncated=truncated)
+                record = {"id": row["id"], "family": row["family"], "config_sha256": config_hash,
                       "text": text, "generated_tokens": len(generated), "truncated": truncated,
                       "parsed_answer": str(parsed) if parsed is not None else None,
                       "expected_answer": row["answer"],
                       "correct": parsed is not None and parsed == Fraction(row["answer"]),
-                      "answer_nll": answer_likelihood(model, tokenizer, row["question"], row["answer"]),
-                      "seconds": time.monotonic() - start}
-            handle.write(json.dumps(record) + "\n")
-            handle.flush()
-            done[row["id"]] = record
+                      "answer_nll": nll, "seconds": elapsed/len(group), "batch_seconds": elapsed,
+                      "batch_ids": batch_ids, "batch_size": len(group), "batching": execution,
+                      "input_tokens": len(sequence), "prompt_sha256": digest(prompt)}
+                if "source_sha256" in row:
+                    record["source_sha256"] = row["source_sha256"]
+                handle.write(json.dumps(record) + "\n")
+                handle.flush()
+                done[row["id"]] = record
             print(json.dumps({"evaluated": len(done), "total": len(rows),
                               "correct": sum(r["correct"] for r in done.values())}), flush=True)
     records = list(done.values())
@@ -189,7 +228,7 @@ def behavior(model, tokenizer, rows, output, config_hash, *, max_new_tokens=512)
 
 def main():
     from transformers import AutoModelForCausalLM, AutoTokenizer
-    from sparsifier.models.qwen import force_pytorch_attention
+    from sparsifier.eval.gsm8k_batching import reference_backend as force_pytorch_attention
     from sparsifier.eval.natural_layer import replaced_weight, vocabulary_reference, language_metrics
     from sparsifier.data.loaders import get_loaders
     from sparsifier.prune import rescale
@@ -227,6 +266,7 @@ def main():
               "max_new_tokens": 512, "purpose": "development_single_layer_not_confirmatory",
               "atlas_sha256": hashlib.sha256(args.atlas.read_bytes()).hexdigest() if args.atlas else None,
               "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
+    config["batching"] = batch_policy()
     write_immutable(args.output / "config.json", config)
     config_hash = digest(config)
     report_path = args.output / "report.json"
@@ -249,20 +289,25 @@ def main():
         del frames
     weight = torch.from_numpy(np.load(args.capture / "weight.npy"))
     candidate_path = args.output / "candidate.pt"
+    from sparsifier.prune.progress import Progress, compact_diagnostics
+    progress = Progress(site=[capture["block"],capture["module"]], arm=args.arm)
     if candidate_path.exists():
         stored = torch.load(candidate_path, weights_only=True, map_location="cpu")
         if stored["config_sha256"] != config_hash:
             raise ValueError("candidate provenance mismatch")
         candidate, diagnostics = stored["weight"], stored["diagnostics"]
     else:
-        candidate, diagnostics = prune_candidate(weight, inputs, arm=args.arm, sparsity=args.sparsity,
-            alpha=args.alpha, deltas=deltas, labels=labels, readout_inputs=torch.from_numpy(x[use]), pdiag=pdiag)
+        with progress.phase("pruning"):
+            candidate, diagnostics = prune_candidate(weight, inputs, arm=args.arm, sparsity=args.sparsity,
+                alpha=args.alpha, deltas=deltas, labels=labels, readout_inputs=torch.from_numpy(x[use]),
+                pdiag=pdiag, progress=progress)
         if geometry_arm:
             diagnostics["atlas"] = atlas_diagnostics
         candidate = candidate.to(torch.bfloat16).float()
         temporary = candidate_path.with_suffix(".tmp")
         torch.save({"weight": candidate, "diagnostics": diagnostics, "config_sha256": config_hash}, temporary)
         temporary.replace(candidate_path)
+    progress({"event": "site_completed", "metrics": compact_diagnostics(diagnostics)})
     torch.cuda.empty_cache()
     test_ids = [by_id[r["id"]] for r in rows]
     residual = torch.from_numpy(x[test_ids]) @ (candidate - weight).T

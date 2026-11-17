@@ -1,0 +1,57 @@
+{
+  "folder": "/home/nlaanait/sparsegpt-tangent-revised/results/tangent/gsm8k/qwen-9b-gsm8k-mlp-local-s55-seed0-batch32-repcal-v1-decision512",
+  "config_sha256": "583dca8aecdf361df8f6460035a20e87d7bbe60fc02b16d10ae94a0eb3f0ffb4",
+  "answers_sha256": "5ffe4fc322abef7bc880953f6da52bc8a4f4fd69bf16472bdfaec55f8e50bccd",
+  "count": 128,
+  "correct": 83,
+  "truncated": 19,
+  "rescoring_mismatches": 0,
+  "correct_ignoring_truncation_same_strict_parser": 85,
+  "batch_size": 32,
+  "complete": false,
+  "examples": [
+    {
+      "id": "gsm8k/train/5723",
+      "prefix": "To solve this problem, we need to determine the total number of tissues Tucker started with and then subtract the number of tissues he used.\n\n**Step 1: Calculate the total number of tissues.**\nTucker bought 3 boxes, and each box contains 160 tissues.\n$$ \\text{Total tissues} = \\text{Number of boxes} ",
+      "suffix": "remaining tissues.**\nTucker used 210 tissues. We subtract this amount from the total number of tissues calculated in Step 1.\n$$ \\text{Remaining tissues} = \\text{Total tissues} - \\text{Tissues used} $$\n$$ \\text{Remaining tissues} = 480 - 210 $$\n$$ \\text{Remaining tissues} = 270 $$\n\nFinal answer: 270\n"
+    },
+    {
+      "id": "gsm8k/train/1345",
+      "prefix": "To find the amount Mimi spent on clothes, we need to determine the costs of the other items first.\n\n1.  **Adidas**: The problem states that Mimi spent $\\$600$ on Adidas sneakers.\n    $$ \\text{Cost}_{\\text{Adidas}} = \\$600 $$\n\n2.  **Skechers**: The problem states that the cost of Adidas was $1/5$ the",
+      "suffix": "+ \\$3,000 + \\$1,800 = \\$5,400 $$\n\n    Substitute this sum into the equation:\n    $$ \\$8,000 = \\$5,400 + \\text{Cost}_{\\text{Clothes}} $$\n\n    Solve for the cost of clothes:\n    $$ \\text{Cost}_{\\text{Clothes}} = \\$8,000 - \\$5,400 $$\n    $$ \\text{Cost}_{\\text{Clothes}} = \\$2,600 $$\n\nFinal answer: 2600\n"
+    }
+  ],
+  "screen_complete": true,
+  "full512_complete": false,
+  "screen_rejected": true,
+  "screen": {
+    "accuracy_drop_pp": 31.25,
+    "candidate_correct": 83,
+    "dense_correct": 123,
+    "max_accuracy_drop_pp": 15,
+    "passed": false,
+    "purpose": "exploratory_compute_screen_not_retention_claim",
+    "screen_count": 128,
+    "screen_ids_sha256": "95052864f4ff124a5fe3ee555a7a194c7688c1fe8bd3c03137096b2bc24c59bb"
+  },
+  "same_ids_comparison": {
+    "dense": {
+      "count": 128,
+      "correct": 123,
+      "truncated": 1,
+      "answers_sha256": "99ba0eaf1a2e4c8386fee221e6d40ec7636de23f6310583c63fe378cc0330744"
+    },
+    "sparsegpt55": {
+      "count": 128,
+      "correct": 95,
+      "truncated": 4,
+      "answers_sha256": "89e2b7eb215c70d9977362412e03a037a583bea0f05bbaac857d8463cbef2d92"
+    }
+  },
+  "evaluation_config_differences_from_local70": [
+    "source_config_sha256",
+    "source_report_sha256"
+  ],
+  "scope": "completed common128 bracket score; no512 result",
+  "accuracy": 0.6484375
+}

@@ -1,0 +1,63 @@
+{
+  "scope": "production GSM8K source entry-point audit",
+  "generate_calls": [
+    {
+      "file": "src/sparsifier/eval/gsm8k_pruning.py",
+      "line": 195
+    }
+  ],
+  "shared_behavior_importers": [
+    "src/sparsifier/eval/gsm8k.py",
+    "src/sparsifier/eval/gsm8k_controls.py",
+    "src/sparsifier/eval/gsm8k_decision.py",
+    "src/sparsifier/eval/gsm8k_decision_full.py",
+    "src/sparsifier/eval/gsm8k_downstream.py",
+    "src/sparsifier/eval/gsm8k_interventions.py",
+    "src/sparsifier/eval/gsm8k_original.py",
+    "src/sparsifier/eval/gsm8k_reevaluate.py",
+    "src/sparsifier/eval/gsm8k_sequential.py",
+    "src/sparsifier/eval/gsm8k_whole_neuron.py",
+    "src/sparsifier/eval/gsm8k_whole_neuron_evaluate.py"
+  ],
+  "source_sha256": {
+    "src/sparsifier/eval/gsm8k.py": "b34c60d3659e5072aef6f09beea62d11dad900f4741f76fb9311f0bd0d8428c9",
+    "src/sparsifier/eval/gsm8k_batch_defaults.py": "a2971b0e713c7d451127c800232f9bf809cc58381c968f90ac1ee7b0be5557f3",
+    "src/sparsifier/eval/gsm8k_batch_runtime.py": "ecafa76be61bdb93cb85ba16694c50b66947baafe918d264810b78fde2a94cce",
+    "src/sparsifier/eval/gsm8k_batching.py": "a5d58093374eb33c707f4f4342a242224e21a297bb05dbe781d081f25498fd9a",
+    "src/sparsifier/eval/gsm8k_capture.py": "9e22bb5dfbaa59fc787a9e43192dad1d78d9ba5fe62759062145c0dafb461194",
+    "src/sparsifier/eval/gsm8k_controls.py": "9693f98e86f2542b96e891b7f7828ea55bd671838f5287560c1acc870a8dfdd1",
+    "src/sparsifier/eval/gsm8k_decision.py": "db1455fc367229e21576a428edd3cd7db60aad6bc52de9f738557c18f3eb5f1c",
+    "src/sparsifier/eval/gsm8k_decision_full.py": "bc9b8d88337053573464a28682ddeb15e40ffb7768ad9aa8df55cf0fdb4d686d",
+    "src/sparsifier/eval/gsm8k_decision_pilot.py": "dc8450c4b68cf33f5d979c26c527aae4aef4fb43d40864564ab3325eaead4dc0",
+    "src/sparsifier/eval/gsm8k_downstream.py": "6573a7955a8039834ded5b7c68bdef2e70efd7e1192ab6218afa521647ad67eb",
+    "src/sparsifier/eval/gsm8k_downstream_sweep.py": "7e09d034323c9e692180468c340495b499bea13f616a72c0cf43bfd0c7027db0",
+    "src/sparsifier/eval/gsm8k_exactness.py": "77acc1e3b33606460e015c52aa597132d9cbf0b45bc8302651d78eab3e7bd25d",
+    "src/sparsifier/eval/gsm8k_geometry.py": "067d687aa3694d2f90f978fa464c8deec21c8595aecfe160f59a85cb4d35ba79",
+    "src/sparsifier/eval/gsm8k_groups.py": "abac44f36a8ab1cdf09d7f8b4985c05a460eed6d6c74157f75131e0ae7390cba",
+    "src/sparsifier/eval/gsm8k_input_tangents.py": "a2957fd792c431770bd14b8e71068798f81033c2fe793d6e26881843a628b84d",
+    "src/sparsifier/eval/gsm8k_interventions.py": "baffbe19bfb1600e15ca249423eed87d141f7f947808becb271cb78fe5f334d2",
+    "src/sparsifier/eval/gsm8k_original.py": "eca5bb7f0174f573f1dff77ff009faf1a551a4b75777e7bbd42c9fe418030bca",
+    "src/sparsifier/eval/gsm8k_prediction.py": "8cd8301c869688bd07c6c89536c35ff7dc2e38f88b0cc0e4ec5a81eeee2d464a",
+    "src/sparsifier/eval/gsm8k_progress.py": "fa1a7caf0c60ff8b66a13df43119298993bcf1ca80f38ebeffe270f7b29704f0",
+    "src/sparsifier/eval/gsm8k_pruning.py": "f73d564fa3b7d97e44cdad97e72dd93b8a9db980848c9eadadfdba492d3017d9",
+    "src/sparsifier/eval/gsm8k_reevaluate.py": "1a0e0d39cc19c85780ab24fc8124ad8c8d5f8ee63343617f7cc683b287542180",
+    "src/sparsifier/eval/gsm8k_report.py": "89bc567ad316e5ffcf005b10177d9faf26c3a95ec1207b072d9c184f689b10a4",
+    "src/sparsifier/eval/gsm8k_retention.py": "fbdde7e3181e0db3729cc7bbad0fc4f4c847227b4dd8bb92888f399d3f0759b5",
+    "src/sparsifier/eval/gsm8k_screened.py": "60d9c7074301e62a2c19df2f143ac0ff36693e153f2b8f274df944eb6e5ce786",
+    "src/sparsifier/eval/gsm8k_sensitivity.py": "531276a60478e0a76d8cd9eb5f5bc3b4928109ad6c8da432128eb42082ca80f1",
+    "src/sparsifier/eval/gsm8k_sequential.py": "53f68c7de70b48c9b356f762df522c09aa806d028d1d42765a74653b4b851fd4",
+    "src/sparsifier/eval/gsm8k_sweep.py": "08c6f875939614dea3db5601fe5f46f6f715bf20aedfc4816e4a0a4db7f58409",
+    "src/sparsifier/eval/gsm8k_sweep_worker.py": "8d8a6634178df31fdcfdeb6214414b30696e8d8e926b99c6d382bc2e27040563",
+    "src/sparsifier/eval/gsm8k_whole_neuron.py": "f4e3fd048a260b1d475c9c13c677794fadf898235a7d77e9030bcb276e64dba0",
+    "src/sparsifier/eval/gsm8k_whole_neuron_evaluate.py": "0a9e1909ff4f2a16dfe5b40fd03259978b7ab0b379ac12809e93b765ddda6a26",
+    "src/sparsifier/eval/gsm8k_whole_neuron_export.py": "075a8e4ca57e16096aca78aa5d71278e3ec319d0cc63d89b38cbac81aff35368",
+    "src/sparsifier/eval/gsm8k_whole_neuron_report.py": "92614f992a5fe2abc457368b8274ecf397d559f23f5449a15e63e87a14a40645"
+  },
+  "legacy_screening_guard_file": "src/sparsifier/eval/gsm8k_screened.py",
+  "native_patch_source_files": [
+    "src/sparsifier/eval/gsm8k_batching.py",
+    "src/sparsifier/eval/gsm8k_pruning.py",
+    "src/sparsifier/eval/gsm8k_screened.py"
+  ],
+  "isolated_tests_passed": 83
+}

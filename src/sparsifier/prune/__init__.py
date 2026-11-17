@@ -22,6 +22,7 @@ from sparsifier.prune.downstream import (
     TangentAnchor,
     tangent_pullback_diagonal,
 )
+from sparsifier.prune.curvature_replay import DiskFactorReplay, ReplayNeuronMetric, ReplayProbeConsumer
 from sparsifier.prune.pruners import (
     Geometry,
     Pruner,
@@ -52,6 +53,9 @@ __all__ = [
     "WholeNeuronConfig",
     "WholeNeuronCandidate",
     "prune_triplet",
+    "DiskFactorReplay",
+    "ReplayNeuronMetric",
+    "ReplayProbeConsumer",
     "ChartTangentBasis",
     "DownstreamTangentCalibrator",
     "DownstreamTangentSparseGPT",
